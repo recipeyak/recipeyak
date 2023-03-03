@@ -59,7 +59,7 @@ const MyGalleryBackground = styled.div`
   height: 100%;
 `
 
-const MyGalleryButton = styled(Button).attrs({ variant: "secondary" })`
+const MyGalleryButton = styled(Button)`
   background: rgba(0, 0, 0, 0.46);
   color: white;
   border-style: none !important;

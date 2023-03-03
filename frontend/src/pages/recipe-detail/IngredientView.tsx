@@ -2,6 +2,7 @@ import { DragElementWrapper, DragSourceOptions } from "react-dnd"
 
 import { IIngredient } from "@/api"
 import { normalizeUnitsFracs } from "@/text"
+import { styled } from "@/theme"
 
 interface IIngredientVIewProps {
   readonly quantity: IIngredient["quantity"]
@@ -10,6 +11,12 @@ interface IIngredientVIewProps {
   readonly optional: IIngredient["optional"]
   readonly dragRef: DragElementWrapper<DragSourceOptions> | undefined
 }
+
+const IngredientViewInner = styled.p`
+  white-space: pre-wrap;
+  line-height: 1.25rem;
+  padding-bottom: 0.4rem;
+`
 
 export default function IngredientView({
   quantity,
@@ -23,11 +30,14 @@ export default function IngredientView({
     : ""
 
   return (
-    <p className="listitem-text justify-space-between selectable" ref={dragRef}>
+    <IngredientViewInner
+      className="justify-space-between selectable"
+      ref={dragRef}
+    >
       <span className="fw-500">{normalizeUnitsFracs(quantity).trim()}</span>{" "}
       {name.trim()}
       {fmtDescription.trim()}{" "}
       {optional ? <span className="text-muted">[optional]</span> : ""}
-    </p>
+    </IngredientViewInner>
   )
 }

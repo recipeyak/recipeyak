@@ -182,7 +182,6 @@ function EmailEditForm(props: IEmailEditForm) {
           ) : (
             <Button
               size="small"
-              variant="secondary"
               onClick={() => {
                 setIsEditing(true)
               }}
@@ -256,7 +255,6 @@ function NameForm(props: { initialValue: string }) {
           ) : (
             <Button
               size="small"
-              variant="secondary"
               onClick={() => {
                 setEditing((s) => !s)
               }}

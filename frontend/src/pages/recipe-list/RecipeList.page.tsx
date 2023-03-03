@@ -11,6 +11,7 @@ import RecipeItem from "@/pages/recipe-list/RecipeItem"
 import { parseIntOrNull } from "@/parseIntOrNull"
 import { useRecipeList } from "@/queries/recipeList"
 import { searchRecipes } from "@/search"
+import { styled } from "@/theme"
 import { removeQueryParams, setQueryParams } from "@/utils/querystring"
 
 interface IResultsProps {
@@ -50,6 +51,22 @@ interface IRecipeList {
   readonly scroll?: boolean
 }
 
+const NAV_HEIGHT = "65px"
+const SEARCH_AND_TAB_HEIGHT = "30px"
+
+const RecipeScroll = styled.div<{ scroll: boolean | undefined }>`
+  // we only enable scrolling when not at the small width (aka mobile), since
+  // scroll boxes on mobile are much worse than normal scroll behavior
+  ${(p) =>
+    p.scroll &&
+    `@media (min-width: ${p.theme.small}) {
+       height: calc(100vh - (${NAV_HEIGHT} + ${SEARCH_AND_TAB_HEIGHT}));
+       overflow: auto;
+       // edges of the recipe boxes get cut without extra padding
+       padding: 0.125rem; 
+     }`}
+`
+
 function RecipeList(props: IRecipeList) {
   const [showArchived, setShowArchived] = useState(false)
 
@@ -88,14 +105,12 @@ function RecipeList(props: IRecipeList) {
       />
     ))
 
-  const scrollClass = props.scroll ? "recipe-scroll" : ""
-
   if (results.recipes.length === 0 && props.query === "") {
     return <AddRecipeCallToAction />
   }
 
   return (
-    <div className={scrollClass}>
+    <RecipeScroll scroll={props.scroll}>
       <div className="mb-2 d-flex justify-space-between flex-wrap">
         <div className="fs-14px mr-2">
           results: {normalResults.length + archivedResults.length}{" "}
@@ -130,7 +145,7 @@ function RecipeList(props: IRecipeList) {
           </div>
         </>
       ) : null}
-    </div>
+    </RecipeScroll>
   )
 }
 

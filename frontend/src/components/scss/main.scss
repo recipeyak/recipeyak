@@ -8,18 +8,10 @@ $border-color: #dbdbdb;
 $text-color: #4a4a4a;
 
 @import "./reset.scss";
-
 @import "../../bulma.sass";
-
-@import "./buttons.scss";
 @import "./inputs.scss";
 @import "./helpers.scss";
-
-@import "./nav.scss";
-@import "./ListItem.scss";
 @import "./home.scss";
-@import "./Recipe.scss";
-@import "./search.scss";
 
 :root {
   // theme-light
@@ -180,48 +172,13 @@ a {
   }
 }
 
-.tabs {
-  @extend .tabs;
-
-  .is-active > a {
-    color: inherit !important;
-  }
-
-  &:not(.is-normal) {
-    a {
-      padding: 0.25em 0.75em;
-    }
-  }
-
-  a {
-    text-decoration: none;
-  }
-}
-
-.ingredients-preparation-grid {
-  grid-column: 1/-1;
-  display: grid;
-  gap: 1rem;
-
-  @media (min-width: 800px) {
-    grid-template-columns: minmax(350px, 3fr) 5fr;
-  }
-}
-
-.meta-data-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 0.5rem;
-}
-
 .add-ingredient-grid {
   display: grid;
   grid-template-columns: 1fr 2fr;
   gap: 0.5rem;
 }
 
-.recipe-grid,
-.grid-container {
+.recipe-grid {
   display: grid;
   gap: 0.5rem;
   // support two columns on iOS.
@@ -279,17 +236,5 @@ input[type="date"]::-webkit-input-placeholder {
 
   @page {
     margin-bottom: 1rem;
-  }
-
-  .box {
-    border: none;
-    box-shadow: none;
-    padding: 0;
-    font-size: 10px;
-  }
-
-  .ingredients-preparation-grid {
-    gap: 0.5rem;
-    grid-template-columns: minmax(350px, 3fr) 5fr;
   }
 }
