@@ -3,7 +3,7 @@ import React from "react"
 
 import { useUserFetch } from "@/queries/userFetch"
 import { Theme } from "@/queries/userUpdate"
-import { themeGet, themeSet } from "@/theme"
+import { themeGet } from "@/theme"
 
 export function useCurrentDay() {
   const [date, setDate] = React.useState(new Date())
@@ -115,12 +115,7 @@ export function useUserId(): number | null {
 export function useUserTheme(): Theme {
   // caching to avoid some theme flashing -- still not perfect since the
   // index.html isn't preloaded with user data
-  const user = useUserFetch({
-    onSuccess: (data) => {
-      const theme = data.theme
-      themeSet(theme)
-    },
-  })
+  const user = useUserFetch()
 
   if (user.data?.theme == null) {
     return themeGet()
