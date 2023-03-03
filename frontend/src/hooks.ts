@@ -2,6 +2,8 @@ import { isSameDay } from "date-fns"
 import React from "react"
 
 import { useUserFetch } from "@/queries/userFetch"
+import { Theme } from "@/queries/userUpdate"
+import { themeGet, themeSet } from "@/theme"
 
 export function useCurrentDay() {
   const [date, setDate] = React.useState(new Date())
@@ -108,6 +110,22 @@ export function useOnClickOutside<T extends HTMLElement>(
 export function useUserId(): number | null {
   const res = useUserFetch()
   return res.data?.id ?? null
+}
+
+export function useUserTheme(): Theme {
+  // caching to avoid some theme flashing -- still not perfect since the
+  // index.html isn't preloaded with user data
+  const user = useUserFetch({
+    onSuccess: (data) => {
+      const theme = data.theme
+      themeSet(theme)
+    },
+  })
+
+  if (user.data?.theme == null) {
+    return themeGet()
+  }
+  return user.data.theme
 }
 
 export function useUser() {
