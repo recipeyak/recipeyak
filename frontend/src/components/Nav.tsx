@@ -23,10 +23,11 @@ interface IUserAvatarProps {
 }
 function UserAvatar({ onClick, url }: IUserAvatarProps) {
   return (
-    <Avatar
+    <BetterNavItem
+      as={Avatar}
       onClick={onClick}
       tabIndex={0}
-      className="better-nav-item p-0"
+      className="p-0"
       avatarURL={url}
     />
   )
@@ -115,12 +116,12 @@ function WordMark() {
 function AuthButtons() {
   return (
     <div className="d-flex">
-      <NavLink to="/login" className="better-nav-item">
+      <BetterNavItem as={NavLink} to="/login">
         Login
-      </NavLink>
-      <NavLink to="/signup" className="better-nav-item">
+      </BetterNavItem>
+      <BetterNavItem as={NavLink} to="/signup">
         Signup
-      </NavLink>
+      </BetterNavItem>
     </div>
   )
 }
@@ -132,27 +133,19 @@ function NavButtons() {
     <div className="d-flex align-center p-relative justify-content-center flex-wrap">
       <DropdownContainer>
         <div className="d-flex">
-          <NavLink
+          <BetterNavItem
+            as={NavLink}
             to="/recipes/add"
             activeClassName="active"
-            className="better-nav-item"
           >
             Add
-          </NavLink>
-          <NavLink
-            to="/recipes"
-            activeClassName="active"
-            className="better-nav-item"
-          >
+          </BetterNavItem>
+          <BetterNavItem as={NavLink} to="/recipes" activeClassName="active">
             Browse
-          </NavLink>
-          <NavLink
-            to={scheduleURL}
-            activeClassName="active"
-            className="better-nav-item"
-          >
+          </BetterNavItem>
+          <BetterNavItem as={NavLink} to={scheduleURL} activeClassName="active">
             Calendar
-          </NavLink>
+          </BetterNavItem>
         </div>
       </DropdownContainer>
 
@@ -172,18 +165,49 @@ const NavContainer = styled.nav`
   height: 3rem;
 `
 
+const BetterNavItem = styled.div`
+  align-items: center;
+  display: flex;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 14px;
+  justify-content: center;
+  line-height: 1.5;
+  padding: 0.5rem 0.75rem;
+  font-weight: 500;
+  color: var(--color-text);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.1s;
+
+  @media (hover: hover) {
+    &:hover {
+      color: var(--color-link-hover);
+      text-decoration: underline;
+    }
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  &.active {
+    text-decoration: underline;
+  }
+`
+
 export function Navbar() {
   const isLoggedIn = useIsLoggedIn()
   return (
     <NavContainer>
-      <Link to="/" className="better-nav-item pb-1 pt-1 pl-0 pr-0 fw-normal">
+      <BetterNavItem as={Link} to="/" className="pb-1 pt-1 pl-0 pr-0 fw-normal">
         <Logo width="40px" />
         {isLoggedIn ? (
           <span className="ml-2 fw-500 sm:d-none">Home</span>
         ) : (
           <WordMark />
         )}
-      </Link>
+      </BetterNavItem>
       {isLoggedIn ? <NavButtons /> : <AuthButtons />}
     </NavContainer>
   )

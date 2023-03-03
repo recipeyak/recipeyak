@@ -35,6 +35,7 @@ import Textarea from "react-textarea-autosize"
 
 import { IRecipe } from "@/api"
 import cls from "@/classnames"
+import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { FormControl } from "@/components/FormControl"
 import { FormField } from "@/components/FormField"
@@ -183,7 +184,7 @@ function StepBody({
           />
         </FormControl>
       </FormField>
-      <section className="listitem-button-container">
+      <Box space="between">
         <FormField isGrouped>
           <FormControl>
             <Button
@@ -215,7 +216,7 @@ function StepBody({
             </Button>
           </FormControl>
         </FormField>
-      </section>
+      </Box>
     </form>
   ) : (
     <Markdown className="selectable">{normalizeUnitsFracs(text)}</Markdown>

@@ -3,6 +3,7 @@ import { useDrag, useDrop } from "react-dnd"
 
 import { isMobile } from "@/browser"
 import cls from "@/classnames"
+import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { FormControl } from "@/components/FormControl"
 import { FormField } from "@/components/FormField"
@@ -178,7 +179,7 @@ export function Ingredient(props: {
         Optional
       </label>
 
-      <section className="listitem-button-container">
+      <Box space="between">
         <FormField isGrouped>
           <FormControl>
             <Button
@@ -214,7 +215,7 @@ export function Ingredient(props: {
             </Button>
           </FormControl>
         </FormField>
-      </section>
+      </Box>
     </form>
   ) : (
     <IngredientView

@@ -24,7 +24,7 @@ export const NavLink = ({
   onClick,
   children,
 }: {
-  className: string
+  className?: string
   activeClassName?: string
   to: NavLinkProps["to"]
   onClick?: () => void
