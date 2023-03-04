@@ -131,9 +131,9 @@ export function CalendarDayItemModal({
               >
                 Reschedule
               </Button>
-              <Link to={to} className="my-button br-6 is-primary is-small">
+              <Button size="small" variant="primary" to={to}>
                 View Recipe
-              </Link>
+              </Button>
             </Box>
           </Box>
 

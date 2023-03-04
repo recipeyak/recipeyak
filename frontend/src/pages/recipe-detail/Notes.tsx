@@ -2,7 +2,6 @@ import produce from "immer"
 import orderBy from "lodash-es/orderBy"
 import React, { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
-import Textarea from "react-textarea-autosize"
 
 import * as api from "@/api"
 import { INote, IRecipe, RecipeTimelineItem, Upload } from "@/api"
@@ -10,6 +9,7 @@ import { classNames as cls } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
+import { Textarea } from "@/components/Forms"
 import { Markdown } from "@/components/Markdown"
 import { RotatingLoader } from "@/components/RoatingLoader"
 import { formatAbsoluteDateTime, formatHumanDateTime } from "@/date"
@@ -281,7 +281,7 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
             <UploadContainer addFiles={addFiles}>
               <Textarea
                 autoFocus
-                className="my-textarea"
+                bottomFlat
                 onKeyDown={onEditorKeyDown}
                 minRows={5}
                 value={draftText}
@@ -445,17 +445,12 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
   const editorText = isEditing ? draftText : ""
   const editorRowCount = !isEditing ? 1 : undefined
   const editorMinRowCount = isEditing ? 5 : 0
-  const editorClassNames = cls({
-    "my-textarea": isEditing,
-    textarea: !isEditing,
-  })
 
   const isDisabled = editorText === "" && uploadedImages.length === 0
 
   return {
     isEditing,
     onEditorKeyDown,
-    editorClassNames,
     onEditorChange,
     editorMinRowCount,
     editorRowCount,
@@ -491,7 +486,7 @@ const DragDropLabel = styled.label`
   border-style: solid;
   border-top-style: none;
   border-width: thin;
-  border-color: #dbdbdb;
+  border-color: var(--color-border);
   border-bottom-left-radius: 3px;
   border-bottom-right-radius: 3px;
   padding-left: 0.25rem;
@@ -499,6 +494,7 @@ const DragDropLabel = styled.label`
   padding-top: 0.1rem;
   padding-bottom: 0.1rem;
   font-weight: 500;
+  background-color: var(--color-background-card);
 `
 
 const NoteWrapper = styled.div`
@@ -510,7 +506,8 @@ const ImageUploadContainer = styled.div`
   border-style: solid;
   border-top-style: none;
   border-width: thin;
-  border-color: #dbdbdb;
+  border-color: var(--color-border);
+  background-color: var(--color-background-card);
   padding: 0.5rem;
   display: flex;
   flex-wrap: wrap;
@@ -889,7 +886,6 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
   const {
     isEditing,
     onEditorKeyDown,
-    editorClassNames,
     onEditorChange,
     editorMinRowCount,
     editorRowCount,
@@ -921,13 +917,14 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
       <UploadContainer addFiles={addFiles}>
         <Textarea
           id="new_note_textarea"
-          className={editorClassNames}
           onKeyDown={onEditorKeyDown}
           minRows={editorMinRowCount}
           rows={editorRowCount}
           value={editorText}
           onFocus={onEditorFocus}
           onChange={onEditorChange}
+          bottomFlat={isEditing}
+          minimized={!isEditing}
           placeholder="Add a note..."
         />
         {isEditing && (

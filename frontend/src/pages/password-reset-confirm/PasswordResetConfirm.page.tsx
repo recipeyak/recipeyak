@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 import React, { useState } from "react"
-import { Link, RouteComponentProps, useHistory } from "react-router-dom"
+import { RouteComponentProps, useHistory } from "react-router-dom"
 
 import { login } from "@/auth"
 import AuthContainer from "@/components/AuthContainer"
@@ -134,9 +134,9 @@ function PasswordResetConfirmation(props: RouteProps) {
               </Button>
             </FormControl>
 
-            <Link to="/login" className="my-button is-link">
+            <Button to="/login" variant="link">
               To Login
-            </Link>
+            </Button>
           </FormField>
         </form>
       </BorderBox>

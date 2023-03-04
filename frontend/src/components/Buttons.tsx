@@ -21,6 +21,7 @@ const ButtonBase = styled.button<{
   isDanger?: boolean
   isLoading?: boolean
   isSmall?: boolean
+  isLarge?: boolean
   isLink?: boolean
   isActive?: boolean
 }>`
@@ -166,12 +167,13 @@ const ButtonBase = styled.button<{
     font-size: 0.75rem;
     `}
 
+  ${(p) => p.isLarge && `font-size: 1.5rem;`}
   border-radius: 6px;
 `
 
 interface IButtonProps {
   readonly loading?: boolean
-  readonly size?: "small" | "normal"
+  readonly size?: "small" | "normal" | "large"
   readonly active?: boolean
   readonly style?: React.CSSProperties
   readonly className?: string
@@ -207,6 +209,7 @@ export const Button = ({
         isLink={variant === "link"}
         isLoading={loading}
         isSmall={size === "small"}
+        isLarge={size === "large"}
         isActive={active}
         className={className}
       >
@@ -225,6 +228,7 @@ export const Button = ({
       isLink={variant === "link"}
       isLoading={loading}
       isSmall={size === "small"}
+      isLarge={size === "large"}
       isActive={active}
       className={className}
     >
