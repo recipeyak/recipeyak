@@ -31,7 +31,6 @@
 
 import React, { useRef, useState } from "react"
 import { useDrag, useDrop } from "react-dnd"
-import Textarea from "react-textarea-autosize"
 
 import { IRecipe } from "@/api"
 import cls from "@/classnames"
@@ -39,6 +38,7 @@ import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { FormControl } from "@/components/FormControl"
 import { FormField } from "@/components/FormField"
+import { Textarea } from "@/components/Forms"
 import { BetterLabel } from "@/components/Label"
 import { Markdown } from "@/components/Markdown"
 import { DragDrop, handleDndHover } from "@/dragDrop"
@@ -178,7 +178,6 @@ function StepBody({
               }
             }}
             defaultValue={text}
-            className="my-textarea"
             placeholder="Add you text here"
             name="text"
           />

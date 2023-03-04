@@ -1,6 +1,6 @@
 import * as React from "react"
+import TextareaAutosize from "react-textarea-autosize"
 
-import { classNames } from "@/classnames"
 import { styled } from "@/theme"
 
 type Target = { select: () => void }
@@ -49,42 +49,63 @@ export function RadioButton(props: ITypelessInput) {
   return <input {...props} type="radio" />
 }
 
-interface IBaseInputProps
-  extends Omit<
-    React.DetailedHTMLProps<
-      React.InputHTMLAttributes<HTMLInputElement>,
-      HTMLInputElement
-    >,
-    "size"
-  > {
-  readonly size?: "small" | "normal" | "medium" | "large"
-  readonly error?: boolean
-  readonly isFocused?: boolean
+const StyledInput = styled.input<{ isDanger?: boolean }>`
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  align-items: center;
+  border: 1px solid transparent;
+  box-shadow: none;
+  font-size: 1rem;
+  justify-content: flex-start;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  padding-left: 6px;
+  padding-right: 6px;
+  position: relative;
+  vertical-align: top;
+
+  background-color: var(--color-background-card);
+  border-color: var(--color-border);
+  color: var(--color-text);
+
+  border-radius: 6px;
+  box-shadow: inset 0 1px 2px rgba(10, 10, 10, 0.1);
+  width: 100%;
+  transition: 0.2s;
+  transition-property: border-color, box-shadow;
+  z-index: 1;
+  ${(p) => p.isDanger && `border-color: var(--color-danger);`}
+`
+
+type BaseInputProps = {
+  className?: string
+  error?: boolean
+  type?: React.HTMLInputTypeAttribute
+  disabled?: boolean
+  value?: string
+  defaultValue?: string
+  required?: boolean
+  autoCorrect?: "false"
+  autoComplete?: "false"
+  autoCapitalize?: "false"
+  spellCheck?: "false"
+  name?: string
+  id?: string
+  placeholder?: string
+  autoFocus?: boolean
+  readOnly?: boolean
+  onClick?: (e: React.MouseEvent<HTMLInputElement>) => void
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>
 }
 
-const BaseInput = ({
-  className = "",
-  size = "normal",
-  error = false,
-  isFocused = false,
-  ...props
-}: IBaseInputProps) => {
-  const inputSize = "is-" + size
-  const cls = classNames(
-    "my-input",
-    inputSize,
-    {
-      "is-danger": error,
-      "is-focused": isFocused,
-    },
-    className,
-  )
-  return <input className={cls} {...props} />
+const BaseInput = ({ className, error = false, ...props }: BaseInputProps) => {
+  return <StyledInput className={className} isDanger={error} {...props} />
 }
 
 const createInput =
   (type: React.InputHTMLAttributes<HTMLInputElement>["type"]) =>
-  (props: Omit<IBaseInputProps, "type">) =>
+  (props: Omit<BaseInputProps, "type">) =>
     <BaseInput {...props} type={type} />
 
 export const TextInput = createInput("text")
@@ -186,3 +207,55 @@ export function Select(props: {
     </SelectWrapper>
   )
 }
+
+export const Textarea = styled(TextareaAutosize)<{
+  isError?: boolean
+  bottomFlat?: boolean
+  minimized?: boolean
+}>`
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  align-items: center;
+  border: 1px solid transparent;
+  box-shadow: none;
+  font-size: 1rem;
+  justify-content: flex-start;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  padding-left: 6px;
+  padding-right: 6px;
+  position: relative;
+  border-radius: 6px;
+
+  background-color: var(--color-background-card);
+  border-color: var(--color-border);
+  color: var(--color-text);
+
+  box-shadow: inset 0 1px 2px rgba(10, 10, 10, 0.1);
+  width: 100%;
+  transition: 0.2s;
+  transition-property: border-color, box-shadow;
+  z-index: 1;
+
+  ${(p) => p.isError && `border-color: var(--color-danger);`}
+
+  display: block;
+  padding: 0.75rem;
+  border-radius: 6px;
+  ${(p) =>
+    !p.minimized &&
+    `
+    line-height: 1.5;
+    min-height: 120px;
+    max-height: 600px;
+    `}
+
+  max-width: 100%;
+  min-width: 100%;
+  resize: vertical;
+
+  ${(p) =>
+    p.bottomFlat &&
+    `border-bottom-left-radius: unset;
+    border-bottom-right-radius: unset;`}
+`

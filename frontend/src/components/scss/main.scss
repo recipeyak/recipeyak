@@ -9,7 +9,6 @@ $text-color: #4a4a4a;
 
 @import "./reset.scss";
 @import "../../bulma.sass";
-@import "./inputs.scss";
 @import "./helpers.scss";
 @import "./home.scss";
 
@@ -202,8 +201,6 @@ input[type="date"]::-webkit-input-placeholder {
 
 @media print {
   .no-print,
-  .my-button,
-  .my-input,
   img,
   nav {
     display: none !important;

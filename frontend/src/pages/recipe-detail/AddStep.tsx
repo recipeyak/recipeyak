@@ -1,9 +1,9 @@
 import { useState } from "react"
-import Textarea from "react-textarea-autosize"
 
 import { Button } from "@/components/Buttons"
 import { FormControl } from "@/components/FormControl"
 import { FormField } from "@/components/FormField"
+import { Textarea } from "@/components/Forms"
 import { BetterLabel } from "@/components/Label"
 import { useStepCreate } from "@/queries/stepCreate"
 
@@ -59,7 +59,7 @@ function AddStep({ recipeId, onCancel, index, position }: IAddStepProps) {
               }
             }}
             value={step}
-            className={"my-textarea" + (addStep.error ? " is-danger" : "")}
+            isError={!!addStep.error}
             placeholder="Add a step..."
             name="step"
           />

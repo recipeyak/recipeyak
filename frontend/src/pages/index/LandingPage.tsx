@@ -1,6 +1,7 @@
 import React from "react"
 import { Link } from "react-router-dom"
 
+import { Button } from "@/components/Buttons"
 import Footer from "@/components/Footer"
 import addRecipeImg from "@/static/images/pages/add-recipe.png"
 import copyShoppingList from "@/static/images/pages/copy-shopping-list.png"
@@ -158,12 +159,14 @@ const LandingPage = () => {
           </h1>
         </section>
 
-        <Link
+        <Button
           to="/signup"
-          className="my-button is-primary is-large justify-self-center"
+          variant="primary"
+          size="large"
+          className="justify-self-center"
         >
           Create Account
-        </Link>
+        </Button>
       </section>
       <section className="pt-4 bg-50-50-primary pr-4 pl-4">
         <section className="home-container">
@@ -183,12 +186,14 @@ const LandingPage = () => {
           <HowTo key={imgURL} content={text} imageURL={imgURL} index={i} />
         ))}
 
-        <Link
+        <Button
           to="/signup"
-          className="my-button is-primary is-large justify-self-center mt-4 mb-2"
+          variant="primary"
+          size="large"
+          className="justify-self-center mt-4 mb-2"
         >
           Create Account
-        </Link>
+        </Button>
       </HowItWorksContainer>
 
       <Footer />
