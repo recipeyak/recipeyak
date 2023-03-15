@@ -4,8 +4,10 @@ import logging
 from datetime import datetime
 
 import advocate
+import structlog
 from django.core.exceptions import ValidationError
 from pydantic import BaseModel, Field
+from recipe_scrapers._exceptions import RecipeScrapersExceptions
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import MethodNotAllowed
@@ -31,7 +33,7 @@ from recipeyak.models.team import Team
 from recipeyak.models.upload import Upload
 from recipeyak.scraper import scrape_recipe
 
-logger = logging.getLogger(__name__)
+logger = structlog.stdlib.get_logger()
 
 
 class RecipeListItemIngredient(BaseModel):
@@ -118,6 +120,7 @@ def normalize_title(title: str | None) -> str | None:
 
 
 def recipe_post_view(request: AuthedRequest) -> Response:
+    log = logger.bind(user_id=request.user.id)
     params = RecipePostParams.parse_obj(request.data)
 
     # validate params
@@ -130,9 +133,15 @@ def recipe_post_view(request: AuthedRequest) -> Response:
         )
 
     if params.from_url is not None:
+        log = log.bind(from_url=params.from_url)
         try:
             scrape_result = scrape_recipe(url=params.from_url, user=request.user)
-        except (advocate.exceptions.UnacceptableAddressException, ValidationError):
+        except (
+            advocate.exceptions.UnacceptableAddressException,
+            ValidationError,
+            RecipeScrapersExceptions,
+        ):
+            log.info("invalid url")
             return Response(
                 {"error": True, "message": "invalid url"},
                 status=status.HTTP_400_BAD_REQUEST,
