@@ -234,10 +234,6 @@
   }
 }
 
-.grid-column-1 {
-  grid-column: 1;
-}
-
 .grid-column-2 {
   grid-column: 2;
 }
@@ -427,11 +423,6 @@
   }
 }
 
-.cursor-default,
-.pointer-default {
-  cursor: default;
-}
-
 .bg-highlight {
   animation: bg-highlighted-fade 3s;
   animation-timing-function: ease-out;
@@ -510,10 +501,6 @@
   }
 }
 
-.min-height-75px {
-  min-height: 75px;
-}
-
 .vertical-align-middle {
   vertical-align: middle;
 }
@@ -529,29 +516,8 @@
   overflow-x: auto;
 }
 
-.overflow-x-auto {
-  overflow-x: auto;
-}
-
-.overflow-y-scroll {
-  overflow-y: scroll;
-}
-
 .text-muted {
   color: var(--color-text-muted);
-}
-
-.z-index-100 {
-  z-index: 100;
-}
-
-.min-width-0 {
-  min-width: 0;
-  width: unset;
-}
-
-.min-height-content {
-  min-height: min-content;
 }
 
 .box-shadow-none {

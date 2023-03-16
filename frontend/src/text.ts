@@ -19,6 +19,8 @@ const NORMALIZE_MAPPING = {
   "⅒": "1/10",
   tablespoon: "Tablespoon",
   Teaspoon: "teaspoon",
+  tbsp: "Tbsp",
+  tsp: "tsp",
 }
 
 /**
