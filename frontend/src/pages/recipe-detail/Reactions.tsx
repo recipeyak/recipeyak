@@ -17,23 +17,19 @@ const NoteActionsContainer = styled.div`
 
 const ReactionContainer = styled.div`
   display: flex;
-  background: white;
+  background: var(--color-background-card);
   padding: 0.25rem 0.5rem;
   border-radius: 3px;
+  border: 1px solid var(--color-border);
 `
 
 const StyledSmile = styled(Smile)`
-  color: #7a7a7a;
-  @media (hover: hover) {
-    &:hover {
-      color: #575757;
-    }
-  }
+  color: var(--color-text);
 `
 
 const ReactionButtonContainer = styled.div`
-  background-color: white;
-  color: #172b4d;
+  background-color: var(--color-background-card);
+  color: var(--color-text);
   border-radius: 12px;
   line-height: 0;
   display: inline-block;
@@ -65,18 +61,13 @@ const UpvoteReaction = styled.div`
   padding: 0 0.3rem;
   padding-right: 0.5rem;
   border-style: solid;
-  background-color: white;
+  background-color: var(--color-background-card);
   display: inline-flex;
   border-radius: 15px;
   border-width: 1px;
   border-color: #d2dff0;
   margin-right: 0.5rem;
   text-align: center;
-  @media (hover: hover) {
-    &:hover {
-      border-color: hsl(0deg, 0%, 71%);
-    }
-  }
 `
 
 const ReactionButton = styled.div<{ pressed: boolean }>`
@@ -90,11 +81,7 @@ const ReactionButton = styled.div<{ pressed: boolean }>`
   cursor: pointer;
   background-color: ${(props) =>
     props.pressed ? "hsla(0, 0%, 0%, 0.04)" : "initial"};
-  @media (hover: hover) {
-    &:hover {
-      background-color: hsla(0, 0%, 0%, 0.06);
-    }
-  }
+  background-color: var(--color-background-card);
 `
 
 const REACTION_EMOJIS = ["❤️", "😆", "🤮"] as const

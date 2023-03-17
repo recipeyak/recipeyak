@@ -64,27 +64,29 @@ function Session(props: ISession) {
   const lastActivity = formatDistanceToNow(new Date(props.last_activity))
   const sessionDelete = useSessionDelete()
   return (
-    <Box dir="row" align="center" space="between">
-      <Box dir="col">
-        <div className="mr-2">{props.ip}</div>
-        <DeviceName device={props.device} />
-        <Box gap={2}>
-          <div>Last used: {lastActivity}</div>
-          {props.current ? (
-            <span className="has-text-success fw-500">Current</span>
-          ) : null}
+    <Box dir="col" align="start" space="between" wrap>
+      <div>{props.ip}</div>
+      <Box align="center" space="between" grow={1} w={100} gap={4}>
+        <Box dir="col">
+          <DeviceName device={props.device} />
+          <Box gap={2}>
+            <div>Last used: {lastActivity}</div>
+            {props.current ? (
+              <span className="has-text-success fw-500">Current</span>
+            ) : null}
+          </Box>
         </Box>
-      </Box>
 
-      <Button
-        size="small"
-        onClick={() => {
-          sessionDelete.mutate({ sessionId: props.id })
-        }}
-        loading={sessionDelete.isLoading}
-      >
-        Logout
-      </Button>
+        <Button
+          size="small"
+          onClick={() => {
+            sessionDelete.mutate({ sessionId: props.id })
+          }}
+          loading={sessionDelete.isLoading}
+        >
+          Logout
+        </Button>
+      </Box>
     </Box>
   )
 }

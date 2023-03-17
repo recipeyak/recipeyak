@@ -41,7 +41,7 @@ const ModalContent = styled.div`
 `
 
 const ModalBackground = styled.div`
-  background-color: hsla(0, 0%, 4%, 0.86);
+  background-color: var(--color-modal-background);
   position: absolute;
   inset: 0;
 `

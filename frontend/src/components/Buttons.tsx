@@ -135,7 +135,7 @@ const ButtonBase = styled.button<{
 
   &[disabled] {
     color: var(--color-text-disabled);
-    cursor: default;
+    cursor: not-allowed;
   }
 
   ${(p) =>
