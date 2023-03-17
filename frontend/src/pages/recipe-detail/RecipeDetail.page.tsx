@@ -583,9 +583,8 @@ function SourceLink({ children }: { children: string }) {
 }
 
 const HeaderBgOverlay = styled.div`
-  opacity: 0.8;
   border-radius: 6px;
-  background: #000;
+  background-color: var(--color-modal-background);
   z-index: 35;
 
   @media (min-width: 800px) {
@@ -593,6 +592,12 @@ const HeaderBgOverlay = styled.div`
   }
   @media (max-width: 799px) {
     grid-area: 2 / 1;
+  }
+
+  @media (max-width: 599px) {
+    margin-left: -0.75rem;
+    margin-right: -0.75rem;
+    border-radius: 0px;
   }
 `
 const HeaderImgOverlay = styled.div`

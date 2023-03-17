@@ -1,6 +1,6 @@
 import React from "react"
 
-import cls from "@/classnames"
+import { Box } from "@/components/Box"
 import { CloseButton } from "@/components/CloseButton"
 import { TextInput } from "@/components/Forms"
 import { Tag } from "@/components/Tag"
@@ -8,11 +8,9 @@ import { Tag } from "@/components/Tag"
 export function TagEditor({
   tags,
   onChange,
-  className,
 }: {
   readonly tags: string[]
   readonly onChange: (_: string[]) => void
-  readonly className?: string
 }) {
   const [newTag, setNewTag] = React.useState("")
   function handleNewTag(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -24,21 +22,19 @@ export function TagEditor({
     setNewTag("")
   }
   return (
-    <div className={cls("d-flex", className)}>
-      <div className="d-flex align-center">
-        {tags?.map((tag) => (
-          <Tag fontWeight="normal" key={tag}>
-            {tag}{" "}
-            <CloseButton
-              onClose={() => {
-                onChange(tags.filter((x) => x !== tag))
-              }}
-            />
-          </Tag>
-        ))}
-      </div>
+    <Box align="center" gap={2}>
+      {tags?.map((tag) => (
+        <Tag fontWeight="normal" key={tag}>
+          {tag}{" "}
+          <CloseButton
+            onClose={() => {
+              onChange(tags.filter((x) => x !== tag))
+            }}
+          />
+        </Tag>
+      ))}
       <TextInput
-        className="ml-2 max-width-200px"
+        className="max-width-200px"
         placeholder="new tag"
         value={newTag}
         onChange={(e) => {
@@ -46,6 +42,6 @@ export function TagEditor({
         }}
         onKeyDown={handleNewTag}
       />
-    </div>
+    </Box>
   )
 }
