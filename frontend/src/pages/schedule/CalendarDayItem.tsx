@@ -43,7 +43,9 @@ const CalendarListItem = styled.li<ICalendarListItemProps>`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.5rem;
+  &:not(:last-child) {
+    margin-bottom: var(--margin-calendar-item-bottom);
+  }
   visibility: ${(props) => props.visibility};
 `
 

@@ -43,6 +43,9 @@ $text-color: #4a4a4a;
   --color-background-calendar-day: whitesmoke;
   --color-background-calendar-item: var(--color-background);
   --color-background-empty-image: rgb(227, 227, 227);
+  --color-modal-background: rgba(10, 10, 10, 0.57);
+
+  --margin-calendar-item-bottom: 0.5rem;
 }
 
 .theme-autumn {
@@ -52,13 +55,13 @@ $text-color: #4a4a4a;
   --color-primary-button-text: white;
   --color-primary-shadow: #{$primary-color-shadow};
   --color-primary-active: var(--color-primary);
-  --color-primary-disabled: var(--color-primary);
+  --color-primary-disabled: #b86349;
 
   --color-text: rgb(237, 237, 237);
   --color-text-muted: var(--color-text);
-  --color-text-disabled: var(--color-text);
+  --color-text-disabled: rgb(185, 185, 185);
 
-  --color-input-placeholder: var(--color-text);
+  --color-input-placeholder: rgb(208, 197, 180);
 
   --color-link: var(--color-text);
 
@@ -73,6 +76,8 @@ $text-color: #4a4a4a;
   --color-background-calendar-day: var(--color-background-card);
   --color-background-calendar-item: rgb(188, 133, 92);
   --color-background-empty-image: var(--color-background-card);
+
+  --margin-calendar-item-bottom: 0rem;
 }
 
 .theme-solarized {
@@ -88,7 +93,7 @@ $text-color: #4a4a4a;
   --color-text-muted: rgba(115, 115, 115, 1);
   --color-text-disabled: var(--color-text);
 
-  --color-input-placeholder: var(--color-text);
+  --color-input-placeholder: #b1b1b1;
 
   --color-link: var(--color-text);
 
@@ -103,6 +108,8 @@ $text-color: #4a4a4a;
   --color-background-calendar-day: #eee8d5;
   --color-background-calendar-item: var(--color-background);
   --color-background-empty-image: var(--color-background-calendar-day);
+
+  --margin-calendar-item-bottom: 0.5rem;
 }
 
 html {
