@@ -10,7 +10,6 @@ import { useLocation } from "react-router"
 
 import { ICalRecipe } from "@/api"
 import { assertNever } from "@/assert"
-import cls from "@/classnames"
 import { isInsideChangeWindow, toISODateString } from "@/date"
 import { DragDrop } from "@/dragDrop"
 import { useCurrentDay } from "@/hooks"
@@ -34,16 +33,10 @@ function DayOfWeek({ date }: { date: Date }) {
   )
 }
 
-const Title = ({
-  date,
-  isSelectedDay,
-}: {
-  readonly date: Date
-  readonly isSelectedDay: boolean
-}) => {
+const Title = ({ date }: { readonly date: Date }) => {
   const dateFmtText = isFirstDayOfMonth(date) ? "MMM d" : "d"
   return (
-    <div className={cls("d-flex fs-14px", { "color-white": isSelectedDay })}>
+    <div className="d-flex fs-14px">
       <DayOfWeek date={date} />
       <span>{format(date, dateFmtText)}</span>
     </div>
@@ -55,7 +48,8 @@ const isTodayStyle = css`
 `
 
 const isSelectedDayStyle = css`
-  background-color: var(--color-background-card);
+  border: 2px solid var(--color-accent);
+  border-radius: 6px;
 `
 
 const isDroppableStyle = css`
@@ -73,6 +67,8 @@ const CalendarDayContainer = styled.div<ICalendarDayContainerProps>`
   padding: 0.25rem;
   background-color: var(--color-background-calendar-day);
   transition: background-color 0.2s;
+  // prevent shifting when we show the highlight border
+  border: 2px solid transparent;
 
   ${(p) => p.isToday && isTodayStyle}
   ${(p) => p.isSelectedDay && isSelectedDayStyle}
@@ -166,7 +162,7 @@ function CalendarDay({ date, scheduledRecipes, teamID }: ICalendarDayProps) {
       isToday={isToday}
       isSelectedDay={isSelectedDay}
     >
-      <Title date={date} isSelectedDay={isSelectedDay} />
+      <Title date={date} />
       <ul>
         {scheduled.map((x) => (
           <CalendarItem
