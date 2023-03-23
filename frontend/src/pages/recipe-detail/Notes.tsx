@@ -755,15 +755,17 @@ function ImageWithStatus({
           src={url}
           backgroundUrl={backgroundUrl}
         />
-        {progress != null && (
-          <ProgressBarContainer>
-            <StyledProgress
-              value={progress}
-              max="100"
-              className="progress is-primary"
-            />
-          </ProgressBarContainer>
-        )}
+        {progress != null &&
+          // hide the progress bar once it is complete
+          progress !== 100 && (
+            <ProgressBarContainer>
+              <StyledProgress
+                value={progress}
+                max="100"
+                className="progress is-primary"
+              />
+            </ProgressBarContainer>
+          )}
       </ImageAnchor>
       {state === "failed" && (
         <BrokenImageContainer title="Image upload failed">
