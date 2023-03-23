@@ -67,6 +67,7 @@ export function ScheduleModal({
               border: "1px solid var(--color-border)",
               borderRadius: 5,
               padding: "0.25rem",
+              minWidth: "max-content",
             }}
           />
 
