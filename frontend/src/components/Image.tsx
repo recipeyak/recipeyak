@@ -75,7 +75,10 @@ const CardImgBg = styled.div<{
       content: "";
       height: 100%;
       width: 100%;
-      ${p.rounded && `border-radius: 6px;`}
+      ${p.rounded || p.roundDesktop ? `border-radius: 6px;` : ""}
+      -webkit-backdrop-filter: blur(6px);
+      // seems to work on dev without -webkit prefix but fails on prod for some
+      // reason so we prefix above
       backdrop-filter: blur(6px);
       pointer-events: none;
     }`}
