@@ -144,6 +144,7 @@ export function CalendarDayItemModal({
                   value={toISODateString(localDate)}
                   onChange={handleDateChange}
                   type="date"
+                  className="w-100"
                   style={{
                     border: "1px solid var(--color-border)",
                     borderRadius: 5,
