@@ -62,12 +62,11 @@ export function ScheduleModal({
             value={toISODateString(isoDate)}
             onChange={handleDateChange}
             type="date"
-            className="mt-2"
+            className="mt-2 w-100"
             style={{
               border: "1px solid var(--color-border)",
               borderRadius: 5,
               padding: "0.25rem",
-              minWidth: "max-content",
             }}
           />
 
