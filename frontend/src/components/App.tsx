@@ -5,7 +5,7 @@ import { QueryClient, useIsRestoring } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client"
 import raven from "raven-js"
-import React from "react"
+import React, { useEffect } from "react"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import { HelmetProvider } from "react-helmet-async"
@@ -22,7 +22,7 @@ import { Container, ContainerBase } from "@/components/Base"
 import ErrorBoundary from "@/components/ErrorBoundary"
 import { Helmet } from "@/components/Helmet"
 import { ScrollRestore } from "@/components/ScrollRestore"
-import { useIsLoggedIn } from "@/hooks"
+import { useIsLoggedIn, useUserTheme } from "@/hooks"
 import NotFound from "@/pages/404/404.page"
 import Home from "@/pages/index/Index.page"
 import Login from "@/pages/login/Login.page"
@@ -39,7 +39,7 @@ import TeamCreatePage from "@/pages/team-create/TeamCreate.page"
 import TeamDetailPage from "@/pages/team-detail/TeamDetail.page"
 import TeamInvitePage from "@/pages/team-invite/TeamInvite.page"
 import TeamsListPage from "@/pages/team-list/TeamList.page"
-import { theme, ThemeProvider } from "@/theme"
+import { theme, ThemeProvider, themeSet } from "@/theme"
 import { Toaster } from "@/toast"
 
 export const queryClient = new QueryClient({
@@ -140,6 +140,10 @@ const Route = ({
 )
 
 function AppContent() {
+  const theme = useUserTheme()
+  useEffect(() => {
+    themeSet(theme)
+  }, [theme])
   const isRestoring = useIsRestoring()
   if (isRestoring) {
     // NOTE: we don't render the site until react-query finishes hydrating from cache
