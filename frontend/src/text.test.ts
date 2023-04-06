@@ -1,4 +1,4 @@
-import { normalizeUnitsFracs } from "@/text"
+import { normalizeUnitsFracs, urlToDomain } from "@/text"
 
 describe("text", () => {
   test("capitalizeUnits", () => {
@@ -12,4 +12,14 @@ describe("text", () => {
       "1 1/2 teaspoon + 1/4 Tablespoon",
     )
   })
+})
+
+test.each([
+  [
+    "https://cooking.nytimes.com/recipes/112390-some-example",
+    "cooking.nytimes.com",
+  ],
+  ["https://food52.com/recipes/35930-momofuku-s-soy-sauce-eggs", "food52.com"],
+])("urlToDomain(%s) -> %s", (input: string, expected: string) => {
+  expect(urlToDomain(input)).toEqual(expected)
 })

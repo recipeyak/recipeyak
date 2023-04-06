@@ -30,6 +30,7 @@ import { useIngredientUpdate } from "@/queries/ingredientUpdate"
 import { useRecipeFetch } from "@/queries/recipeFetch"
 import { useRecipeUpdate } from "@/queries/recipeUpdate"
 import { useSectionUpdate } from "@/queries/sectionUpdate"
+import { isURL, urlToDomain } from "@/text"
 import { styled } from "@/theme"
 import { recipeURL } from "@/urls"
 import { imgixFmt, pathNamesEqual } from "@/utils/url"
@@ -552,36 +553,6 @@ const RecipeTitleCenter = styled.div`
   align-items: center;
 `
 
-const isURL = (x: string): boolean => !x.includes(" ") && x.includes(".")
-
-/**
- * Extract a hostname from a URL
- *
- * Example:
- *  https://cooking.nytimes.com/recipes/112390-some-example => cooking.nytimes.com
- */
-function URLToDomain({ children: url }: { children: string }) {
-  // Extract cooking.nytimes.com from https://cooking.nytimes.com/recipes/112390-some-example
-  const regex = /^(https?:\/\/)?([a-zA-z-.]+)/gm
-  const x = regex.exec(url)
-  if (x) {
-    // Our match is in the second capture group
-    const secondGroup: string | undefined = x[2]
-    if (secondGroup) {
-      return <>{secondGroup}</>
-    }
-  }
-  return <>{url}</>
-}
-
-function SourceLink({ children }: { children: string }) {
-  return (
-    <a href={children}>
-      <URLToDomain>{children}</URLToDomain>
-    </a>
-  )
-}
-
 const HeaderBgOverlay = styled.div`
   border-radius: 6px;
   background-color: var(--color-modal-background);
@@ -807,7 +778,9 @@ function RecipeInfo(props: {
                   <div className="bold">From</div>
                   <div className="selectable">
                     {isURL(props.recipe.source) ? (
-                      <SourceLink>{props.recipe.source}</SourceLink>
+                      <a href={props.recipe.source}>
+                        {urlToDomain(props.recipe.source)}
+                      </a>
                     ) : (
                       props.recipe.source
                     )}
