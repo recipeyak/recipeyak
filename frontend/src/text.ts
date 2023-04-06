@@ -34,3 +34,15 @@ export function normalizeUnitsFracs(str: string): string {
     str,
   )
 }
+
+/**
+ * Extract a hostname from a URL
+ *
+ * Example:
+ *  https://cooking.nytimes.com/recipes/112390-some-example => cooking.nytimes.com
+ */
+export function urlToDomain(url: string) {
+  return new URL(url).hostname
+}
+
+export const isURL = (x: string): boolean => !x.includes(" ") && x.includes(".")
