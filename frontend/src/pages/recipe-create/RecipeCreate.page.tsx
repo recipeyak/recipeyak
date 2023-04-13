@@ -1,3 +1,4 @@
+import { AxiosError } from "axios"
 import React, { useState } from "react"
 import { useHistory } from "react-router"
 
@@ -50,8 +51,9 @@ function CreateFromURLForm() {
         <div className="has-text-danger text-left mb-1">
           Error:{" "}
           {
-            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-            (recipeCreate.error as Error).message ?? "something went wrong."
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unsafe-member-access
+            (recipeCreate.error as AxiosError).response?.data.message ??
+              "something went wrong."
           }
         </div>
       ) : null}
