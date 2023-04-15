@@ -4,17 +4,25 @@ export function setQueryParams(
   history: History<unknown>,
   paramUpdates: Record<string, string>,
 ) {
-  const params = new URLSearchParams(window.location.search)
-  Object.entries(paramUpdates).forEach(([key, value]) => {
-    params.set(key, value)
-  })
+  const search = addQueryParams(history.location.search, paramUpdates)
   void Promise.resolve().then(() => {
     // NOTE: we need to use react router history, otherwise the react version of
     // location won't update
     history.replace({
-      search: "?" + params.toString(),
+      search,
     })
   })
+}
+
+export function addQueryParams(
+  search: string,
+  paramUpdates: Record<string, string>,
+): string {
+  const params = new URLSearchParams(search)
+  Object.entries(paramUpdates).forEach(([key, value]) => {
+    params.set(key, value)
+  })
+  return "?" + params.toString()
 }
 
 export function removeQueryParams(

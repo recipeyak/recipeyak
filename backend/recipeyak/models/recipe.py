@@ -105,9 +105,7 @@ class Recipe(CommonInfo):
         # TODO(sbdchd): can use reverse relation instead
         return Step.objects.filter(recipe=self).order_by("position", "created")
 
-    @property
-    def scheduledrecipe_set(self) -> QuerySet[ScheduledRecipe]:
-        return ScheduledRecipe.objects.filter(recipe=self)
+    scheduledrecipe_set: QuerySet[ScheduledRecipe]
 
     @property
     def step_set(self) -> BaseManager[Step]:

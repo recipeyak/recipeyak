@@ -1,3 +1,4 @@
+import { LocationDescriptor } from "history"
 import * as React from "react"
 
 import { Link } from "@/components/Routing"
@@ -184,7 +185,7 @@ interface IButtonProps {
   readonly disabled?: boolean
   readonly value?: string | ReadonlyArray<string> | number | undefined
   readonly onClick?: (e: React.MouseEvent) => void
-  readonly to?: string
+  readonly to?: string | LocationDescriptor<unknown>
 }
 export const Button = ({
   loading = false,
