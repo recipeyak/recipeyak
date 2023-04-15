@@ -729,6 +729,7 @@ function RecipeInfo(props: {
           recipeId={props.recipe.id}
           recipeName={props.recipe.name}
           recipeIngredients={props.recipe.ingredients}
+          recipeRecentScheduleHistory={props.recipe.recentSchedules}
           editingEnabled={props.editingEnabled}
           toggleEditing={props.toggleEditMode}
         />

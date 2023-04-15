@@ -18,11 +18,19 @@ export function isInsideChangeWindow(date: Date): boolean {
   return isAfter(date, subDays(new Date(), DELETION_WINDOW_DAYS))
 }
 
-export function formatDistanceToNow(date: Date): string {
+export function formatDistanceToNow(
+  date: Date,
+  options: { allowFuture?: boolean } = {},
+): string {
   const now = new Date()
   // Avoid clock skew, otherwise the distance can say "in a few seconds"
   // sometimes, which doesn't make sense.
-  return formatDistance(min([date, now]), now, { addSuffix: true })
+  //
+  // TODO: I don't think this really handles clock skew
+  if (!options.allowFuture) {
+    date = min([date, now])
+  }
+  return formatDistance(date, now, { addSuffix: true })
 }
 
 export function formatAbsoluteDateTime(

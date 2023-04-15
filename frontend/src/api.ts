@@ -89,6 +89,11 @@ export type RecipeTimelineItem = {
 
 export type TimelineItem = INote | RecipeTimelineItem
 
+export type RecentSchedule = {
+  readonly id: number
+  readonly on: string
+}
+
 export interface IRecipe {
   readonly id: number
   readonly name: string
@@ -101,6 +106,7 @@ export interface IRecipe {
   readonly modified: string
   readonly tags?: string[]
   readonly ingredients: ReadonlyArray<IIngredient>
+  readonly recentSchedules: ReadonlyArray<RecentSchedule>
   readonly sections: ReadonlyArray<{
     readonly id: number
     readonly title: string

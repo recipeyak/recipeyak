@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { useLocation } from "react-router-dom"
 
-import { IIngredient } from "@/api"
+import { IIngredient, RecentSchedule } from "@/api"
 import { copyToClipboard } from "@/clipboard"
 import { Button } from "@/components/Buttons"
 import {
@@ -30,6 +30,7 @@ interface IDropdownProps {
   readonly recipeName: string
   readonly recipeIsArchived: boolean
   readonly recipeIngredients: readonly IIngredient[]
+  readonly recipeRecentScheduleHistory: readonly RecentSchedule[]
   readonly toggleEditing: () => void
   readonly editingEnabled: boolean
   readonly className: string
@@ -39,6 +40,7 @@ export function Dropdown({
   recipeName,
   recipeIsArchived: isArchived,
   recipeIngredients,
+  recipeRecentScheduleHistory,
   toggleEditing,
   editingEnabled,
   className,
@@ -151,6 +153,7 @@ export function Dropdown({
         <ScheduleModal
           recipeId={recipeId}
           recipeName={recipeName}
+          scheduleHistory={recipeRecentScheduleHistory}
           onClose={() => {
             setShowScheduleModal(false)
           }}

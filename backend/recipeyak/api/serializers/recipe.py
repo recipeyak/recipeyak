@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from typing import Any, Iterable, cast
 
 import pydantic
@@ -133,6 +133,7 @@ IGNORED_TIMELINE_EVENTS = {"set_primary_image", "remove_primary_image"}
 class RecipeSerializer(BaseModelSerializer):
     steps = StepSerializer(many=True, source="step_set")
     ingredients = IngredientSerializer(many=True, source="ingredient_set")
+    recentSchedules = serializers.SerializerMethodField(read_only=True)
     timelineItems = serializers.SerializerMethodField(read_only=True)
     archivedAt = serializers.DateTimeField(read_only=True, source="archived_at")
     sections = SectionSerializer(many=True, source="section_set", read_only=True)
@@ -160,6 +161,15 @@ class RecipeSerializer(BaseModelSerializer):
 
         return items
 
+    def get_recentSchedules(self, obj: Recipe) -> list[dict[str, Any]]:
+        now = datetime.now(timezone.utc).date()
+        return [
+            {"id": s.id, "on": s.on}
+            for s in obj.scheduledrecipe_set.all()
+            # HACK: we do the filtering in application land so we can use the `prefetch_related` query we already have.
+            if now - timedelta(weeks=3) <= s.on <= now + timedelta(weeks=3)
+        ]
+
     class Meta:
         model = Recipe
         fields = (
@@ -170,6 +180,7 @@ class RecipeSerializer(BaseModelSerializer):
             "time",
             "ingredients",
             "steps",
+            "recentSchedules",
             "timelineItems",
             "sections",
             "servings",
