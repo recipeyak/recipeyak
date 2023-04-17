@@ -49,7 +49,10 @@ function RecentSchedules({
                     {isToday(on)
                       ? // avoid showing "3 hours ago" for today
                         ""
-                      : formatDistanceToNow(on, { allowFuture: true })}
+                      : formatDistanceToNow(on, {
+                          allowFuture: true,
+                          ignoreHours: true,
+                        })}
                   </div>
                 </Box>
               </Link>
