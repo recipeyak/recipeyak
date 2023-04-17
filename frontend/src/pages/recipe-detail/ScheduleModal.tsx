@@ -15,6 +15,58 @@ import { useScheduleRecipeCreate } from "@/queries/scheduledRecipeCreate"
 import { scheduleURLFromTeamID } from "@/urls"
 import { addQueryParams } from "@/utils/querystring"
 
+function RecentSchedules({
+  scheduleHistory,
+  scheduleUrl,
+}: {
+  readonly scheduleHistory: readonly RecentSchedule[]
+  readonly scheduleUrl: string
+}) {
+  return (
+    <Box dir="col">
+      <div className="fw-bold">Recent Schedules</div>
+      <Box dir="col" gap={2}>
+        {orderBy(scheduleHistory, (x) => x.on).map((x, i) => {
+          const on = parseISO(x.on)
+          const week = toISODateString(startOfWeek(on))
+          const to = {
+            pathname: scheduleUrl,
+            search: addQueryParams(location.search, { week }),
+          }
+          return (
+            <Box space="between" align="center" key={i}>
+              <Link
+                to={to}
+                className="flex-grow-1"
+                style={{ lineHeight: "1.3" }}
+              >
+                <div className="fw-500">
+                  {format(on, "E")} ∙ {formatHumanDate(on)}
+                </div>
+                <Box gap={1}>
+                  {isFuture(on) && <Clock size={14} />}
+                  <div>
+                    {isToday(on)
+                      ? // avoid showing "3 hours ago" for today
+                        ""
+                      : formatDistanceToNow(on, {
+                          allowFuture: true,
+                          ignoreHours: true,
+                        })}
+                  </div>
+                </Box>
+              </Link>
+              <Button size="small" to={to}>
+                view
+              </Button>
+            </Box>
+          )
+        })}
+      </Box>
+    </Box>
+  )
+}
+
 export function ScheduleModal({
   recipeName,
   recipeId,
@@ -101,44 +153,14 @@ export function ScheduleModal({
             </Box>
           </Box>
 
-          <Box dir="col">
-            <div className="fw-bold">Recent Schedules</div>
-            <Box dir="col" gap={2}>
-              {orderBy(scheduleHistory, (x) => x.on).map((x, i) => {
-                const on = parseISO(x.on)
-                const week = toISODateString(startOfWeek(on))
-                const to = {
-                  pathname: scheduleUrl,
-                  search: addQueryParams(location.search, { week }),
-                }
-                return (
-                  <Box space="between" align="center" key={i}>
-                    <Link
-                      to={to}
-                      className="flex-grow-1"
-                      style={{ lineHeight: "1.3" }}
-                    >
-                      <div className="fw-500">
-                        {format(on, "E")} ∙ {formatHumanDate(on)}
-                      </div>
-                      <Box gap={1}>
-                        {isFuture(on) && <Clock size={14} />}
-                        <div>
-                          {isToday(on)
-                            ? // avoid showing "3 hours ago" for today
-                              ""
-                            : formatDistanceToNow(on, { allowFuture: true })}
-                        </div>
-                      </Box>
-                    </Link>
-                    <Button size="small" to={to}>
-                      view
-                    </Button>
-                  </Box>
-                )
-              })}
-            </Box>
-          </Box>
+          {scheduleHistory.length > 0 && (
+            // we intentionally hide from view when there are no scheduled
+            // recipes in the history window -- avoids having an empty state
+            <RecentSchedules
+              scheduleHistory={scheduleHistory}
+              scheduleUrl={scheduleUrl}
+            />
+          )}
         </Box>
       }
     />

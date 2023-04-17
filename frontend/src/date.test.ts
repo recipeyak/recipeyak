@@ -1,6 +1,13 @@
-import { addDays, subDays, subHours, subMinutes } from "date-fns"
+import {
+  addDays,
+  addHours,
+  startOfDay,
+  subDays,
+  subHours,
+  subMinutes,
+} from "date-fns"
 
-import { formatHumanDateTimeRaw } from "@/date"
+import { formatDistanceToNow, formatHumanDateTimeRaw } from "@/date"
 
 test("timezone set to UTC", () => {
   expect(new Date().getTimezoneOffset()).toBe(0)
@@ -54,4 +61,17 @@ describe("formatHumanDateTimeRaw", () => {
       "Oct 5, 2021 at 10:10 pm",
     )
   })
+})
+
+test("formatDistanceToNow", () => {
+  const now = startOfDay(new Date())
+  // check that we ignore hours
+  const inFuture = addHours(addDays(startOfDay(now), 4), 12)
+  expect(
+    formatDistanceToNow(inFuture, {
+      allowFuture: true,
+      now,
+      ignoreHours: true,
+    }),
+  ).toMatchInlineSnapshot('"in 4 days"')
 })
