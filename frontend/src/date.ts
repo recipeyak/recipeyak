@@ -1,4 +1,4 @@
-import { differenceInMonths, isSameDay, isSameYear } from "date-fns"
+import { differenceInMonths, isSameDay, isSameYear, startOfDay } from "date-fns"
 import format from "date-fns/format"
 import formatDistance from "date-fns/formatDistance"
 import isAfter from "date-fns/isAfter"
@@ -20,14 +20,20 @@ export function isInsideChangeWindow(date: Date): boolean {
 
 export function formatDistanceToNow(
   date: Date,
-  options: { allowFuture?: boolean } = {},
+  options: { allowFuture?: boolean; now?: Date; ignoreHours?: boolean } = {},
 ): string {
-  const now = new Date()
-  // Avoid clock skew, otherwise the distance can say "in a few seconds"
-  // sometimes, which doesn't make sense.
-  //
-  // TODO: I don't think this really handles clock skew
+  let now = options.now ?? new Date()
+  if (options.ignoreHours) {
+    // Date is really a DateTime and we want Date in this case so we use
+    // `startOfDay` to get there.
+    date = startOfDay(date)
+    now = startOfDay(now)
+  }
   if (!options.allowFuture) {
+    // Avoid clock skew, otherwise the distance can say "in a few seconds"
+    // sometimes, which doesn't make sense.
+    //
+    // TODO: I don't think this really handles clock skew
     date = min([date, now])
   }
   return formatDistance(date, now, { addSuffix: true })
