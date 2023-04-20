@@ -27,9 +27,11 @@ function toTimelineEvent(event: IRecipeTimelineEvent): ITimelineEvent {
 
 export function useTimelineList(recipeId: number) {
   const teamId = useTeamId()
-  return useQuery([teamId, "timeline", recipeId], () =>
-    getRecipeTimeline(recipeId)
-      .then(unwrapResult)
-      .then((res) => res.map(toTimelineEvent)),
-  )
+  return useQuery({
+    queryKey: [teamId, "timeline", recipeId],
+    queryFn: () =>
+      getRecipeTimeline(recipeId)
+        .then(unwrapResult)
+        .then((res) => res.map(toTimelineEvent)),
+  })
 }

@@ -4,5 +4,8 @@ import { getSessions } from "@/api"
 import { unwrapResult } from "@/query"
 
 export function useSessionList() {
-  return useQuery(["sessions"], () => getSessions().then(unwrapResult))
+  return useQuery({
+    queryKey: ["sessions"],
+    queryFn: () => getSessions().then(unwrapResult),
+  })
 }
