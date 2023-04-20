@@ -18,6 +18,7 @@ module.exports = {
     "@typescript-eslint",
     "simple-import-sort",
     "import",
+    "@tanstack/query",
   ],
   extends: ["prettier"],
   settings: {
@@ -36,6 +37,8 @@ module.exports = {
     "simple-import-sort/exports": "error",
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "error",
+    "@tanstack/query/exhaustive-deps": "error",
+    "@tanstack/query/prefer-query-object-syntax": "error",
     "no-restricted-syntax": [
       "error",
       {

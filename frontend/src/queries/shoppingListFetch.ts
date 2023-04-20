@@ -12,11 +12,9 @@ export function useShoppingListFetch({
   endDay: Date | number
 }) {
   const teamId = useTeamId()
-  return useQuery(
-    [teamId, "shopping-list", startDay, endDay],
-    () => getShoppingList(teamId, startDay, endDay).then(unwrapResult),
-    {
-      keepPreviousData: true,
-    },
-  )
+  return useQuery({
+    queryKey: [teamId, "shopping-list", startDay, endDay],
+    queryFn: () => getShoppingList(teamId, startDay, endDay).then(unwrapResult),
+    keepPreviousData: true,
+  })
 }

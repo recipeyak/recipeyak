@@ -4,5 +4,8 @@ import { getTeam } from "@/api"
 import { unwrapResult } from "@/query"
 
 export function useTeam({ teamId }: { teamId: number }) {
-  return useQuery(["teams", teamId], () => getTeam(teamId).then(unwrapResult))
+  return useQuery({
+    queryKey: ["teams", teamId],
+    queryFn: () => getTeam(teamId).then(unwrapResult),
+  })
 }

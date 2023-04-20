@@ -6,7 +6,8 @@ import { unwrapResult } from "@/query"
 
 export function useRecipeFetch({ recipeId }: { recipeId: number }) {
   const teamID = useTeamId()
-  return useQuery([teamID, "recipes", recipeId], () =>
-    getRecipe(recipeId).then(unwrapResult),
-  )
+  return useQuery({
+    queryKey: [teamID, "recipes", recipeId],
+    queryFn: () => getRecipe(recipeId).then(unwrapResult),
+  })
 }

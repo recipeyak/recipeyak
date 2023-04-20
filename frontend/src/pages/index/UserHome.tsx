@@ -240,10 +240,9 @@ function buildSchedule(
 }
 
 function useSchedulePreview() {
-  const teamID = useTeamId()
   const start = startOfToday()
   const end = addDays(start, 6)
-  const res = useSchedulePreviewList({ teamID, start, end })
+  const res = useSchedulePreviewList({ start, end })
 
   if (res.data == null) {
     return null

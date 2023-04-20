@@ -6,7 +6,8 @@ import { unwrapEither } from "@/query"
 
 export function useRecentlyViewedRecipesList() {
   const teamId = useTeamId()
-  return useQuery([teamId, "recently-viewed-recipes"], () =>
-    recentlyViewedRecipes().then(unwrapEither),
-  )
+  return useQuery({
+    queryKey: [teamId, "recently-viewed-recipes"],
+    queryFn: () => recentlyViewedRecipes().then(unwrapEither),
+  })
 }
