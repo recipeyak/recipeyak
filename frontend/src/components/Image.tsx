@@ -114,7 +114,7 @@ export function Image({
   readonly lazyLoad?: boolean
 }) {
   const ref = useRef<HTMLDivElement | null>(null)
-  const entry = useIntersectionObserver(ref, {
+  const entry = useIntersectionObserver(ref, sources?.url, {
     // How much to expand element's margin before calculating intersections
     // Means we load images before they're in view so there isn't a pop in.
     //
