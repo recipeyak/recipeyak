@@ -8,6 +8,7 @@ import { FormField } from "@/components/FormField"
 import { PasswordInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Label } from "@/components/Label"
+import { pathHome } from "@/paths"
 import { useAuthPasswordChange } from "@/queries/authPasswordChange"
 import { toast } from "@/toast"
 
@@ -47,7 +48,7 @@ function PasswordChange() {
       },
       {
         onSuccess: () => {
-          history.push("/")
+          history.push(pathHome({}))
           toast.success("Successfully updated password")
         },
       },

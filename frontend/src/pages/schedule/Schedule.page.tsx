@@ -1,7 +1,6 @@
 import { useEffect } from "react"
 import { RouteComponentProps } from "react-router-dom"
 
-import { ITeam } from "@/api"
 import { Helmet } from "@/components/Helmet"
 import Recipes from "@/pages/recipe-list/RecipeList.page"
 import Calendar from "@/pages/schedule/Calendar"
@@ -23,11 +22,8 @@ function Sidebar({ teamID }: ISidebarProps) {
 
 interface IScheduleProps
   extends RouteComponentProps<{
-    id: string
-  }> {
-  readonly updateTeamID: (id: ITeam["id"] | null) => void
-  readonly teamID: ITeam["id"] | null
-}
+    teamId: string
+  }> {}
 
 const ScheduleContainer = styled.div`
   height: calc(100vh - 3rem);
@@ -57,7 +53,7 @@ function Schedule(props: IScheduleProps) {
 }
 
 const getTeamID = (params: IScheduleProps["match"]["params"]) => {
-  return parseInt(params.id, 10)
+  return parseInt(params.teamId, 10)
 }
 
 export default Schedule

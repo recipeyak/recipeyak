@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 
 import { Button } from "@/components/Buttons"
 import Footer from "@/components/Footer"
+import { pathRecipeAdd, pathSignup } from "@/paths"
 import addRecipeImg from "@/static/images/pages/add-recipe.png"
 import copyShoppingList from "@/static/images/pages/copy-shopping-list.png"
 import landingImg from "@/static/images/pages/schedule.png"
@@ -107,7 +108,7 @@ const howToSteps = [
     text: (
       <span>
         After logging in, add your recipes via the{" "}
-        <Link className="text-decoration-underline" to="/recipes/add">
+        <Link className="text-decoration-underline" to={pathRecipeAdd({})}>
           add recipe
         </Link>{" "}
         form.
@@ -118,11 +119,7 @@ const howToSteps = [
   {
     text: (
       <span>
-        Navigate to the{" "}
-        <Link to="/schedule" className="text-decoration-underline">
-          schedule page
-        </Link>{" "}
-        and add drag recipes onto your calendar.
+        Navigate to the schedule page and add drag recipes onto your calendar.
       </span>
     ),
     imgURL: landingImg,
@@ -130,11 +127,7 @@ const howToSteps = [
   {
     text: (
       <span>
-        Navigate to the{" "}
-        <Link to="/schedule/shopping" className="text-decoration-underline">
-          shopping list
-        </Link>{" "}
-        and adjust the days you are shopping for.
+        Navigate to the shopping list and adjust the days you are shopping for.
       </span>
     ),
     imgURL: shopImg,
@@ -160,7 +153,7 @@ const LandingPage = () => {
         </section>
 
         <Button
-          to="/signup"
+          to={pathSignup({})}
           variant="primary"
           size="large"
           className="justify-self-center"
@@ -187,7 +180,7 @@ const LandingPage = () => {
         ))}
 
         <Button
-          to="/signup"
+          to={pathSignup({})}
           variant="primary"
           size="large"
           className="justify-self-center mt-4 mb-2"

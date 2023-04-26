@@ -26,10 +26,10 @@ export const roles = [
   },
 ]
 
-interface ITeamInviteProps extends RouteComponentProps<{ id: string }> {}
+interface ITeamInviteProps extends RouteComponentProps<{ teamId: string }> {}
 
 function TeamInvite(props: ITeamInviteProps) {
-  const id = parseInt(props.match.params.id, 10)
+  const id = parseInt(props.match.params.teamId, 10)
   const teamInfo = useTeam({ teamId: id })
   const sendInvites = useTeamInviteCreate()
   const [level, setLevel] = useState<"admin" | "contributor" | "read">(

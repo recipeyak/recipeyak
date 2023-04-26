@@ -1,3 +1,6 @@
+from typing import Literal
+
+from django.db import transaction
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import MethodNotAllowed
@@ -5,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.user import UserSerializer as UserDetailsSerializer
 
 
@@ -19,10 +23,28 @@ def user_detail_get_view(request: AuthedRequest) -> Response:
     return Response(serializer.data)
 
 
+class UserUpdatePayload(RequestParams):
+    email: str | None = None
+    name: str | None = None
+    schedule_team: int | None = None
+    theme: Literal["light", "autumn", "solarized"] | None = None
+
+
 def user_detail_patch_view(request: AuthedRequest) -> Response:
-    serializer = UserDetailsSerializer(request.user, data=request.data, partial=True)
-    serializer.is_valid(raise_exception=True)
-    serializer.save()
+    params = UserUpdatePayload.parse_obj(request.data)
+
+    with transaction.atomic():
+        if params.schedule_team is not None:
+            request.user.schedule_team_id = params.schedule_team
+        if params.email is not None:
+            request.user.email = params.email
+        if params.name is not None:
+            request.user.name = params.name
+        if params.theme is not None:
+            request.user.theme = params.theme
+        request.user.save()
+
+    serializer = UserDetailsSerializer(request.user)
     return Response(serializer.data)
 
 

@@ -12,6 +12,12 @@ import { EmailInput, FormErrorHandler, PasswordInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Label } from "@/components/Label"
 import { Tab, Tabs } from "@/components/Tabs"
+import {
+  pathLogin,
+  pathPasswordReset,
+  pathRecipeAdd,
+  pathSignup,
+} from "@/paths"
 import { useAuthSignup } from "@/queries/authSignup"
 
 function formatError(error: unknown) {
@@ -53,7 +59,7 @@ function Signup() {
       {
         onSuccess: (res) => {
           login(res.user, queryClient)
-          history.push("/recipes/add")
+          history.push(pathRecipeAdd({}))
         },
       },
     )
@@ -67,12 +73,12 @@ function Signup() {
         <Helmet title="Sign Up" />
         <Tabs>
           <Tab>
-            <Link to="/login" className="text-decoration-none">
+            <Link to={pathLogin({})} className="text-decoration-none">
               Login
             </Link>
           </Tab>
           <Tab isActive>
-            <Link to="/signup" className="text-decoration-none">
+            <Link to={pathSignup({})} className="text-decoration-none">
               Sign Up
             </Link>
           </Tab>
@@ -122,7 +128,7 @@ function Signup() {
               Submit
             </Button>
 
-            <Link to="/password-reset">Forgot Password?</Link>
+            <Link to={pathPasswordReset({})}>Forgot Password?</Link>
           </FormField>
         </form>
       </BorderBox>

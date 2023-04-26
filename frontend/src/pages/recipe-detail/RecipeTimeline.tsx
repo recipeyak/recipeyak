@@ -4,9 +4,9 @@ import { Link } from "react-router-dom"
 import { formatHumanDate } from "@/date"
 import { useTeamId } from "@/hooks"
 import { SectionTitle } from "@/pages/recipe-detail/RecipeHelpers"
+import { pathSchedule } from "@/paths"
 import { useTimelineList } from "@/queries/timelineList"
 import { styled } from "@/theme"
-import { scheduleURLFromTeamID } from "@/urls"
 
 interface ITimelineItemProps {
   readonly type: "comment" | "scheduled" | "created"
@@ -55,7 +55,6 @@ interface IRecipeTimelineProps {
 export function RecipeTimeline({ createdAt, recipeId }: IRecipeTimelineProps) {
   const res = useTimelineList(recipeId)
   const teamId = useTeamId()
-  const scheduleURL = scheduleURLFromTeamID(teamId)
   if (res.data == null) {
     return null
   }
@@ -75,7 +74,12 @@ export function RecipeTimeline({ createdAt, recipeId }: IRecipeTimelineProps) {
               return (
                 <TimelineItem key={e.id} type={e.type}>
                   📅 Scheduled for{" "}
-                  <Link to={scheduleURL + `?week=${e.date}`}>
+                  <Link
+                    to={{
+                      pathname: pathSchedule({ teamId: teamId.toString() }),
+                      search: `week=${e.date}`,
+                    }}
+                  >
                     <Time dateTime={new Date(e.date)} />
                   </Link>
                 </TimelineItem>

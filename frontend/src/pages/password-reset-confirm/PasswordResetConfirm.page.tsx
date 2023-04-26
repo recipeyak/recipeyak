@@ -12,6 +12,7 @@ import { FormField } from "@/components/FormField"
 import { FormErrorHandler, PasswordInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Label } from "@/components/Label"
+import { pathHome, pathLogin } from "@/paths"
 import { useAuthPasswordResetConfirm } from "@/queries/authPasswordResetConfirm"
 import { toast } from "@/toast"
 
@@ -70,7 +71,7 @@ function PasswordResetConfirmation(props: RouteProps) {
       {
         onSuccess: (res) => {
           login(res, queryClient)
-          history.push("/")
+          history.push(pathHome({}))
         },
         onSettled: () => {
           setNewPassword1("")
@@ -134,7 +135,7 @@ function PasswordResetConfirmation(props: RouteProps) {
               </Button>
             </FormControl>
 
-            <Button to="/login" variant="link">
+            <Button to={pathLogin({})} variant="link">
               To Login
             </Button>
           </FormField>

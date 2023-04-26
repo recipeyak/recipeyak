@@ -21,6 +21,7 @@ import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { DateInput } from "@/components/Forms"
 import { toISODateString } from "@/date"
+import { pathRecipeDetail } from "@/paths"
 import { useShoppingListFetch } from "@/queries/shoppingListFetch"
 import { ingredientByNameAlphabetical } from "@/sorters"
 import { normalizeUnitsFracs } from "@/text"
@@ -198,7 +199,10 @@ function RecipeAccordian({
         <Box dir="col">
           {recipes?.map((r) => {
             return (
-              <Link key={r.scheduledRecipeId} to={`/recipes/${r.recipeId}`}>
+              <Link
+                key={r.scheduledRecipeId}
+                to={pathRecipeDetail({ recipeId: r.recipeId.toString() })}
+              >
                 {r.recipeName}
               </Link>
             )
