@@ -53,7 +53,7 @@ function Schedule(props: IScheduleProps) {
 }
 
 const getTeamID = (params: IScheduleProps["match"]["params"]) => {
-  return parseInt(params.id, 10)
+  return parseInt(params.teamId, 10)
 }
 
 export default Schedule
