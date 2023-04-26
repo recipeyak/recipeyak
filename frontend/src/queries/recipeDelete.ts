@@ -3,6 +3,7 @@ import { useHistory } from "react-router"
 
 import { deleteRecipe } from "@/api"
 import { useTeamId } from "@/hooks"
+import { pathRecipesList } from "@/paths"
 import { unwrapResult } from "@/query"
 
 export function useRecipeDelete() {
@@ -13,7 +14,7 @@ export function useRecipeDelete() {
     mutationFn: ({ recipeId }: { recipeId: number }) =>
       deleteRecipe(recipeId).then(unwrapResult),
     onSuccess: (_res, vars) => {
-      history.push("/recipes")
+      history.push(pathRecipesList({}))
       queryClient.removeQueries([teamId, "recipes", vars.recipeId])
     },
   })

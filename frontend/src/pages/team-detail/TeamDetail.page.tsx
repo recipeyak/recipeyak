@@ -148,8 +148,8 @@ const is404 = (err: unknown) =>
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   (err as AxiosError | undefined)?.response?.status === 404
 
-function Team(props: RouteComponentProps<{ id: string }>) {
-  const id = parseInt(props.match.params.id, 10)
+function Team(props: RouteComponentProps<{ teamId: string }>) {
+  const id = parseInt(props.match.params.teamId, 10)
   const teamInfo = useTeam({ teamId: id })
   const teamMembers = useTeamMembersList({ teamId: id })
   if (is404(teamInfo.error)) {

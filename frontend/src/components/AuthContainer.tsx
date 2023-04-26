@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 
 import { Helmet } from "@/components/Helmet"
 import Logo from "@/components/Logo"
+import { pathHome } from "@/paths"
 
 interface IAuthContainerProps {
   readonly children: React.ReactNode
@@ -36,7 +37,7 @@ function AuthContainer(props: IAuthContainerProps) {
     >
       <Helmet title="Auth" />
       <Link
-        to="/"
+        to={pathHome({})}
         className="pl-0 pr-0 fs-2rem fw-normal d-flex align-center justify-content-center pb-3 text-decoration-none has-text-white"
       >
         <Logo light />

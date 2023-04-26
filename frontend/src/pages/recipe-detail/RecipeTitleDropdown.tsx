@@ -1,5 +1,4 @@
 import React, { useState } from "react"
-import { useLocation } from "react-router-dom"
 
 import { IIngredient, RecentSchedule } from "@/api"
 import { copyToClipboard } from "@/clipboard"
@@ -49,7 +48,6 @@ export function Dropdown({
 
   const [showScheduleModal, setShowScheduleModal] = useState(false)
 
-  const location = useLocation()
   const ingredients = recipeIngredients.map(ingredientToString).join("\n")
 
   const updateRecipe = useRecipeUpdate()
@@ -121,10 +119,7 @@ export function Dropdown({
         <DropdownItemButton onClick={handleCopyIngredients}>
           Copy Ingredients
         </DropdownItemButton>
-        <DropdownItemLink
-          to={location.pathname + "?timeline=1"}
-          onClick={close}
-        >
+        <DropdownItemLink to={{ search: "timeline=1" }} onClick={close}>
           View Timeline
         </DropdownItemLink>
         <DropdownItemButton

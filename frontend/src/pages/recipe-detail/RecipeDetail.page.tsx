@@ -25,6 +25,7 @@ import { Dropdown } from "@/pages/recipe-detail/RecipeTitleDropdown"
 import { Section } from "@/pages/recipe-detail/Section"
 import StepContainer from "@/pages/recipe-detail/StepContainer"
 import { TagEditor } from "@/pages/recipe-detail/TagEditor"
+import { pathRecipesList } from "@/paths"
 import { getNewPosIngredients } from "@/position"
 import { useIngredientUpdate } from "@/queries/ingredientUpdate"
 import { useRecipeFetch } from "@/queries/recipeFetch"
@@ -326,7 +327,7 @@ function useRecipeUrlUpdate(recipe: { id: number; name: string } | null) {
   }, [history, location, recipeId, recipeName])
 }
 
-type IRecipeProps = RouteComponentProps<{ id: string }>
+type IRecipeProps = RouteComponentProps<{ recipeId: string }>
 
 function updateOrCreateTag(
   metaTags: HTMLMetaElement[],
@@ -751,9 +752,12 @@ function RecipeInfo(props: {
                   <div className="selectable">
                     By{" "}
                     <Link
-                      to={`/recipes?search=author:'${encodeURIComponent(
-                        props.recipe.author,
-                      )}'`}
+                      to={{
+                        pathname: pathRecipesList({}),
+                        search: `search=author:'${encodeURIComponent(
+                          props.recipe.author,
+                        )}'`,
+                      }}
                     >
                       {props.recipe.author}
                     </Link>
@@ -796,7 +800,7 @@ function RecipeInfo(props: {
                       <Link
                         key={x}
                         to={{
-                          pathname: "/recipes",
+                          pathname: pathRecipesList({}),
                           search: `search=${encodeURIComponent(`tag:${x}`)}`,
                         }}
                       >
@@ -893,7 +897,7 @@ function formatImgOpenGraph(x: string): string {
 }
 
 export function Recipe(props: IRecipeProps) {
-  const recipeId = parseInt(props.match.params.id, 10)
+  const recipeId = parseInt(props.match.params.recipeId, 10)
 
   const maybeRecipe = useRecipeFetch({ recipeId })
   const history = useHistory()

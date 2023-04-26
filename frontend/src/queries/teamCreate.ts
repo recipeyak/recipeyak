@@ -3,6 +3,7 @@ import { AxiosError } from "axios"
 import { useHistory } from "react-router"
 
 import { createTeam, ITeam } from "@/api"
+import { pathTeamDetail } from "@/paths"
 import { unwrapResult } from "@/query"
 import { toast } from "@/toast"
 
@@ -24,7 +25,7 @@ export function useTeamCreate() {
         return res
       })
       toast.success("Team updated")
-      history.push(`/t/${res.id}`)
+      history.push(pathTeamDetail({ teamId: res.id.toString() }))
     },
     onError: (res) => {
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions

@@ -12,10 +12,19 @@ import { Select } from "@/components/Forms"
 import Logo from "@/components/Logo"
 import { NavLink } from "@/components/Routing"
 import { useIsLoggedIn, useTeamId, useUser } from "@/hooks"
+import {
+  pathHome,
+  pathLogin,
+  pathRecipeAdd,
+  pathRecipesList,
+  pathSchedule,
+  pathSettings,
+  pathSignup,
+  pathTeamList,
+} from "@/paths"
 import { useAuthLogout } from "@/queries/authLogout"
 import { useTeamList } from "@/queries/teamList"
 import { styled } from "@/theme"
-import { scheduleURLFromTeamID } from "@/urls"
 
 interface IUserAvatarProps {
   readonly onClick: () => void
@@ -63,7 +72,7 @@ function TeamSelect() {
     // TODO: instead of navigating to the schedule page we should update the
     // path param of the current route if there is a teamID in it.
     // Maybe we can get rid of the teamID from the URL entirely?
-    const url = `/t/${teamID}/schedule`
+    const url = pathSchedule({ teamId: teamID.toString() })
     // navTo is async so we can't count on the URL to have changed by the time we refetch the data
     history.push(url)
     // TODO: we should abstract this -- it's hacky
@@ -94,8 +103,8 @@ function UserDropdown() {
       <DropdownMenu isOpen={isOpen} position="right">
         <UserEmail email={user.email} />
         <TeamSelect />
-        <Link to="/settings">Settings</Link>
-        <Link to="/t">Teams</Link>
+        <Link to={pathSettings({})}>Settings</Link>
+        <Link to={pathTeamList({})}>Teams</Link>
         <LogoutButton />
       </DropdownMenu>
     </DropdownContainer>
@@ -116,10 +125,10 @@ function WordMark() {
 function AuthButtons() {
   return (
     <div className="d-flex">
-      <BetterNavItem as={NavLink} to="/login">
+      <BetterNavItem as={NavLink} to={pathLogin({})}>
         Login
       </BetterNavItem>
-      <BetterNavItem as={NavLink} to="/signup">
+      <BetterNavItem as={NavLink} to={pathSignup({})}>
         Signup
       </BetterNavItem>
     </div>
@@ -128,22 +137,29 @@ function AuthButtons() {
 
 function NavButtons() {
   const teamId = useTeamId()
-  const scheduleURL = scheduleURLFromTeamID(teamId)
   return (
     <div className="d-flex align-center p-relative justify-content-center flex-wrap">
       <DropdownContainer>
         <div className="d-flex">
           <BetterNavItem
             as={NavLink}
-            to="/recipes/add"
+            to={pathRecipeAdd({})}
             activeClassName="active"
           >
             Add
           </BetterNavItem>
-          <BetterNavItem as={NavLink} to="/recipes" activeClassName="active">
+          <BetterNavItem
+            as={NavLink}
+            to={pathRecipesList({})}
+            activeClassName="active"
+          >
             Browse
           </BetterNavItem>
-          <BetterNavItem as={NavLink} to={scheduleURL} activeClassName="active">
+          <BetterNavItem
+            as={NavLink}
+            to={pathSchedule({ teamId: teamId.toString() })}
+            activeClassName="active"
+          >
             Calendar
           </BetterNavItem>
         </div>
@@ -200,7 +216,11 @@ export function Navbar() {
   const isLoggedIn = useIsLoggedIn()
   return (
     <NavContainer>
-      <BetterNavItem as={Link} to="/" className="pb-1 pt-1 pl-0 pr-0 fw-normal">
+      <BetterNavItem
+        as={Link}
+        to={pathHome({})}
+        className="pb-1 pt-1 pl-0 pr-0 fw-normal"
+      >
         <Logo width="40px" />
         {isLoggedIn ? (
           <span className="ml-2 fw-500 sm:d-none">Home</span>

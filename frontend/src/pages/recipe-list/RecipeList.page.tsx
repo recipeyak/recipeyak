@@ -9,6 +9,7 @@ import { CheckBox, SearchInput } from "@/components/Forms"
 import { Loader } from "@/components/Loader"
 import RecipeItem from "@/pages/recipe-list/RecipeItem"
 import { parseIntOrNull } from "@/parseIntOrNull"
+import { pathRecipeAdd } from "@/paths"
 import { useRecipeList } from "@/queries/recipeList"
 import { searchRecipes } from "@/search"
 import { styled } from "@/theme"
@@ -30,7 +31,7 @@ function AddRecipeCallToAction() {
   return (
     <Box dir="col" mx="auto" mt={2} align="center" gap={1}>
       <div>No recipes here.</div>
-      <Button variant="primary" size="small" to="/recipes/add">
+      <Button variant="primary" size="small" to={pathRecipeAdd({})}>
         Add a Recipe
       </Button>
     </Box>

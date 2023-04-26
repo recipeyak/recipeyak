@@ -12,6 +12,7 @@ import { BetterLabel } from "@/components/Label"
 import { Loader } from "@/components/Loader"
 import { useUserTheme } from "@/hooks"
 import Sessions from "@/pages/settings/Sessions"
+import { pathLogin, pathPassword } from "@/paths"
 import { useUserDelete } from "@/queries/userDelete"
 import { useUserFetch } from "@/queries/userFetch"
 import { Theme, useUserUpdate } from "@/queries/userUpdate"
@@ -23,9 +24,11 @@ function Export() {
     <Box dir="col">
       <label className="fw-bold">Export</label>
       <p>
+        {/* TODO: figure out how to type check these routes */}
         <a href="/recipes.yaml">recipes.yaml</a>
       </p>
       <p>
+        {/* TODO: figure out how to type check these routes */}
         <a href="/recipes.json">recipes.json</a>
       </p>
     </Box>
@@ -44,7 +47,7 @@ function DangerZone() {
       deleteUser.mutate(undefined, {
         onSuccess: () => {
           logout(queryClient)
-          history.push("/login")
+          history.push(pathLogin({}))
           toast("Account deleted")
         },
         onError: (error: unknown) => {
@@ -272,7 +275,7 @@ function ChangePassword() {
   return (
     <Box dir="col">
       <BetterLabel>Password</BetterLabel>
-      <Link to="/password">Change Password</Link>
+      <Link to={pathPassword({})}>Change Password</Link>
     </Box>
   )
 }

@@ -4,6 +4,7 @@ import raven from "raven-js"
 import { useHistory } from "react-router"
 
 import { deleteTeam } from "@/api"
+import { pathHome } from "@/paths"
 import { unwrapResult } from "@/query"
 import { toast } from "@/toast"
 
@@ -14,7 +15,7 @@ export function useTeamDelete() {
     mutationFn: ({ teamId }: { teamId: number }) =>
       deleteTeam(teamId).then(unwrapResult),
     onSuccess: (_res, vars) => {
-      history.push("/")
+      history.push(pathHome({}))
       toast.success(`Team deleted`)
       queryClient.removeQueries(["teams", vars.teamId])
     },

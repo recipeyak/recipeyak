@@ -11,8 +11,8 @@ import Clock from "@/components/icons"
 import { Modal } from "@/components/Modal"
 import { formatDistanceToNow, formatHumanDate, toISODateString } from "@/date"
 import { useTeamId } from "@/hooks"
+import { pathSchedule } from "@/paths"
 import { useScheduleRecipeCreate } from "@/queries/scheduledRecipeCreate"
-import { scheduleURLFromTeamID } from "@/urls"
 import { addQueryParams } from "@/utils/querystring"
 
 function RecentSchedules({
@@ -101,11 +101,10 @@ export function ScheduleModal({
   }
 
   const teamId = useTeamId()
-  const scheduleUrl = scheduleURLFromTeamID(teamId)
   const params = new URLSearchParams(location.search)
   params.set("search", `recipeId:${recipeId.toString()}`)
   const openInCalendarUrl = {
-    pathname: scheduleUrl,
+    pathname: pathSchedule({ teamId: teamId.toString() }),
     search: params.toString(),
   }
 
@@ -158,7 +157,7 @@ export function ScheduleModal({
             // recipes in the history window -- avoids having an empty state
             <RecentSchedules
               scheduleHistory={scheduleHistory}
-              scheduleUrl={scheduleUrl}
+              scheduleUrl={pathSchedule({ teamId: teamId.toString() })}
             />
           )}
         </Box>

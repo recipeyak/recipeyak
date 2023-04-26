@@ -13,6 +13,7 @@ import { FormErrorHandler, PasswordInput, TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Label } from "@/components/Label"
 import { Tab, Tabs } from "@/components/Tabs"
+import { pathLogin, pathPasswordReset, pathSignup } from "@/paths"
 import { useAuthLogin } from "@/queries/authLogin"
 
 function formatError(error: unknown) {
@@ -69,12 +70,12 @@ export default function Login() {
         <Helmet title="Login" />
         <Tabs>
           <Tab isActive>
-            <Link to="/login" className="text-decoration-none">
+            <Link to={pathLogin({})} className="text-decoration-none">
               Login
             </Link>
           </Tab>
           <Tab isActive={false}>
-            <Link to="/signup" className="text-decoration-none">
+            <Link to={pathSignup({})} className="text-decoration-none">
               Sign Up
             </Link>
           </Tab>
@@ -119,7 +120,7 @@ export default function Login() {
             >
               Submit
             </Button>
-            <Link to="/password-reset">Forgot Password?</Link>
+            <Link to={pathPasswordReset({})}>Forgot Password?</Link>
           </FormField>
         </form>
       </BorderBox>

@@ -5,6 +5,7 @@ import { useHistory } from "react-router"
 import { Button } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
+import { pathRecipeDetail } from "@/paths"
 import { useRecipeCreate } from "@/queries/recipeCreate"
 
 function CreateFromURLForm() {
@@ -20,7 +21,7 @@ function CreateFromURLForm() {
       },
       {
         onSuccess: (res) => {
-          history.push(`/recipes/${res.id}`)
+          history.push(pathRecipeDetail({ recipeId: res.id.toString() }))
         },
       },
     )
@@ -74,7 +75,10 @@ function CreateManuallyForm() {
       },
       {
         onSuccess: (res) => {
-          history.push(`/recipes/${res.id}?edit=1`)
+          history.push({
+            pathname: pathRecipeDetail({ recipeId: res.id.toString() }),
+            search: "edit=1",
+          })
         },
       },
     )

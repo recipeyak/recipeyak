@@ -18,13 +18,13 @@ import { Image } from "@/components/Image"
 import { Loader } from "@/components/Loader"
 import { Tag } from "@/components/Tag"
 import { useTeamId } from "@/hooks"
+import { pathRecipeDetail, pathRecipesList, pathSchedule } from "@/paths"
 import { useRecentlyCreatedRecipesList } from "@/queries/recentlyCreatedRecipesList"
 import { useRecentlyViewedRecipesList } from "@/queries/recentlyViewedRecipesList"
 import { useRecipeList } from "@/queries/recipeList"
 import { useSchedulePreviewList } from "@/queries/schedulePreviewList"
 import { searchRecipes } from "@/search"
 import { css, styled } from "@/theme"
-import { scheduleURLFromTeamID } from "@/urls"
 import { removeQueryParams, setQueryParams } from "@/utils/querystring"
 import { imgixFmt } from "@/utils/url"
 
@@ -266,10 +266,9 @@ function useSchedulePreview() {
 function SchedulePreview() {
   const scheduledRecipes = useSchedulePreview()
   const teamId = useTeamId()
-  const scheduleURL = scheduleURLFromTeamID(teamId)
   return (
     <ScheduleContainer>
-      <Link to={scheduleURL}>
+      <Link to={pathSchedule({ teamId: teamId.toString() })}>
         <SectionTitle>Schedule</SectionTitle>
       </Link>
       <Box gap={2} dir="col">
@@ -283,7 +282,7 @@ function SchedulePreview() {
 
 function RecipeSlide({ recipe: r }: { recipe: Recipe }) {
   return (
-    <Link key={r.id} to={`/recipes/${r.id}`}>
+    <Link key={r.id} to={pathRecipeDetail({ recipeId: r.id.toString() })}>
       <Box key={r.id} gap={2}>
         <Image
           width={48}
@@ -397,7 +396,7 @@ const UserHome = () => {
         <SuggestionItem
           key={recipe.id}
           archived={recipe.archived_at != null}
-          to={`/recipes/${recipe.id}`}
+          to={pathRecipeDetail({ recipeId: recipe.id.toString() })}
           firstItem={index === 0}
         >
           <NameAuthorContainer>
@@ -427,7 +426,9 @@ const UserHome = () => {
       return
     }
     if (key === "Enter") {
-      history.push(`/recipes/${suggestion.recipe.id}`)
+      history.push(
+        pathRecipeDetail({ recipeId: suggestion.recipe.id.toString() }),
+      )
     }
   }
 
@@ -463,7 +464,7 @@ const UserHome = () => {
 
                       <Link
                         to={{
-                          pathname: "/recipes",
+                          pathname: pathRecipesList({}),
                           search: `search=${encodeURIComponent(searchQuery)}`,
                         }}
                       >

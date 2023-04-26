@@ -39,6 +39,24 @@ import TeamCreatePage from "@/pages/team-create/TeamCreate.page"
 import TeamDetailPage from "@/pages/team-detail/TeamDetail.page"
 import TeamInvitePage from "@/pages/team-invite/TeamInvite.page"
 import TeamsListPage from "@/pages/team-list/TeamList.page"
+import {
+  pathHome,
+  pathLogin,
+  pathPassword,
+  pathPasswordConfirm,
+  pathPasswordReset,
+  pathRecipeAdd,
+  pathRecipeDetail,
+  pathRecipesList,
+  pathSchedule,
+  pathSettings,
+  pathSignup,
+  pathTeamCreate,
+  pathTeamDetail,
+  pathTeamInvite,
+  pathTeamList,
+  pathTeamSettings,
+} from "@/paths"
 import { theme, ThemeProvider, themeSet } from "@/theme"
 import { Toaster } from "@/toast"
 
@@ -85,7 +103,7 @@ const PrivateRoute = ({ component: Component, ...rest }: IAuthRouteProps) => {
         ) : (
           <Redirect
             to={{
-              pathname: "/login",
+              pathname: pathLogin({}),
               state: { from: props.location },
             }}
           />
@@ -112,7 +130,7 @@ const PublicOnlyRoute = ({
         ) : (
           <Redirect
             to={{
-              pathname: "/",
+              pathname: pathHome({}),
               state: { from: props.location },
             }}
           />
@@ -139,7 +157,7 @@ const Route = ({
   />
 )
 
-function AppContent() {
+function AppRouter() {
   const theme = useUserTheme()
   useEffect(() => {
     themeSet(theme)
@@ -155,67 +173,82 @@ function AppContent() {
   return (
     <Router>
       <Switch>
-        <PublicOnlyRoute exact path="/login" component={Login} />
-        <PublicOnlyRoute exact path="/signup" component={SignupPage} />
-        <Route exact path="/password-reset" component={PasswordResetPage} />
+        <PublicOnlyRoute exact path={pathLogin.pattern} component={Login} />
+        <PublicOnlyRoute
+          exact
+          path={pathSignup.pattern}
+          component={SignupPage}
+        />
         <Route
           exact
-          path="/password-reset/confirm/:uid/:token"
+          path={pathPasswordReset.pattern}
+          component={PasswordResetPage}
+        />
+        <Route
+          exact
+          path={pathPasswordConfirm.pattern}
           component={PasswordResetConfirmPage}
         />
         <ContainerBase>
           <Switch>
-            <Route exact path="/" component={Home} />
+            <Route exact path={pathHome.pattern} component={Home} />
             <PrivateRoute
               exact
-              // TODO: `:type` isn't used anymore
-              path="/t/:id(\d+)(.*)/schedule/:type(shopping|recipes)?"
+              path={pathSchedule.pattern}
               component={SchedulePage}
             />
             <Container>
               <Switch>
                 <PrivateRoute
                   exact
-                  path="/recipes/add"
+                  path={pathRecipeAdd.pattern}
                   component={RecipeCreatePage}
                 />
                 <PrivateRoute
                   exact
-                  path="/recipes/"
+                  path={pathRecipesList.pattern}
                   component={RecipeListPage}
                 />
                 <PrivateRoute
                   exact
-                  path="/recipes/:id(\d+)(.*)"
+                  path={pathRecipeDetail.pattern}
                   component={RecipeDetailPage}
                 />
-                <PrivateRoute exact path="/settings" component={SettingsPage} />
                 <PrivateRoute
                   exact
-                  path="/password"
+                  path={pathSettings.pattern}
+                  component={SettingsPage}
+                />
+                <PrivateRoute
+                  exact
+                  path={pathPassword.pattern}
                   component={PasswordChangePage}
                 />
                 <PrivateRoute
                   exact
-                  path="/t/create"
+                  path={pathTeamCreate.pattern}
                   component={TeamCreatePage}
                 />
                 <PrivateRoute
                   exact
-                  path="/t/:id(\d+)(.*)/invite"
+                  path={pathTeamInvite.pattern}
                   component={TeamInvitePage}
                 />
                 <PrivateRoute
                   exact
-                  path="/t/:id(\d+)(.*)/settings"
+                  path={pathTeamSettings.pattern}
                   component={TeamDetailPage}
                 />
                 <PrivateRoute
                   exact
-                  path="/t/:id(\d+)(.*)"
+                  path={pathTeamDetail.pattern}
                   component={TeamDetailPage}
                 />
-                <PrivateRoute exact path="/t/" component={TeamsListPage} />
+                <PrivateRoute
+                  exact
+                  path={pathTeamList.pattern}
+                  component={TeamsListPage}
+                />
                 <Route component={NotFound} />
               </Switch>
             </Container>
@@ -257,7 +290,7 @@ function Base() {
             <ErrorBoundary>
               <Helmet />
               <Toaster toastOptions={{ position: "bottom-center" }} />
-              <AppContent />
+              <AppRouter />
             </ErrorBoundary>
           </DndProvider>
         </HelmetProvider>
