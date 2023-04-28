@@ -287,7 +287,7 @@
   position: absolute;
   height: 100%;
   width: 100%;
-  border-radius: 3px;
+  border-radius: 6px;
   -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
   pointer-events: none;
@@ -296,7 +296,7 @@
 .blurred-filter {
   height: 100px;
   width: 100px;
-  border-radius: 3px;
+  border-radius: 6px;
   object-fit: cover;
   position: relative;
   background: no-repeat center center;
