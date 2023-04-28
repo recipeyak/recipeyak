@@ -555,7 +555,14 @@ function ImagePreview({
   onClick?: () => void
 }) {
   return (
-    <div className="d-grid" onClick={onClick}>
+    <div
+      className="d-grid"
+      style={{
+        backgroundColor: "var(--color-background-empty-image)",
+        borderRadius: 6,
+      }}
+      onClick={onClick}
+    >
       <Image100Px
         src={imgixFmt(src)}
         isLoading={isLoading}
