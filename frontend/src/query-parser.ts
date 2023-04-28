@@ -68,8 +68,8 @@ export function parseQuery(query: string): QueryNode[] {
       // if we just have "tag:", we want to list all results. But if we have
       // "tag: ", we treat that as a normal string, not a field.
       return (
-        remainder.startsWith(renderField(field)) &&
-        !remainder.startsWith(renderField(field) + " ")
+        remainder.toLocaleLowerCase().startsWith(renderField(field)) &&
+        !remainder.toLocaleLowerCase().startsWith(renderField(field) + " ")
       )
     })
 

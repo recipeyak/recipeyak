@@ -7,6 +7,9 @@ describe("parseQuery", () => {
   test("simple", () => {
     expect(parseQuery("tag:chris")).toEqual([{ field: "tag", value: "chris" }])
   })
+  test("capital", () => {
+    expect(parseQuery("Tag:chris")).toEqual([{ field: "tag", value: "chris" }])
+  })
   test("single quotes", () => {
     expect(parseQuery("name:'mark bittman'")).toEqual([
       { field: "name", value: "mark bittman", quoted: true },
