@@ -41,7 +41,7 @@ export type QueryNode = {
 const fieldNames = ["author", "recipeId", "ingredient", "name", "tag"] as const
 
 function renderField(field: { field: QueryField; negative?: boolean }): string {
-  return (field.negative ? "-" : "") + field.field + ":"
+  return (field.negative ? "-" : "") + field.field.toLocaleLowerCase() + ":"
 }
 
 function generateFields() {
