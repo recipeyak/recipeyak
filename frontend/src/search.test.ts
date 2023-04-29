@@ -1,5 +1,5 @@
 import { IIngredient, RecipeListItem } from "@/api"
-import { queryMatchesRecipe } from "@/search"
+import { queryMatchesRecipe, searchRecipes } from "@/search"
 
 function createRecipe(properties: {
   id?: number
@@ -35,6 +35,39 @@ function createIngredient(properties?: Partial<IIngredient>): IIngredient {
     ...properties,
   }
 }
+
+test("searchRecipes recipeId", () => {
+  const recipe = createRecipe({ id: 5432 })
+  expect(
+    searchRecipes({ recipes: [recipe], query: "recipeId:5432" }).recipes,
+  ).toHaveLength(1)
+})
+
+test("searchRecipes recipeId PascalCase", () => {
+  const recipe = createRecipe({ id: 5432 })
+  expect(
+    searchRecipes({ recipes: [recipe], query: "RecipeId:5432" }).recipes,
+  ).toHaveLength(1)
+})
+
+test("searchRecipes ingredient", () => {
+  const recipe = createRecipe({
+    id: 5432,
+    ingredients: [
+      {
+        id: 1,
+        quantity: "1 lb",
+        name: "Potatoes",
+      },
+    ],
+  })
+  expect(
+    searchRecipes({ recipes: [recipe], query: "Ingredient:potatoes" }).recipes,
+  ).toHaveLength(1)
+  expect(
+    searchRecipes({ recipes: [recipe], query: "ingredient:potatoes" }).recipes,
+  ).toHaveLength(1)
+})
 
 describe("queryMatchesRecipe", () => {
   test("empty", () => {
