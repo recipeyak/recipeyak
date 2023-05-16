@@ -442,8 +442,34 @@ def parse_quantity_name(text: str) -> tuple[str, str]:
     return (quantity.strip(), name.strip())
 
 
+NON_INGREDIENT_NAMES = frozenset({"bone-in", "skin-on", "fresh"})
+
+
+def parse_name_description(text: str) -> tuple[str, str]:
+    """
+    Some basic heuristics to partition a string into a name and description pair
+    """
+    prefix = ""
+    temp = []
+    for word in text.split():
+        if word.endswith(","):
+            word_stripped = word.removesuffix(",")
+            if word_stripped in NON_INGREDIENT_NAMES:
+                temp.append(word)
+                continue
+            temp.append(word_stripped)
+            prefix = " ".join(temp)
+            temp = []
+        else:
+            temp.append(word)
+    suffix = " ".join(temp)
+    if not prefix:
+        return (suffix, "")
+    return (prefix, suffix)
+
+
 def parse_ingredient(text: str) -> IngredientResult:
-    quantity_name, _, description = text.partition(",")
+    quantity_name, description = parse_name_description(text)
     quantity, name = parse_quantity_name(quantity_name)
     is_optional = "optional" in text.lower()
 
