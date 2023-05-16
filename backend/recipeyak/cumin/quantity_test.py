@@ -312,6 +312,12 @@ def test_parse_quantity_name(ingredient: str, expected: tuple[str, str]) -> None
                 optional=True,
             ),
         ),
+        (
+            "2 pounds (900g) bone-in, skin-on chicken thighs",
+            IngredientResult(
+                quantity="2 pounds (900g)", name="bone-in, skin-on chicken thighs"
+            ),
+        ),
     ],
 )
 def test_parse_ingredient(ingredient: str, expected: IngredientResult) -> None:
