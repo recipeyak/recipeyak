@@ -3,7 +3,7 @@ FROM python:3.11-slim-bullseye@sha256:6286a3059285256b485fa617640d0fe2f1df6e7b62
 # Install Poetry
 # update circleci jobs if you change this version
 RUN set -ex && python3 -m pip install pip==22.2.2 && \
-    python3 -m pip install poetry==1.1.9 && \
+    python3 -m pip install poetry==1.3.2 && \
     poetry config virtualenvs.in-project true
 
 # Install Application into container
