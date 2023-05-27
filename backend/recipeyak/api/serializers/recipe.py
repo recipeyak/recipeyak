@@ -153,6 +153,7 @@ class RecipeSerializer(BaseModelSerializer):
                 "created_by": PublicUserSerializer(x.created_by).data
                 if x.created_by
                 else None,
+                "is_scraped": obj.scrape_id is not None,
                 "created": x.created,
             }
             for x in cast(Any, obj).timelineevent_set.all()

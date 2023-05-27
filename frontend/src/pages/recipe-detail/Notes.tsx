@@ -354,13 +354,15 @@ export function TimelineEvent({
 }: {
   readonly event: Pick<
     RecipeTimelineItem,
-    "id" | "created_by" | "action" | "created"
+    "id" | "created_by" | "action" | "created" | "is_scraped"
   >
   readonly enableLinking?: boolean
   readonly className?: string
 }) {
   const eventId = `event-${event.id}`
   const timestamp = <NoteTimeStamp created={event.created} />
+  const action =
+    event.action === "created" && event.is_scraped ? "imported" : "created"
   return (
     <SharedEntry
       id={eventId}
@@ -373,7 +375,7 @@ export function TimelineEvent({
       <div className="d-flex flex-column">
         <div>
           <b>{event.created_by?.name ?? "User"}</b>{" "}
-          <span>{event.action} this recipe </span>
+          <span>{action} this recipe </span>
         </div>
         {enableLinking ? <a href={`#${eventId}`}>{timestamp}</a> : timestamp}
       </div>

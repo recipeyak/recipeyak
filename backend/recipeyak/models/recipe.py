@@ -73,6 +73,7 @@ class Recipe(CommonInfo):
         help_text="Tags for organization recipes.",
     )
     scrape = models.ForeignKey["Scrape"]("Scrape", on_delete=models.SET_NULL, null=True)
+    scrape_id: int | None
     primary_image = models.ForeignKey["Upload"](
         "Upload", related_name="+", on_delete=models.SET_NULL, null=True
     )

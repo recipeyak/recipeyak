@@ -84,6 +84,7 @@ export type RecipeTimelineItem = {
     | "remove_primary_image"
     | "set_primary_image"
   created_by: IPublicUser | null
+  is_scraped: boolean
   created: string
 }
 
