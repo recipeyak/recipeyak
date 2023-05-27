@@ -362,7 +362,7 @@ export function TimelineEvent({
   const eventId = `event-${event.id}`
   const timestamp = <NoteTimeStamp created={event.created} />
   const action =
-    event.action === "created" && event.is_scraped ? "imported" : "created"
+    event.action === "created" && event.is_scraped ? "imported" : event.action
   return (
     <SharedEntry
       id={eventId}
