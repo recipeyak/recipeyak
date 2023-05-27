@@ -216,6 +216,7 @@ export function CalendarDayItemModal({
               action: "scheduled",
               created_by: createdBy,
               created: createdAt,
+              is_scraped: false,
             }}
           />
         </>
