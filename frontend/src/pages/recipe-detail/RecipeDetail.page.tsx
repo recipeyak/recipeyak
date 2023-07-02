@@ -435,7 +435,7 @@ const RecipeMetaContainer = styled.div<{ inline?: boolean }>`
 function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
   const [formState, setFormState] = useState<Partial<IRecipe>>(props.recipe)
   const updateRecipe = useRecipeUpdate()
-  const onSave = async () => {
+  const onSave = () => {
     updateRecipe.mutate(
       {
         recipeId: props.recipe.id,
@@ -649,7 +649,7 @@ function useGallery(
   const onClose = React.useCallback(() => {
     setGalleryImage(null)
   }, [])
-  const onStar = React.useCallback(async () => {
+  const onStar = React.useCallback(() => {
     if (image?.id == null || recipeId == null) {
       return
     }

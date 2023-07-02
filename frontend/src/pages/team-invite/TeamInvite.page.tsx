@@ -57,7 +57,7 @@ function TeamInvite(props: ITeamInviteProps) {
       <form
         action=""
         className=""
-        onSubmit={async (e) => {
+        onSubmit={(e) => {
           e.preventDefault()
           sendInvites.mutate(
             {

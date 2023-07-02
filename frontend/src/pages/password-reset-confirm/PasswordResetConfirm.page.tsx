@@ -59,7 +59,7 @@ function PasswordResetConfirmation(props: RouteProps) {
   const history = useHistory()
   const queryClient = useQueryClient()
 
-  const handleReset = async (e: React.FormEvent) => {
+  const handleReset = (e: React.FormEvent) => {
     e.preventDefault()
     resetPassword.mutate(
       {
