@@ -97,6 +97,7 @@ module.exports = {
     "@typescript-eslint/prefer-optional-chain": "error",
     "@typescript-eslint/require-array-sort-compare": "error",
     "@typescript-eslint/no-floating-promises": "error",
+    "@typescript-eslint/no-misused-promises": "error",
     "@typescript-eslint/no-for-in-array": "error",
     "@typescript-eslint/no-confusing-void-expression": "error",
     "@typescript-eslint/no-explicit-any": "error",
