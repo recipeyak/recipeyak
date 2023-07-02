@@ -36,7 +36,7 @@ function PasswordReset() {
 
   const resetPassword = useAuthPasswordReset()
 
-  async function handleReset(e: React.FormEvent) {
+  function handleReset(e: React.FormEvent) {
     e.preventDefault()
     toast.dismiss()
     resetPassword.mutate(

@@ -209,7 +209,7 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
   const createReaction = useReactionCreate()
   const deleteReaction = useReactionDelete()
 
-  const addOrRemoveReaction = async (emoji: ReactionType) => {
+  const addOrRemoveReaction = (emoji: ReactionType) => {
     const existingReaction = findReaction(note.reactions, emoji, userId ?? 0)
     if (existingReaction != null) {
       // remove reaction
@@ -241,7 +241,9 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
           </a>
           <ReactionPopover
             className="ml-auto no-print"
-            onPick={async (emoji) => addOrRemoveReaction(emoji)}
+            onPick={(emoji) => {
+              addOrRemoveReaction(emoji)
+            }}
             reactions={note.reactions}
           />
           {note.created_by.id === userId ? (
@@ -271,8 +273,12 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
               </Box>
               <ReactionsFooter
                 reactions={note.reactions}
-                onPick={async (emoji) => addOrRemoveReaction(emoji)}
-                onClick={async (emoji) => addOrRemoveReaction(emoji)}
+                onPick={(emoji) => {
+                  addOrRemoveReaction(emoji)
+                }}
+                onClick={(emoji) => {
+                  addOrRemoveReaction(emoji)
+                }}
               />
             </Box>
           </Box>
