@@ -432,6 +432,11 @@ def parse_quantity_name(text: str) -> tuple[str, str]:
                         idx += 1
                     quantity += value[idx]
                     idx += 1
+                for conjunction in ("plus", "+"):
+                    if starts_with(value[idx:], conjunction):
+                        quantity += conjunction
+                        idx += len(conjunction)
+                        in_quantity = True
                 continue
             if in_quantity:
                 in_quantity = False
@@ -451,14 +456,16 @@ def parse_name_description(text: str) -> tuple[str, str]:
     """
     prefix = ""
     temp = []
+    is_all_suffix_now = False
     for word in text.split():
-        if word.endswith(","):
+        if word.endswith(",") and not is_all_suffix_now:
             word_stripped = word.removesuffix(",")
             if word_stripped in NON_INGREDIENT_NAMES:
                 temp.append(word)
                 continue
             temp.append(word_stripped)
             prefix = " ".join(temp)
+            is_all_suffix_now = True
             temp = []
         else:
             temp.append(word)
