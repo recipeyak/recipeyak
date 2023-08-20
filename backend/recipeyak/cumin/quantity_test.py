@@ -11,6 +11,7 @@ from recipeyak.cumin.quantity import (
     Unit,
     fraction_to_decimal,
     parse_ingredient,
+    parse_name_description,
     parse_quantity,
     parse_quantity_name,
 )
@@ -267,10 +268,39 @@ def test_adding_incompatible_units() -> None:
                 "frozen (no need to thaw) or fresh green peas (about 1 3/4 cups)",
             ),
         ),
+        (
+            "2 Tablespoons plus 1/2 teaspoon extra-virgin olive oil",
+            ("2 Tablespoons plus 1/2 teaspoon", "extra-virgin olive oil"),
+        ),
+        (
+            "2 Tablespoons + 1/2 teaspoon extra-virgin olive oil",
+            ("2 Tablespoons + 1/2 teaspoon", "extra-virgin olive oil"),
+        ),
     ],
 )
 def test_parse_quantity_name(ingredient: str, expected: tuple[str, str]) -> None:
     assert parse_quantity_name(ingredient) == expected
+
+
+@pytest.mark.parametrize(
+    "ingredient,expected",
+    [
+        (
+            "½ jalapeño pepper, seeded, ribs removed",
+            ("½ jalapeño pepper", "seeded, ribs removed"),
+        ),
+        (
+            "2 pounds (900g) bone-in, skin-on chicken thighs",
+            ("2 pounds (900g) bone-in, skin-on chicken thighs", ""),
+        ),
+        (
+            "½ jalapeño pepper, seeded, ribs removed",
+            ("½ jalapeño pepper", "seeded, ribs removed"),
+        ),
+    ],
+)
+def test_parse_name_description(ingredient: str, expected: tuple[str, str]) -> None:
+    assert parse_name_description(ingredient) == expected
 
 
 @pytest.mark.parametrize(
@@ -316,6 +346,38 @@ def test_parse_quantity_name(ingredient: str, expected: tuple[str, str]) -> None
             "2 pounds (900g) bone-in, skin-on chicken thighs",
             IngredientResult(
                 quantity="2 pounds (900g)", name="bone-in, skin-on chicken thighs"
+            ),
+        ),
+        (
+            "½ jalapeño pepper, seeded, ribs removed",
+            IngredientResult(
+                quantity="1/2",
+                name="jalapeño pepper",
+                description="seeded, ribs removed",
+            ),
+        ),
+        (
+            "1 large red bell pepper, seeded, ribs removed",
+            IngredientResult(
+                quantity="1",
+                name="large red bell pepper",
+                description="seeded, ribs removed",
+            ),
+        ),
+        (
+            "2 Tablespoons plus 1/2 teaspoon extra-virgin olive oil",
+            IngredientResult(
+                quantity="2 Tablespoons plus 1/2 teaspoon",
+                name="extra-virgin olive oil",
+            ),
+        ),
+        (
+            "1 cup instant or kombu dashi (see Tip), vegetable or chicken broth, or water",
+            # TODO: this isn't perfect, we can probably do better
+            IngredientResult(
+                quantity="1 cup",
+                name="instant or kombu dashi (see Tip)",
+                description="vegetable or chicken broth, or water",
             ),
         ),
     ],
