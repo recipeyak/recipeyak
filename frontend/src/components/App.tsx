@@ -4,6 +4,7 @@ import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persist
 import { QueryClient, useIsRestoring } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client"
+import { AxiosError } from "axios"
 import raven from "raven-js"
 import React, { useEffect } from "react"
 import { DndProvider } from "react-dnd"
@@ -29,6 +30,7 @@ import Login from "@/pages/login/Login.page"
 import PasswordChangePage from "@/pages/password-change/PasswordChange.page"
 import PasswordResetPage from "@/pages/password-reset/PasswordReset.page"
 import PasswordResetConfirmPage from "@/pages/password-reset-confirm/PasswordResetConfirm.page"
+import ProfilePage from "@/pages/profile/Profile.page"
 import RecipeCreatePage from "@/pages/recipe-create/RecipeCreate.page"
 import RecipeDetailPage from "@/pages/recipe-detail/RecipeDetail.page"
 import RecipeListPage from "@/pages/recipe-list/RecipeList.page"
@@ -45,6 +47,7 @@ import {
   pathPassword,
   pathPasswordConfirm,
   pathPasswordReset,
+  pathProfileById,
   pathRecipeAdd,
   pathRecipeDetail,
   pathRecipesList,
@@ -60,10 +63,30 @@ import {
 import { theme, ThemeProvider, themeSet } from "@/theme"
 import { Toaster } from "@/toast"
 
+const MAX_RETRIES = 6
+const HTTP_STATUS_TO_NOT_RETRY = [400, 401, 403, 404]
+
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       cacheTime: 1000 * 60 * 60 * 24 * 7, // 7 days
+      retry: (failureCount, err) => {
+        if (failureCount > MAX_RETRIES) {
+          return false
+        }
+
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        const error = err as AxiosError | undefined
+        if (HTTP_STATUS_TO_NOT_RETRY.includes(error?.response?.status ?? 0)) {
+          // eslint-disable-next-line no-console
+          console.warn(
+            `Aborting retry due to ${error?.response?.status} status`,
+          )
+          return false
+        }
+
+        return true
+      },
     },
   },
 })
@@ -218,6 +241,11 @@ function AppRouter() {
                   exact
                   path={pathSettings.pattern}
                   component={SettingsPage}
+                />
+                <PrivateRoute
+                  exact
+                  path={pathProfileById.pattern}
+                  component={ProfilePage}
                 />
                 <PrivateRoute
                   exact

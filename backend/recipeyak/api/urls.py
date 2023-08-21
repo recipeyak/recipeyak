@@ -45,6 +45,7 @@ from recipeyak.api.team_shopping_list_detail_view import get_shopping_list_view
 from recipeyak.api.timeline_view import get_recipe_timeline
 from recipeyak.api.uploads_detail_view import complete_upload_view
 from recipeyak.api.uploads_list_view import start_upload_view
+from recipeyak.api.user_detail_by_id_view import user_detail_by_id_view
 from recipeyak.api.user_detail_view import user_detail_view
 from recipeyak.api.user_invites_accept_view import user_invites_accept_view
 from recipeyak.api.user_invites_decline_view import user_invites_decline_view
@@ -95,6 +96,7 @@ urlpatterns = [
     path("api/v1/upload/", start_upload_view),
     path("api/v1/upload/<int:upload_pk>/complete", complete_upload_view),
     path("api/v1/user/", user_detail_view),
+    path("api/v1/user/<str:user_id>/", user_detail_by_id_view),
     path("t/<int:team_id>/ical/<str:ical_id>/schedule.ics", get_ical_view),
     url(r"^recipes/(?P<recipe_pk>[0-9]+)(-.*)?$", recipe_bot_detail_view),
     url(r"^recipes.(?P<filetype>json|yaml|yml)$", export_recipes_list_view),

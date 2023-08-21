@@ -12,6 +12,7 @@ import { Button } from "@/components/Buttons"
 import { Textarea } from "@/components/Forms"
 import { Markdown } from "@/components/Markdown"
 import { RotatingLoader } from "@/components/RoatingLoader"
+import { Link } from "@/components/Routing"
 import { formatAbsoluteDateTime, formatHumanDateTime } from "@/date"
 import { useUserId } from "@/hooks"
 import {
@@ -20,6 +21,7 @@ import {
   ReactionsFooter,
   ReactionType,
 } from "@/pages/recipe-detail/Reactions"
+import { pathProfileById } from "@/paths"
 import { useNoteCreate } from "@/queries/noteCreate"
 import { useNoteDelete } from "@/queries/noteDelete"
 import { useNoteUpdate } from "@/queries/noteUpdate"
@@ -235,7 +237,12 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
       <Avatar avatarURL={note.created_by.avatar_url} className="mr-2" />
       <div className="w-100">
         <Box align="center">
-          <b>{note.created_by.name}</b>{" "}
+          <Link
+            className="fw-bold"
+            to={pathProfileById({ userId: note.created_by.id.toString() })}
+          >
+            {note.created_by.name}
+          </Link>{" "}
           <a href={`#${noteHtmlId}`} className="ml-2">
             <NoteTimeStamp created={note.created} />
           </a>
@@ -353,6 +360,23 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
   )
 }
 
+function MaybeLink({
+  to,
+  children,
+}: {
+  to: string | null
+  children: React.ReactNode
+}) {
+  if (to == null) {
+    return <b>{children}</b>
+  }
+  return (
+    <Link to={to} className="fw-bold">
+      {children}
+    </Link>
+  )
+}
+
 export function TimelineEvent({
   event,
   enableLinking = true,
@@ -380,7 +404,15 @@ export function TimelineEvent({
       />
       <div className="d-flex flex-column">
         <div>
-          <b>{event.created_by?.name ?? "User"}</b>{" "}
+          <MaybeLink
+            to={
+              event.created_by?.id
+                ? pathProfileById({ userId: event.created_by?.id.toString() })
+                : null
+            }
+          >
+            {event.created_by?.name ?? "User"}
+          </MaybeLink>{" "}
           <span>{action} this recipe </span>
         </div>
         {enableLinking ? <a href={`#${eventId}`}>{timestamp}</a> : timestamp}
