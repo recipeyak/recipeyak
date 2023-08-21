@@ -100,8 +100,7 @@ FROM
 	JOIN core_upload ON core_upload.recipe_id = core_recipe.id
 		AND core_recipe.primary_image_id = core_upload.id
 WHERE
-	core_recipe.archived_at is not null
-	and core_upload.created_by_id = %(user_id)s
+	core_upload.created_by_id = %(user_id)s
 """,
             {"user_id": user_id},
         )
