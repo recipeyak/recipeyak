@@ -122,6 +122,10 @@ const TrophyIcon = () => (
   </svg>
 )
 
+function formatNumber(val: number) {
+  return new Intl.NumberFormat().format(val)
+}
+
 function Profile(props: RouteComponentProps<{ userId: string }>) {
   const userInfo = useUserById({ id: props.match.params.userId })
 
@@ -181,7 +185,7 @@ function Profile(props: RouteComponentProps<{ userId: string }>) {
                 borderRadius: 6,
               }}
             >
-              <Icon /> {name} · {value}
+              <Icon /> {name} · {formatNumber(value)}
             </Box>
           )
         })}
