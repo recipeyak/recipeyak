@@ -15,6 +15,7 @@ import { useIsLoggedIn, useTeamId, useUser } from "@/hooks"
 import {
   pathHome,
   pathLogin,
+  pathProfileById,
   pathRecipeAdd,
   pathRecipesList,
   pathSchedule,
@@ -97,14 +98,23 @@ function UserDropdown() {
   const { ref, toggle, isOpen } = useDropdown()
   const user = useUser()
 
+  const links: Array<[string, string]> = [
+    [pathProfileById({ userId: String(user.id) }), "Profile"],
+    [pathSettings({}), "Settings"],
+    [pathTeamList({}), "Teams"],
+  ]
+
   return (
     <DropdownContainer ref={ref}>
       <UserAvatar onClick={toggle} url={user.avatarURL} />
       <DropdownMenu isOpen={isOpen} position="right">
         <UserEmail email={user.email} />
         <TeamSelect />
-        <Link to={pathSettings({})}>Settings</Link>
-        <Link to={pathTeamList({})}>Teams</Link>
+        {links.map(([to, text]) => (
+          <Link key={text} className="w-100" to={to} onClick={toggle}>
+            {text}
+          </Link>
+        ))}
         <LogoutButton />
       </DropdownMenu>
     </DropdownContainer>
