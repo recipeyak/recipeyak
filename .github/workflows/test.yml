@@ -90,6 +90,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build and push
+        working-directory: "./backend"
         run: |
           docker build -f django.Dockerfile \
           --tag recipeyak/django:$GITHUB_SHA \
