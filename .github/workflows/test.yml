@@ -76,6 +76,26 @@ jobs:
       - name: Run shellcheck
         run: ./s/shellcheck
 
+  squawk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v4
+      - name: Install dependencies
+        working-directory: "./backend"
+        run: |
+          # Use our new PATH so we can call poetry from bash
+          echo 'export PATH="$PATH":"$HOME"/.local/bin' >> $BASH_ENV
+          source $BASH_ENV
+          python -m pip install pip==22.2.2
+          command -v poetry || python -m pip install --user poetry==1.3.2
+          poetry config virtualenvs.in-project true
+          poetry run pip install setuptools==61.1.1
+          poetry install
+      - name: Run shellcheck
+        working-directory: "./backend"
+        run: ./s/squawk.py
+
   build_api_container:
     runs-on: ubuntu-latest
     steps:
