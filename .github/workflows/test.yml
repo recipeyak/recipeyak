@@ -82,7 +82,9 @@ jobs:
       postgres:
         image: postgres:9.5
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: "0"
       - uses: actions/setup-python@v4
       - name: Install dependencies
         working-directory: "./backend"
