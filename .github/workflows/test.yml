@@ -58,14 +58,13 @@ jobs:
           path: /tmp/frontend-artifacts
   docker_lint:
     runs-on: ubuntu-latest
-    container: hadolint/hadolint
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v3
       - name: Run linter
-        run: |
-          ls
-          find . -name '*.Dockerfile' | xargs ./hadolint.sh
+        uses: jbergstroem/hadolint-gh-action@v1
+        with:
+          dockerfile: "**/*.Dockerfile"
 
   shellcheck:
     runs-on: ubuntu-latest
