@@ -58,13 +58,14 @@ jobs:
           path: /tmp/frontend-artifacts
   docker_lint:
     runs-on: ubuntu-latest
+    container: hadolint/hadolint
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v3
       - name: Install dependencies
-        run: curl -L https://github.com/hadolint/hadolint/releases/download/v1.17.1/hadolint-Linux-x86_64 -o hadolint
+        uses: hadolint/hadolint-action@v3.1.0
       - name: Run linter
-        run: find . -name '*.Dockerfile' | xargs ./hadolint
+        run: find . -name '*.Dockerfile' | xargs hadolint
 
   shellcheck:
     runs-on: ubuntu-latest
