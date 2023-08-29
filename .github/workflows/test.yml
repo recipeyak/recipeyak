@@ -78,6 +78,9 @@ jobs:
 
   squawk:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:9.5
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v4
