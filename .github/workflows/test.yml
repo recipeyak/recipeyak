@@ -87,6 +87,7 @@ jobs:
       - name: Install dependencies
         working-directory: "./backend"
         run: |
+          pip install poetry
           poetry config virtualenvs.in-project true
           poetry install
       - name: Run shellcheck
