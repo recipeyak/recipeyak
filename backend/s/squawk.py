@@ -66,7 +66,9 @@ def main() -> None:
 
     # get sqlmigrate to behave
     os.environ.setdefault("DEBUG", "1")
-    os.environ.setdefault("DATABASE_URL", "postgres://postgres@127.0.0.1:5432/postgres")
+    os.environ.setdefault(
+        "DATABASE_URL", "postgres://postgres:postgres@127.0.0.1:5432/postgres"
+    )
 
     subprocess.run(["./.venv/bin/python", "./manage.py", "migrate"], check=True)
 

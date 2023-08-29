@@ -81,6 +81,15 @@ jobs:
     services:
       postgres:
         image: postgres:9.5
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v3
         with:
@@ -95,9 +104,7 @@ jobs:
       - name: Run shellcheck
         # https://github.com/marketplace/actions/squawk-action
         working-directory: "backend"
-        run: |
-          git --no-pager diff --name-only origin/master... ./recipeyak/migrations
-          ./s/squawk.py
+        run: ./s/squawk.py
 
   build_api_container:
     runs-on: ubuntu-latest
