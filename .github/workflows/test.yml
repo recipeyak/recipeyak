@@ -73,8 +73,7 @@ jobs:
       - uses: actions/setup-node@v3
       - name: Install dependencies
         run: |
-          apt-get update -yq && \
-          apt-get install -y git shellcheck
+          apt install shellcheck
       - name: Run shellcheck
         run: ./s/shellcheck
 
