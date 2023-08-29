@@ -76,6 +76,69 @@ jobs:
       - name: Run shellcheck
         run: ./s/shellcheck
 
+  backend_test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:9.5
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+      - name: Install dependencies
+        working-directory: "./backend"
+        run: |
+          pip install poetry
+          poetry config virtualenvs.in-project true
+          poetry install
+      - name: Run tests
+        working-directory: "backend"
+        run: ./s/test --junitxml=~/test-results/backend_tests.xml
+      - name: Store test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: ~/test-results
+
+  backend_lint:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:9.5
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+      - name: Install dependencies
+        working-directory: "./backend"
+        run: |
+          pip install poetry
+          poetry config virtualenvs.in-project true
+          poetry install
+      - name: Run lints
+        working-directory: "backend"
+        run: ./s/lint
+
   squawk:
     runs-on: ubuntu-latest
     services:
@@ -103,8 +166,8 @@ jobs:
           pip install poetry
           poetry config virtualenvs.in-project true
           poetry install
-      - name: Run shellcheck
-        # https://github.com/marketplace/actions/squawk-action
+      - name: Run squawk
+        # change this to use https://github.com/marketplace/actions/squawk-action
         working-directory: "backend"
         run: ./s/squawk.py
 
