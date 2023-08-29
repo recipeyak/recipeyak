@@ -92,8 +92,10 @@ jobs:
           poetry install
       - name: Run shellcheck
         # https://github.com/marketplace/actions/squawk-action
-        working-directory: "./backend"
-        run: ./s/squawk.py
+        working-directory: "backend"
+        run: |
+          git --no-pager diff --name-only master... ./recipeyak/migrations
+          ./s/squawk.py
 
   build_api_container:
     runs-on: ubuntu-latest
