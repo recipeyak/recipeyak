@@ -96,7 +96,7 @@ jobs:
         # https://github.com/marketplace/actions/squawk-action
         working-directory: "backend"
         run: |
-          git --no-pager diff --name-only master... ./recipeyak/migrations
+          git --no-pager diff --name-only origin/master... ./recipeyak/migrations
           ./s/squawk.py
 
   build_api_container:
