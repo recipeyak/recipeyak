@@ -94,7 +94,7 @@ jobs:
       - name: Build and push
         working-directory: "./backend"
         run: |
-          git_sha=${{github.event.pull_request.base.sha}}
+          git_sha=${{github.event.pull_request.head.sha}}
           docker build -f django.Dockerfile \
           --tag recipeyak/django:$git_sha \
           --build-arg GIT_SHA=$git_sha .
