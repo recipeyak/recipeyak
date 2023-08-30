@@ -1,0 +1,17 @@
+name: Deploy
+"on":
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          ssh $SSH_USER@$SSH_HOST "./deploy $GITHUB_SHA"
