@@ -3,7 +3,7 @@ name: Deploy
 "on":
   workflow_run:
     workflows: [Containers]
-    branches: [master]
+    # branches: [master]
     types:
       - completed
 
