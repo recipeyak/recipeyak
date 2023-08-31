@@ -96,6 +96,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
+        with:
+          python-version-file: "./backend/.python-version"
       - name: Install dependencies
         working-directory: "./backend"
         run: |
@@ -130,6 +132,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
+        with:
+          python-version-file: "./backend/.python-version"
       - name: Install dependencies
         working-directory: "./backend"
         run: |
@@ -161,6 +165,8 @@ jobs:
         with:
           fetch-depth: "0"
       - uses: actions/setup-python@v4
+        with:
+          python-version-file: "./backend/.python-version"
       - name: Install dependencies
         working-directory: "./backend"
         run: |
