@@ -21,7 +21,7 @@ jobs:
       SSH_USER: ${{ secrets.SSH_USER }}
       SSH_HOST: ${{ secrets.SSH_HOST }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       # https://maxschmitt.me/posts/github-actions-ssh-key
       - name: "Install ssh key"
         env:
