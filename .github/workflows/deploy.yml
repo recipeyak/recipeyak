@@ -1,10 +1,16 @@
 name: Deploy
+
 "on":
   workflow_run:
     workflows: [Containers]
     branches: [master]
     types:
       - completed
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: false
+
 jobs:
   deploy:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
