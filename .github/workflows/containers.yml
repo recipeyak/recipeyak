@@ -33,6 +33,7 @@ jobs:
           --tag recipeyak/django:$git_sha \
           --build-arg GIT_SHA=$git_sha .
           docker push recipeyak/django:$git_sha
+          echo "### Pushed recipeyak/django:$git_sha" >> $GITHUB_STEP_SUMMARY
 
   build_ui_container:
     runs-on: ubuntu-latest
@@ -55,6 +56,7 @@ jobs:
           --tag recipeyak/react:$git_sha \
           --build-arg GIT_SHA=$git_sha .
           docker push recipeyak/react:$git_sha
+          echo "### Pushed recipeyak/react:$git_sha" >> $GITHUB_STEP_SUMMARY
 
   build_proxy_container:
     runs-on: ubuntu-latest
@@ -77,3 +79,4 @@ jobs:
           --tag recipeyak/nginx:$git_sha \
           --build-arg GIT_SHA=$git_sha .
           docker push recipeyak/nginx:$git_sha
+          echo "### Pushed recipeyak/nginx:$git_sha" >> $GITHUB_STEP_SUMMARY
