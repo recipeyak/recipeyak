@@ -1,10 +1,13 @@
 name: Deploy
 "on":
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: [Containers]
+    branches: [master]
+    types:
+      - completed
 jobs:
   deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
