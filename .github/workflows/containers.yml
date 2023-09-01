@@ -105,4 +105,5 @@ jobs:
       - env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         run: |
-          ssh $SSH_USER@$SSH_HOST "./deploy $GITHUB_SHA"
+          git_sha=${{ github.event.pull_request.head.sha || github.sha }}
+          ssh $SSH_USER@$SSH_HOST "./deploy $git_sha"
