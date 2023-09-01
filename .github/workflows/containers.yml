@@ -80,3 +80,27 @@ jobs:
           --build-arg GIT_SHA=$git_sha .
           docker push recipeyak/nginx:$git_sha
           echo "Pushed \`recipeyak/nginx:$git_sha\`" >> $GITHUB_STEP_SUMMARY
+
+  deploy:
+    needs: [build_api_container, build_ui_container, build_proxy_container]
+    runs-on: ubuntu-latest
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+    steps:
+      - uses: actions/checkout@v3
+      # https://maxschmitt.me/posts/github-actions-ssh-key
+      - name: "Install ssh key"
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+        run: |
+          mkdir -p /home/runner/.ssh
+          ssh-keyscan $SSH_HOST >> /home/runner/.ssh/known_hosts
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > /home/runner/.ssh/github_actions
+          chmod 600 /home/runner/.ssh/github_actions
+          ssh-agent -a $SSH_AUTH_SOCK > /dev/null	
+          ssh-add /home/runner/.ssh/github_actions
+      - run: |
+          ssh $SSH_USER@$SSH_HOST "./deploy $GITHUB_SHA"
