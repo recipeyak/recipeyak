@@ -1,0 +1,179 @@
+name: CI
+
+on:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
+# TODO: Skip if no changes in directory
+jobs:
+  frontend_test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: "./frontend/package.json"
+          cache-dependency-path: "./frontend/yarn.lock"
+          cache: "yarn"
+      - name: Install dependencies
+        working-directory: "frontend"
+        run: yarn install --frozen-lockfile
+      - name: Run tests
+        working-directory: "frontend"
+        run: ./s/test --no-watch --reporter junit --outputFile ~/test-results/frontend_tests.xml
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: ~/test-results
+  frontend_lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: "./frontend/package.json"
+          cache-dependency-path: "./frontend/yarn.lock"
+          cache: "yarn"
+      - name: Install dependencies
+        working-directory: "frontend"
+        run: yarn install --frozen-lockfile
+      - name: Run linter
+        working-directory: "frontend"
+        run: |
+          ./s/lint
+          ./s/build
+      - name: Move artifacts
+        working-directory: "frontend"
+        run: |
+          mkdir -p /tmp/frontend-artifacts
+          cp -R stats.html /tmp/frontend-artifacts
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: frontend-artifacts
+          path: /tmp/frontend-artifacts
+  docker_lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+      - name: Run linter
+        uses: jbergstroem/hadolint-gh-action@83e551589b57fb5bc5ad415fbcde93da0d2641a1
+        with:
+          dockerfile: "**/*.Dockerfile"
+
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+      - name: Install dependencies
+        run: |
+          sudo apt install shellcheck
+      - name: Run shellcheck
+        run: ./s/shellcheck
+
+  backend_test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:9.5
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version-file: "./backend/.python-version"
+      - name: Install dependencies
+        working-directory: "./backend"
+        run: |
+          pip install poetry
+          poetry config virtualenvs.in-project true
+          poetry install
+      - name: Run tests
+        working-directory: "backend"
+        run: ./s/test --junitxml=~/test-results/backend_tests.xml
+      - name: Store test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: ~/test-results
+
+  backend_lint:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:9.5
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version-file: "./backend/.python-version"
+      - name: Install dependencies
+        working-directory: "./backend"
+        run: |
+          pip install poetry
+          poetry config virtualenvs.in-project true
+          poetry install
+      - name: Run lints
+        working-directory: "backend"
+        run: ./s/lint
+
+  squawk:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:9.5
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: "0"
+      - uses: actions/setup-python@v4
+        with:
+          python-version-file: "./backend/.python-version"
+      - name: Install dependencies
+        working-directory: "./backend"
+        run: |
+          pip install poetry
+          poetry config virtualenvs.in-project true
+          poetry install
+      - name: Run squawk
+        # change this to use https://github.com/marketplace/actions/squawk-action
+        working-directory: "backend"
+        run: ./s/squawk.py
