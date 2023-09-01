@@ -83,6 +83,7 @@ jobs:
 
   deploy:
     needs: [build_api_container, build_ui_container, build_proxy_container]
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
