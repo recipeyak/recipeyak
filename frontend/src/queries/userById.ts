@@ -13,6 +13,7 @@ type UserById = {
     readonly recipesAdd: number
     readonly recipesArchived: number
     readonly comments: number
+    readonly scheduled: number
     readonly photos: number
     readonly primaryPhotos: number
   }
