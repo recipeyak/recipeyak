@@ -1,4 +1,4 @@
-name: Containers
+name: Infrastructure
 
 on:
   pull_request:
@@ -12,6 +12,27 @@ concurrency:
 
 # TODO: Skip if no changes in directory
 jobs:
+  lint_docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+      - name: Run linter
+        uses: jbergstroem/hadolint-gh-action@83e551589b57fb5bc5ad415fbcde93da0d2641a1
+        with:
+          dockerfile: "**/*.Dockerfile"
+
+  lint_shell:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+      - name: Install dependencies
+        run: |
+          sudo apt install shellcheck
+      - name: Run shellcheck
+        run: ./s/shellcheck
+
   build_api_container:
     runs-on: ubuntu-latest
     steps:
