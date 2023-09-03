@@ -1,9 +1,12 @@
 import { parseISO } from "date-fns"
 import { RouteComponentProps } from "react-router"
 
+import { assertNever } from "@/assert"
 import { Box } from "@/components/Box"
 import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
+import { Link } from "@/components/Routing"
+import { pathRecipeDetail } from "@/paths"
 import { useUserById } from "@/queries/userById"
 
 interface IProfileImgProps {
@@ -147,7 +150,9 @@ function formatNumber(val: number) {
   return new Intl.NumberFormat().format(val)
 }
 
-function Profile(props: RouteComponentProps<{ userId: string }>) {
+export default function Profile(
+  props: RouteComponentProps<{ userId: string }>,
+) {
   const userInfo = useUserById({ id: props.match.params.userId })
 
   if (userInfo.isLoading) {
@@ -212,8 +217,126 @@ function Profile(props: RouteComponentProps<{ userId: string }>) {
           )
         })}
       </Box>
+
+      <div className="fs-6">Activity</div>
+      <ActivityLog activity={userInfo.data.activity} />
     </Box>
   )
 }
 
-export default Profile
+function ActivityLog({
+  activity,
+}: {
+  activity: ReadonlyArray<{
+    readonly recipe_id: number
+    readonly created_date: string
+    readonly created: string
+    readonly note_id: number
+    readonly type:
+      | "recipe_create"
+      | "recipe_archived"
+      | "comment_create"
+      | "photo_created"
+      | "primary_photo_created"
+      | "recipe_scheduled"
+  }>
+}) {
+  return (
+    <div
+      style={{
+        display: "grid",
+        columnGap: "0.25rem",
+        rowGap: "0.125rem",
+        gridTemplateColumns: "max-content max-content minmax(max-content, 1fr)",
+      }}
+    >
+      {activity.map((x) => {
+        const key = `${x.recipe_id} ${new Date(x.created)} ${x.type}`
+        switch (x.type) {
+          case "comment_create": {
+            const to =
+              pathRecipeDetail({ recipeId: x.recipe_id.toString() }) +
+              `#note-${x.note_id}`
+            return (
+              <Row key={key} created={x.created_date} icon={<MessageIcon />}>
+                Added a <Link to={to}>comment</Link>
+              </Row>
+            )
+          }
+
+          case "photo_created": {
+            const to =
+              pathRecipeDetail({ recipeId: x.recipe_id.toString() }) +
+              `#note-${x.note_id}`
+            return (
+              <Row key={key} created={x.created_date} icon={<AppIcon />}>
+                Added a <Link to={to}>photo</Link>
+              </Row>
+            )
+          }
+          case "primary_photo_created": {
+            const to = pathRecipeDetail({ recipeId: x.recipe_id.toString() })
+            return (
+              <Row key={key} created={x.created_date} icon={<TrophyIcon />}>
+                Added a <Link to={to}>primary photo</Link>
+              </Row>
+            )
+          }
+          case "recipe_create": {
+            const to = pathRecipeDetail({ recipeId: x.recipe_id.toString() })
+            return (
+              <Row key={key} created={x.created_date} icon={<PlantIcon />}>
+                Added a <Link to={to}>recipe</Link>
+              </Row>
+            )
+          }
+          case "recipe_archived": {
+            const to = pathRecipeDetail({ recipeId: x.recipe_id.toString() })
+            return (
+              <Row key={key} created={x.created_date} icon={<TrashIcon />}>
+                Archived a <Link to={to}>recipe</Link>
+              </Row>
+            )
+          }
+          case "recipe_scheduled": {
+            const to = pathRecipeDetail({ recipeId: x.recipe_id.toString() })
+            return (
+              <Row key={key} created={x.created_date} icon={<CalendarIcon />}>
+                Scheduled a <Link to={to}>recipe</Link>
+              </Row>
+            )
+          }
+          default:
+            return assertNever(x.type)
+        }
+      })}
+    </div>
+  )
+}
+
+function Row({
+  created,
+  children,
+  icon,
+}: {
+  created: string
+  children: React.ReactNode
+  icon: React.ReactNode
+}) {
+  return (
+    <>
+      <div>{created}</div>
+      <div
+        style={{
+          alignItems: "center",
+          marginLeft: "0.25rem",
+          justifyContent: "center",
+          display: "flex",
+        }}
+      >
+        {icon}
+      </div>
+      <div>{children}</div>
+    </>
+  )
+}

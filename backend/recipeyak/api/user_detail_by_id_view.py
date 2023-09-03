@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 
 import pydantic
 from django.db import connection
@@ -24,6 +24,14 @@ class UserDetailByIdStats(pydantic.BaseModel):
     primaryPhotos: int
 
 
+class Activity(pydantic.BaseModel):
+    recipe_id: int
+    created_date: date
+    created: datetime
+    note_id: int
+    type: str
+
+
 class UserDetailByIdResponse(pydantic.BaseModel):
     id: int
     name: str | None
@@ -31,6 +39,7 @@ class UserDetailByIdResponse(pydantic.BaseModel):
     avatar_url: str
     created: date
     stats: UserDetailByIdStats
+    activity: list[Activity]
 
 
 def get_recipes_added_count(*, user_id: str) -> int:
@@ -40,11 +49,11 @@ def get_recipes_added_count(*, user_id: str) -> int:
 SELECT
     count(distinct recipe_id) as "total"
 FROM
-	timeline_event
-	JOIN core_recipe ON core_recipe.id = timeline_event.recipe_id
+    timeline_event
+    JOIN core_recipe ON core_recipe.id = timeline_event.recipe_id
 WHERE
-	action = 'created'
-	AND created_by_id = %(user_id)s;
+    action = 'created'
+    AND created_by_id = %(user_id)s;
 """,
             {"user_id": user_id},
         )
@@ -88,7 +97,7 @@ def get_comments_count(*, user_id: str) -> int:
 
 
 def get_photos_count(*, user_id: str) -> int:
-    return Upload.objects.filter(created_by_id=user_id).count()
+    return Upload.objects.filter(created_by_id=user_id, recipe_id__isnull=False).count()
 
 
 def get_primary_photos_count(*, user_id: str) -> int:
@@ -96,13 +105,13 @@ def get_primary_photos_count(*, user_id: str) -> int:
         cursor.execute(
             """
 SELECT
-	count(*) as "primary_images_count"
+    count(*) as "primary_images_count"
 FROM
-	core_recipe
-	JOIN core_upload ON core_upload.recipe_id = core_recipe.id
-		AND core_recipe.primary_image_id = core_upload.id
+    core_recipe
+    JOIN core_upload ON core_upload.recipe_id = core_recipe.id
+        AND core_recipe.primary_image_id = core_upload.id
 WHERE
-	core_upload.created_by_id = %(user_id)s
+    core_upload.created_by_id = %(user_id)s
 """,
             {"user_id": user_id},
         )
@@ -112,6 +121,120 @@ WHERE
 
 def get_scheduled_count(*, user_id: str) -> int:
     return ScheduledRecipe.objects.filter(user_id=user_id).count()
+
+
+def get_activity(*, user_id: str) -> list[Activity]:
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+-- recipes created
+SELECT DISTINCT
+    recipe_id,
+    core_recipe.created::date,
+    core_recipe.created,
+    -1,
+    'recipe_create' as type
+FROM
+    timeline_event
+    JOIN core_recipe ON core_recipe.id = timeline_event.recipe_id
+WHERE
+    action = 'created'
+    AND created_by_id = %(user_id)s
+UNION
+-- comments created
+SELECT DISTINCT
+    core_note.recipe_id,
+    core_note.created::date,
+    core_note.created,
+    core_note.id,
+    'comment_create' as type
+FROM
+    timeline_event
+    JOIN core_note ON core_note.recipe_id = timeline_event.recipe_id
+WHERE
+    action = 'created'
+    AND core_note.created_by_id = %(user_id)s
+UNION
+-- recipes archived
+SELECT
+    t.recipe_id,
+    t.created::date,
+    t.created,
+    -1,
+    'recipe_archived' as type
+FROM (
+    SELECT
+        te.recipe_id,
+        te.created,
+        te.action,
+        ROW_NUMBER() OVER (PARTITION BY te.recipe_id ORDER BY te.created DESC) AS rn
+    FROM
+        timeline_event te
+    WHERE
+        te.action IN ('archived', 'unarchived')
+        AND te.created_by_id = %(user_id)s
+) AS t
+WHERE
+    t.rn = 1
+    AND t.action = 'archived'
+UNION
+-- recipes scheduled
+SELECT
+    recipe_id,
+    created::date,
+    created,
+    -1,
+    'recipe_scheduled' as type
+FROM
+    core_scheduledrecipe
+WHERE
+    created_by_id = %(user_id)s
+UNION
+-- photo created
+SELECT
+    recipe_id,
+    created::date,
+    created,
+    note_id,
+    'photo_created' as type
+FROM
+    core_upload
+WHERE
+    created_by_id = %(user_id)s
+    AND recipe_id IS NOT NULL
+UNION
+-- photo primary created
+SELECT
+    core_upload.recipe_id,
+    core_upload.created::date,
+    core_upload.created,
+    -1,
+    'primary_photo_created' AS TYPE
+FROM
+    core_recipe
+    JOIN core_upload ON core_upload.recipe_id = core_recipe.id
+        AND core_recipe.primary_image_id = core_upload.id
+WHERE
+    core_upload.created_by_id = %(user_id)s
+ORDER BY
+    3 DESC
+LIMIT 42;
+""",
+            {"user_id": user_id},
+        )
+        results = cursor.fetchall()
+    out: list[Activity] = []
+    for (recipe_id, created_date, created, note_id, type) in results:
+        out.append(
+            Activity(
+                recipe_id=recipe_id,
+                created_date=created_date,
+                created=created,
+                note_id=note_id or -1,
+                type=type,
+            )
+        )
+    return out
 
 
 @api_view(["GET"])
@@ -124,6 +247,7 @@ def user_detail_by_id_view(request: AuthedRequest, user_id: str) -> Response:
     scheduled_count = get_scheduled_count(user_id=user_id)
     photos_count = get_photos_count(user_id=user_id)
     primary_photos_count = get_primary_photos_count(user_id=user_id)
+    activity = get_activity(user_id=user_id)
     return Response(
         UserDetailByIdResponse(
             id=user.id,
@@ -139,5 +263,6 @@ def user_detail_by_id_view(request: AuthedRequest, user_id: str) -> Response:
                 photos=photos_count,
                 primaryPhotos=primary_photos_count,
             ),
+            activity=activity,
         )
     )
