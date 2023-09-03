@@ -323,7 +323,7 @@ function useRecipeUrlUpdate(recipe: { id: number; name: string } | null) {
     if (pathNamesEqual(location.pathname, pathname)) {
       return
     }
-    history.replace({ pathname, search: location.search })
+    history.replace({ pathname, search: location.search, hash: location.hash })
   }, [history, location, recipeId, recipeName])
 }
 

@@ -17,6 +17,19 @@ type UserById = {
     readonly photos: number
     readonly primaryPhotos: number
   }
+  readonly activity: ReadonlyArray<{
+    readonly recipe_id: number
+    readonly created_date: string
+    readonly created: string
+    readonly note_id: number
+    readonly type:
+      | "recipe_create"
+      | "recipe_archived"
+      | "comment_create"
+      | "photo_created"
+      | "primary_photo_created"
+      | "recipe_scheduled"
+  }>
 }
 
 const getUserById = ({ id }: { id: string }) =>
