@@ -19,6 +19,7 @@ type UserById = {
   }
   readonly activity: ReadonlyArray<{
     readonly recipe_id: number
+    readonly recipe_name: string
     readonly created_date: string
     readonly created: string
     readonly note_id: number
