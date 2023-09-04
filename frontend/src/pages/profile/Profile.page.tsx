@@ -283,6 +283,12 @@ function getDescription(
   }
 
   let stats: string[] = []
+  if (isCreated) {
+    stats.push("created")
+  }
+  if (isArchived) {
+    stats.push("archived")
+  }
   if (photosCount > 0) {
     if (photosCount > 1) {
       stats.push(`${photosCount} photos`)
@@ -297,17 +303,11 @@ function getDescription(
       stats.push(`1 comment`)
     }
   }
-  if (isScheduled) {
-    stats.push("scheduled")
-  }
-  if (isArchived) {
-    stats.push("archived")
-  }
-  if (isCreated) {
-    stats.push("created")
-  }
   if (isPrimaryPhoto) {
     stats.push("primary photo")
+  }
+  if (isScheduled) {
+    stats.push("scheduled")
   }
   return stats.join(" · ")
 }
