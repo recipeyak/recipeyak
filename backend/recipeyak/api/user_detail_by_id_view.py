@@ -26,6 +26,7 @@ class UserDetailByIdStats(pydantic.BaseModel):
 
 class Activity(pydantic.BaseModel):
     recipe_id: int
+    recipe_name: str
     created_date: date
     created: datetime
     note_id: int
@@ -130,6 +131,7 @@ def get_activity(*, user_id: str) -> list[Activity]:
 -- recipes created
 SELECT DISTINCT
     recipe_id,
+    core_recipe.name,
     core_recipe.created::date,
     core_recipe.created,
     -1,
@@ -144,6 +146,7 @@ UNION
 -- comments created
 SELECT DISTINCT
     core_note.recipe_id,
+    core_recipe.name,
     core_note.created::date,
     core_note.created,
     core_note.id,
@@ -151,6 +154,7 @@ SELECT DISTINCT
 FROM
     timeline_event
     JOIN core_note ON core_note.recipe_id = timeline_event.recipe_id
+    JOIN core_recipe on core_recipe.id = core_note.recipe_id
 WHERE
     action = 'created'
     AND core_note.created_by_id = %(user_id)s
@@ -158,6 +162,7 @@ UNION
 -- recipes archived
 SELECT
     t.recipe_id,
+    core_recipe.name,
     t.created::date,
     t.created,
     -1,
@@ -174,31 +179,36 @@ FROM (
         te.action IN ('archived', 'unarchived')
         AND te.created_by_id = %(user_id)s
 ) AS t
+    JOIN core_recipe on core_recipe.id = t.recipe_id
 WHERE
     t.rn = 1
     AND t.action = 'archived'
 UNION
 -- recipes scheduled
 SELECT
-    recipe_id,
-    created::date,
-    created,
+    core_scheduledrecipe.recipe_id,
+    core_recipe.name,
+    core_scheduledrecipe.created::date,
+    core_scheduledrecipe.created,
     -1,
     'recipe_scheduled' as type
 FROM
     core_scheduledrecipe
+    JOIN core_recipe on core_recipe.id = core_scheduledrecipe.recipe_id
 WHERE
     created_by_id = %(user_id)s
 UNION
 -- photo created
 SELECT
-    recipe_id,
-    created::date,
-    created,
-    note_id,
+    core_upload.recipe_id,
+    core_recipe.name,
+    core_upload.created::date,
+    core_upload.created,
+    core_upload.note_id,
     'photo_created' as type
 FROM
     core_upload
+    JOIN core_recipe on core_recipe.id = core_upload.recipe_id
 WHERE
     created_by_id = %(user_id)s
     AND recipe_id IS NOT NULL
@@ -206,6 +216,7 @@ UNION
 -- photo primary created
 SELECT
     core_upload.recipe_id,
+    core_recipe.name,
     core_upload.created::date,
     core_upload.created,
     -1,
@@ -224,10 +235,11 @@ LIMIT 42;
         )
         results = cursor.fetchall()
     out: list[Activity] = []
-    for (recipe_id, created_date, created, note_id, type) in results:
+    for (recipe_id, recipe_name, created_date, created, note_id, type) in results:
         out.append(
             Activity(
                 recipe_id=recipe_id,
+                recipe_name=recipe_name,
                 created_date=created_date,
                 created=created,
                 note_id=note_id or -1,

@@ -1,4 +1,6 @@
 import { parseISO } from "date-fns"
+import { groupBy } from "lodash-es"
+import React from "react"
 import { RouteComponentProps } from "react-router"
 
 import { assertNever } from "@/assert"
@@ -32,14 +34,14 @@ function ProfileImg({ avatarURL }: IProfileImgProps) {
 const AppIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="18"
-    height="18"
+    width="16"
+    height="16"
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <circle cx="12" cy="12" r="10" />
     <line x1="14.31" x2="20.05" y1="8" y2="17.94" />
@@ -54,14 +56,14 @@ const AppIcon = () => (
 const CalendarIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="18"
-    height="18"
+    width="16"
+    height="16"
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <path d="M21 13V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8" />
     <line x1="16" x2="16" y1="2" y2="6" />
@@ -75,14 +77,14 @@ const CalendarIcon = () => (
 const PlantIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="18"
-    height="18"
+    width="16"
+    height="16"
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <path d="M7 20h10" />
     <path d="M10 20c5.5-2.5.8-6.4 3-10" />
@@ -94,14 +96,14 @@ const PlantIcon = () => (
 const TrashIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="18"
-    height="18"
+    width="16"
+    height="16"
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <path d="M3 6h18" />
     <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
@@ -112,14 +114,14 @@ const TrashIcon = () => (
 const MessageIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="18"
-    height="18"
+    width="16"
+    height="16"
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
   </svg>
@@ -128,14 +130,14 @@ const MessageIcon = () => (
 const TrophyIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="18"
-    height="18"
+    width="16"
+    height="16"
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
   >
     <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
     <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
@@ -224,11 +226,98 @@ export default function Profile(
   )
 }
 
+function getDescription(
+  activites: {
+    readonly recipe_id: number
+    readonly recipe_name: string
+    readonly created_date: string
+    readonly created: string
+    readonly note_id: number
+    readonly type:
+      | "recipe_create"
+      | "recipe_archived"
+      | "comment_create"
+      | "photo_created"
+      | "primary_photo_created"
+      | "recipe_scheduled"
+  }[],
+) {
+  let isCreated = false
+  let isArchived = false
+  let isScheduled = false
+  let isPrimaryPhoto = false
+
+  let commentCount = 0
+  let photosCount = 0
+
+  for (const x of activites) {
+    switch (x.type) {
+      case "comment_create": {
+        commentCount++
+        continue
+      }
+      case "photo_created": {
+        photosCount++
+        continue
+      }
+      case "primary_photo_created": {
+        isPrimaryPhoto = true
+        photosCount--
+        continue
+      }
+      case "recipe_create": {
+        isCreated = true
+        continue
+      }
+      case "recipe_archived": {
+        isArchived = true
+        continue
+      }
+      case "recipe_scheduled": {
+        isScheduled = true
+        continue
+      }
+      default:
+        return assertNever(x.type)
+    }
+  }
+
+  let stats: string[] = []
+  if (photosCount > 0) {
+    if (photosCount > 1) {
+      stats.push(`${photosCount} photos`)
+    } else if (photosCount === 1) {
+      stats.push(`1 photo`)
+    }
+  }
+  if (commentCount > 0) {
+    if (commentCount > 1) {
+      stats.push(`${commentCount} comments`)
+    } else if (commentCount === 1) {
+      stats.push(`1 comment`)
+    }
+  }
+  if (isScheduled) {
+    stats.push("scheduled")
+  }
+  if (isArchived) {
+    stats.push("archived")
+  }
+  if (isCreated) {
+    stats.push("created")
+  }
+  if (isPrimaryPhoto) {
+    stats.push("primary photo")
+  }
+  return stats.join(" · ")
+}
+
 function ActivityLog({
   activity,
 }: {
-  activity: ReadonlyArray<{
+  readonly activity: ReadonlyArray<{
     readonly recipe_id: number
+    readonly recipe_name: string
     readonly created_date: string
     readonly created: string
     readonly note_id: number
@@ -241,102 +330,55 @@ function ActivityLog({
       | "recipe_scheduled"
   }>
 }) {
+  let out: Array<JSX.Element> = []
+  const activityByDay = Object.values(groupBy(activity, "created_date"))
+  // Map<Date, Array<Activity>>
+  for (const dayOfActivity of activityByDay) {
+    // Map<RecipeId, Array<Activity>>
+    const activityByRecipe = Object.values(
+      groupBy(dayOfActivity, (x) => [x.created_date, x.recipe_id]),
+    )
+    let isFirst = true
+    for (const activitiesForRecipe of activityByRecipe) {
+      const description = getDescription(activitiesForRecipe)
+      const x = activitiesForRecipe[0]
+      const key = `${x.created_date} - ${x.recipe_id}`
+      out.push(
+        <React.Fragment key={key}>
+          <div style={{ lineHeight: "1.2", textAlign: "right", fontSize: 14 }}>
+            {isFirst
+              ? parseISO(x.created_date).toLocaleDateString(undefined, {
+                  month: "short",
+                  day: "numeric",
+                })
+              : null}
+          </div>
+          <div style={{ lineHeight: "1.2" }}>
+            <Link
+              style={{}}
+              to={pathRecipeDetail({ recipeId: x.recipe_id.toString() })}
+            >
+              {x.recipe_name}
+            </Link>
+            <div style={{ fontSize: 14 }}>{description}</div>
+          </div>
+        </React.Fragment>,
+      )
+      isFirst = false
+    }
+    isFirst = true
+  }
+
   return (
     <div
       style={{
         display: "grid",
-        columnGap: "0.25rem",
-        rowGap: "0.125rem",
-        gridTemplateColumns: "max-content max-content minmax(max-content, 1fr)",
+        columnGap: "0.5rem",
+        rowGap: "0.5rem",
+        gridTemplateColumns: "max-content minmax(max-content, 1fr)",
       }}
     >
-      {activity.map((x) => {
-        const key = `${x.recipe_id} ${new Date(x.created)} ${x.type}`
-        switch (x.type) {
-          case "comment_create": {
-            const to =
-              pathRecipeDetail({ recipeId: x.recipe_id.toString() }) +
-              `#note-${x.note_id}`
-            return (
-              <Row key={key} created={x.created_date} icon={<MessageIcon />}>
-                Added a <Link to={to}>comment</Link>
-              </Row>
-            )
-          }
-
-          case "photo_created": {
-            const to =
-              pathRecipeDetail({ recipeId: x.recipe_id.toString() }) +
-              `#note-${x.note_id}`
-            return (
-              <Row key={key} created={x.created_date} icon={<AppIcon />}>
-                Added a <Link to={to}>photo</Link>
-              </Row>
-            )
-          }
-          case "primary_photo_created": {
-            const to = pathRecipeDetail({ recipeId: x.recipe_id.toString() })
-            return (
-              <Row key={key} created={x.created_date} icon={<TrophyIcon />}>
-                Added a <Link to={to}>primary photo</Link>
-              </Row>
-            )
-          }
-          case "recipe_create": {
-            const to = pathRecipeDetail({ recipeId: x.recipe_id.toString() })
-            return (
-              <Row key={key} created={x.created_date} icon={<PlantIcon />}>
-                Added a <Link to={to}>recipe</Link>
-              </Row>
-            )
-          }
-          case "recipe_archived": {
-            const to = pathRecipeDetail({ recipeId: x.recipe_id.toString() })
-            return (
-              <Row key={key} created={x.created_date} icon={<TrashIcon />}>
-                Archived a <Link to={to}>recipe</Link>
-              </Row>
-            )
-          }
-          case "recipe_scheduled": {
-            const to = pathRecipeDetail({ recipeId: x.recipe_id.toString() })
-            return (
-              <Row key={key} created={x.created_date} icon={<CalendarIcon />}>
-                Scheduled a <Link to={to}>recipe</Link>
-              </Row>
-            )
-          }
-          default:
-            return assertNever(x.type)
-        }
-      })}
+      {out}
     </div>
-  )
-}
-
-function Row({
-  created,
-  children,
-  icon,
-}: {
-  created: string
-  children: React.ReactNode
-  icon: React.ReactNode
-}) {
-  return (
-    <>
-      <div>{created}</div>
-      <div
-        style={{
-          alignItems: "center",
-          marginLeft: "0.25rem",
-          justifyContent: "center",
-          display: "flex",
-        }}
-      >
-        {icon}
-      </div>
-      <div>{children}</div>
-    </>
   )
 }
