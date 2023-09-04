@@ -60,6 +60,7 @@ import {
   pathTeamList,
   pathTeamSettings,
 } from "@/paths"
+import { GIT_SHA } from "@/settings"
 import { theme, ThemeProvider, themeSet } from "@/theme"
 import { Toaster } from "@/toast"
 
@@ -292,7 +293,10 @@ function Base() {
     <PersistQueryClientProvider
       client={queryClient}
       persistOptions={{
-        buster: "2022-01-16",
+        // NOTE: Ideally we'd only bust the cache when the cache schema changes
+        // in a backwards incompatible way but calculating that is annoying so
+        // just break it on every deploy
+        buster: GIT_SHA,
         persister,
         maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
         dehydrateOptions: {
