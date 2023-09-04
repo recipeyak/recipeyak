@@ -355,7 +355,7 @@ function ActivityLog({
           </div>
           <div style={{ lineHeight: "1.2" }}>
             <Link
-              style={{}}
+              className="text-truncate"
               to={pathRecipeDetail({ recipeId: x.recipe_id.toString() })}
             >
               {x.recipe_name}
@@ -375,7 +375,7 @@ function ActivityLog({
         display: "grid",
         columnGap: "0.5rem",
         rowGap: "0.5rem",
-        gridTemplateColumns: "max-content minmax(max-content, 1fr)",
+        gridTemplateColumns: "max-content 1fr",
       }}
     >
       {out}
