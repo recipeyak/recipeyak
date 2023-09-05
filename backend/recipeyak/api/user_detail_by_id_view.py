@@ -211,7 +211,7 @@ FROM
     core_upload
     JOIN core_recipe on core_recipe.id = core_upload.recipe_id
 WHERE
-    created_by_id = 1
+    created_by_id = %(user_id)s
     AND recipe_id IS NOT NULL
 UNION
 -- photo primary created
