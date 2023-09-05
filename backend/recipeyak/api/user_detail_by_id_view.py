@@ -128,11 +128,12 @@ def get_activity(*, user_id: str) -> list[Activity]:
     with connection.cursor() as cursor:
         cursor.execute(
             """
+SELECT * FROM (
 -- recipes created
 SELECT DISTINCT
     recipe_id,
     core_recipe.name,
-    core_recipe.created::date,
+    core_recipe.created::date as created_date,
     core_recipe.created,
     -1,
     'recipe_create' as type
@@ -147,7 +148,7 @@ UNION
 SELECT DISTINCT
     core_note.recipe_id,
     core_recipe.name,
-    core_note.created::date,
+    core_note.created::date as created_date,
     core_note.created,
     core_note.id,
     'comment_create' as type
@@ -163,7 +164,7 @@ UNION
 SELECT
     t.recipe_id,
     core_recipe.name,
-    t.created::date,
+    t.created::date as created_date,
     t.created,
     -1,
     'recipe_archived' as type
@@ -188,7 +189,7 @@ UNION
 SELECT
     core_scheduledrecipe.recipe_id,
     core_recipe.name,
-    core_scheduledrecipe.created::date,
+    core_scheduledrecipe.created::date as created_date,
     core_scheduledrecipe.created,
     -1,
     'recipe_scheduled' as type
@@ -202,7 +203,7 @@ UNION
 SELECT
     core_upload.recipe_id,
     core_recipe.name,
-    core_upload.created::date,
+    core_upload.created::date as created_date,
     core_upload.created,
     core_upload.note_id,
     'photo_created' as type
@@ -210,14 +211,14 @@ FROM
     core_upload
     JOIN core_recipe on core_recipe.id = core_upload.recipe_id
 WHERE
-    created_by_id = %(user_id)s
+    created_by_id = 1
     AND recipe_id IS NOT NULL
 UNION
 -- photo primary created
 SELECT
     core_upload.recipe_id,
     core_recipe.name,
-    core_upload.created::date,
+    core_upload.created::date as created_date,
     core_upload.created,
     -1,
     'primary_photo_created' AS TYPE
@@ -228,8 +229,9 @@ FROM
 WHERE
     core_upload.created_by_id = %(user_id)s
 ORDER BY
-    3 DESC
-LIMIT 42;
+    3 DESC) as _
+WHERE
+    created_date >= (now() - '3 months'::interval)::date;
 """,
             {"user_id": user_id},
         )
