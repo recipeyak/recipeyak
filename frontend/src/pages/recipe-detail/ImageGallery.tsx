@@ -1,7 +1,6 @@
 import React from "react"
 import { ChevronLeft, ChevronRight, Star, X } from "react-feather"
 
-import { isV8Browser } from "@/browser"
 import { Button } from "@/components/Buttons"
 import { styled } from "@/theme"
 import { imgixFmt } from "@/utils/url"
