@@ -19,8 +19,8 @@ const MyGalleryContainer = styled.div`
 // One problem with this is if images are too small, they'll get stretched by
 // the height 100%.
 //
-// Without stetching, images in Chrome will appear small and the jump to
-// their larger size when a larger srcset image is loaded.
+// Without stetching, images in Chrome will appear small and the jump to their
+// larger size when a larger srcset image is loaded.
 const MyGalleryImg = styled.img.attrs({ loading: "eager" })`
   height: 100%;
   margin: auto;
@@ -30,21 +30,6 @@ const MyGalleryImg = styled.img.attrs({ loading: "eager" })`
 const MyGalleryImgContainer = styled.div`
   display: flex;
   height: 100%;
-`
-const GalleryImgThumbnailContainer = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  height: 100%;
-`
-
-const GalleryImgThumbail = styled.img.attrs({ loading: "eager" })`
-  height: 100%;
-  margin: auto;
-  object-fit: contain;
 `
 
 const MyGalleryScrollWrap = styled.div`
@@ -147,23 +132,22 @@ export const Gallery = (props: {
   return (
     <MyGalleryContainer>
       <MyGalleryBackground />
-      {/** we reuse the common imgix URL in the background and overlay a higher resolution image.
-       * This way we'll have an image immediately and can load a higher resolution image gradually.
-       */}
-      {!isV8Browser() && (
-        <GalleryImgThumbnailContainer>
-          <GalleryImgThumbail
-            key={imgixFmt(props.imageUrl)}
-            src={imgixFmt(props.imageUrl)}
-          />
-        </GalleryImgThumbnailContainer>
-      )}
       <MyGalleryScrollWrap>
         <MyGalleryImgContainer onClick={onClick}>
           <MyGalleryImg
             key={imgixFmt(props.imageUrl)}
             src={imgixFmt(props.imageUrl)}
-            srcSet={buildSrcSetUrls(props.imageUrl)}
+            onLoad={(e) => {
+              // The common imigx format `src` will be in browser cache from the
+              // initial recipe page load. onLoad should then trigger loading a
+              // larger image by setting the `srcset`.
+              //
+              // We can't set the `srcset` initially, because Safari will show
+              // no image until it loads a larger image. By setting the `src`
+              // and waiting to set `srcset`, we'll see an image immediately in
+              // the gallery, served from cache.
+              e.currentTarget.srcset = buildSrcSetUrls(props.imageUrl)
+            }}
             onClick={onClick}
           />
         </MyGalleryImgContainer>
