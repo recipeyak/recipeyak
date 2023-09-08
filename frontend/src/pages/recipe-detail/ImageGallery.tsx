@@ -1,6 +1,7 @@
 import React from "react"
 import { ChevronLeft, ChevronRight, Star, X } from "react-feather"
 
+import { isV8Browser } from "@/browser"
 import { Button } from "@/components/Buttons"
 import { styled } from "@/theme"
 import { imgixFmt } from "@/utils/url"
@@ -15,10 +16,15 @@ const MyGalleryContainer = styled.div`
   height: 100%;
 `
 
+// One problem with this is if images are too small, they'll get stretched by
+// the height 100%.
+//
+// Without stetching, images in Chrome will appear small and the jump to
+// their larger size when a larger srcset image is loaded.
 const MyGalleryImg = styled.img.attrs({ loading: "eager" })`
-  max-height: 100%;
-  max-width: 100%;
+  height: 100%;
   margin: auto;
+  object-fit: contain;
 `
 
 const MyGalleryImgContainer = styled.div`
@@ -144,12 +150,14 @@ export const Gallery = (props: {
       {/** we reuse the common imgix URL in the background and overlay a higher resolution image.
        * This way we'll have an image immediately and can load a higher resolution image gradually.
        */}
-      <GalleryImgThumbnailContainer>
-        <GalleryImgThumbail
-          key={imgixFmt(props.imageUrl)}
-          src={imgixFmt(props.imageUrl)}
-        />
-      </GalleryImgThumbnailContainer>
+      {!isV8Browser() && (
+        <GalleryImgThumbnailContainer>
+          <GalleryImgThumbail
+            key={imgixFmt(props.imageUrl)}
+            src={imgixFmt(props.imageUrl)}
+          />
+        </GalleryImgThumbnailContainer>
+      )}
       <MyGalleryScrollWrap>
         <MyGalleryImgContainer onClick={onClick}>
           <MyGalleryImg
