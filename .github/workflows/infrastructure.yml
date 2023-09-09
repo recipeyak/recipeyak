@@ -14,6 +14,7 @@ concurrency:
 jobs:
   lint_docker:
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -24,6 +25,7 @@ jobs:
 
   lint_shell:
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
