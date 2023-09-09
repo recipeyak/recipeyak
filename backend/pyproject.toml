@@ -151,6 +151,7 @@ module = [
     'icalendar.*',
     'advocate.*',
     'user_sessions.*',
+    'ably.*'
 ]
 ignore_missing_imports = true
 
