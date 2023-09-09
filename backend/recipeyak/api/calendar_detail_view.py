@@ -15,8 +15,24 @@ from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.calendar_list_view import get_scheduled_recipes
 from recipeyak.models import ScheduleEvent
+from ably import AblyRest
+from recipeyak.config import ABLY_API_KEY
+import asyncio
+
+from recipeyak.api.base.drf_json_renderer import JSONRenderer
+
 
 logger = logging.getLogger(__name__)
+
+
+async def publish_calendar_event(
+    scheduled_recipe: ScheduleRecipeSerializer, team_id: int
+) -> None:
+    async with AblyRest(ABLY_API_KEY) as ably:
+        channel = ably.channels.get(f"scheduled_recipe:{team_id}")
+        await channel.publish(
+            "scheduled_recipe_updated", JSONRenderer().render(scheduled_recipe).decode()
+        )
 
 
 class ScheduledRecipeUpdateParams(RequestParams):
@@ -65,14 +81,16 @@ def calendar_detail_patch_view(
         id=scheduled_recipe.recipe_id, name=scheduled_recipe.recipe.name
     )
 
-    return Response(
-        ScheduleRecipeSerializer(
-            id=scheduled_recipe.id,
-            created=scheduled_recipe.created,
-            recipe=recipe,
-            on=scheduled_recipe.on,
-        )
+    res = ScheduleRecipeSerializer(
+        id=scheduled_recipe.id,
+        created=scheduled_recipe.created,
+        recipe=recipe,
+        on=scheduled_recipe.on,
     )
+
+    asyncio.run(publish_calendar_event(res, team_pk))
+
+    return Response(res)
 
 
 def calendar_detail_delete_view(

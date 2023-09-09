@@ -1,10 +1,16 @@
+import { configureAbly, useChannel } from "@ably-labs/react-hooks"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { addWeeks, endOfWeek, startOfWeek, subWeeks } from "date-fns"
 import parseISO from "date-fns/parseISO"
 
 import { CalendarResponse, getCalendarRecipeList } from "@/api"
 import { useTeamId } from "@/hooks"
+import { onSuccess } from "@/queries/scheduledRecipeUpdate"
 import { unwrapEither } from "@/query"
+
+configureAbly({
+  authUrl: "/api/v1/auth/ably",
+})
 
 // NOTE: At a high level we want the UI to be able to subscribe to a range of
 // data, like, all the calendar items with date > X && date < Y. We also want to
@@ -19,6 +25,20 @@ export function useScheduledRecipeList({
 }) {
   const teamID = useTeamId()
   const queryClient = useQueryClient()
+  useChannel("scheduled_recipe:2", (message) => {
+    switch (message.name) {
+      case "scheduled_recipe_updated": {
+        const apiRes = JSON.parse(message.data)
+        onSuccess({
+          queryClient,
+          scheduledRecipeId: apiRes.id,
+          teamID,
+          updatedCalRecipe: apiRes,
+        })
+        break
+      }
+    }
+  })
   return useQuery({
     queryKey: [teamID, "calendar", startOfWeekMs],
     queryFn: () => {

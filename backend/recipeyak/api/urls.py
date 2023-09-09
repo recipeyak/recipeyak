@@ -50,12 +50,14 @@ from recipeyak.api.user_detail_view import user_detail_view
 from recipeyak.api.user_invites_accept_view import user_invites_accept_view
 from recipeyak.api.user_invites_decline_view import user_invites_decline_view
 from recipeyak.api.user_invites_list_view import user_invites_list_view
+from recipeyak.api.ably_detail_view import ably_detail_view
 
 urlpatterns = [
     path("api/v1/t/<int:team_pk>/members/", team_members_list_view),
     path("api/v1/t/<int:team_pk>/members/<int:pk>/", team_members_detail_view),
     path("api/v1/auth/login/", login_user_detail_view),
     path("api/v1/auth/logout/", logout_user_detail_view),
+    path("api/v1/auth/ably/", ably_detail_view),
     path("api/v1/auth/password/change/", password_change_detail_view),
     path("api/v1/auth/password/reset/", password_reset_view),
     path("api/v1/auth/password/reset/confirm/", password_reset_confirm_view),
