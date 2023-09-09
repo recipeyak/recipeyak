@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 
+from ably import AblyRest
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -9,11 +10,11 @@ from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.team_detail_view import get_teams
-from recipeyak.live_updates import AblyRest
+from recipeyak.config import ABLY_API_KEY
 
 
 async def get_token(user_id: str, team_ids: list[int]) -> dict[object, object]:
-    async with AblyRest as ably:
+    async with AblyRest(ABLY_API_KEY) as ably:
         res = await ably.auth.create_token_request(
             {
                 "clientId": user_id,
