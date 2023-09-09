@@ -1,22 +1,42 @@
 from __future__ import annotations
 
+import asyncio
 import logging
 from datetime import date, datetime
 
 import pydantic
+from ably import AblyRest
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from recipeyak.api.base.drf_json_renderer import JSONRenderer
 from recipeyak.api.base.permissions import IsTeamMember
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.calendar_list_view import get_scheduled_recipes
+from recipeyak.config import ABLY_API_KEY
 from recipeyak.models import ScheduleEvent
 
 logger = logging.getLogger(__name__)
+
+
+async def publish_calendar_event_async(
+    scheduled_recipe: ScheduleRecipeSerializer, team_id: int
+) -> None:
+    async with AblyRest(ABLY_API_KEY) as ably:
+        channel = ably.channels[f"scheduled_recipe:{team_id}"]
+        await channel.publish(
+            "scheduled_recipe_updated", JSONRenderer().render(scheduled_recipe).decode()
+        )
+
+
+def publish_calendar_event(
+    scheduled_recipe: ScheduleRecipeSerializer, team_id: int
+) -> None:
+    asyncio.run(publish_calendar_event_async(scheduled_recipe, team_id))
 
 
 class ScheduledRecipeUpdateParams(RequestParams):
@@ -65,14 +85,16 @@ def calendar_detail_patch_view(
         id=scheduled_recipe.recipe_id, name=scheduled_recipe.recipe.name
     )
 
-    return Response(
-        ScheduleRecipeSerializer(
-            id=scheduled_recipe.id,
-            created=scheduled_recipe.created,
-            recipe=recipe,
-            on=scheduled_recipe.on,
-        )
+    res = ScheduleRecipeSerializer(
+        id=scheduled_recipe.id,
+        created=scheduled_recipe.created,
+        recipe=recipe,
+        on=scheduled_recipe.on,
     )
+
+    publish_calendar_event(res, team_pk)
+
+    return Response(res)
 
 
 def calendar_detail_delete_view(

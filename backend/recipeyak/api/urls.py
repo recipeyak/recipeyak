@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from django.urls import path
 
+from recipeyak.api.ably_detail_view import ably_detail_view
 from recipeyak.api.calendar_detail_view import calendar_detail_view
 from recipeyak.api.calendar_generate_link_view import generate_link
 from recipeyak.api.calendar_list_view import calendar_list_view
@@ -56,6 +57,7 @@ urlpatterns = [
     path("api/v1/t/<int:team_pk>/members/<int:pk>/", team_members_detail_view),
     path("api/v1/auth/login/", login_user_detail_view),
     path("api/v1/auth/logout/", logout_user_detail_view),
+    path("api/v1/auth/ably/", ably_detail_view),
     path("api/v1/auth/password/change/", password_change_detail_view),
     path("api/v1/auth/password/reset/", password_reset_view),
     path("api/v1/auth/password/reset/confirm/", password_reset_confirm_view),

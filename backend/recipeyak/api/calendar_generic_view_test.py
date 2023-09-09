@@ -26,11 +26,14 @@ def test_creating_scheduled_recipe(
 
 
 def test_updating_scheduled_recipe(
-    client: APIClient, user: User, team: Team, scheduled_recipe: ScheduledRecipe
+    client: APIClient,
+    user: User,
+    team: Team,
+    scheduled_recipe: ScheduledRecipe,
+    patch_publish_calendar_event: object,
 ) -> None:
     scheduled_recipe.team = team
     scheduled_recipe.save()
-
     url = f"/api/v1/t/{team.id}/calendar/{scheduled_recipe.id}/"
     data = {"on": date(1976, 1, 3)}
     client.force_authenticate(user)
@@ -41,7 +44,11 @@ def test_updating_scheduled_recipe(
 
 
 def test_updating_scheduled_recipe_on_date(
-    client: APIClient, user: User, team: Team, scheduled_recipe: ScheduledRecipe
+    client: APIClient,
+    user: User,
+    team: Team,
+    scheduled_recipe: ScheduledRecipe,
+    patch_publish_calendar_event: object,
 ) -> None:
     """
     ensure updating schedule `on` date records a change event
