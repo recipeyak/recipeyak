@@ -12,6 +12,16 @@ configureAbly({
   authUrl: "/api/v1/auth/ably",
 })
 
+type ScheduledRecipeUpdated = {
+  created: string
+  createdBy: null
+  id: number
+  on: string
+  recipe: { id: number; name: string }
+  team: null
+  user: null
+}
+
 // NOTE: At a high level we want the UI to be able to subscribe to a range of
 // data, like, all the calendar items with date > X && date < Y. We also want to
 // prefetch a bit in the past and future. But react-query doesn't really support
@@ -25,10 +35,11 @@ export function useScheduledRecipeList({
 }) {
   const teamID = useTeamId()
   const queryClient = useQueryClient()
-  useChannel("scheduled_recipe:2", (message) => {
+  useChannel(`scheduled_recipe:${teamID}`, (message) => {
     switch (message.name) {
       case "scheduled_recipe_updated": {
-        const apiRes = JSON.parse(message.data)
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument
+        const apiRes: ScheduledRecipeUpdated = JSON.parse(message.data)
         onSuccess({
           queryClient,
           scheduledRecipeId: apiRes.id,
