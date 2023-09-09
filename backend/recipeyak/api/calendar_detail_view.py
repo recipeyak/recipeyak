@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import logging
 from datetime import date, datetime
 
@@ -10,29 +11,31 @@ from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from recipeyak.api.base.drf_json_renderer import JSONRenderer
 from recipeyak.api.base.permissions import IsTeamMember
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.calendar_list_view import get_scheduled_recipes
+from recipeyak.live_updates import AblyRest
 from recipeyak.models import ScheduleEvent
-from ably import AblyRest
-from recipeyak.config import ABLY_API_KEY
-import asyncio
-
-from recipeyak.api.base.drf_json_renderer import JSONRenderer
-
 
 logger = logging.getLogger(__name__)
 
 
-async def publish_calendar_event(
+async def publish_calendar_event_async(
     scheduled_recipe: ScheduleRecipeSerializer, team_id: int
 ) -> None:
-    async with AblyRest(ABLY_API_KEY) as ably:
-        channel = ably.channels.get(f"scheduled_recipe:{team_id}")
+    async with AblyRest as ably:
+        channel = ably.channels[f"scheduled_recipe:{team_id}"]
         await channel.publish(
             "scheduled_recipe_updated", JSONRenderer().render(scheduled_recipe).decode()
         )
+
+
+def publish_calendar_event(
+    scheduled_recipe: ScheduleRecipeSerializer, team_id: int
+) -> None:
+    asyncio.run(publish_calendar_event_async(scheduled_recipe, team_id))
 
 
 class ScheduledRecipeUpdateParams(RequestParams):
@@ -88,7 +91,7 @@ def calendar_detail_patch_view(
         on=scheduled_recipe.on,
     )
 
-    asyncio.run(publish_calendar_event(res, team_pk))
+    publish_calendar_event(res, team_pk)
 
     return Response(res)
 
