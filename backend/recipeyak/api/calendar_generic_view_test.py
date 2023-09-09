@@ -48,7 +48,7 @@ def test_updating_scheduled_recipe_on_date(
     user: User,
     team: Team,
     scheduled_recipe: ScheduledRecipe,
-    patch_publish_calendar_event,
+    patch_publish_calendar_event: object,
 ) -> None:
     """
     ensure updating schedule `on` date records a change event
