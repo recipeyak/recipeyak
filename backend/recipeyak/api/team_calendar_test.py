@@ -1,5 +1,4 @@
 from datetime import date
-from unittest.mock import patch
 
 import pytest
 from rest_framework import status
@@ -38,18 +37,19 @@ def test_removing_from_team_calendar(
 
 
 def test_updating_team_schedule_recipe(
-    client: APIClient, user: User, team: Team, recipe: Recipe
+    client: APIClient,
+    user: User,
+    team: Team,
+    recipe: Recipe,
+    patch_publish_calendar_event: object,
 ) -> None:
-    with patch(
-        "recipeyak.api.calendar_detail_view.publish_calendar_event", return_value=None
-    ):
-        scheduled = recipe.schedule(on=date(1976, 1, 2), team=team, user=user)
-        url = f"/api/v1/t/{team.pk}/calendar/{scheduled.id}/"
-        data = {"on": date(1976, 1, 3)}
-        client.force_authenticate(user)
-        res = client.patch(url, data)
-        assert res.status_code == status.HTTP_200_OK
-        assert ScheduledRecipe.objects.get(id=scheduled.id).on == date(1976, 1, 3)
+    scheduled = recipe.schedule(on=date(1976, 1, 2), team=team, user=user)
+    url = f"/api/v1/t/{team.pk}/calendar/{scheduled.id}/"
+    data = {"on": date(1976, 1, 3)}
+    client.force_authenticate(user)
+    res = client.patch(url, data)
+    assert res.status_code == status.HTTP_200_OK
+    assert ScheduledRecipe.objects.get(id=scheduled.id).on == date(1976, 1, 3)
 
 
 def test_fetching_team_calendar_v2(

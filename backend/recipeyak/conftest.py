@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from datetime import date
 from logging import getLogger
-from typing import Any
+from typing import Any, Iterator
+from unittest.mock import patch
 
 import pytest
 from rest_framework.test import APIClient
@@ -215,3 +216,11 @@ def team_with_recipes_no_members(recipe: Recipe, recipe_pie: Recipe) -> Team:
 @pytest.fixture
 def scheduled_recipe(recipe: Recipe, user: User) -> ScheduledRecipe:
     return ScheduledRecipe.objects.create(recipe=recipe, user=user, on=date(1976, 7, 6))
+
+
+@pytest.fixture
+def patch_publish_calendar_event() -> Iterator[None]:
+    with patch(
+        "recipeyak.api.calendar_detail_view.publish_calendar_event", return_value=None
+    ):
+        yield
