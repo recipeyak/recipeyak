@@ -71,7 +71,7 @@ def calendar_list_post_view(request: AuthedRequest, team_pk: int) -> Response:
         team=get_object_or_404(get_teams(request.user), pk=team_pk),
     )
     res = serialize_scheduled_recipe(
-        scheduled_recipe, user_id=str(request.user.id), team_id=str(team_pk)
+        scheduled_recipe, user_id=request.user.id, team_id=team_pk
     )
 
     publish_calendar_event(res, team_id=team_pk)
