@@ -63,7 +63,13 @@ def serialize_scheduled_recipe(
             name=scheduled_recipe.recipe.name,
             author=scheduled_recipe.recipe.author,
             archivedAt=scheduled_recipe.recipe.archived_at,
-            primaryImage=None,
+            primaryImage=RecipePrimaryImageSerializer(
+                id=str(scheduled_recipe.recipe.primary_image.id),
+                url=scheduled_recipe.recipe.primary_image.public_url(),
+                backgroundUrl=scheduled_recipe.recipe.primary_image.background_url,
+            )
+            if scheduled_recipe.recipe.primary_image
+            else None,
         ),
         on=scheduled_recipe.on,
         user=user_id,
