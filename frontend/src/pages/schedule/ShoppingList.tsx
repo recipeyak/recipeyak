@@ -202,6 +202,7 @@ function RecipeAccordian({
               <Link
                 key={r.scheduledRecipeId}
                 to={pathRecipeDetail({ recipeId: r.recipeId.toString() })}
+                className="text-truncate"
               >
                 {r.recipeName}
               </Link>
