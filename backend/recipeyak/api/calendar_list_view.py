@@ -4,7 +4,7 @@ from datetime import date
 
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
-from rest_framework import serializers, status
+from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import IsAuthenticated
@@ -13,10 +13,11 @@ from typing_extensions import TypedDict
 
 from recipeyak.api.base.permissions import IsTeamMember
 from recipeyak.api.base.request import AuthedRequest
-from recipeyak.api.base.serialization import BaseModelSerializer, RequestParams
-from recipeyak.api.serializers.recipe import RecipeSerializer
+from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.calendar_serialization import serialize_scheduled_recipe
 from recipeyak.api.team_detail_view import get_teams
 from recipeyak.models import Membership, ScheduledRecipe, Team, filter_recipes, get_team
+from recipeyak.realtime import publish_calendar_event
 
 
 class CalSettings(TypedDict):
@@ -56,26 +57,7 @@ def get_scheduled_recipes(team_pk: int) -> QuerySet[ScheduledRecipe]:
     )
 
 
-class ScheduledRecipeSerializer(BaseModelSerializer):
-    recipe = RecipeSerializer(
-        fields=("id", "name", "author", "primaryImage", "archivedAt")
-    )
-    createdBy = serializers.SerializerMethodField()
-
-    class Meta:
-        model = ScheduledRecipe
-        fields = ("id", "recipe", "created", "on", "team", "user", "createdBy")
-
-    def get_createdBy(self, obj: ScheduledRecipe) -> dict[str, str | int | None] | None:
-        if obj.created_by is None:
-            return None
-        return {
-            "id": obj.created_by.id,
-            "name": obj.created_by.name,
-            "avatar_url": obj.created_by.avatar_url,
-        }
-
-
+# FIXME: Handle creation
 def calendar_list_post_view(request: AuthedRequest, team_pk: int) -> Response:
     params = ScheduledRecipeCreateParams.parse_obj(request.data)
 
@@ -88,8 +70,13 @@ def calendar_list_post_view(request: AuthedRequest, team_pk: int) -> Response:
         user=request.user,
         team=get_object_or_404(get_teams(request.user), pk=team_pk),
     )
+    res = serialize_scheduled_recipe(
+        scheduled_recipe, user_id=request.user.id, team_id=team_pk
+    )
+
+    publish_calendar_event(res, team_id=team_pk)
     return Response(
-        ScheduledRecipeSerializer(scheduled_recipe, dangerously_allow_db=True).data,
+        res,
         status=status.HTTP_201_CREATED,
     )
 
@@ -106,9 +93,12 @@ def calendar_list_get_view(request: AuthedRequest, team_pk: int) -> Response:
 
     queryset = get_scheduled_recipes(team_pk).filter(on__gte=start).filter(on__lte=end)
 
-    scheduled_recipes = ScheduledRecipeSerializer(
-        queryset, many=True, context={"created_by"}
-    ).data
+    scheduled_recipes = [
+        serialize_scheduled_recipe(
+            scheduled_recipe, user_id=(request.user.id), team_id=(team_pk)
+        )
+        for scheduled_recipe in queryset
+    ]
 
     settings = get_cal_settings(request=request, team_pk=team_pk)
 

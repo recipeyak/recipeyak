@@ -5,7 +5,8 @@ import parseISO from "date-fns/parseISO"
 
 import { CalendarResponse, getCalendarRecipeList } from "@/api"
 import { useTeamId } from "@/hooks"
-import { onSuccess } from "@/queries/scheduledRecipeUpdate"
+import { onRecipeDeletion } from "@/queries/scheduledRecipeDelete"
+import { onScheduledRecipeUpdateSuccess } from "@/queries/scheduledRecipeUpdate"
 import { unwrapEither } from "@/query"
 
 configureAbly({
@@ -40,11 +41,20 @@ export function useScheduledRecipeList({
       case "scheduled_recipe_updated": {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument
         const apiRes: ScheduledRecipeUpdated = JSON.parse(message.data)
-        onSuccess({
+        onScheduledRecipeUpdateSuccess({
           queryClient,
           scheduledRecipeId: apiRes.id,
           teamID,
           updatedCalRecipe: apiRes,
+        })
+        break
+      }
+      case "scheduled_recipe_delete": {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument
+        const apiRes: { recipeId: number } = JSON.parse(message.data)
+        onRecipeDeletion(queryClient, {
+          teamId: teamID,
+          scheduledRecipeId: apiRes.recipeId,
         })
         break
       }
