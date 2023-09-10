@@ -107,13 +107,14 @@ export function useScheduleRecipeCreate() {
             if (data == null) {
               return data
             }
-            const updatedScheduledRecipes: ICalRecipe[] =
-              data.scheduledRecipes.map((x) => {
-                if (x.id === context?.optimisticScheduledRecipeId) {
-                  return response
-                }
-                return x
-              })
+            const updatedScheduledRecipes: ICalRecipe[] = [
+              ...data.scheduledRecipes.filter(
+                (x) =>
+                  x.id !== context?.optimisticScheduledRecipeId &&
+                  x.id !== response.id,
+              ),
+              response,
+            ]
             return {
               ...data,
               scheduledRecipes: updatedScheduledRecipes,

@@ -23,11 +23,14 @@ def publish_calendar_event(
     asyncio.run(_publish_calendar_event_async(scheduled_recipe, team_id))
 
 
-async def _publish_calendar_event_delete_async(team_id: int) -> None:
+async def _publish_calendar_event_delete_async(recipe_id: int, team_id: int) -> None:
     async with AblyRest(ABLY_API_KEY) as ably:
         channel = ably.channels[f"scheduled_recipe:{team_id}"]
-        await channel.publish("scheduled_recipe_delete", {})
+        await channel.publish(
+            "scheduled_recipe_delete",
+            JSONRenderer().render({"recipeId": recipe_id}).decode(),
+        )
 
 
-def publish_calendar_event_deleted(team_id: int) -> None:
-    asyncio.run(_publish_calendar_event_delete_async(team_id))
+def publish_calendar_event_deleted(*, recipe_id: int, team_id: int) -> None:
+    asyncio.run(_publish_calendar_event_delete_async(recipe_id, team_id))

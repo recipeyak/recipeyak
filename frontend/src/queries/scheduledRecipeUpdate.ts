@@ -20,7 +20,7 @@ function scheduledRecipeUpdate({
   )
 }
 
-export function onSuccess(params: {
+export function onScheduledRecipeUpdateSuccess(params: {
   queryClient: QueryClient
   teamID: number
   scheduledRecipeId: number
@@ -35,18 +35,13 @@ export function onSuccess(params: {
       if (oldData == null) {
         return oldData
       }
-      const updatedScheduledRecipes = oldData.scheduledRecipes.map(
-        (calRecipe) => {
-          if (calRecipe.id === params.scheduledRecipeId) {
-            return params.updatedCalRecipe
-          } else {
-            return calRecipe
-          }
-        },
+      const updatedScheduledRecipes = oldData.scheduledRecipes.filter(
+        (calRecipe) => calRecipe.id !== params.scheduledRecipeId,
       )
+
       return {
         ...oldData,
-        scheduledRecipes: updatedScheduledRecipes,
+        scheduledRecipes: [...updatedScheduledRecipes, params.updatedCalRecipe],
       }
     },
   )
@@ -87,7 +82,7 @@ export function useScheduledRecipeUpdate() {
       }
     },
     onSuccess: (response, vars) => {
-      onSuccess({
+      onScheduledRecipeUpdateSuccess({
         queryClient,
         teamID: vars.teamID,
         scheduledRecipeId: vars.scheduledRecipeId,

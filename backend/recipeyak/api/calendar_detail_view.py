@@ -54,7 +54,7 @@ def calendar_detail_delete_view(
     request: AuthedRequest, team_pk: int, scheduled_recipe_id: int
 ) -> Response:
     get_scheduled_recipes(team_pk).filter(id=scheduled_recipe_id).delete()
-    publish_calendar_event_deleted(team_id=team_pk)
+    publish_calendar_event_deleted(recipe_id=scheduled_recipe_id, team_id=team_pk)
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
