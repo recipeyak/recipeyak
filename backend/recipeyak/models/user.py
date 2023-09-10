@@ -121,6 +121,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self) -> str:
         return self.email
 
+    def get_display_name(self) -> str:
+        return self.name or self.email
+
     # deprecated
     # required for admin
     def has_perm(self, perm: object, obj: object = None) -> bool:

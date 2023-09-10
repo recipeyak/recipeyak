@@ -1,67 +1,27 @@
 from __future__ import annotations
 
-import asyncio
 import logging
-from datetime import date, datetime
+from datetime import date
 
-import pydantic
-from ably import AblyRest
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from recipeyak.api.base.drf_json_renderer import JSONRenderer
 from recipeyak.api.base.permissions import IsTeamMember
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.calendar_list_view import get_scheduled_recipes
-from recipeyak.config import ABLY_API_KEY
+from recipeyak.api.calendar_serialization import serialize_scheduled_recipe
 from recipeyak.models import ScheduleEvent
+from recipeyak.realtime import publish_calendar_event, publish_calendar_event_deleted
 
 logger = logging.getLogger(__name__)
 
 
-async def publish_calendar_event_async(
-    scheduled_recipe: ScheduleRecipeSerializer, team_id: int
-) -> None:
-    async with AblyRest(ABLY_API_KEY) as ably:
-        channel = ably.channels[f"scheduled_recipe:{team_id}"]
-        await channel.publish(
-            "scheduled_recipe_updated", JSONRenderer().render(scheduled_recipe).decode()
-        )
-
-
-def publish_calendar_event(
-    scheduled_recipe: ScheduleRecipeSerializer, team_id: int
-) -> None:
-    asyncio.run(publish_calendar_event_async(scheduled_recipe, team_id))
-
-
 class ScheduledRecipeUpdateParams(RequestParams):
     on: date | None
-
-
-class CreatedBySerializer(pydantic.BaseModel):
-    id: int
-    name: str
-    avatar_url: str
-
-
-class RecipeMetadataSerializer(pydantic.BaseModel):
-    id: int
-    name: str
-
-
-class ScheduleRecipeSerializer(pydantic.BaseModel):
-    id: int
-    created: datetime
-    createdBy: CreatedBySerializer | None
-    team: str | None
-    user: str | None
-    recipe: RecipeMetadataSerializer
-    on: date
 
 
 def calendar_detail_patch_view(
@@ -81,15 +41,8 @@ def calendar_detail_patch_view(
             actor=request.user,
         )
 
-    recipe = RecipeMetadataSerializer(
-        id=scheduled_recipe.recipe_id, name=scheduled_recipe.recipe.name
-    )
-
-    res = ScheduleRecipeSerializer(
-        id=scheduled_recipe.id,
-        created=scheduled_recipe.created,
-        recipe=recipe,
-        on=scheduled_recipe.on,
+    res = serialize_scheduled_recipe(
+        scheduled_recipe, user_id=str(request.user.id), team_id=str(team_pk)
     )
 
     publish_calendar_event(res, team_pk)
@@ -101,6 +54,7 @@ def calendar_detail_delete_view(
     request: AuthedRequest, team_pk: int, scheduled_recipe_id: int
 ) -> Response:
     get_scheduled_recipes(team_pk).filter(id=scheduled_recipe_id).delete()
+    publish_calendar_event_deleted(team_id=team_pk)
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
