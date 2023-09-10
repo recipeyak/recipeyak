@@ -76,7 +76,7 @@ def calendar_list_post_view(request: AuthedRequest, team_pk: int) -> Response:
 
     publish_calendar_event(res, team_id=team_pk)
     return Response(
-        scheduled_recipe,
+        res,
         status=status.HTTP_201_CREATED,
     )
 
