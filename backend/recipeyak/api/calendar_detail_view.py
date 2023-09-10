@@ -42,7 +42,7 @@ def calendar_detail_patch_view(
         )
 
     res = serialize_scheduled_recipe(
-        scheduled_recipe, user_id=str(request.user.id), team_id=str(team_pk)
+        scheduled_recipe, user_id=(request.user.id), team_id=(team_pk)
     )
 
     publish_calendar_event(res, team_pk)

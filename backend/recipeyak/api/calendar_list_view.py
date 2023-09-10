@@ -95,7 +95,7 @@ def calendar_list_get_view(request: AuthedRequest, team_pk: int) -> Response:
 
     scheduled_recipes = [
         serialize_scheduled_recipe(
-            scheduled_recipe, user_id=str(request.user.id), team_id=str(team_pk)
+            scheduled_recipe, user_id=(request.user.id), team_id=(team_pk)
         )
         for scheduled_recipe in queryset
     ]

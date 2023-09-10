@@ -21,23 +21,32 @@ class CreatedBySerializer(pydantic.BaseModel):
     avatar_url: str
 
 
+class RecipePrimaryImageSerializer(pydantic.BaseModel):
+    id: str
+    url: str
+    backgroundUrl: str | None
+
+
 class RecipeMetadataSerializer(pydantic.BaseModel):
     id: int
     name: str
+    author: str | None = None
+    archivedAt: datetime | None = None
+    primaryImage: RecipePrimaryImageSerializer | None = None
 
 
 class ScheduleRecipeSerializer(pydantic.BaseModel):
     id: int
     created: datetime
     createdBy: CreatedBySerializer | None
-    team: str | None
-    user: str | None
+    team: int | None
+    user: int | None
     recipe: RecipeMetadataSerializer
     on: date
 
 
 def serialize_scheduled_recipe(
-    scheduled_recipe: ScheduledRecipe, user_id: str, team_id: str
+    scheduled_recipe: ScheduledRecipe, user_id: int, team_id: int
 ) -> ScheduleRecipeSerializer:
     return ScheduleRecipeSerializer(
         id=scheduled_recipe.id,
@@ -50,7 +59,11 @@ def serialize_scheduled_recipe(
         if scheduled_recipe.created_by
         else None,
         recipe=RecipeMetadataSerializer(
-            id=scheduled_recipe.recipe_id, name=scheduled_recipe.recipe.name
+            id=scheduled_recipe.recipe_id,
+            name=scheduled_recipe.recipe.name,
+            author=scheduled_recipe.recipe.author,
+            archivedAt=scheduled_recipe.recipe.archived_at,
+            primaryImage=None,
         ),
         on=scheduled_recipe.on,
         user=user_id,
