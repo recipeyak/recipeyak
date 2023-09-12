@@ -24,7 +24,7 @@ const MarkdownWrapper = styled.div`
   }
 
   p:not(:last-child) {
-    margin-bottom: 1em;
+    margin-bottom: 0.5rem;
   }
 
   blockquote {
