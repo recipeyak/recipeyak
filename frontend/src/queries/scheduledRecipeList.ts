@@ -10,7 +10,7 @@ import { onScheduledRecipeUpdateSuccess } from "@/queries/scheduledRecipeUpdate"
 import { unwrapEither } from "@/query"
 
 configureAbly({
-  authUrl: "/api/v1/auth/ably",
+  authUrl: "/api/v1/auth/ably/",
 })
 
 type ScheduledRecipeUpdated = {
