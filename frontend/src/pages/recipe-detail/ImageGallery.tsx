@@ -27,8 +27,18 @@ const MyGalleryImg = styled.img.attrs({ loading: "eager" })`
 `
 
 const MyGalleryImgContainer = styled.div`
+  min-height: 100%;
+  min-width: 100%;
   display: flex;
-  height: 100%;
+  scroll-snap-align: start;
+`
+
+const MySlideshowContainer = styled.div`
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
 `
 
 const MyGalleryScrollWrap = styled.div`
@@ -126,30 +136,43 @@ export const Gallery = (props: {
       props.onPrevious()
     }
   }
+  const imageUrls = [
+    props.imageUrl,
+    props.imageUrl,
+    props.imageUrl,
+    props.imageUrl,
+    props.imageUrl,
+  ]
 
   const starColor = props.isPrimary ? "#ffbf00" : undefined
   return (
     <MyGalleryContainer>
       <MyGalleryBackground />
       <MyGalleryScrollWrap>
-        <MyGalleryImgContainer onClick={onClick}>
-          <MyGalleryImg
-            key={imgixFmt(props.imageUrl)}
-            src={imgixFmt(props.imageUrl)}
-            onLoad={(e) => {
-              // The common imigx format `src` will be in browser cache from the
-              // initial recipe page load. onLoad should then trigger loading a
-              // larger image by setting the `srcset`.
-              //
-              // We can't set the `srcset` initially, because Safari will show
-              // no image until it loads a larger image. By setting the `src`
-              // and waiting to set `srcset`, we'll see an image immediately in
-              // the gallery, served from cache.
-              e.currentTarget.srcset = buildSrcSetUrls(props.imageUrl)
-            }}
-            onClick={onClick}
-          />
-        </MyGalleryImgContainer>
+        <MySlideshowContainer onClick={onClick}>
+          {imageUrls.map((url, i) => {
+            return (
+              <MyGalleryImgContainer key={i}>
+                <MyGalleryImg
+                  key={imgixFmt(url)}
+                  src={imgixFmt(url)}
+                  onLoad={(e) => {
+                    // The common imigx format `src` will be in browser cache from the
+                    // initial recipe page load. onLoad should then trigger loading a
+                    // larger image by setting the `srcset`.
+                    //
+                    // We can't set the `srcset` initially, because Safari will show
+                    // no image until it loads a larger image. By setting the `src`
+                    // and waiting to set `srcset`, we'll see an image immediately in
+                    // the gallery, served from cache.
+                    e.currentTarget.srcset = buildSrcSetUrls(url)
+                  }}
+                  onClick={onClick}
+                />
+              </MyGalleryImgContainer>
+            )
+          })}
+        </MySlideshowContainer>
         <MyGalleryControlOverlay>
           <TopRow>
             {props.enableStarButton && (
