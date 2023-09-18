@@ -693,7 +693,8 @@ function useGallery(
     onClose,
     onStar,
     openPrimaryImage,
-    image,
+    focusedImageId: image?.id,
+    images: uploads,
   }
 }
 function isNote(x: TimelineItem): x is INote {
@@ -923,7 +924,8 @@ export function Recipe(props: IRecipeProps) {
     onClose,
     onNext,
     onPrevious,
-    image,
+    images,
+    focusedImageId,
     openPrimaryImage,
   } = useGallery(uploads, myRecipe?.id ?? null, myRecipe?.primaryImage ?? null)
 
@@ -979,10 +981,10 @@ export function Recipe(props: IRecipeProps) {
           </Button>
         </RecipeBanner>
       )}
-      {image != null && (
+      {focusedImageId != null && (
         <Gallery
-          imageUrl={image.url}
-          isPrimary={image.isPrimary}
+          focusedImageId={focusedImageId}
+          images={images}
           hasPrevious={hasPrevious}
           hasNext={hasNext}
           onPrevious={onPrevious}

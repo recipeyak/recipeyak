@@ -1,6 +1,7 @@
 import React from "react"
 import { ChevronLeft, ChevronRight, Star, X } from "react-feather"
 
+import { Upload } from "@/api"
 import { Button } from "@/components/Buttons"
 import { styled } from "@/theme"
 import { imgixFmt } from "@/utils/url"
@@ -116,8 +117,8 @@ function buildSrcSetUrls(u: string): string {
 
 export const Gallery = (props: {
   onClose: () => void
-  imageUrl: string
-  readonly isPrimary: boolean
+  focusedImageId: string
+  images: Upload[]
   onNext: () => void
   onPrevious: () => void
   onStar: () => void
@@ -136,15 +137,9 @@ export const Gallery = (props: {
       props.onPrevious()
     }
   }
-  const imageUrls = [
-    props.imageUrl,
-    props.imageUrl,
-    props.imageUrl,
-    props.imageUrl,
-    props.imageUrl,
-  ]
+  const imageUrls = props.images.map((x) => x.url)
 
-  const starColor = props.isPrimary ? "#ffbf00" : undefined
+  const starColor = false ? "#ffbf00" : undefined
   return (
     <MyGalleryContainer>
       <MyGalleryBackground />
