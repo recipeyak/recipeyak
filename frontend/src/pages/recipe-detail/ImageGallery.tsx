@@ -32,6 +32,7 @@ const MyGalleryImgContainer = styled.div`
   min-width: 100%;
   display: flex;
   scroll-snap-align: start;
+  position: relative;
 `
 
 const MySlideshowContainer = styled.div`
@@ -94,7 +95,7 @@ const NavButtonRow = styled.div`
 const TopRow = styled.div`
   display: flex;
   margin-bottom: auto;
-  justify-content: space-between;
+  //justify-content: space-between;
 
   width: 100%;
   grid-area: 1/1;
@@ -148,6 +149,18 @@ export const Gallery = (props: {
           {imageUrls.map((url, i) => {
             return (
               <MyGalleryImgContainer key={i}>
+                <MyGalleryControlOverlay>
+                  <TopRow>
+                    {props.enableStarButton && (
+                      <MyGalleryButton
+                        className="mr-auto"
+                        onClick={props.onStar}
+                      >
+                        <Star color={starColor} fill={starColor} />
+                      </MyGalleryButton>
+                    )}
+                  </TopRow>
+                </MyGalleryControlOverlay>
                 <MyGalleryImg
                   key={imgixFmt(url)}
                   src={imgixFmt(url)}
@@ -170,11 +183,6 @@ export const Gallery = (props: {
         </MySlideshowContainer>
         <MyGalleryControlOverlay>
           <TopRow>
-            {props.enableStarButton && (
-              <MyGalleryButton className="mr-auto" onClick={props.onStar}>
-                <Star color={starColor} fill={starColor} />
-              </MyGalleryButton>
-            )}
             <MyGalleryButton className="ml-auto" onClick={props.onClose}>
               <X />
             </MyGalleryButton>
