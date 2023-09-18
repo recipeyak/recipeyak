@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { ChevronLeft, ChevronRight, Star, X } from "react-feather"
 
 import { Upload } from "@/api"
@@ -138,7 +138,12 @@ export const Gallery = (props: {
       props.onPrevious()
     }
   }
-  const imageUrls = props.images.map((x) => x.url)
+
+  useEffect(() => {
+    document
+      .getElementById(`gallery-image-${props.focusedImageId}`)
+      ?.scrollIntoView()
+  }, [props.focusedImageId])
 
   const starColor = false ? "#ffbf00" : undefined
   return (
@@ -146,9 +151,9 @@ export const Gallery = (props: {
       <MyGalleryBackground />
       <MyGalleryScrollWrap>
         <MySlideshowContainer onClick={onClick}>
-          {imageUrls.map((url, i) => {
+          {props.images.map((x, i) => {
             return (
-              <MyGalleryImgContainer key={i}>
+              <MyGalleryImgContainer key={x.id}>
                 <MyGalleryControlOverlay>
                   <TopRow>
                     {props.enableStarButton && (
@@ -162,8 +167,9 @@ export const Gallery = (props: {
                   </TopRow>
                 </MyGalleryControlOverlay>
                 <MyGalleryImg
-                  key={imgixFmt(url)}
-                  src={imgixFmt(url)}
+                  id={`gallery-image-${x.id}`}
+                  key={imgixFmt(x.url)}
+                  src={imgixFmt(x.url)}
                   onLoad={(e) => {
                     // The common imigx format `src` will be in browser cache from the
                     // initial recipe page load. onLoad should then trigger loading a
@@ -173,7 +179,7 @@ export const Gallery = (props: {
                     // no image until it loads a larger image. By setting the `src`
                     // and waiting to set `srcset`, we'll see an image immediately in
                     // the gallery, served from cache.
-                    e.currentTarget.srcset = buildSrcSetUrls(url)
+                    e.currentTarget.srcset = buildSrcSetUrls(x.url)
                   }}
                   onClick={onClick}
                 />
