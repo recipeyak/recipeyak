@@ -694,6 +694,9 @@ function useGallery(
     onStar,
     openPrimaryImage,
     focusedImageId: image?.id,
+    setFocusedImageId: (id: string) => {
+      setGalleryImage({ id })
+    },
     images: uploads,
   }
 }
@@ -926,6 +929,7 @@ export function Recipe(props: IRecipeProps) {
     onPrevious,
     images,
     focusedImageId,
+    setFocusedImageId,
     openPrimaryImage,
   } = useGallery(uploads, myRecipe?.id ?? null, myRecipe?.primaryImage ?? null)
 
@@ -984,6 +988,7 @@ export function Recipe(props: IRecipeProps) {
       {focusedImageId != null && (
         <Gallery
           focusedImageId={focusedImageId}
+          setFocusedImageId={setFocusedImageId}
           images={images}
           hasPrevious={hasPrevious}
           hasNext={hasNext}

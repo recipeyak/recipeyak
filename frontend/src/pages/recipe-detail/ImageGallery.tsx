@@ -1,5 +1,6 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { ChevronLeft, ChevronRight, Star, X } from "react-feather"
+import { useIntersectionObserver } from "usehooks-ts"
 
 import { Upload } from "@/api"
 import { Button } from "@/components/Buttons"
@@ -116,9 +117,57 @@ function buildSrcSetUrls(u: string): string {
   return srcSet
 }
 
+function GalleryImg(props: {
+  image: Upload
+  isPrimary: boolean
+  onVisibilityChange: (visible: boolean) => void
+}) {
+  const ref = useRef<HTMLDivElement | null>(null)
+  const entry = useIntersectionObserver(ref, { threshold: 1 })
+  const isVisible = !!entry?.isIntersecting
+
+  useEffect(() => {
+    props.onVisibilityChange(isVisible)
+  }, [props, isVisible])
+
+  const starColor = props.isPrimary ? "#ffbf00" : undefined
+  return (
+    <MyGalleryImgContainer ref={ref}>
+      <MyGalleryControlOverlay>
+        <TopRow>
+          <MyGalleryButton className="mr-auto" onClick={() => {}}>
+            <Star color={starColor} fill={starColor} />
+          </MyGalleryButton>
+        </TopRow>
+      </MyGalleryControlOverlay>
+      <MyGalleryImg
+        id={`gallery-image-${props.image.id}`}
+        key={imgixFmt(props.image.url)}
+        src={imgixFmt(props.image.url)}
+        onLoad={(e) => {
+          // The common imigx format `src` will be in browser cache from the
+          // initial recipe page load. onLoad should then trigger loading a
+          // larger image by setting the `srcset`.
+          //
+          // We can't set the `srcset` initially, because Safari will show
+          // no image until it loads a larger image. By setting the `src`
+          // and waiting to set `srcset`, we'll see an image immediately in
+          // the gallery, served from cache.
+          e.currentTarget.srcset = buildSrcSetUrls(props.image.url)
+        }}
+        onClick={() => {}}
+      />
+    </MyGalleryImgContainer>
+  )
+}
+function scrollToGalleryImage(id: string) {
+  document.getElementById(`gallery-image-${id}`)?.scrollIntoView()
+}
+
 export const Gallery = (props: {
   onClose: () => void
   focusedImageId: string
+  setFocusedImageId: (_: string) => void
   images: Upload[]
   onNext: () => void
   onPrevious: () => void
@@ -127,63 +176,56 @@ export const Gallery = (props: {
   enableStarButton: boolean
   hasPrevious: boolean
 }) => {
+  const [currentImageId, setImageId] = useState<string>()
+  const currentImageIndex = props.images.findIndex(
+    (x) => x.id === currentImageId,
+  )
+
+  const onNext = () => {
+    if (nextImage) {
+      scrollToGalleryImage(nextImage.id)
+    }
+  }
+  const onPrevious = () => {
+    if (previousImage) {
+      scrollToGalleryImage(previousImage.id)
+    }
+  }
+  const previousImage: Upload | undefined = props.images[currentImageIndex - 1]
+  const nextImage: Upload | undefined = props.images[currentImageIndex + 1]
   // navigate forward and back depending on horizontal click position.
   const onClick = (e: React.MouseEvent) => {
     const isRight = e.screenX / window.screen.width > 0.5
     const isLeft = !isRight
     if (props.hasNext && isRight) {
-      props.onNext()
+      onNext()
     }
     if (props.hasPrevious && isLeft) {
-      props.onPrevious()
+      onPrevious()
     }
   }
 
   useEffect(() => {
-    document
-      .getElementById(`gallery-image-${props.focusedImageId}`)
-      ?.scrollIntoView()
+    scrollToGalleryImage(props.focusedImageId)
   }, [props.focusedImageId])
 
-  const starColor = false ? "#ffbf00" : undefined
   return (
     <MyGalleryContainer>
       <MyGalleryBackground />
       <MyGalleryScrollWrap>
         <MySlideshowContainer onClick={onClick}>
-          {props.images.map((x, i) => {
+          {props.images.map((x) => {
             return (
-              <MyGalleryImgContainer key={x.id}>
-                <MyGalleryControlOverlay>
-                  <TopRow>
-                    {props.enableStarButton && (
-                      <MyGalleryButton
-                        className="mr-auto"
-                        onClick={props.onStar}
-                      >
-                        <Star color={starColor} fill={starColor} />
-                      </MyGalleryButton>
-                    )}
-                  </TopRow>
-                </MyGalleryControlOverlay>
-                <MyGalleryImg
-                  id={`gallery-image-${x.id}`}
-                  key={imgixFmt(x.url)}
-                  src={imgixFmt(x.url)}
-                  onLoad={(e) => {
-                    // The common imigx format `src` will be in browser cache from the
-                    // initial recipe page load. onLoad should then trigger loading a
-                    // larger image by setting the `srcset`.
-                    //
-                    // We can't set the `srcset` initially, because Safari will show
-                    // no image until it loads a larger image. By setting the `src`
-                    // and waiting to set `srcset`, we'll see an image immediately in
-                    // the gallery, served from cache.
-                    e.currentTarget.srcset = buildSrcSetUrls(x.url)
-                  }}
-                  onClick={onClick}
-                />
-              </MyGalleryImgContainer>
+              <GalleryImg
+                key={x.id}
+                isPrimary={x.isPrimary}
+                onVisibilityChange={(v) => {
+                  if (v) {
+                    setImageId(x.id)
+                  }
+                }}
+                image={x}
+              />
             )
           })}
         </MySlideshowContainer>
@@ -194,13 +236,13 @@ export const Gallery = (props: {
             </MyGalleryButton>
           </TopRow>
           <NavButtonRow>
-            {props.hasPrevious && (
-              <MyGalleryButton onClick={props.onPrevious} className="mr-auto">
+            {previousImage != null && (
+              <MyGalleryButton onClick={onPrevious} className="mr-auto">
                 <ChevronLeft />
               </MyGalleryButton>
             )}
-            {props.hasNext && (
-              <MyGalleryButton onClick={props.onNext} className="ml-auto">
+            {nextImage != null && (
+              <MyGalleryButton onClick={onNext} className="ml-auto">
                 <ChevronRight />
               </MyGalleryButton>
             )}
