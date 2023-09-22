@@ -20,3 +20,17 @@ export function imgixFmt(url: string) {
   u.searchParams.set("fit", "clip")
   return u.toString()
 }
+
+/**
+ *  Open graph images are recommended to be 1200x630, so we use Imgix to crop.
+ */
+export function formatImgOpenGraph(x: string): string {
+  if (!x) {
+    return x
+  }
+  const u = new URL(x)
+  u.searchParams.set("w", "1200")
+  u.searchParams.set("h", "910")
+  u.searchParams.set("fit", "crop")
+  return u.toString()
+}

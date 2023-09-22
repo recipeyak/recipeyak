@@ -18,10 +18,11 @@ export function Box({
   wrap,
   lineHeight,
   style,
+  onClick,
 }: {
   dir?: "col" | "row"
   children: React.ReactNode
-  space?: "between"
+  space?: "between" | "end"
   m?: 0 | 1 | 2 | 3 | 4
   mb?: 0 | 1 | 2 | 3 | 4
   mt?: 0 | 1 | 2 | 3 | 4
@@ -34,9 +35,11 @@ export function Box({
   wrap?: true
   lineHeight?: "tight"
   style?: React.CSSProperties
+  onClick?: () => void
 }) {
   return (
     <div
+      onClick={onClick}
       className={cls(
         "d-flex",
         dir === "col" && "flex-column",
@@ -63,6 +66,7 @@ export function Box({
         gap === 3 && "gap-3",
         gap === 4 && "gap-4",
         space === "between" && "flex-space-between",
+        space === "end" && "justify-end",
         align === "center" && "align-items-center",
         align === "start" && "align-items-start",
         align === "end" && "align-items-end",

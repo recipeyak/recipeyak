@@ -111,6 +111,10 @@ function Step({
   )
 }
 
+export function StepView({ text }: { text: string }) {
+  return <Markdown className="selectable">{normalizeUnitsFracs(text)}</Markdown>
+}
+
 function StepBody({
   recipeID,
   text: propText,
@@ -218,7 +222,7 @@ function StepBody({
       </Box>
     </form>
   ) : (
-    <Markdown className="selectable">{normalizeUnitsFracs(text)}</Markdown>
+    <StepView text={text} />
   )
 
   return (

@@ -25,6 +25,7 @@ import { Helmet } from "@/components/Helmet"
 import { ScrollRestore } from "@/components/ScrollRestore"
 import { useIsLoggedIn, useUserTheme } from "@/hooks"
 import NotFound from "@/pages/404/404.page"
+import CookDetailPage from "@/pages/cook-detail/CookDetail.page"
 import Home from "@/pages/index/Index.page"
 import Login from "@/pages/login/Login.page"
 import PasswordChangePage from "@/pages/password-change/PasswordChange.page"
@@ -42,6 +43,7 @@ import TeamDetailPage from "@/pages/team-detail/TeamDetail.page"
 import TeamInvitePage from "@/pages/team-invite/TeamInvite.page"
 import TeamsListPage from "@/pages/team-list/TeamList.page"
 import {
+  pathCookDetail,
   pathHome,
   pathLogin,
   pathPassword,
@@ -237,6 +239,11 @@ function AppRouter() {
                   exact
                   path={pathRecipeDetail.pattern}
                   component={RecipeDetailPage}
+                />
+                <PrivateRoute
+                  exact
+                  path={pathCookDetail.pattern}
+                  component={CookDetailPage}
                 />
                 <PrivateRoute
                   exact
