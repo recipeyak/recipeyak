@@ -12,6 +12,7 @@ import {
 } from "@/components/Dropdown"
 import { Chevron } from "@/components/icons"
 import { ScheduleModal } from "@/pages/recipe-detail/ScheduleModal"
+import { pathCookDetail } from "@/paths"
 import { useRecipeDelete } from "@/queries/recipeDelete"
 import { useRecipeUpdate } from "@/queries/recipeUpdate"
 import { toast } from "@/toast"
@@ -116,6 +117,11 @@ export function Dropdown({
         <DropdownItemButton onClick={handleSchedule}>
           Schedule
         </DropdownItemButton>
+        <DropdownItemLink
+          to={pathCookDetail({ recipeId: recipeId.toString() })}
+        >
+          Start Cooking
+        </DropdownItemLink>
         <DropdownItemButton onClick={handleCopyIngredients}>
           Copy Ingredients
         </DropdownItemButton>

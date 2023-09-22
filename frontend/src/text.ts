@@ -46,3 +46,6 @@ export function urlToDomain(url: string) {
 }
 
 export const isURL = (x: string): boolean => !x.includes(" ") && x.includes(".")
+
+export const notEmpty = (x?: string | null): x is string =>
+  x !== "" && x != null

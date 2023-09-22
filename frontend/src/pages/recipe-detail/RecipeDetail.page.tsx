@@ -1,7 +1,7 @@
-import { flatten, groupBy, last, sortBy } from "lodash-es"
+import { flatten, last, sortBy } from "lodash-es"
 import React, { useMemo, useState } from "react"
 import { RouteComponentProps, useHistory } from "react-router"
-import { Link, useLocation } from "react-router-dom"
+import { Link } from "react-router-dom"
 
 import { IIngredient, INote, IRecipe, TimelineItem, Upload } from "@/api"
 import { Box } from "@/components/Box"
@@ -10,6 +10,7 @@ import { TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Image } from "@/components/Image"
 import { Loader } from "@/components/Loader"
+import { Meta } from "@/components/Meta"
 import { Tag } from "@/components/Tag"
 import { formatHumanDate } from "@/date"
 import { useGlobalEvent } from "@/hooks"
@@ -20,21 +21,22 @@ import { Gallery } from "@/pages/recipe-detail/ImageGallery"
 import { Ingredient } from "@/pages/recipe-detail/Ingredient"
 import { NoteContainer } from "@/pages/recipe-detail/Notes"
 import { SectionTitle } from "@/pages/recipe-detail/RecipeHelpers"
+import { RecipeSource } from "@/pages/recipe-detail/RecipeSource"
 import { RecipeTimeline } from "@/pages/recipe-detail/RecipeTimeline"
 import { Dropdown } from "@/pages/recipe-detail/RecipeTitleDropdown"
 import { Section } from "@/pages/recipe-detail/Section"
 import StepContainer from "@/pages/recipe-detail/StepContainer"
 import { TagEditor } from "@/pages/recipe-detail/TagEditor"
-import { pathRecipesList } from "@/paths"
+import { pathRecipeDetail, pathRecipesList } from "@/paths"
 import { getNewPosIngredients } from "@/position"
 import { useIngredientUpdate } from "@/queries/ingredientUpdate"
 import { useRecipeFetch } from "@/queries/recipeFetch"
 import { useRecipeUpdate } from "@/queries/recipeUpdate"
 import { useSectionUpdate } from "@/queries/sectionUpdate"
-import { isURL, urlToDomain } from "@/text"
+import { notEmpty } from "@/text"
 import { styled } from "@/theme"
-import { recipeURL } from "@/urls"
-import { imgixFmt, pathNamesEqual } from "@/utils/url"
+import { formatImgOpenGraph, imgixFmt } from "@/utils/url"
+import { useAddSlugToUrl } from "@/utils/useAddSlugToUrl"
 
 type SectionsAndIngredients = ReadonlyArray<
   | {
@@ -308,73 +310,7 @@ function RecipeBanner({ children }: { readonly children: React.ReactNode }) {
   )
 }
 
-/** On load, update the recipe URL to include the slugified recipe name */
-function useRecipeUrlUpdate(recipe: { id: number; name: string } | null) {
-  const location = useLocation()
-  const history = useHistory()
-
-  const { id: recipeId, name: recipeName } = recipe || {}
-
-  React.useEffect(() => {
-    if (recipeId == null || recipeName == null) {
-      return
-    }
-    const pathname = recipeURL(recipeId, recipeName)
-    if (pathNamesEqual(location.pathname, pathname)) {
-      return
-    }
-    history.replace({ pathname, search: location.search, hash: location.hash })
-  }, [history, location, recipeId, recipeName])
-}
-
 type IRecipeProps = RouteComponentProps<{ recipeId: string }>
-
-function updateOrCreateTag(
-  metaTags: HTMLMetaElement[],
-  property: string,
-  value: string,
-) {
-  if (!value) {
-    metaTags.forEach((x) => {
-      x.remove()
-    })
-    return
-  }
-  if (metaTags.length > 0) {
-    if (metaTags[0].content !== value) {
-      metaTags[0].content = value
-    }
-    // clear out any dupe tags
-    if (metaTags.length > 1) {
-      metaTags.forEach((x, i) => {
-        // we only want one metatag
-        if (i > 0) {
-          x.remove()
-        }
-      })
-    }
-  } else {
-    // setup the missing metatag
-    const metaTag = document.createElement("meta")
-    // NOTE: property is missing from the type
-    metaTag.setAttribute("property", property)
-    metaTag.content = value
-    document.head.appendChild(metaTag)
-  }
-}
-
-function Meta({ title, image }: { title: string; image: string }) {
-  React.useEffect(() => {
-    const metaTags = document.querySelectorAll<HTMLMetaElement>(
-      `meta[property^="og:"]`,
-    )
-    const groupedMetatags = groupBy(metaTags, (x) => x.getAttribute("property"))
-
-    updateOrCreateTag(groupedMetatags["og:title"] || [], "og:title", title)
-    updateOrCreateTag(groupedMetatags["og:image"] || [], "og:image", image)
-  }, [title, image])
-  return null
-}
 
 const ImageWrapper = styled.div`
   aspect-ratio: 3/2;
@@ -594,8 +530,6 @@ const HeaderImgUploader = styled.div`
   font-size: 14px;
 `
 
-const notEmpty = (x?: string | null): x is string => x !== "" && x != null
-
 const RecipeTitleContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -782,13 +716,7 @@ function RecipeInfo(props: {
                 <RecipeMetaItem inline={inlineLayout}>
                   <div className="bold">From</div>
                   <div className="selectable">
-                    {isURL(props.recipe.source) ? (
-                      <a href={props.recipe.source}>
-                        {urlToDomain(props.recipe.source)}
-                      </a>
-                    ) : (
-                      props.recipe.source
-                    )}
+                    <RecipeSource source={props.recipe.source} />
                   </div>
                 </RecipeMetaItem>
               )}
@@ -882,20 +810,6 @@ const RecipeDetailGrid = styled.div<{ enableLargeImageRow: boolean }>`
   }
 `
 
-/**
- *  Open graph images are recommended to be 1200x630, so we use Imgix to crop.
- */
-function formatImgOpenGraph(x: string): string {
-  if (!x) {
-    return x
-  }
-  const u = new URL(x)
-  u.searchParams.set("w", "1200")
-  u.searchParams.set("h", "910")
-  u.searchParams.set("fit", "crop")
-  return u.toString()
-}
-
 export function Recipe(props: IRecipeProps) {
   const recipeId = parseInt(props.match.params.recipeId, 10)
 
@@ -904,13 +818,11 @@ export function Recipe(props: IRecipeProps) {
   const parsed = new URLSearchParams(props.location.search)
   const editingEnabled = parsed.get("edit") === "1"
 
-  // TODO: maybe move to userRecipeFetch
-  // default to metadata being in edit mode when the page is naved to with edit=1
-  useRecipeUrlUpdate(
-    maybeRecipe.isSuccess
-      ? { id: maybeRecipe.data.id, name: maybeRecipe.data.name }
-      : null,
+  useAddSlugToUrl(
+    pathRecipeDetail({ recipeId: recipeId.toString() }),
+    maybeRecipe.data?.name,
   )
+
   const myRecipe = maybeRecipe.isSuccess ? maybeRecipe.data : null
   const notes = myRecipe?.timelineItems.filter(isNote) ?? []
   const uploads = flatten(notes.map((x) => x.attachments))

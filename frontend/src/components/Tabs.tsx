@@ -13,15 +13,20 @@ export function Tabs({ children }: ITabsProps) {
 interface ITabProps {
   readonly isActive?: boolean
   readonly children: React.ReactNode
+  readonly onClick?: () => void
 }
 
-export function Tab({ isActive, children }: ITabProps) {
+export function Tab({ isActive, children, onClick }: ITabProps) {
   return (
     <Box
       style={{
-        fontWeight: isActive ? "bold" : "",
+        textDecoration: isActive ? "underline" : "",
+        textUnderlineOffset: "0.25rem",
         paddingBottom: "0.25rem",
+        fontWeight: "500",
+        fontSize: "18px",
       }}
+      onClick={onClick}
     >
       {children}
     </Box>
