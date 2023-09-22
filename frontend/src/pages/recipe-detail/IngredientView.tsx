@@ -18,6 +18,25 @@ const IngredientViewInner = styled.p`
   padding-bottom: 0.4rem;
 `
 
+export function IngredientViewContent({
+  quantity,
+  name,
+  description,
+  optional,
+}: Omit<IIngredientVIewProps, "dragRef">) {
+  const fmtDescription = description
+    ? ", " + normalizeUnitsFracs(description)
+    : ""
+  return (
+    <>
+      <span className="fw-500">{normalizeUnitsFracs(quantity).trim()}</span>{" "}
+      {name.trim()}
+      {fmtDescription.trim()}{" "}
+      {optional ? <span className="text-muted">[optional]</span> : ""}
+    </>
+  )
+}
+
 export default function IngredientView({
   quantity,
   name,
@@ -25,19 +44,17 @@ export default function IngredientView({
   optional,
   dragRef,
 }: IIngredientVIewProps) {
-  const fmtDescription = description
-    ? ", " + normalizeUnitsFracs(description)
-    : ""
-
   return (
     <IngredientViewInner
       className="justify-space-between selectable"
       ref={dragRef}
     >
-      <span className="fw-500">{normalizeUnitsFracs(quantity).trim()}</span>{" "}
-      {name.trim()}
-      {fmtDescription.trim()}{" "}
-      {optional ? <span className="text-muted">[optional]</span> : ""}
+      <IngredientViewContent
+        quantity={quantity}
+        description={description}
+        name={name}
+        optional={optional}
+      />
     </IngredientViewInner>
   )
 }

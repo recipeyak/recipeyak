@@ -4,8 +4,10 @@ import { IIngredient, INote, IStep } from "@/api"
 import { Box } from "@/components/Box"
 import { Link } from "@/components/Routing"
 import { Tab, Tabs } from "@/components/Tabs"
+import { IngredientViewContent } from "@/pages/recipe-detail/IngredientView"
 import { Note } from "@/pages/recipe-detail/Notes"
 import { RecipeSource } from "@/pages/recipe-detail/RecipeSource"
+import { StepView } from "@/pages/recipe-detail/Step"
 import { pathRecipeDetail } from "@/paths"
 import { notEmpty } from "@/text"
 import { styled } from "@/theme"
@@ -51,7 +53,12 @@ function Ingredients({ ingredients }: { ingredients: readonly IIngredient[] }) {
                 textDecoration: isDone ? "line-through" : undefined,
               }}
             >
-              {i.name} {i.description}
+              <IngredientViewContent
+                quantity={i.quantity}
+                description={i.description}
+                name={i.name}
+                optional={i.optional}
+              />
             </label>
           </div>
         )
@@ -96,7 +103,7 @@ function Steps({ steps }: { steps: readonly IStep[] }) {
             >
               Step {idx + 1}
             </div>
-            <div className="selectable">{i.text}</div>
+            <StepView text={i.text} />
           </div>
         )
       })}
