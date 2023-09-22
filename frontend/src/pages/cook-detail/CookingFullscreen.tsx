@@ -241,9 +241,7 @@ export function CookingFullscreen({
           {notEmpty(recipeSource) && (
             <div style={{ fontSize: "14px", display: "flex", gap: "0.25rem" }}>
               <div>from</div>
-              <a>
-                <RecipeSource source={recipeSource} />
-              </a>
+              <RecipeSource source={recipeSource} />
             </div>
           )}
         </Box>
