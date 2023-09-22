@@ -2,7 +2,7 @@ import { useState } from "react"
 
 import { IIngredient, INote, IStep } from "@/api"
 import { Box } from "@/components/Box"
-import { Link } from "@/components/Routing"
+import { Button } from "@/components/Buttons"
 import { Tab, Tabs } from "@/components/Tabs"
 import { IngredientViewContent } from "@/pages/recipe-detail/IngredientView"
 import { Note } from "@/pages/recipe-detail/Notes"
@@ -170,18 +170,15 @@ export function CookingFullscreen({
           height: "100%",
         }}
       >
-        <Box mb={2}>
-          <Link
-            to={pathRecipeDetail({ recipeId: recipeId.toString() })}
-            style={{
-              fontWeight: "500",
-              padding: "0.5rem 1rem",
-              fontSize: 14,
-            }}
-          >
-            ← recipe
-          </Link>
-        </Box>
+        <Button
+          to={pathRecipeDetail({ recipeId: recipeId.toString() })}
+          variant="link"
+          className="mb-2"
+          style={{ fontSize: "0.875rem" }}
+        >
+          ← Return to Recipe
+        </Button>
+
         <Box
           gap={2}
           dir="col"
