@@ -137,9 +137,7 @@ function Notes({
 const Container = styled.div`
   align-items: center;
   justify-content: center;
-  overflow: hidden;
   background-color: var(--color-background);
-  padding: 0.5rem 1.25rem;
   position: fixed;
   z-index: 20;
   inset: 0;
@@ -165,83 +163,89 @@ export function CookingFullscreen({
   )
   return (
     <Container>
-      <Box space="end" mb={2}>
-        <Link
-          to={pathRecipeDetail({ recipeId: recipeId.toString() })}
-          style={{
-            fontWeight: "500",
-            padding: "0.5rem 1rem",
-            fontSize: 14,
-          }}
-        >
-          recipe →
-        </Link>
-      </Box>
-      <Box
-        gap={2}
-        dir="col"
+      <div
         style={{
-          fontSize: "18px",
-          maxWidth: 600,
-          minWidth: "min(600px, 100%)",
-          marginLeft: "auto",
-          marginRight: "auto",
+          padding: "0.5rem 1.25rem",
+          overflow: "auto",
+          height: "100%",
         }}
       >
-        <div
-          className="selectable"
+        <Box mb={2}>
+          <Link
+            to={pathRecipeDetail({ recipeId: recipeId.toString() })}
+            style={{
+              fontWeight: "500",
+              padding: "0.5rem 1rem",
+              fontSize: 14,
+            }}
+          >
+            ← recipe
+          </Link>
+        </Box>
+        <Box
+          gap={2}
+          dir="col"
           style={{
-            fontSize: "2rem",
-            lineHeight: "1em",
-            fontFamily: "Georgia,serif",
+            fontSize: "18px",
+            maxWidth: 600,
+            minWidth: "min(600px, 100%)",
+            marginLeft: "auto",
+            marginRight: "auto",
           }}
         >
-          {recipeName}
-        </div>
-        <Tabs>
-          <Tab
-            isActive={tab === "ingredients"}
-            onClick={() => {
-              setTab("ingredients")
+          <div
+            className="selectable"
+            style={{
+              fontSize: "2rem",
+              lineHeight: "1em",
+              fontFamily: "Georgia,serif",
             }}
           >
-            Ingredients
-          </Tab>
-          <Tab
-            isActive={tab === "steps"}
-            onClick={() => {
-              setTab("steps")
-            }}
-          >
-            Steps
-          </Tab>
-          <Tab
-            isActive={tab === "notes"}
-            onClick={() => {
-              setTab("notes")
-            }}
-          >
-            Notes
-          </Tab>
-        </Tabs>
-        <div>
-          {tab === "ingredients" ? (
-            <Ingredients ingredients={ingredients} />
-          ) : tab === "steps" ? (
-            <Steps steps={steps} />
-          ) : tab === "notes" ? (
-            <Notes notes={notes} recipeId={recipeId} />
-          ) : null}
-        </div>
-        {notEmpty(recipeSource) && (
-          <div style={{ fontSize: "14px", display: "flex", gap: "0.25rem" }}>
-            <div>from</div>
-            <a>
-              <RecipeSource source={recipeSource} />
-            </a>
+            {recipeName}
           </div>
-        )}
-      </Box>
+          <Tabs>
+            <Tab
+              isActive={tab === "ingredients"}
+              onClick={() => {
+                setTab("ingredients")
+              }}
+            >
+              Ingredients
+            </Tab>
+            <Tab
+              isActive={tab === "steps"}
+              onClick={() => {
+                setTab("steps")
+              }}
+            >
+              Steps
+            </Tab>
+            <Tab
+              isActive={tab === "notes"}
+              onClick={() => {
+                setTab("notes")
+              }}
+            >
+              Notes
+            </Tab>
+          </Tabs>
+          <div>
+            {tab === "ingredients" ? (
+              <Ingredients ingredients={ingredients} />
+            ) : tab === "steps" ? (
+              <Steps steps={steps} />
+            ) : tab === "notes" ? (
+              <Notes notes={notes} recipeId={recipeId} />
+            ) : null}
+          </div>
+          {notEmpty(recipeSource) && (
+            <div style={{ fontSize: "14px", display: "flex", gap: "0.25rem" }}>
+              <div>from</div>
+              <RecipeSource source={recipeSource} />
+            </div>
+          )}
+        </Box>
+      </div>
     </Container>
   )
 }
