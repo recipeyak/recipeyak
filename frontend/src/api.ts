@@ -787,3 +787,21 @@ export const findNextOpen = ({
     },
   )
 }
+export type CookChecklist = Record<string, boolean>
+
+export const fetchCookChecklist = (params: { readonly recipeId: number }) => {
+  return http.get<CookChecklist>(`/api/v1/cook-checklist/${params.recipeId}/`)
+}
+export const updateCookChecklist = (params: {
+  readonly recipeId: number
+  readonly ingredientId: number
+  readonly checked: boolean
+}) => {
+  return http.post<{
+    readonly ingredient_id: number
+    readonly checked: boolean
+  }>(`/api/v1/cook-checklist/${params.recipeId}/`, {
+    ingredient_id: params.ingredientId,
+    checked: params.checked,
+  })
+}

@@ -2,10 +2,7 @@
 import logging
 import os
 import subprocess
-from dataclasses import dataclass
 from pathlib import Path
-from shutil import which
-from typing import Mapping
 
 APP_LABEL = "recipeyak"
 
@@ -16,37 +13,11 @@ logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__file__)
 
 
-def is_installed(name: str) -> bool:
-    return which(name) is not None
-
-
 def get_migration_id(filename: str) -> str:
     return Path(filename).stem
 
 
-@dataclass(frozen=True)
-class PRInfo:
-    owner: str
-    repo: str
-    pr_number: str
-
-
-def get_pr_info(env: Mapping[str, str]) -> PRInfo | None:
-    circle_pr = env.get("CIRCLE_PULL_REQUEST")
-    if circle_pr is None:
-        return None
-    _, _, _, owner, repo, _, pr_number = circle_pr.split("/")
-
-    return PRInfo(owner=owner, repo=repo, pr_number=pr_number)
-
-
 def main() -> None:
-    # circle's built in git checkout code clobbers the `master` ref so we do the
-    # following to make it not point to the current ref.
-    # https://discuss.circleci.com/t/git-checkout-of-a-branch-destroys-local-reference-to-master/23781/7
-    if os.getenv("CIRCLECI") and os.getenv("CIRCLE_BRANCH") != "master":
-        subprocess.run(["git", "branch", "-f", "master", "origin/master"], check=True)
-
     diff_cmd = [
         "git",
         "--no-pager",
@@ -96,28 +67,6 @@ def main() -> None:
         output_files.append(output_sql_file.name)
 
     log.info("sql files found: %s", output_files)
-
-    if not output_files:
-        return
-
-    if not is_installed("squawk"):
-        subprocess.run(["npm", "config", "set", "unsafe-perm", "true"], check=True)
-        log.info("squawk not found, installing")
-        subprocess.run(["npm", "install", "-g", "squawk-cli@0.3.0"], check=True)
-
-    pr_info = get_pr_info(os.environ)
-    assert pr_info is not None
-    log.info(pr_info)
-
-    os.environ.setdefault("SQUAWK_GITHUB_PR_NUMBER", pr_info.pr_number)
-    os.environ.setdefault("SQUAWK_GITHUB_REPO_NAME", pr_info.repo)
-    os.environ.setdefault("SQUAWK_GITHUB_REPO_OWNER", pr_info.owner)
-
-    res = subprocess.run(
-        ["squawk", "upload-to-github", *output_files], capture_output=True
-    )
-    log.info(res)
-    res.check_returncode()
 
 
 if __name__ == "__main__":

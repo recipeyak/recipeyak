@@ -20,6 +20,9 @@ async def get_token(user_id: str, team_ids: list[int]) -> dict[object, object]:
                 "clientId": user_id,
                 "capability": {
                     f"scheduled_recipe:{team_id}": ["subscribe"] for team_id in team_ids
+                }
+                | {
+                    f"cook_checklist:{team_id}:*": ["subscribe"] for team_id in team_ids
                 },
             }
         )

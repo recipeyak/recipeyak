@@ -1,21 +1,109 @@
+import { useChannel } from "@ably-labs/react-hooks"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 
 import { IIngredient, INote, IStep } from "@/api"
+import * as api from "@/api"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { Tab, Tabs } from "@/components/Tabs"
+import { useTeamId } from "@/hooks"
 import { IngredientViewContent } from "@/pages/recipe-detail/IngredientView"
 import { Note } from "@/pages/recipe-detail/Notes"
 import { RecipeSource } from "@/pages/recipe-detail/RecipeSource"
 import { StepView } from "@/pages/recipe-detail/Step"
 import { pathRecipeDetail } from "@/paths"
+import { unwrapResult } from "@/query"
 import { notEmpty } from "@/text"
 import { styled } from "@/theme"
 
-function Ingredients({ ingredients }: { ingredients: readonly IIngredient[] }) {
-  const [checkedIngredients, setCheckedIngredients] = useState<
-    Record<string, string>
-  >({})
+type CheckmarkUpdated = {
+  ingredientId: number
+  checked: boolean
+}
+
+function useIngredients(recipeId: number) {
+  const teamID = useTeamId()
+  const queryClient = useQueryClient()
+  const updateChecklistItemCache = (params: {
+    ingredientId: number
+    checked: boolean
+  }) => {
+    queryClient.setQueryData<api.CookChecklist>(
+      ["updateCookChecklist", recipeId],
+      (old) => ({ ...old, [params.ingredientId]: params.checked }),
+    )
+  }
+  useChannel(`cook_checklist:${teamID}:${recipeId}`, (message) => {
+    switch (message.name) {
+      case "checkmark_updated": {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument
+        const res: CheckmarkUpdated = JSON.parse(message.data)
+        updateChecklistItemCache(res)
+        break
+      }
+    }
+  })
+  const {
+    isLoading,
+    isError,
+    data: checkedIngredients,
+    error,
+  } = useQuery({
+    queryKey: ["updateCookChecklist", recipeId],
+    queryFn: () => api.fetchCookChecklist({ recipeId }).then(unwrapResult),
+  })
+
+  const mutation = useMutation({
+    mutationFn: ({
+      ingredientId,
+      checked,
+    }: {
+      ingredientId: number
+      checked: boolean
+    }) => {
+      return api
+        .updateCookChecklist({ checked, recipeId, ingredientId })
+        .then(unwrapResult)
+    },
+    onMutate(variables) {
+      const previousData = queryClient.getQueryData([
+        "updateCookChecklist",
+        recipeId,
+      ])
+      updateChecklistItemCache(variables)
+      return { previousData }
+    },
+    onError: (_err, _newData, context) => {
+      queryClient.setQueryData(
+        ["updateCookChecklist", recipeId],
+        context?.previousData,
+      )
+    },
+  })
+  if (isError) {
+    throw error
+  }
+  if (isLoading) {
+    return { checkedIngredients, isLoading, mutation } as const
+  }
+
+  return { checkedIngredients, isLoading, mutation } as const
+}
+
+function Ingredients({
+  ingredients,
+  recipeId,
+}: {
+  ingredients: readonly IIngredient[]
+  recipeId: number
+}) {
+  const { checkedIngredients, isLoading, mutation } = useIngredients(recipeId)
+
+  if (isLoading) {
+    return null
+  }
+
   return (
     <div
       style={{
@@ -34,12 +122,12 @@ function Ingredients({ ingredients }: { ingredients: readonly IIngredient[] }) {
             <input
               id={`ingredient-${i.id}`}
               type="checkbox"
-              value={isDone}
+              checked={isDone}
               onChange={(e) => {
-                setCheckedIngredients((prev) => ({
-                  ...prev,
-                  [i.id]: e.target.checked,
-                }))
+                mutation.mutate({
+                  checked: e.target.checked,
+                  ingredientId: i.id,
+                })
               }}
               style={{ marginTop: "0.5rem" }}
             />
@@ -228,7 +316,7 @@ export function CookingFullscreen({
           </Tabs>
           <div>
             {tab === "ingredients" ? (
-              <Ingredients ingredients={ingredients} />
+              <Ingredients ingredients={ingredients} recipeId={recipeId} />
             ) : tab === "steps" ? (
               <Steps steps={steps} />
             ) : tab === "notes" ? (
