@@ -1,0 +1,8 @@
+[Unit]
+Description=Run remove_old_checklists on cron every hour
+[Timer]
+Unit=recipeyak-remove_old_checklists.service
+OnBootSec=1hour
+OnUnitActiveSec=1hour
+[Install]
+WantedBy=timers.target

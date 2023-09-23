@@ -1,13 +1,10 @@
 import asyncio
 import base64
 import time
-from collections.abc import Iterator
-from contextlib import contextmanager
 from io import BytesIO
 
 import asyncpg
 import httpx
-import requests
 import sentry_sdk
 import structlog
 import typer
@@ -26,6 +23,12 @@ load_dotenv()
 
 
 register_heif_opener()
+
+
+class Config(BaseSettings):
+    DATABASE_URL: PostgresDsn
+    SENTRY_DSN: str
+    STORAGE_HOSTNAME: str
 
 
 def get_placeholder_image(image: BytesIO) -> str:
@@ -54,10 +57,10 @@ def public_url(*, key: str, storage_hostname: str) -> str:
     return str(URL(f"https://{storage_hostname}").with_path(key))
 
 
-async def job(*, dry_run: bool) -> None:
+async def job(*, dry_run: bool, database_url: str, storage_hostname: str) -> None:
     log = logger.bind(dry_run=dry_run)
     log.info("starting up", dry_run=dry_run)
-    pg = await asyncpg.connect(dsn=config.DATABASE_URL)
+    pg = await asyncpg.connect(dsn=database_url)
     log.info("fetching upload data")
     rows = await pg.fetch(
         """
@@ -76,7 +79,7 @@ async def job(*, dry_run: bool) -> None:
             *[
                 get_image_data(
                     http,
-                    url=public_url(key=key, storage_hostname=config.STORAGE_HOSTNAME),
+                    url=public_url(key=key, storage_hostname=storage_hostname),
                     id=upload_id,
                 )
                 for (upload_id, key) in rows
@@ -108,49 +111,22 @@ async def job(*, dry_run: bool) -> None:
     )
 
 
-@contextmanager
-def monitor_cron(*, monitor_id: str) -> Iterator[None]:
-    headers = {"Authorization": f"DSN {config.SENTRY_DSN}"}
-    response = requests.post(
-        f"https://sentry.io/api/0/monitors/{monitor_id}/checkins/",
-        headers=headers,
-        json={"status": "in_progress"},
-    )
-    check_in_id = response.json()["id"]
-    status = "ok"
-    try:
-        yield
-    except Exception:  # noqa: BLE001
-        status = "error"
-    finally:
-        response = requests.put(
-            f"https://sentry.io/api/0/monitors/{monitor_id}/checkins/{check_in_id}/",
-            headers=headers,
-            json={"status": status},
-        )
-
-
-class Config(BaseSettings):
-    DATABASE_URL: PostgresDsn
-    SENTRY_DSN: str
-    SENTRY_CRON_MONITOR_ID_BACKFILL_IMAGE_PLACEHOLDER: str
-    STORAGE_HOSTNAME: str
-
-
-config = Config()
-
-
 def main(dry_run: bool = False) -> None:
+    config = Config()
     logger.info("initiate")
     sentry_sdk.init(
         send_default_pii=True,
         traces_sample_rate=1.0,
     )
-    with monitor_cron(
-        monitor_id=config.SENTRY_CRON_MONITOR_ID_BACKFILL_IMAGE_PLACEHOLDER
-    ):
+    with sentry_sdk.monitor(monitor_slug="backfill-image-placeholders"):
         start = time.monotonic()
-        asyncio.run(job(dry_run=dry_run))
+        asyncio.run(
+            job(
+                dry_run=dry_run,
+                database_url=config.DATABASE_URL,
+                storage_hostname=config.STORAGE_HOSTNAME,
+            )
+        )
         logger.info("done!", total_time_sec=time.monotonic() - start)
     logger.info("exiting")
 

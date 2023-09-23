@@ -1,5 +1,5 @@
 [Unit]
-Description=Runs backfill_image_placeholders job
+Description=Runs remove_old_checklists job
 [Service]
 ExecStart=/usr/bin/docker run \
         --rm \
@@ -7,6 +7,6 @@ ExecStart=/usr/bin/docker run \
         --log-driver=journald \
         --env-file=/root/.env-production \
         recipeyak/django:97625ae875b0abb40ed6bb18a0527b74015db483 \
-        ./.venv/bin/python -m recipeyak.jobs.backfill_image_placeholders --no-dry-run
+        ./.venv/bin/python -m recipeyak.jobs.remove_old_checklists
 [Install]
 WantedBy=multi-user.target
