@@ -1,44 +1,20 @@
-import { useChannel } from "@ably-labs/react-hooks"
-import { useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { Tab, Tabs } from "@/components/Tabs"
-import { useTeamId } from "@/hooks"
 import { IngredientViewContent } from "@/pages/recipe-detail/IngredientView"
 import { Note } from "@/pages/recipe-detail/Notes"
 import { RecipeSource } from "@/pages/recipe-detail/RecipeSource"
 import { StepView } from "@/pages/recipe-detail/Step"
 import { pathRecipeDetail } from "@/paths"
 import { useCookChecklistFetch } from "@/queries/cookChecklistFetch"
-import {
-  updateChecklistItemCache,
-  useCookChecklistUpdate,
-} from "@/queries/cookChecklistUpdate"
+import { useCookChecklistUpdate } from "@/queries/cookChecklistUpdate"
 import { IIngredient, INote, IStep } from "@/queries/recipeFetch"
 import { notEmpty } from "@/text"
 import { styled } from "@/theme"
 
-type CheckmarkUpdated = {
-  ingredientId: number
-  checked: boolean
-}
-
 function useIngredients(recipeId: number) {
-  const teamID = useTeamId()
-  const queryClient = useQueryClient()
-
-  useChannel(`cook_checklist:${teamID}:${recipeId}`, (message) => {
-    switch (message.name) {
-      case "checkmark_updated": {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument
-        const res: CheckmarkUpdated = JSON.parse(message.data)
-        updateChecklistItemCache(res, recipeId, queryClient)
-        break
-      }
-    }
-  })
   const {
     isLoading,
     isError,
