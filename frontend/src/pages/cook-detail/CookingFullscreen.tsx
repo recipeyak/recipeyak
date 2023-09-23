@@ -56,7 +56,7 @@ function Ingredients({
       )
       return { previousData }
     },
-    onError: (err, newData, context) => {
+    onError: (_err, _newData, context) => {
       queryClient.setQueryData(
         ["updateCookChecklist", recipeId],
         context?.previousData,
