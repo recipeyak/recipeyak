@@ -30,7 +30,7 @@ where recipe_id in (
     select recipe_id
     from recipe_cook_checklist_check
     group by recipe_id
-    having max(modified) < now() - '2 seconds'::interval
+    having max(modified) < now() - '24 hours'::interval
     limit 10
 );
 """
