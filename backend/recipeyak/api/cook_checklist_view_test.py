@@ -1,6 +1,3 @@
-from typing import Iterator
-from unittest.mock import patch
-
 import pytest
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -13,12 +10,6 @@ from recipeyak.models import (
 )
 
 pytestmark = pytest.mark.django_db
-
-
-@pytest.fixture()
-def patch_publish_calendar_event() -> Iterator[None]:
-    with patch("recipeyak.realtime.publish_cook_checklist", return_value=None):
-        yield
 
 
 def test_fetch_checklist(
@@ -51,7 +42,7 @@ def test_update_checklist(
     user: User,
     team: Team,
     recipe: Recipe,
-    patch_publish_calendar_event: object,
+    patch_publish_cook_checklist: object,
 ) -> None:
     recipe.team = team
     recipe.save()

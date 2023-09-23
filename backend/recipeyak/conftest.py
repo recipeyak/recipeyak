@@ -224,3 +224,9 @@ def patch_publish_calendar_event() -> Iterator[None]:
         "recipeyak.realtime.publish_calendar_event_deleted", return_value=None
     ):
         yield
+
+
+@pytest.fixture(scope="session", autouse=True)
+def patch_publish_cook_checklist() -> Iterator[None]:
+    with patch("recipeyak.realtime.publish_cook_checklist", return_value=None):
+        yield
