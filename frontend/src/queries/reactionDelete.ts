@@ -1,10 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
 
-import { deleteReaction, IRecipe } from "@/api"
 import { useTeamId } from "@/hooks"
-import { Reaction } from "@/pages/recipe-detail/Reactions"
+import { http } from "@/http"
+import { IRecipe, Reaction } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
+
+const deleteReaction = ({ reactionId }: { reactionId: number | string }) =>
+  http.delete(`/api/v1/reactions/${reactionId}/`)
 
 export function useReactionDelete() {
   const queryClient = useQueryClient()

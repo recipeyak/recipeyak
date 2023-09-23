@@ -1,8 +1,7 @@
 import { isSameDay } from "date-fns"
 import React from "react"
 
-import { useUserFetch } from "@/queries/userFetch"
-import { Theme } from "@/queries/userUpdate"
+import { Theme, useUserFetch } from "@/queries/userFetch"
 import { themeGet } from "@/theme"
 
 export function useCurrentDay() {

@@ -1,6 +1,5 @@
 import React, { useState } from "react"
 
-import { IIngredient, RecentSchedule } from "@/api"
 import { copyToClipboard } from "@/clipboard"
 import { Button } from "@/components/Buttons"
 import {
@@ -14,6 +13,7 @@ import { Chevron } from "@/components/icons"
 import { ScheduleModal } from "@/pages/recipe-detail/ScheduleModal"
 import { pathCookDetail } from "@/paths"
 import { useRecipeDelete } from "@/queries/recipeDelete"
+import { IIngredient, RecentSchedule } from "@/queries/recipeFetch"
 import { useRecipeUpdate } from "@/queries/recipeUpdate"
 import { toast } from "@/toast"
 

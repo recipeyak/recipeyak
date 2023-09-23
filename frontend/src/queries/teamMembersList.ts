@@ -1,7 +1,11 @@
 import { useQuery } from "@tanstack/react-query"
 
-import { getTeamMembers } from "@/api"
+import { http } from "@/http"
+import { IMember, ITeam } from "@/queries/teamFetch"
 import { unwrapResult } from "@/query"
+
+const getTeamMembers = (id: ITeam["id"]) =>
+  http.get<IMember[]>(`/api/v1/t/${id}/members/`)
 
 export function useTeamMembersList({ teamId }: { teamId: number }) {
   return useQuery({

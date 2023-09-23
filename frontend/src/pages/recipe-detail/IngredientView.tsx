@@ -1,6 +1,6 @@
 import { DragElementWrapper, DragSourceOptions } from "react-dnd"
 
-import { IIngredient } from "@/api"
+import { IIngredient } from "@/queries/recipeFetch"
 import { normalizeUnitsFracs } from "@/text"
 import { styled } from "@/theme"
 

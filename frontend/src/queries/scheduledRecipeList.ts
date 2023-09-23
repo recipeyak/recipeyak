@@ -2,9 +2,12 @@ import { configureAbly, useChannel } from "@ably-labs/react-hooks"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { addWeeks, endOfWeek, startOfWeek, subWeeks } from "date-fns"
 import parseISO from "date-fns/parseISO"
+import * as t from "io-ts"
 
-import { CalendarResponse, getCalendarRecipeList } from "@/api"
+import { toISODateString } from "@/date"
 import { useTeamId } from "@/hooks"
+import { http } from "@/http"
+import { CalendarResponse } from "@/queries/scheduledRecipeCreate"
 import { onRecipeDeletion } from "@/queries/scheduledRecipeDelete"
 import { onScheduledRecipeUpdateSuccess } from "@/queries/scheduledRecipeUpdate"
 import { unwrapEither } from "@/query"
@@ -21,6 +24,64 @@ type ScheduledRecipeUpdated = {
   recipe: { id: number; name: string }
   team: null
   user: null
+}
+
+export function getCalendarRecipeList({
+  teamID,
+  start,
+  end,
+}: {
+  readonly teamID: number
+  readonly start: Date
+  readonly end: Date
+}) {
+  return http
+    .obj({
+      method: "GET",
+      url: `/api/v1/t/${teamID}/calendar/`,
+      shape: t.type({
+        scheduledRecipes: t.array(
+          t.type({
+            id: t.number,
+            on: t.string,
+            created: t.string,
+            createdBy: t.union([
+              t.type({
+                id: t.number,
+                name: t.string,
+                avatar_url: t.string,
+              }),
+              t.null,
+            ]),
+            team: t.union([t.number, t.null]),
+            user: t.union([t.number, t.null]),
+            recipe: t.type({
+              id: t.number,
+              name: t.string,
+              author: t.union([t.string, t.null]),
+              archivedAt: t.union([t.string, t.null]),
+              primaryImage: t.union([
+                t.type({
+                  id: t.string,
+                  url: t.string,
+                  backgroundUrl: t.union([t.string, t.null]),
+                }),
+                t.null,
+              ]),
+            }),
+          }),
+        ),
+        settings: t.type({
+          syncEnabled: t.boolean,
+          calendarLink: t.string,
+        }),
+      }),
+      params: {
+        start: toISODateString(start),
+        end: toISODateString(end),
+      },
+    })
+    .send()
 }
 
 // NOTE: At a high level we want the UI to be able to subscribe to a range of

@@ -7,6 +7,7 @@ import { Smile } from "react-feather"
 
 import { classNames as cls } from "@/classnames"
 import { useUserId } from "@/hooks"
+import { Reaction } from "@/queries/recipeFetch"
 import { styled } from "@/theme"
 
 const NoteActionsContainer = styled.div`
@@ -94,16 +95,6 @@ function reactionTypeToName(x: ReactionType): string {
     "😆": "laughter",
     "🤮": "vomit",
   }[x]
-}
-
-export type Reaction = {
-  id: string
-  type: ReactionType
-  user: {
-    id: number
-    name: string
-  }
-  created: string
 }
 
 const ReactionCount = styled.div`

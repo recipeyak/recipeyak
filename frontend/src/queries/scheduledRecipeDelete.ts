@@ -1,9 +1,14 @@
 import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query"
 import { addWeeks, parseISO, startOfWeek, subWeeks } from "date-fns"
 
-import { CalendarResponse, deleteScheduledRecipe, ICalRecipe } from "@/api"
 import { useTeamId } from "@/hooks"
+import { http } from "@/http"
+import { CalendarResponse, ICalRecipe } from "@/queries/scheduledRecipeCreate"
 import { unwrapResult } from "@/query"
+// TODO(sbdchd): we shouldn't need teamID here
+const deleteScheduledRecipe = (calId: ICalRecipe["id"], teamID: number) => {
+  return http.delete(`/api/v1/t/${teamID}/calendar/${calId}/`)
+}
 
 function deleteScheduledRecipeV2(params: {
   scheduledRecipeId: number

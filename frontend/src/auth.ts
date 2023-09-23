@@ -1,7 +1,7 @@
 import { QueryClient } from "@tanstack/react-query"
 import raven from "raven-js"
 
-import { IUser } from "@/api"
+import { IUser } from "@/queries/userFetch"
 import { themeSet } from "@/theme"
 
 export function logout(queryClient: QueryClient) {

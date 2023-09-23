@@ -1,8 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
 
-import { IRecipe, updateRecipe } from "@/api"
 import { useTeamId } from "@/hooks"
+import { http } from "@/http"
+import { IRecipe } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
 
 function toggleImageStar(
@@ -26,6 +27,9 @@ function toggleImageStar(
     })
   })
 }
+
+const updateRecipe = (id: IRecipe["id"], data: unknown) =>
+  http.patch<IRecipe>(`/api/v1/recipes/${id}/`, data)
 
 export function useRecipeUpdate() {
   const queryClient = useQueryClient()
