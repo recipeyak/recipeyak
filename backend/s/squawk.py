@@ -101,7 +101,6 @@ def main() -> None:
         return
 
     if not is_installed("squawk"):
-        subprocess.run(["npm", "config", "set", "unsafe-perm", "true"], check=True)
         log.info("squawk not found, installing")
         subprocess.run(["npm", "install", "-g", "squawk-cli@0.3.0"], check=True)
 
