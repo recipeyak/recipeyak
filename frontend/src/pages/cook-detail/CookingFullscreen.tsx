@@ -14,14 +14,9 @@ import { pathRecipeDetail } from "@/paths"
 import { unwrapResult } from "@/query"
 import { notEmpty } from "@/text"
 import { styled } from "@/theme"
+import { assertNotNullish } from "@/utils/general"
 
-function Ingredients({
-  ingredients,
-  recipeId,
-}: {
-  ingredients: readonly IIngredient[]
-  recipeId: number
-}) {
+function useIngredients(recipeId: number) {
   const {
     isLoading,
     isError,
@@ -63,10 +58,22 @@ function Ingredients({
       )
     },
   })
-
   if (isError) {
     throw error
   }
+
+  assertNotNullish(checkedIngredients)
+  return { checkedIngredients, isLoading, mutation } as const
+}
+
+function Ingredients({
+  ingredients,
+  recipeId,
+}: {
+  ingredients: readonly IIngredient[]
+  recipeId: number
+}) {
+  const { checkedIngredients, isLoading, mutation } = useIngredients(recipeId)
 
   if (isLoading) {
     return null
