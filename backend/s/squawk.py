@@ -2,10 +2,7 @@
 import logging
 import os
 import subprocess
-from dataclasses import dataclass
 from pathlib import Path
-from shutil import which
-from typing import Mapping
 
 APP_LABEL = "recipeyak"
 
