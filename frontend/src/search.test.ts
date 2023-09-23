@@ -1,4 +1,5 @@
-import { IIngredient, RecipeListItem } from "@/api"
+import { IIngredient } from "@/queries/recipeFetch"
+import { RecipeListItem } from "@/queries/recipeList"
 import { queryMatchesRecipe, searchRecipes } from "@/search"
 
 function createRecipe(properties: {

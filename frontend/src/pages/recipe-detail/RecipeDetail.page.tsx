@@ -3,7 +3,6 @@ import React, { useMemo, useState } from "react"
 import { RouteComponentProps, useHistory } from "react-router"
 import { Link } from "react-router-dom"
 
-import { IIngredient, INote, IRecipe, TimelineItem, Upload } from "@/api"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
@@ -30,7 +29,14 @@ import { TagEditor } from "@/pages/recipe-detail/TagEditor"
 import { pathRecipeDetail, pathRecipesList } from "@/paths"
 import { getNewPosIngredients } from "@/position"
 import { useIngredientUpdate } from "@/queries/ingredientUpdate"
-import { useRecipeFetch } from "@/queries/recipeFetch"
+import {
+  IIngredient,
+  INote,
+  IRecipe,
+  TimelineItem,
+  Upload,
+  useRecipeFetch,
+} from "@/queries/recipeFetch"
 import { useRecipeUpdate } from "@/queries/recipeUpdate"
 import { useSectionUpdate } from "@/queries/sectionUpdate"
 import { notEmpty } from "@/text"

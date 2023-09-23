@@ -32,9 +32,9 @@
 import { sortBy } from "lodash-es"
 import React, { useEffect } from "react"
 
-import { IRecipe, IStep } from "@/api"
 import Step from "@/pages/recipe-detail/Step"
 import { getNewPos } from "@/position"
+import { IRecipe, IStep } from "@/queries/recipeFetch"
 import { useStepUpdate } from "@/queries/stepUpdate"
 
 interface IStepContainerProps {

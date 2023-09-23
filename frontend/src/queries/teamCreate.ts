@@ -2,10 +2,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 import { useHistory } from "react-router"
 
-import { createTeam, ITeam } from "@/api"
+import { http } from "@/http"
 import { pathTeamDetail } from "@/paths"
+import { IMember, ITeam } from "@/queries/teamFetch"
 import { unwrapResult } from "@/query"
 import { toast } from "@/toast"
+
+const createTeam = (name: string, emails: string[], level: IMember["level"]) =>
+  http.post<ITeam>("/api/v1/t/", { name, emails, level })
 
 export function useTeamCreate() {
   const queryClient = useQueryClient()

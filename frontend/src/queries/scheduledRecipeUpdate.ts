@@ -1,7 +1,20 @@
 import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { CalendarResponse, ICalRecipe, updateScheduleRecipe } from "@/api"
+import { http } from "@/http"
+import { CalendarResponse, ICalRecipe } from "@/queries/scheduledRecipeCreate"
 import { unwrapResult } from "@/query"
+
+// TODO(sbdchd): we shouldn't need teamID here
+const updateScheduleRecipe = (
+  calId: ICalRecipe["id"],
+  teamID: number,
+  recipe: Partial<ICalRecipe>,
+) => {
+  return http.patch<ICalRecipe>(
+    `/api/v1/t/${teamID}/calendar/${calId}/`,
+    recipe,
+  )
+}
 
 function scheduledRecipeUpdate({
   scheduledRecipeId,

@@ -1,8 +1,24 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { addNoteToRecipe, IRecipe } from "@/api"
 import { useTeamId } from "@/hooks"
+import { http } from "@/http"
+import { INote, IRecipe } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
+
+interface IAddNoteToRecipe {
+  readonly recipeId: IRecipe["id"]
+  readonly note: string
+  readonly attachmentUploadIds: string[]
+}
+const addNoteToRecipe = ({
+  recipeId,
+  note,
+  attachmentUploadIds,
+}: IAddNoteToRecipe) =>
+  http.post<INote>(`/api/v1/recipes/${recipeId}/notes/`, {
+    text: note,
+    attachment_upload_ids: attachmentUploadIds,
+  })
 
 export function useNoteCreate() {
   const queryClient = useQueryClient()

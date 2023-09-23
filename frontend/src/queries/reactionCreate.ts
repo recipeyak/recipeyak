@@ -1,11 +1,31 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
 
-import { createReaction, IRecipe } from "@/api"
 import { useTeamId, useUser } from "@/hooks"
-import { Reaction } from "@/pages/recipe-detail/Reactions"
+import { http } from "@/http"
+import { IRecipe, Reaction } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
 import { uuid4 } from "@/uuid"
+
+const createReaction = ({
+  noteId,
+  type,
+}: {
+  noteId: string | number
+  type: "❤️" | "😆" | "🤮"
+}) =>
+  http.post<{
+    id: string
+    type: "❤️" | "😆" | "🤮"
+    note_id: string
+    user: {
+      id: number
+      name: string
+    }
+    created: string
+  }>(`/api/v1/notes/${noteId}/reactions/`, {
+    type,
+  })
 
 export function useReactionCreate() {
   const queryClient = useQueryClient()

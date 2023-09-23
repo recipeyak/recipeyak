@@ -1,8 +1,18 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { createRecipe, IRecipe } from "@/api"
 import { useTeamId } from "@/hooks"
+import { http } from "@/http"
+import { IRecipe } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
+
+const createRecipe = (
+  recipe:
+    | {
+        readonly team: number | undefined
+        readonly name: string
+      }
+    | { readonly team: number | undefined; readonly from_url: string },
+) => http.post<IRecipe>("/api/v1/recipes/", recipe)
 
 export function useRecipeCreate() {
   const queryClient = useQueryClient()

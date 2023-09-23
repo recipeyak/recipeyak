@@ -1,8 +1,20 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import * as t from "io-ts"
 
-import { CalendarResponse, generateCalendarLink } from "@/api"
 import { useTeamId } from "@/hooks"
+import { http } from "@/http"
+import { CalendarResponse } from "@/queries/scheduledRecipeCreate"
 import { unwrapEither } from "@/query"
+
+function generateCalendarLink({ teamID }: { readonly teamID: number }) {
+  return http.request({
+    method: "POST",
+    url: `/api/v1/t/${teamID}/calendar/generate_link/`,
+    shape: t.type({
+      calendarLink: t.string,
+    }),
+  })
+}
 
 export function useScheduledRecipeSettingsRegenerateLink() {
   const teamID = useTeamId()

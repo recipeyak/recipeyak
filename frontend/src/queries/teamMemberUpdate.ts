@@ -1,11 +1,19 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AxiosError, AxiosResponse } from "axios"
 
-import { IMember, updateTeamMemberLevel } from "@/api"
+import { http } from "@/http"
+import { IMember, ITeam } from "@/queries/teamFetch"
 import { unwrapResult } from "@/query"
 import { toast } from "@/toast"
 
 type Level = "admin" | "contributor" | "read"
+
+const updateTeamMemberLevel = (
+  teamID: ITeam["id"],
+  membershipID: IMember["id"],
+  level: IMember["level"],
+) =>
+  http.patch<IMember>(`/api/v1/t/${teamID}/members/${membershipID}/`, { level })
 
 export function useTeamMemberUpdate() {
   const queryClient = useQueryClient()

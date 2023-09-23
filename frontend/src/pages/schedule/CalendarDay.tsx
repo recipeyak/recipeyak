@@ -8,7 +8,6 @@ import { sortBy } from "lodash-es"
 import { useDrop } from "react-dnd"
 import { useLocation } from "react-router"
 
-import { ICalRecipe } from "@/api"
 import { assertNever } from "@/assert"
 import { isInsideChangeWindow, toISODateString } from "@/date"
 import { DragDrop } from "@/dragDrop"
@@ -18,7 +17,10 @@ import {
   CalendarItem,
   ICalendarDragItem,
 } from "@/pages/schedule/CalendarDayItem"
-import { useScheduleRecipeCreate } from "@/queries/scheduledRecipeCreate"
+import {
+  ICalRecipe,
+  useScheduleRecipeCreate,
+} from "@/queries/scheduledRecipeCreate"
 import { useScheduledRecipeDelete } from "@/queries/scheduledRecipeDelete"
 import { useScheduledRecipeUpdate } from "@/queries/scheduledRecipeUpdate"
 import { css, styled } from "@/theme"

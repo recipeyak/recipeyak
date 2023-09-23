@@ -1,5 +1,5 @@
-import { RecipeListItem } from "@/api"
 import { assertNever } from "@/assert"
+import { RecipeListItem } from "@/queries/recipeList"
 import { parseQuery, QueryNode } from "@/query-parser"
 import { byNameAlphabetical } from "@/sorters"
 

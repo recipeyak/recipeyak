@@ -1,7 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { acceptInvite, IInvite } from "@/api"
+import { http } from "@/http"
+import { IInvite } from "@/queries/inviteList"
 import { unwrapResult } from "@/query"
+
+const acceptInvite = (id: IInvite["id"]) =>
+  http.post<void>(`/api/v1/invites/${id}/accept/`, {})
 
 export function useInviteAccept() {
   // TODO: if we delete the current session that should use the logout mutation

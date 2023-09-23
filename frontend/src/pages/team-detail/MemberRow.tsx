@@ -1,10 +1,11 @@
-import { IMember, ITeam, IUser } from "@/api"
 import { Avatar } from "@/components/Avatar"
 import { Button } from "@/components/Buttons"
 import { Select } from "@/components/Forms"
 import { useUser } from "@/hooks"
+import { IMember, ITeam } from "@/queries/teamFetch"
 import { useTeamMemberDelete } from "@/queries/teamMemberDelete"
 import { useTeamMemberUpdate } from "@/queries/teamMemberUpdate"
+import { IUser } from "@/queries/userFetch"
 
 const MemberRow = ({
   userID,

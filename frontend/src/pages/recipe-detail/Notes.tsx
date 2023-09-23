@@ -3,8 +3,6 @@ import orderBy from "lodash-es/orderBy"
 import React, { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
 
-import * as api from "@/api"
-import { INote, IRecipe, RecipeTimelineItem, Upload } from "@/api"
 import { classNames as cls } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
 import { Box } from "@/components/Box"
@@ -27,6 +25,13 @@ import { useNoteDelete } from "@/queries/noteDelete"
 import { useNoteUpdate } from "@/queries/noteUpdate"
 import { useReactionCreate } from "@/queries/reactionCreate"
 import { useReactionDelete } from "@/queries/reactionDelete"
+import {
+  INote,
+  IRecipe,
+  RecipeTimelineItem,
+  Upload,
+} from "@/queries/recipeFetch"
+import * as api from "@/queries/uploadCreate"
 import { isOk } from "@/result"
 import { styled } from "@/theme"
 import { toast } from "@/toast"
@@ -675,8 +680,8 @@ function useImageUpload(
         ]
       })
       void api
-        .uploadImage({
-          image: file,
+        .uploadCreate({
+          file,
           recipeId,
           onProgress(progress) {
             setLocalImages(

@@ -1,10 +1,14 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useHistory } from "react-router"
 
-import { deleteRecipe } from "@/api"
 import { useTeamId } from "@/hooks"
+import { http } from "@/http"
 import { pathRecipesList } from "@/paths"
+import { IRecipe } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
+
+const deleteRecipe = (id: IRecipe["id"]) =>
+  http.delete(`/api/v1/recipes/${id}/`)
 
 export function useRecipeDelete() {
   const queryClient = useQueryClient()

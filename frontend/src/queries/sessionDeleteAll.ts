@@ -1,7 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { deleteAllSessions, ISession } from "@/api"
+import { http } from "@/http"
+import { ISession } from "@/queries/sessionList"
 import { unwrapResult } from "@/query"
+
+const deleteAllSessions = () => http.delete("/api/v1/sessions/")
 
 export function useSessionDeleteAll() {
   const queryClient = useQueryClient()

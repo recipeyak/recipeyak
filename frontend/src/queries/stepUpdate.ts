@@ -1,9 +1,22 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
 
-import { IRecipe, updateStep } from "@/api"
 import { useTeamId } from "@/hooks"
+import { http } from "@/http"
+import { IRecipe, IStep } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
+
+interface IUpdateStepPayload {
+  readonly text?: string
+  readonly position?: string
+}
+
+// TODO(sbdchd): this shouldn't require recipeID
+const updateStep = (
+  recipeID: IRecipe["id"],
+  stepID: IStep["id"],
+  data: IUpdateStepPayload,
+) => http.patch<IStep>(`/api/v1/recipes/${recipeID}/steps/${stepID}/`, data)
 
 export function useStepUpdate() {
   const queryClient = useQueryClient()

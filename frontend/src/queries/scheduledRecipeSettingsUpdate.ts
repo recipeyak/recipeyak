@@ -1,8 +1,30 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import * as t from "io-ts"
 
-import { CalendarResponse, updateCalendarSettings } from "@/api"
 import { useTeamId } from "@/hooks"
+import { http } from "@/http"
+import { CalendarResponse } from "@/queries/scheduledRecipeCreate"
 import { unwrapEither } from "@/query"
+
+function updateCalendarSettings({
+  teamID,
+  data,
+}: {
+  readonly teamID: number | "personal"
+  readonly data: {
+    readonly syncEnabled: boolean
+  }
+}) {
+  return http.request({
+    method: "PATCH",
+    url: `/api/v1/t/${teamID}/calendar/settings/`,
+    data,
+    shape: t.type({
+      syncEnabled: t.boolean,
+      calendarLink: t.string,
+    }),
+  })
+}
 
 export function useScheduledRecipeSettingsUpdate() {
   const teamID = useTeamId()
