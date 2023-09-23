@@ -1,12 +1,36 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { addWeeks, startOfWeek, subWeeks } from "date-fns"
 
-import { CalendarResponse, ICalRecipe, scheduleRecipe } from "@/api"
 import { toISODateString } from "@/date"
 import { useTeamId, useUser } from "@/hooks"
+import { http } from "@/http"
+import { IRecipe } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
 import { toast } from "@/toast"
 import { random32Id } from "@/uuid"
+
+export type CalendarResponse = {
+  scheduledRecipes: ICalRecipe[]
+  settings: {
+    syncEnabled: boolean
+    calendarLink: string
+  }
+}
+
+export interface ICalRecipe {
+  readonly id: number
+  readonly on: string
+  readonly created: string
+  readonly createdBy: {
+    readonly id: number | string
+    readonly name: string
+    readonly avatar_url: string
+  } | null
+  readonly recipe: {
+    readonly id: number
+    readonly name: string
+  }
+}
 
 function toCalRecipe(
   recipe: {
@@ -36,6 +60,17 @@ function toCalRecipe(
       avatar_url: user.avatarURL,
     },
   }
+}
+
+const scheduleRecipe = (
+  recipeID: IRecipe["id"],
+  teamID: number | "personal",
+  on: Date | string,
+) => {
+  return http.post<ICalRecipe>(`/api/v1/t/${teamID}/calendar/`, {
+    recipe: recipeID,
+    on: toISODateString(on),
+  })
 }
 
 function scheduleRecipeV2({

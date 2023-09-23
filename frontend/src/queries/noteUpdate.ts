@@ -1,8 +1,20 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { IRecipe, updateNote } from "@/api"
 import { useTeamId } from "@/hooks"
+import { http } from "@/http"
+import { INote, IRecipe } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
+
+interface IUpdateNote {
+  readonly noteId: INote["id"]
+  readonly note: string
+  readonly attachmentUploadIds: string[]
+}
+const updateNote = ({ noteId, note, attachmentUploadIds }: IUpdateNote) =>
+  http.patch<INote>(`/api/v1/notes/${noteId}/`, {
+    text: note,
+    attachment_upload_ids: attachmentUploadIds,
+  })
 
 export function useNoteUpdate() {
   const queryClient = useQueryClient()

@@ -9,12 +9,6 @@ import React, { useEffect, useRef, useState } from "react"
 import { useHistory } from "react-router"
 import { Link } from "react-router-dom"
 
-import {
-  IGetShoppingListResponse,
-  IIngredientItem,
-  IQuantity,
-  Unit,
-} from "@/api"
 import { classNames } from "@/classnames"
 import { BorderBox } from "@/components/BorderBox"
 import { Box } from "@/components/Box"
@@ -22,7 +16,13 @@ import { Button } from "@/components/Buttons"
 import { DateInput } from "@/components/Forms"
 import { toISODateString } from "@/date"
 import { pathRecipeDetail } from "@/paths"
-import { useShoppingListFetch } from "@/queries/shoppingListFetch"
+import {
+  IGetShoppingListResponse,
+  IIngredientItem,
+  IQuantity,
+  Unit,
+  useShoppingListFetch,
+} from "@/queries/shoppingListFetch"
 import { ingredientByNameAlphabetical } from "@/sorters"
 import { normalizeUnitsFracs } from "@/text"
 import { toast } from "@/toast"

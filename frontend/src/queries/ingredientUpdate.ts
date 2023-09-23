@@ -1,9 +1,26 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
 
-import { IRecipe, updateIngredient } from "@/api"
 import { useTeamId } from "@/hooks"
+import { http } from "@/http"
+import { IIngredient, IRecipe } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
+
+const updateIngredient = (
+  recipeID: IRecipe["id"],
+  ingredientID: IIngredient["id"],
+  content: {
+    quantity?: string
+    name?: string
+    description?: string
+    optional?: boolean
+    position?: string
+  },
+) =>
+  http.patch<IIngredient>(
+    `/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`,
+    content,
+  )
 
 export function useIngredientUpdate() {
   const queryClient = useQueryClient()

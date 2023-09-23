@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 
-import { getCalendarRecipeList } from "@/api"
 import { useTeamId } from "@/hooks"
+import { getCalendarRecipeList } from "@/queries/scheduledRecipeList"
 import { unwrapEither } from "@/query"
 
 export function useScheduledRecipeSettingsFetch() {

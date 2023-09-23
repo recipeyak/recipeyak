@@ -1,9 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useHistory } from "react-router-dom"
 
-import { logoutUser } from "@/api"
 import { logout } from "@/auth"
+import { http } from "@/http"
 import { unwrapResult } from "@/query"
+
+const logoutUser = () => http.post<void>("/api/v1/auth/logout/", {})
 
 export function useAuthLogout() {
   const history = useHistory()

@@ -1,12 +1,11 @@
 import { RouteComponentProps } from "react-router"
 
-import { INote, TimelineItem } from "@/api"
 import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
 import { Meta } from "@/components/Meta"
 import { CookingFullscreen } from "@/pages/cook-detail/CookingFullscreen"
 import { pathCookDetail } from "@/paths"
-import { useRecipeFetch } from "@/queries/recipeFetch"
+import { INote, TimelineItem, useRecipeFetch } from "@/queries/recipeFetch"
 import { formatImgOpenGraph } from "@/utils/url"
 import { useAddSlugToUrl } from "@/utils/useAddSlugToUrl"
 

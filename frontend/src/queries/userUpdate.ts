@@ -1,10 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { updateUser } from "@/api"
 import { login } from "@/auth"
+import { http } from "@/http"
+import { IUser, Theme } from "@/queries/userFetch"
 import { unwrapResult } from "@/query"
 
-export type Theme = "light" | "autumn" | "solarized"
+const updateUser = (
+  data: Pick<Partial<IUser>, "name" | "email" | "schedule_team">,
+) => http.patch<IUser>("/api/v1/user/", data)
 
 export function useUserUpdate() {
   const queryClient = useQueryClient()

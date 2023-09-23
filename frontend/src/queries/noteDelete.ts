@@ -1,8 +1,15 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { deleteNote, IRecipe } from "@/api"
 import { useTeamId } from "@/hooks"
+import { http } from "@/http"
+import { IRecipe } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
+
+interface IDeleteNote {
+  readonly noteId: number
+}
+const deleteNote = ({ noteId }: IDeleteNote) =>
+  http.delete(`/api/v1/notes/${noteId}/`)
 
 export function useNoteDelete() {
   const queryClient = useQueryClient()

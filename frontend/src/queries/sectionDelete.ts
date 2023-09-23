@@ -1,9 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
 
-import { deleteSection, IRecipe } from "@/api"
 import { useTeamId } from "@/hooks"
+import { http } from "@/http"
+import { IRecipe } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
+
+const deleteSection = ({ sectionId }: { readonly sectionId: number }) =>
+  http.delete(`/api/v1/sections/${sectionId}/`)
 
 export function useSectionDelete() {
   const queryClient = useQueryClient()

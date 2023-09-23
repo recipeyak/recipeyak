@@ -1,86 +1,28 @@
-import { useChannel } from "@ably-labs/react-hooks"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 
-import { IIngredient, INote, IStep } from "@/api"
-import * as api from "@/api"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { Tab, Tabs } from "@/components/Tabs"
-import { useTeamId } from "@/hooks"
 import { IngredientViewContent } from "@/pages/recipe-detail/IngredientView"
 import { Note } from "@/pages/recipe-detail/Notes"
 import { RecipeSource } from "@/pages/recipe-detail/RecipeSource"
 import { StepView } from "@/pages/recipe-detail/Step"
 import { pathRecipeDetail } from "@/paths"
-import { unwrapResult } from "@/query"
+import { useCookChecklistFetch } from "@/queries/cookChecklistFetch"
+import { useCookChecklistUpdate } from "@/queries/cookChecklistUpdate"
+import { IIngredient, INote, IStep } from "@/queries/recipeFetch"
 import { notEmpty } from "@/text"
 import { styled } from "@/theme"
 
-type CheckmarkUpdated = {
-  ingredientId: number
-  checked: boolean
-}
-
 function useIngredients(recipeId: number) {
-  const teamID = useTeamId()
-  const queryClient = useQueryClient()
-  const updateChecklistItemCache = (params: {
-    ingredientId: number
-    checked: boolean
-  }) => {
-    queryClient.setQueryData<api.CookChecklist>(
-      ["updateCookChecklist", recipeId],
-      (old) => ({ ...old, [params.ingredientId]: params.checked }),
-    )
-  }
-  useChannel(`cook_checklist:${teamID}:${recipeId}`, (message) => {
-    switch (message.name) {
-      case "checkmark_updated": {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument
-        const res: CheckmarkUpdated = JSON.parse(message.data)
-        updateChecklistItemCache(res)
-        break
-      }
-    }
-  })
   const {
     isLoading,
     isError,
     data: checkedIngredients,
     error,
-  } = useQuery({
-    queryKey: ["updateCookChecklist", recipeId],
-    queryFn: () => api.fetchCookChecklist({ recipeId }).then(unwrapResult),
-  })
+  } = useCookChecklistFetch({ recipeId })
+  const mutation = useCookChecklistUpdate({ recipeId })
 
-  const mutation = useMutation({
-    mutationFn: ({
-      ingredientId,
-      checked,
-    }: {
-      ingredientId: number
-      checked: boolean
-    }) => {
-      return api
-        .updateCookChecklist({ checked, recipeId, ingredientId })
-        .then(unwrapResult)
-    },
-    onMutate(variables) {
-      const previousData = queryClient.getQueryData([
-        "updateCookChecklist",
-        recipeId,
-      ])
-      updateChecklistItemCache(variables)
-      return { previousData }
-    },
-    onError: (_err, _newData, context) => {
-      queryClient.setQueryData(
-        ["updateCookChecklist", recipeId],
-        context?.previousData,
-      )
-    },
-  })
   if (isError) {
     throw error
   }

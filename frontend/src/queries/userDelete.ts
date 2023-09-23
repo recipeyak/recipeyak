@@ -1,7 +1,9 @@
 import { useMutation } from "@tanstack/react-query"
 
-import { deleteLoggedInUser } from "@/api"
+import { http } from "@/http"
 import { unwrapResult } from "@/query"
+
+const deleteLoggedInUser = () => http.delete("/api/v1/user/")
 
 export function useUserDelete() {
   return useMutation({

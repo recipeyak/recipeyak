@@ -1,10 +1,24 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
 
-import { IRecipe, updateSection } from "@/api"
 import { useTeamId } from "@/hooks"
+import { http } from "@/http"
+import { IRecipe } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
 
+const updateSection = ({
+  sectionId,
+  position,
+  title,
+}: {
+  readonly sectionId: number
+  readonly position?: string
+  readonly title?: string
+}) =>
+  http.patch<{ title: string; position: string; id: number }>(
+    `/api/v1/sections/${sectionId}/`,
+    { title, position },
+  )
 export function useSectionUpdate() {
   const queryClient = useQueryClient()
   const teamId = useTeamId()

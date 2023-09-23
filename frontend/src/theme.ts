@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-restricted-imports
 import * as styledComponents from "styled-components"
 
-import { Theme } from "@/queries/userUpdate"
+import { Theme } from "@/queries/userFetch"
 
 const THEME_CACHE_KEY = "recipeyak-theme-v2"
 
