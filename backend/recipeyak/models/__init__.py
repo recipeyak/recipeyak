@@ -12,6 +12,9 @@ from recipeyak.models.note import Note
 from recipeyak.models.reaction import Reaction
 from recipeyak.models.recipe import Recipe
 from recipeyak.models.recipe_change import ChangeType, RecipeChange  # noqa: F401
+from recipeyak.models.recipe_cook_checklist_check import (
+    RecipeCookChecklistCheck,  # noqa: F401
+)
 from recipeyak.models.recipe_view import RecipeView  # noqa: F401
 from recipeyak.models.schedule_event import ScheduleEvent  # noqa: F401
 from recipeyak.models.scheduled_recipe import ScheduledRecipe  # noqa: F401
@@ -64,6 +67,10 @@ def filter_recipes(*, team: Team) -> QuerySet[Recipe]:
 
 def filter_recipe_or_404(*, recipe_pk: str, team: Team) -> Recipe:
     return get_object_or_404(filter_recipes(team=team), pk=recipe_pk)
+
+
+def filter_cook_checklist(*, team: Team) -> QuerySet[RecipeCookChecklistCheck]:
+    return RecipeCookChecklistCheck.objects.filter(recipe__in=filter_recipes(team=team))
 
 
 def filter_ingredients(*, team: Team) -> QuerySet[Ingredient]:

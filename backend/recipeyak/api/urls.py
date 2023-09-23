@@ -7,6 +7,7 @@ from recipeyak.api.calendar_generate_link_view import generate_link
 from recipeyak.api.calendar_list_view import calendar_list_view
 from recipeyak.api.calendar_next_open_view import next_open
 from recipeyak.api.calendar_update_settings_view import update_settings
+from recipeyak.api.cook_checklist_view import cook_checklist_view
 from recipeyak.api.export_recipes_list_view import export_recipes_list_view
 from recipeyak.api.ical_detail_view import get_ical_view
 from recipeyak.api.ingredients_detail_view import ingredients_detail_view
@@ -62,6 +63,7 @@ urlpatterns = [
     path("api/v1/auth/password/reset/", password_reset_view),
     path("api/v1/auth/password/reset/confirm/", password_reset_confirm_view),
     path("api/v1/auth/registration/", register_user_detail_view),
+    path("api/v1/cook-checklist/<int:recipe_pk>/", cook_checklist_view),
     path("api/v1/invites/", user_invites_list_view),
     path("api/v1/invites/<int:pk>/accept/", user_invites_accept_view),
     path("api/v1/invites/<int:pk>/decline/", user_invites_decline_view),
