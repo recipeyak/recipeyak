@@ -1,3 +1,4 @@
+import { useChannel } from "@ably-labs/react-hooks"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 
@@ -6,6 +7,7 @@ import * as api from "@/api"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { Tab, Tabs } from "@/components/Tabs"
+import { useTeamId } from "@/hooks"
 import { IngredientViewContent } from "@/pages/recipe-detail/IngredientView"
 import { Note } from "@/pages/recipe-detail/Notes"
 import { RecipeSource } from "@/pages/recipe-detail/RecipeSource"
@@ -14,9 +16,34 @@ import { pathRecipeDetail } from "@/paths"
 import { unwrapResult } from "@/query"
 import { notEmpty } from "@/text"
 import { styled } from "@/theme"
-import { assertNotNullish } from "@/utils/general"
+
+type CheckmarkUpdated = {
+  ingredientId: number
+  checked: boolean
+}
 
 function useIngredients(recipeId: number) {
+  const teamID = useTeamId()
+  const queryClient = useQueryClient()
+  const updateChecklistItemCache = (params: {
+    ingredientId: number
+    checked: boolean
+  }) => {
+    queryClient.setQueryData<api.CookChecklist>(
+      ["updateCookChecklist", recipeId],
+      (old) => ({ ...old, [params.ingredientId]: params.checked }),
+    )
+  }
+  useChannel(`cook_checklist:${teamID}:${recipeId}`, (message) => {
+    switch (message.name) {
+      case "checkmark_updated": {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument
+        const res: CheckmarkUpdated = JSON.parse(message.data)
+        updateChecklistItemCache(res)
+        break
+      }
+    }
+  })
   const {
     isLoading,
     isError,
@@ -27,7 +54,6 @@ function useIngredients(recipeId: number) {
     queryFn: () => api.fetchCookChecklist({ recipeId }).then(unwrapResult),
   })
 
-  const queryClient = useQueryClient()
   const mutation = useMutation({
     mutationFn: ({
       ingredientId,
@@ -45,10 +71,7 @@ function useIngredients(recipeId: number) {
         "updateCookChecklist",
         recipeId,
       ])
-      queryClient.setQueryData<api.CookChecklist>(
-        ["updateCookChecklist", recipeId],
-        (old) => ({ ...old, [variables.ingredientId]: variables.checked }),
-      )
+      updateChecklistItemCache(variables)
       return { previousData }
     },
     onError: (_err, _newData, context) => {
@@ -61,8 +84,10 @@ function useIngredients(recipeId: number) {
   if (isError) {
     throw error
   }
+  if (isLoading) {
+    return { checkedIngredients, isLoading, mutation } as const
+  }
 
-  assertNotNullish(checkedIngredients)
   return { checkedIngredients, isLoading, mutation } as const
 }
 

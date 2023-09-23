@@ -14,6 +14,7 @@ from recipeyak.models import (
     filter_recipe_or_404,
     get_team,
 )
+from recipeyak.realtime import publish_cook_checklist
 
 
 def cook_checklist_get_view(request: AuthedRequest, recipe_pk: str) -> Response:
@@ -57,6 +58,13 @@ def cook_checklist_post_view(request: AuthedRequest, recipe_pk: str) -> Response
                 "checked": params.checked,
             },
         )
+
+    publish_cook_checklist(
+        recipe_id=recipe.id,
+        team_id=team.id,
+        ingredient_id=params.ingredient_id,
+        checked=params.checked,
+    )
 
     return Response(
         CookChecklistPostSerializer(
