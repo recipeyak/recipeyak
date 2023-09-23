@@ -13,7 +13,7 @@ from recipeyak.models.reaction import Reaction
 from recipeyak.models.recipe import Recipe
 from recipeyak.models.recipe_change import ChangeType, RecipeChange  # noqa: F401
 from recipeyak.models.recipe_cook_checklist_check import (
-    RecipeCookChecklistCheck,  # noqa: F401
+    RecipeCookChecklistCheck,
 )
 from recipeyak.models.recipe_view import RecipeView  # noqa: F401
 from recipeyak.models.schedule_event import ScheduleEvent  # noqa: F401
