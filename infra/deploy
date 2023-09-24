@@ -48,8 +48,6 @@ main() {
 	docker run --detach --restart unless-stopped --name django --network host --log-driver=journald --env-file=/root/.env-production recipeyak/django:"$SHA"
 
 	step "updating ui"
-	docker stop react
-	docker rm react
 	docker run --name react --network host --log-driver=journald --env-file=/root/.env-production recipeyak/react:"$SHA"
     tmp=$(mktemp -d)
     docker cp react:/var/app/dist "$tmp"
