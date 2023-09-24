@@ -3,10 +3,10 @@ Description=Runs backfill_image_placeholders job
 [Service]
 ExecStart=/usr/bin/docker run \
         --rm \
-        --network recipeyak \
+        --network host \
         --log-driver=journald \
         --env-file=/root/.env-production \
-        recipeyak/django:97625ae875b0abb40ed6bb18a0527b74015db483 \
+        recipeyak/django:{{GIT_SHA}} \
         ./.venv/bin/python -m recipeyak.jobs.backfill_image_placeholders --no-dry-run
 [Install]
 WantedBy=multi-user.target

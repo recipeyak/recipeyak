@@ -21,34 +21,49 @@ main() {
 	step "pulling latest container images"
 	docker pull recipeyak/django:"$SHA"
 	docker pull recipeyak/react:"$SHA"
-	docker pull recipeyak/nginx:"$SHA"
 
-	# update background jobs
-	step "updating background jobs"
-	sed -i "s/:\(.*\) /:$SHA /g" /etc/systemd/system/recipeyak-backfill_image_placeholders.service
-	sed -i "s/:\(.*\) /:$SHA /g" /etc/systemd/system/recipeyak-remove_old_checklists.service
+    step "fetching repository"
+    rm -r recipeyak
+    git clone https://github.com/recipeyak/recipeyak recipeyak
+    cd recipeyak
+    git checkout "$SHA"
+
+    step "updating background jobs"
+    cp -f infra/systemd-services/* /etc/systemd/system/
+	sed -i "s/{{GIT_SHA}}/$SHA/g" /etc/systemd/system/recipeyak-*.service
 	systemctl daemon-reload
+
+    # enable timers
+    find infra/systemd-services/ -name '*.timer' -printf '%f\n' | xargs systemctl enable --now
 	# no need to restart anything since they're running on timers, which
 	# will get the new version on restart
 
 	# migrations
 	step "running migrations"
-	docker run --network recipeyak --log-driver=journald --env-file=.env-production recipeyak/django:"$SHA" /var/app/.venv/bin/python ./manage.py migrate
+	docker run --network host --log-driver=journald --env-file=/root/.env-production recipeyak/django:"$SHA" /var/app/.venv/bin/python ./manage.py migrate
 
 	step "updating api"
 	docker stop django
 	docker rm django
-	docker run --detach --restart unless-stopped --name django --network recipeyak --log-driver=journald -p "7777:8000" --env-file=.env-production recipeyak/django:"$SHA"
+	docker run --detach --restart unless-stopped --name django --network host --log-driver=journald --env-file=/root/.env-production recipeyak/django:"$SHA"
 
 	step "updating ui"
-	docker stop react
-	docker rm react
-	docker run --detach --restart unless-stopped --name react --network recipeyak --log-driver=journald -v recipemanager_react-static-files:/var/app/dist --env-file=.env-production recipeyak/react:"$SHA"
+	docker run --name react --network host --log-driver=journald --env-file=/root/.env-production recipeyak/react:"$SHA"
+    tmp=$(mktemp -d)
+    docker cp react:/var/app/dist "$tmp"
+    rsync -a -r "$tmp/dist/" /var/app/dist/
 
-	step "updating reverse proxy"
-	docker stop nginx
-	docker rm nginx
-	docker run --detach --restart unless-stopped --name nginx -p "8000:80" --network recipeyak --log-driver=journald -v recipemanager_react-static-files:/var/app/dist --env-file=.env-production recipeyak/nginx:"$SHA"
+	
+    rm -f /etc/nginx/sites-enabled/default
+    cp infra/nginx/recipeyak.conf /etc/nginx/sites-available/recipeyak
+    cp infra/nginx/recipeyak_headers.conf /etc/nginx/snippets/
+    ln -sf /etc/nginx/sites-available/recipeyak /etc/nginx/sites-enabled/
+
+    step "test nginx config"
+    nginx -t
+    
+    step "reload nginx"
+    systemctl reload nginx
 
 	step "prunning old docker containers"
 	# we could do something like "keep the 3 most recent versions per container name" but this is easy enough
