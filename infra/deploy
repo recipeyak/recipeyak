@@ -23,7 +23,7 @@ main() {
 	docker pull recipeyak/react:"$SHA"
 
     step "fetching repository"
-    rm -r recipeyak
+    rm -rf recipeyak
     git clone https://github.com/recipeyak/recipeyak recipeyak
     cd recipeyak
     git checkout "$SHA"
@@ -51,7 +51,7 @@ main() {
 	docker run --name react --network host --log-driver=journald --env-file=/root/.env-production recipeyak/react:"$SHA"
     tmp=$(mktemp -d)
     docker cp react:/var/app/dist "$tmp"
-    rsync -a -r "$tmp/dist/" /var/app/dist/
+    rsync --archive --recursive --verbose "$tmp/dist/" /var/app/dist/
 
 	
     rm -f /etc/nginx/sites-enabled/default
