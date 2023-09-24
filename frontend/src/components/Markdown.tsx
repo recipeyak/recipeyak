@@ -1,6 +1,7 @@
 import React from "react"
 import ReactMarkdown, { Components } from "react-markdown"
 import remarkGfm from "remark-gfm"
+import smartypants from "remark-smartypants"
 
 import { Link } from "@/components/Routing"
 import * as settings from "@/settings"
@@ -92,6 +93,8 @@ export function Markdown({
         remarkPlugins={[
           // enable auto-linking of urls & other github flavored markdown features
           remarkGfm,
+          // auto convert -- to em dash and similar
+          smartypants,
         ]}
         children={text}
         components={renderers}

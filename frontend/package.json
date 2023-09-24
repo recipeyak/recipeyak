@@ -63,6 +63,7 @@
     "react-router-dom": "^5.1.2",
     "react-textarea-autosize": "^8.3.4",
     "remark-gfm": "^3.0.1",
+    "remark-smartypants": "^2.0.0",
     "sass": "^1.54.0",
     "static-path": "^0.0.4",
     "styled-components": "^4.4.0",
