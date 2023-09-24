@@ -3,7 +3,7 @@ Description=Runs remove_old_checklists job
 [Service]
 ExecStart=/usr/bin/docker run \
         --rm \
-        --network recipeyak \
+        --network host \
         --log-driver=journald \
         --env-file=/root/.env-production \
         recipeyak/django:{{GIT_SHA}} \
