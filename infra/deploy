@@ -40,18 +40,21 @@ main() {
 
 	# migrations
 	step "running migrations"
-	docker run --network host --log-driver=journald --env-file=.env-production recipeyak/django:"$SHA" /var/app/.venv/bin/python ./manage.py migrate
+	docker run --network host --log-driver=journald --env-file=/root/.env-production recipeyak/django:"$SHA" /var/app/.venv/bin/python ./manage.py migrate
 
 	step "updating api"
 	docker stop django
 	docker rm django
-	docker run --detach --restart unless-stopped --name django --network host --log-driver=journald -p "7777:8000" --env-file=.env-production recipeyak/django:"$SHA"
+	docker run --detach --restart unless-stopped --name django --network host --log-driver=journald --env-file=/root/.env-production recipeyak/django:"$SHA"
 
 	step "updating ui"
 	docker stop react
 	docker rm react
-	docker run --name react --network host --log-driver=journald --env-file=.env-production recipeyak/react:"$SHA"
-    docker cp react:/var/app/dist /var/app
+	docker run --name react --network host --log-driver=journald --env-file=/root/.env-production recipeyak/react:"$SHA"
+    tmp=$(mktemp -d)
+    docker cp react:/var/app/dist "$tmp"
+    rsync -a -r "$tmp/dist/" /var/app/dist/
+
 	
     rm -f /etc/nginx/sites-enabled/default
     cp infra/nginx/recipeyak.conf /etc/nginx/sites-available/recipeyak
