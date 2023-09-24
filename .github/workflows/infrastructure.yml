@@ -115,5 +115,5 @@ jobs:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         run: |
           git_sha=${{ github.event.pull_request.head.sha || github.sha }}
-          rsync $SSH_USER@$SSH_HOST infra/deploy
+          rsync infra/deploy $SSH_USER@$SSH_HOST:deploy
           ssh $SSH_USER@$SSH_HOST "./deploy $git_sha"
