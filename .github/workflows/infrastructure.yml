@@ -5,6 +5,12 @@ on:
   push:
     branches:
       - master
+  workflow_dispatch:
+    inputs:
+      commit_sha:
+        description: "SHA to deploy"
+        required: true
+        type: string
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
@@ -37,6 +43,7 @@ jobs:
 
   build_api_container:
     runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'workflow_dispatch' }}
     steps:
       - uses: actions/checkout@v3
       - name: Set up QEMU
@@ -60,6 +67,7 @@ jobs:
 
   build_ui_container:
     runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'workflow_dispatch' }}
     steps:
       - uses: actions/checkout@v3
       - name: Set up QEMU
@@ -106,7 +114,7 @@ jobs:
 
   deploy:
     needs: [build_api_container, build_ui_container, build_proxy_container]
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
