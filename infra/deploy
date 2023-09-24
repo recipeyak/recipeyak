@@ -59,7 +59,7 @@ main() {
     rm -f /etc/nginx/sites-enabled/default
     cp infra/nginx/recipeyak.conf /etc/nginx/sites-available/recipeyak
     cp infra/nginx/recipeyak_headers.conf /etc/nginx/snippets/
-    ln -s /etc/nginx/sites-available/recipeyak /etc/nginx/sites-enabled/
+    ln -sf /etc/nginx/sites-available/recipeyak /etc/nginx/sites-enabled/
 
     step "test nginx config"
     nginx -t
