@@ -1,0 +1,19 @@
+#!/bin/bash
+set -eu
+
+# https://maxschmitt.me/posts/github-actions-ssh-key
+main() {
+    mkdir -p /home/runner/.ssh
+    ssh-keyscan "$SSH_HOST" >> /home/runner/.ssh/known_hosts
+    echo "$SSH_PRIVATE_KEY" > /home/runner/.ssh/github_actions
+    chmod 600 /home/runner/.ssh/github_actions
+    ssh-agent -a "$SSH_AUTH_SOCK" > /dev/null	
+    ssh-add /home/runner/.ssh/github_actions
+
+    rsync infra/deploy "$SSH_USER@$SSH_HOST":deploy
+    # shellcheck disable=SC2029
+    ssh "$SSH_USER@$SSH_HOST" "./deploy $GIT_SHA"
+}
+
+
+main "$@"
