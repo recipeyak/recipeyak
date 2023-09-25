@@ -102,7 +102,7 @@ urlpatterns = [
     path("api/v1/user/", user_detail_view),
     path("api/v1/user/<str:user_id>/", user_detail_by_id_view),
     path("t/<int:team_id>/ical/<str:ical_id>/schedule.ics", get_ical_view),
-    url(r"^recipes/(?P<recipe_pk>[0-9]+)(-.*)?$", recipe_bot_detail_view),
+    url(r"^api/v1/bot-recipes/(?P<recipe_pk>[0-9]+)(-.*)?$", recipe_bot_detail_view),
     url(r"^recipes.(?P<filetype>json|yaml|yml)$", export_recipes_list_view),
     url(
         r"^recipes/(?P<pk>[0-9]+)\.(?P<filetype>json|yaml|yml)$",
