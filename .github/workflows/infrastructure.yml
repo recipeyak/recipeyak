@@ -96,23 +96,32 @@ jobs:
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
       SSH_USER: ${{ secrets.SSH_USER }}
       SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+
+      GIT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
     steps:
       - uses: actions/checkout@v3
-      # https://maxschmitt.me/posts/github-actions-ssh-key
-      - name: "Install ssh key"
-        env:
-          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-        run: |
-          mkdir -p /home/runner/.ssh
-          ssh-keyscan $SSH_HOST >> /home/runner/.ssh/known_hosts
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > /home/runner/.ssh/github_actions
-          chmod 600 /home/runner/.ssh/github_actions
-          ssh-agent -a $SSH_AUTH_SOCK > /dev/null	
-          ssh-add /home/runner/.ssh/github_actions
-      - env:
-          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-        run: |
-          git_sha=${{ github.event.pull_request.head.sha || github.sha }}
-          ssh $SSH_USER@$SSH_HOST "./deploy $git_sha"
+      - name: "SSH to server and deploy"
+        run: ./infra/ssh-to-server
+
+  deploy_workflow_dispatch:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      SSH_USER: ${{ secrets.SSH_USER }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+
+      GIT_SHA: ${{ github.event.inputs.commit_sha }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: "SSH to server and deploy"
+        run: ./infra/ssh-to-server

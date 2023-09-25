@@ -23,47 +23,49 @@ main() {
 	docker pull recipeyak/react:"$SHA"
 
     step "fetching repository"
-    rm -r recipeyak
+    rm -rf recipeyak
     git clone https://github.com/recipeyak/recipeyak recipeyak
-    cd recipeyak
-    git checkout "$SHA"
+    pushd recipeyak
+        git checkout "$SHA"
 
-    step "updating background jobs"
-    cp -f infra/systemd-services/* /etc/systemd/system/
-	sed -i "s/{{GIT_SHA}}/$SHA/g" /etc/systemd/system/recipeyak-*.service
-	systemctl daemon-reload
+        step "updating background jobs"
+        cp -f infra/systemd-services/* /etc/systemd/system/
+        sed -i "s/{{GIT_SHA}}/$SHA/g" /etc/systemd/system/recipeyak-*.service
+        systemctl daemon-reload
 
-    # enable timers
-    find infra/systemd-services/ -name '*.timer' -printf '%f\n' | xargs systemctl enable --now
-	# no need to restart anything since they're running on timers, which
-	# will get the new version on restart
+        # enable timers
+        find infra/systemd-services/ -name '*.timer' -printf '%f\n' | xargs systemctl enable --now
+        # no need to restart anything since they're running on timers, which
+        # will get the new version on restart
 
-	# migrations
-	step "running migrations"
-	docker run --network host --log-driver=journald --env-file=/root/.env-production recipeyak/django:"$SHA" /var/app/.venv/bin/python ./manage.py migrate
+        # migrations
+        step "running migrations"
+        docker run --network host --log-driver=journald --env-file=/root/.env-production recipeyak/django:"$SHA" /var/app/.venv/bin/python ./manage.py migrate
 
-	step "updating api"
-	docker stop django
-	docker rm django
-	docker run --detach --restart unless-stopped --name django --network host --log-driver=journald --env-file=/root/.env-production recipeyak/django:"$SHA"
+        step "updating api"
+        docker stop django
+        docker rm django
+        docker run --detach --restart unless-stopped --name django --network host --log-driver=journald --env-file=/root/.env-production recipeyak/django:"$SHA"
 
-	step "updating ui"
-	docker run --name react --network host --log-driver=journald --env-file=/root/.env-production recipeyak/react:"$SHA"
-    tmp=$(mktemp -d)
-    docker cp react:/var/app/dist "$tmp"
-    rsync -a -r "$tmp/dist/" /var/app/dist/
+        step "updating ui"
+        docker run --name react --network host --log-driver=journald --env-file=/root/.env-production recipeyak/react:"$SHA"
+        tmp=$(mktemp -d)
+        docker cp react:/var/app/dist "$tmp"
+        rsync --archive --recursive --verbose "$tmp/dist/" /var/app/dist/
 
-	
-    rm -f /etc/nginx/sites-enabled/default
-    cp infra/nginx/recipeyak.conf /etc/nginx/sites-available/recipeyak
-    cp infra/nginx/recipeyak_headers.conf /etc/nginx/snippets/
-    ln -sf /etc/nginx/sites-available/recipeyak /etc/nginx/sites-enabled/
+        
+        rm -f /etc/nginx/sites-enabled/default
+        cp infra/nginx/recipeyak.conf /etc/nginx/sites-available/recipeyak
+        cp infra/nginx/recipeyak_headers.conf /etc/nginx/snippets/
+        ln -sf /etc/nginx/sites-available/recipeyak /etc/nginx/sites-enabled/
 
-    step "test nginx config"
-    nginx -t
-    
-    step "reload nginx"
-    systemctl reload nginx
+        step "test nginx config"
+        nginx -t
+        
+        step "reload nginx"
+        systemctl reload nginx
+        
+        popd
 
 	step "prunning old docker containers"
 	# we could do something like "keep the 3 most recent versions per container name" but this is easy enough
