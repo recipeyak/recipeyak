@@ -102,7 +102,25 @@ jobs:
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       SSH_AUTH_SOCK: /tmp/ssh_agent.sock
 
-      GIT_SHA: ${{ github.event.inputs.commit_sha || github.event.pull_request.head.sha || github.sha }}
+      GIT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: "SSH to server and deploy"
+        run: ./infra/ssh-to-server
+
+  deploy_workflow_dispatch:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      SSH_USER: ${{ secrets.SSH_USER }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+
+      GIT_SHA: ${{ github.event.inputs.commit_sha }}
     steps:
       - uses: actions/checkout@v3
       - name: "SSH to server and deploy"
