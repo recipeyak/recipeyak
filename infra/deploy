@@ -65,7 +65,7 @@ main() {
         step "reload nginx"
         systemctl reload nginx
         
-        popd recipeyak
+        popd
 
 	step "prunning old docker containers"
 	# we could do something like "keep the 3 most recent versions per container name" but this is easy enough
