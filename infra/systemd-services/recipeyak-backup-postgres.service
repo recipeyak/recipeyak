@@ -1,0 +1,7 @@
+[Unit]
+Description=Runs backup of postgres database
+[Service]
+EnvironmentFile=/root/.env-production
+ExecStart=/usr/local/bin/sentry-cli monitors run backup-postgres -- /etc/recipeyak/backup-postgres
+[Install]
+WantedBy=multi-user.target

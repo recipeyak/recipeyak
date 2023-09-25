@@ -1,0 +1,8 @@
+[Unit]
+Description=Run backup-postgres every 10 minutes
+[Timer]
+Unit=recipeyak-backup-postgres.service
+OnBootSec=10min
+OnUnitActiveSec=10min
+[Install]
+WantedBy=timers.target

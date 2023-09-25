@@ -1,0 +1,2 @@
+#!/usr/bin/bash
+pg_dump "$DATABASE_URL"  | gzip  | aws s3 cp - "s3://$POSTGRES_BACKUP_S3_BUCKET/$(date -u +"%Y-%m-%dT%H:%M:%SZ")-db.sql.gz"

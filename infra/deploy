@@ -29,6 +29,8 @@ main() {
         git checkout "$SHA"
 
         step "updating background jobs"
+        mkdir -p /etc/recipeyak/
+        cp -f infra/etc/recipeyak/* /etc/recipeyak/
         cp -f infra/systemd-services/* /etc/systemd/system/
         sed -i "s/{{GIT_SHA}}/$SHA/g" /etc/systemd/system/recipeyak-*.service
         systemctl daemon-reload
