@@ -9,7 +9,7 @@ import sentry_sdk
 import structlog
 import typer
 from dotenv import load_dotenv
-from PIL import Image, ImageOps
+from PIL import Image, ImageOps, UnidentifiedImageError
 from pillow_heif import register_heif_opener
 from pydantic import (
     BaseSettings,
@@ -68,6 +68,7 @@ async def job(*, dry_run: bool, database_url: str, storage_hostname: str) -> Non
     where completed = true
       and background_url is null
       and (note_id is not null or recipe_id is not null)
+      and content_type like 'image/%'
     limit 50;
     """
     )
@@ -89,7 +90,13 @@ async def job(*, dry_run: bool, database_url: str, storage_hostname: str) -> Non
     id_to_placeholder: dict[int, str] = {}
     for (upload_id, url, image_bytes) in results:
         log.info("generating placeholder", url=url, upload_id=upload_id)
-        id_to_placeholder[upload_id] = get_placeholder_image(BytesIO(image_bytes))
+        try:
+            id_to_placeholder[upload_id] = get_placeholder_image(BytesIO(image_bytes))
+        except UnidentifiedImageError:
+            # With PDFs we'll get an error when trying to Image.open them:
+            #   UnidentifiedImageError
+            #   cannot identify image file <_io.BytesIO object at 0x7f50b38b0a90>
+            log.exception("problem generating placeholder", upload_id=upload_id)
 
     log = log.bind(placeholder_count=len(id_to_placeholder))
 
