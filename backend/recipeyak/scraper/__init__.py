@@ -119,7 +119,7 @@ def scrape_recipe(*, url: str, user: User) -> ScrapeResult:
     start = time.monotonic()
 
     validate_url(url)
-    html = fetch_bytes(url=url)
+    html, _ = fetch_bytes(url=url)
 
     parsed = scrape_html(html=html, org_url=url)  # type: ignore[arg-type]
     og_image_url = get_open_graph_image(html)
@@ -128,10 +128,16 @@ def scrape_recipe(*, url: str, user: User) -> ScrapeResult:
 
     upload: Upload | None = None
     if image_url is not None:
-        image_res = fetch_bytes(url=image_url)
+        image_res, content_type = fetch_bytes(url=image_url)
         extension = Path(urlparse(image_url).path).suffix
         key = f"scraper/{uuid4().hex}{extension}"
-        upload = Upload(scraped_by=user, bucket=config.STORAGE_BUCKET_NAME, key=key)
+
+        upload = Upload(
+            scraped_by=user,
+            bucket=config.STORAGE_BUCKET_NAME,
+            key=key,
+            content_type=content_type,
+        )
         upload.save()
         # put_object seems simplier than upload_fileobj so going with it
         s3.put_object(

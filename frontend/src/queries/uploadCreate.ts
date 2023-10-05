@@ -36,9 +36,11 @@ export const uploadCreate = async ({
     return uploadRes
   }
 
-  const uploadFinished = await http.post<{ id: string; url: string }>(
-    `/api/v1/upload/${res.data.id}/complete`,
-  )
+  const uploadFinished = await http.post<{
+    id: string
+    url: string
+    contentType: string
+  }>(`/api/v1/upload/${res.data.id}/complete`)
   if (!isOk(uploadFinished)) {
     return uploadFinished
   }

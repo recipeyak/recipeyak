@@ -545,7 +545,7 @@ const RecipeTitleContainer = styled.div`
 function useGallery(
   noteUploads: Upload[],
   recipeId: number | null,
-  primaryImage: { id: string; url: string } | null,
+  primaryImage: { id: string; url: string; contentType: string } | null,
 ) {
   const isPrimaryImageInUploads =
     noteUploads.find((x) => x.id === primaryImage?.id) != null
@@ -556,6 +556,7 @@ function useGallery(
           {
             url: primaryImage.url,
             id: primaryImage.id,
+            contentType: primaryImage.contentType,
             backgroundUrl: null,
             isPrimary: true,
             localId: primaryImage.id,

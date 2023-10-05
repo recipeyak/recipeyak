@@ -13,6 +13,7 @@ from recipeyak.models.upload import Upload
 class CompleteUploadResponse(pydantic.BaseModel):
     id: str
     url: str
+    contentType: str
 
 
 @api_view(["POST"])
@@ -26,7 +27,6 @@ def complete_upload_view(request: AuthedRequest, upload_pk: int) -> Response:
 
     return Response(
         CompleteUploadResponse(
-            id=upload.pk,
-            url=upload.public_url(),
+            id=upload.pk, url=upload.public_url(), contentType=upload.content_type
         )
     )
