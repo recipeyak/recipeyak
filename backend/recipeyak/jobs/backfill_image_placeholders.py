@@ -68,6 +68,7 @@ async def job(*, dry_run: bool, database_url: str, storage_hostname: str) -> Non
     where completed = true
       and background_url is null
       and (note_id is not null or recipe_id is not null)
+      and content_type like 'image/%'
     limit 50;
     """
     )
