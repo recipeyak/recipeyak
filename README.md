@@ -90,20 +90,43 @@ poetry install
 s/dev
 s/test
 s/lint
-# view postgres queries
-# 1. update the postgresql.conf to include have:
-#   log_statement = 'all'
-#   log_directory = 'pg_log'
-#   log_filename = 'postgresql.log'
-#   logging_collector = on
-#   log_min_error_statement = error
-#   log_rotation_size = 10MB
-# 2. tail the log file
-tail -f "/Users/$USER/Library/Application Support/com.tinyapp.DBngin/Engines/postgresql/ED55F0A6-5CC7-49A4-B8D5-A5E819F1F1CB/pg_log/postgresql.log"
 
 # use `yarn` and `poetry` to add and upgrade dependencies
 yarn add $FOO
 poetry add $BAR
+```
+
+### view postgres queries
+
+1. update the `postgresql.conf` to include have:
+
+```
+log_statement = 'all'
+log_directory = 'pg_log'
+log_filename = 'postgresql.log'
+logging_collector = on
+log_min_error_statement = error
+log_rotation_size = 10MB
+```
+
+2. tail the log file
+
+```
+tail -f "/Users/$USER/Library/Application Support/com.tinyapp.DBngin/Engines/postgresql/ED55F0A6-5CC7-49A4-B8D5-A5E819F1F1CB/pg_log/postgresql.log"
+```
+
+### connect to prod postgres from local
+
+1. setup ssh proxy
+
+```
+ssh -N -L 1111:127.0.0.1:5432 recipeyak
+```
+
+2. update .env
+
+```
+DATABASE_URL=postgres://postgres@localhost:1111/recipeyak
 ```
 
 ## Prod
