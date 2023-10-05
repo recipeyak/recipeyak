@@ -43,6 +43,7 @@ export type Upload = {
   readonly url: string
   readonly backgroundUrl: string | null
   readonly type: "upload"
+  readonly contentType: string
   readonly isPrimary: boolean
   readonly localId: string
 }
@@ -104,6 +105,7 @@ export interface IRecipe {
     id: string
     url: string
     author?: string
+    contentType: string
     backgroundUrl: string | null
   }
   readonly created: string

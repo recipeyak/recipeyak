@@ -105,11 +105,12 @@ class UploadSerializer(BaseModelSerializer):
     id = serializers.CharField()
     url = serializers.CharField(source="public_url")
     backgroundUrl = serializers.CharField(source="background_url")
+    contentType = serializers.CharField(source="content_type")
     author = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Upload
-        read_only_fields = ("id", "url", "backgroundUrl", "author")
+        read_only_fields = ("id", "url", "backgroundUrl", "author", "contentType")
         fields = read_only_fields
 
     def get_author(self, obj: Upload) -> str | None:
@@ -225,6 +226,7 @@ class NoteAttachment(pydantic.BaseModel):
     id: str
     url: str
     backgroundUrl: str | None
+    contentType: str
     isPrimary: bool
     type: Literal["upload"] = "upload"
 
@@ -238,6 +240,7 @@ def serialize_attachments(
             url=attachment.public_url(),
             backgroundUrl=attachment.background_url,
             isPrimary=attachment.pk == primary_image_id,
+            contentType=attachment.content_type,
         )
         for attachment in attachments
     ]

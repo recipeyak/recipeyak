@@ -32,6 +32,7 @@ class Upload(CommonInfo):
     )
     bucket = models.TextField()
     key = models.TextField()
+    content_type = models.TextField()
     completed = models.BooleanField(default=False)
     background_url = models.TextField(null=True)
     scraped_by = models.ForeignKey["User"](

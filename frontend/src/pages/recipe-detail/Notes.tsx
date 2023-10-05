@@ -49,7 +49,7 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
     setNewText(note.text)
   }, [note.text])
   const [isEditing, setIsEditing] = React.useState(false)
-  const [uploadedImages, setUploads] = React.useState<UploadSuccess[]>(
+  const [uploads, setUploads] = React.useState<UploadSuccess[]>(
     note.attachments.map((x) => ({ ...x, localId: x.id })),
   )
 
@@ -62,7 +62,7 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
         recipeId,
         noteId: note.id,
         note: draftText,
-        attachmentUploadIds: uploadedImages.map((x) => x.id),
+        attachmentUploadIds: uploads.map((x) => x.id),
       },
       {
         onSuccess: () => {
@@ -109,7 +109,7 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
     onEditorKeyDown,
     onNoteClick,
     onSave,
-    uploadedImages,
+    uploads,
     addUploads: (upload: UploadSuccess) => {
       setUploads((s) => [upload, ...s])
     },
@@ -196,7 +196,7 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
     onSave,
     addUploads,
     removeUploads,
-    uploadedImages,
+    uploads,
     resetUploads,
   } = useNoteEditHandlers({ note, recipeId })
 
@@ -205,13 +205,7 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
   const noteHtmlId = `note-${note.id}`
 
   const { addFiles, removeFile, files, hasUnsavedImages, reset } =
-    useImageUpload(
-      addUploads,
-      removeUploads,
-      uploadedImages,
-      resetUploads,
-      recipeId,
-    )
+    useFileUpload(addUploads, removeUploads, uploads, resetUploads, recipeId)
 
   const createReaction = useReactionCreate()
   const deleteReaction = useReactionDelete()
@@ -273,11 +267,12 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
             <Box gap={1} dir="col">
               <Box wrap gap={1}>
                 {note.attachments.map((attachment) => (
-                  <ImagePreview
+                  <FilePreview
                     key={attachment.id}
                     onClick={() => {
                       openImage(attachment.id)
                     }}
+                    contentType={attachment.contentType}
                     src={attachment.url}
                     backgroundUrl={attachment.backgroundUrl}
                   />
@@ -307,7 +302,7 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
                 placeholder="Add a note..."
               />
               {isEditing ? (
-                <ImageUploader
+                <FileUploader
                   addFiles={addFiles}
                   removeFile={removeFile}
                   files={files}
@@ -321,7 +316,8 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
                       rel="noreferrer"
                       href={attachment.url}
                     >
-                      <ImagePreview
+                      <FilePreview
+                        contentType={attachment.contentType}
                         src={attachment.url}
                         backgroundUrl={attachment.backgroundUrl}
                       />
@@ -547,7 +543,7 @@ const NoteWrapper = styled.div`
   flex-direction: column;
 `
 
-const ImageUploadContainer = styled.div`
+const FileUploadContainer = styled.div`
   border-style: solid;
   border-top-style: none;
   border-width: thin;
@@ -559,7 +555,7 @@ const ImageUploadContainer = styled.div`
   gap: 0.25rem;
 `
 
-const ImagePreviewParent = styled.div`
+const FilePreviewParent = styled.div`
   position: relative;
 `
 const CloseButton = styled.button`
@@ -588,13 +584,15 @@ const Image100Px = styled.img.attrs({ loading: "lazy" })<{
   object-fit: cover;
   filter: ${(props) => (props.isLoading ? "grayscale(100%)" : "unset")};
 `
-function ImagePreview({
+function FilePreview({
   src,
   isLoading,
   backgroundUrl,
+  contentType,
   onClick,
 }: {
   src: string
+  contentType: string
   isLoading?: boolean
   backgroundUrl: string | null
   onClick?: () => void
@@ -609,7 +607,7 @@ function ImagePreview({
       onClick={onClick}
     >
       <Image100Px
-        src={imgixFmt(src)}
+        src={contentType.startsWith("image/") ? imgixFmt(src) : src}
         isLoading={isLoading}
         style={{
           gridArea: "1 / 1",
@@ -638,7 +636,7 @@ const LoaderContainer = styled.div`
   display: flex;
 `
 
-const BrokenImageContainer = styled.div`
+const BrokenFileContainer = styled.div`
   position: absolute;
   top: 0;
   right: 0;
@@ -647,16 +645,16 @@ const BrokenImageContainer = styled.div`
   display: flex;
 `
 
-const BrokenImage = styled.div`
+const BrokenFile = styled.div`
   margin: auto;
   font-size: 2rem;
 `
 
 // todo: clear changes on cancellation
-function useImageUpload(
+function useFileUpload(
   addUploads: (upload: UploadSuccess) => void,
   removeUploads: (uploadIds: string[]) => void,
-  remoteImages: Upload[],
+  remoteFiles: Upload[],
   resetUploads: () => void,
   recipeId: number,
 ) {
@@ -672,6 +670,7 @@ function useImageUpload(
             file,
             localId: fileId,
             url: URL.createObjectURL(file),
+            contentType: file.type,
             state: "loading",
             progress: 0,
             type: "in-progress",
@@ -730,9 +729,9 @@ function useImageUpload(
     removeUploads([localId])
   }
 
-  const orderedImages: ImageUpload[] = [
+  const orderedImages: FileUpload[] = [
     ...localImages,
-    ...remoteImages
+    ...remoteFiles
       .filter(
         (i) =>
           !localImages
@@ -741,7 +740,13 @@ function useImageUpload(
             .includes(i.localId),
       )
       .map(
-        (x) => ({ localId: x.localId, url: x.url, state: "success" } as const),
+        (x) =>
+          ({
+            localId: x.localId,
+            url: x.url,
+            contentType: x.contentType,
+            state: "success",
+          } as const),
       ),
   ]
 
@@ -759,7 +764,7 @@ function useImageUpload(
   } as const
 }
 
-const ImageAnchor = styled.a`
+const FileAnchor = styled.a`
   position: relative;
 `
 
@@ -781,20 +786,22 @@ const StyledProgress = styled.progress`
   border-radius: 0;
 `
 
-function ImageWithStatus({
+function FileWithStatus({
   url,
+  contentType,
   backgroundUrl,
   state,
   progress,
 }: {
   url: string
+  contentType: string
   backgroundUrl: string | null
-  state: ImageUpload["state"]
+  state: FileUpload["state"]
   progress?: number
 }) {
   return (
     <>
-      <ImageAnchor
+      <FileAnchor
         href={url}
         target="_blank"
         rel="noreferrer"
@@ -802,7 +809,8 @@ function ImageWithStatus({
           e.stopPropagation()
         }}
       >
-        <ImagePreview
+        <FilePreview
+          contentType={contentType}
           isLoading={state === "loading"}
           src={url}
           backgroundUrl={backgroundUrl}
@@ -818,11 +826,11 @@ function ImageWithStatus({
               />
             </ProgressBarContainer>
           )}
-      </ImageAnchor>
+      </FileAnchor>
       {state === "failed" && (
-        <BrokenImageContainer title="Image upload failed">
-          <BrokenImage>❌</BrokenImage>
-        </BrokenImageContainer>
+        <BrokenFileContainer title="Image upload failed">
+          <BrokenFile>❌</BrokenFile>
+        </BrokenFileContainer>
       )}
       {state === "loading" && (
         <LoaderContainer title="Image uploading...">
@@ -838,61 +846,64 @@ type InProgressUpload = {
   readonly url: string
   readonly file: File
   readonly localId: string
+  readonly contentType: string
   readonly progress: number
-  readonly state: ImageUpload["state"]
+  readonly state: FileUpload["state"]
 }
 
 type UploadSuccess = Upload
 
-type ImageUpload = {
+type FileUpload = {
   localId: string
   url: string
   progress?: number
+  contentType: string
   state: "loading" | "failed" | "success"
 }
 
-function ImageUploader({
+function FileUploader({
   addFiles,
   removeFile,
   files,
 }: {
   addFiles: (files: FileList) => void
   removeFile: (fileId: string) => void
-  files: ImageUpload[]
+  files: FileUpload[]
 }) {
   return (
     <>
       {files.length > 0 && (
-        <ImageUploadContainer>
+        <FileUploadContainer>
           {files.map((f) => (
             // NOTE(sbdchd): it's important that the `localId` is consistent
             // throughout the upload content, otherwise we'll wipe out the DOM
             // node and there will be a flash as the image changes.
-            <ImagePreviewParent key={f.localId}>
-              <ImageWithStatus
+            <FilePreviewParent key={f.localId}>
+              <FileWithStatus
                 progress={f.progress}
                 url={f.url}
+                contentType={f.contentType}
                 state={f.state}
                 backgroundUrl={null}
               />
               <CloseButton
                 onClick={() => {
-                  if (confirm("Delete image?")) {
+                  if (confirm("Delete file?")) {
                     removeFile(f.localId)
                   }
                 }}
               >
                 &times;
               </CloseButton>
-            </ImagePreviewParent>
+            </FilePreviewParent>
           ))}
-        </ImageUploadContainer>
+        </FileUploadContainer>
       )}
       <DragDropLabel className="text-muted mb-2">
         <input
           type="file"
           multiple
-          accept="image/jpeg, image/png"
+          accept="image/jpeg, image/png, application/pdf"
           style={{ display: "none" }}
           onChange={(e) => {
             const newFiles = e.target.files
@@ -906,7 +917,7 @@ function ImageUploader({
             }
           }}
         />
-        Attach images by dragging & dropping, selecting or pasting them.
+        Attach images & pdfs by dragging & dropping, selecting or pasting them.
       </DragDropLabel>
     </>
   )
@@ -958,7 +969,7 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
   })
 
   const { addFiles, removeFile, files, hasUnsavedImages, reset } =
-    useImageUpload(
+    useFileUpload(
       addUploads,
       removeUploads,
       uploadedImages,
@@ -982,7 +993,7 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
           placeholder="Add a note..."
         />
         {isEditing && (
-          <ImageUploader
+          <FileUploader
             addFiles={addFiles}
             removeFile={removeFile}
             files={files}

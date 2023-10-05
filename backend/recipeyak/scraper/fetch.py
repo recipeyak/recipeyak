@@ -10,7 +10,7 @@ MAX_RES_LENGTH = 40 * 1024 * 1024  # 40MB
 TIMEOUT = 5
 
 
-def fetch_bytes(*, url: str) -> bytes:
+def fetch_bytes(*, url: str) -> tuple[bytes, str]:
     start = time.monotonic()
     with SafeSession(
         max_retries=Retry(
@@ -49,7 +49,7 @@ def fetch_bytes(*, url: str) -> bytes:
         size += len(chunk)
         if size > MAX_RES_LENGTH:
             raise OverflowError
-    return buf.getvalue()
+    return buf.getvalue(), response.headers["content-type"]
 
 
 def fetch_content_length(*, url: str) -> int | None:

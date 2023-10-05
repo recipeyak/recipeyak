@@ -42,6 +42,7 @@ def start_upload_view(request: AuthedRequest) -> Response:
         bucket=config.STORAGE_BUCKET_NAME,
         key=key,
         recipe=recipe,
+        content_type=params.content_type,
     )
     upload.save()
 
