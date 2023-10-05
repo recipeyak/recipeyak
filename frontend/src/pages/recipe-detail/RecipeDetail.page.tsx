@@ -902,6 +902,7 @@ export function Recipe(props: IRecipeProps) {
         <Gallery
           imageUrl={image.url}
           isPrimary={image.isPrimary}
+          contentType={image.contentType}
           hasPrevious={hasPrevious}
           hasNext={hasNext}
           onPrevious={onPrevious}

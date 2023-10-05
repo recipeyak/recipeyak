@@ -107,6 +107,7 @@ function buildSrcSetUrls(u: string): string {
 export const Gallery = (props: {
   onClose: () => void
   imageUrl: string
+  contentType: string
   readonly isPrimary: boolean
   onNext: () => void
   onPrevious: () => void
@@ -128,24 +129,29 @@ export const Gallery = (props: {
   }
 
   const starColor = props.isPrimary ? "#ffbf00" : undefined
+  const src = props.contentType.startsWith("image/")
+    ? imgixFmt(props.imageUrl)
+    : props.imageUrl
+
   return (
     <MyGalleryContainer>
       <MyGalleryBackground />
       <MyGalleryScrollWrap>
         <MyGalleryImgContainer onClick={onClick}>
           <MyGalleryImg
-            key={imgixFmt(props.imageUrl)}
-            src={imgixFmt(props.imageUrl)}
+            key={src}
+            src={src}
             onLoad={(e) => {
-              // The common imigx format `src` will be in browser cache from the
-              // initial recipe page load. onLoad should then trigger loading a
-              // larger image by setting the `srcset`.
-              //
-              // We can't set the `srcset` initially, because Safari will show
-              // no image until it loads a larger image. By setting the `src`
-              // and waiting to set `srcset`, we'll see an image immediately in
-              // the gallery, served from cache.
-              e.currentTarget.srcset = buildSrcSetUrls(props.imageUrl)
+              if (props.contentType.startsWith("image/"))
+                // The common imigx format `src` will be in browser cache from the
+                // initial recipe page load. onLoad should then trigger loading a
+                // larger image by setting the `srcset`.
+                //
+                // We can't set the `srcset` initially, because Safari will show
+                // no image until it loads a larger image. By setting the `src`
+                // and waiting to set `srcset`, we'll see an image immediately in
+                // the gallery, served from cache.
+                e.currentTarget.srcset = buildSrcSetUrls(props.imageUrl)
             }}
             onClick={onClick}
           />
