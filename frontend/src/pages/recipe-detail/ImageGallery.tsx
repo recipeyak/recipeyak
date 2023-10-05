@@ -129,32 +129,38 @@ export const Gallery = (props: {
   }
 
   const starColor = props.isPrimary ? "#ffbf00" : undefined
-  const src = props.contentType.startsWith("image/")
-    ? imgixFmt(props.imageUrl)
-    : props.imageUrl
-
   return (
     <MyGalleryContainer>
       <MyGalleryBackground />
       <MyGalleryScrollWrap>
         <MyGalleryImgContainer onClick={onClick}>
-          <MyGalleryImg
-            key={src}
-            src={src}
-            onLoad={(e) => {
-              if (props.contentType.startsWith("image/"))
-                // The common imigx format `src` will be in browser cache from the
-                // initial recipe page load. onLoad should then trigger loading a
-                // larger image by setting the `srcset`.
-                //
-                // We can't set the `srcset` initially, because Safari will show
-                // no image until it loads a larger image. By setting the `src`
-                // and waiting to set `srcset`, we'll see an image immediately in
-                // the gallery, served from cache.
-                e.currentTarget.srcset = buildSrcSetUrls(props.imageUrl)
-            }}
-            onClick={onClick}
-          />
+          {props.contentType.startsWith("application/pdf") ? (
+            // tried using <embed /> but it would fail to load the pdf after the
+            // dom node was unmounted and remounted
+            <iframe
+              src={props.imageUrl}
+              style={{ margin: "auto", height: "100%" }}
+              scrolling={"no"}
+            />
+          ) : (
+            <MyGalleryImg
+              key={imgixFmt(props.imageUrl)}
+              src={imgixFmt(props.imageUrl)}
+              onLoad={(e) => {
+                if (props.contentType.startsWith("image/"))
+                  // The common imigx format `src` will be in browser cache from the
+                  // initial recipe page load. onLoad should then trigger loading a
+                  // larger image by setting the `srcset`.
+                  //
+                  // We can't set the `srcset` initially, because Safari will show
+                  // no image until it loads a larger image. By setting the `src`
+                  // and waiting to set `srcset`, we'll see an image immediately in
+                  // the gallery, served from cache.
+                  e.currentTarget.srcset = buildSrcSetUrls(props.imageUrl)
+              }}
+              onClick={onClick}
+            />
+          )}
         </MyGalleryImgContainer>
         <MyGalleryControlOverlay>
           <TopRow>
