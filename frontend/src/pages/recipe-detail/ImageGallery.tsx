@@ -1,5 +1,5 @@
 import React from "react"
-import { ChevronLeft, ChevronRight, Star, X } from "react-feather"
+import { ChevronLeft, ChevronRight, Share, Star, X } from "react-feather"
 
 import { Button } from "@/components/Buttons"
 import { styled } from "@/theme"
@@ -56,6 +56,21 @@ const MyGalleryButton = styled(Button)`
   box-shadow: none !important;
   backdrop-filter: blur(10px);
   pointer-events: initial;
+`
+
+const MyGalleryLink = styled(Button)`
+  background: rgba(0, 0, 0, 0.46);
+  color: white;
+  border-style: none !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(10px);
+  pointer-events: initial;
+
+  padding-bottom: calc(0.375em - 1px);
+  padding-top: calc(0.375em - 1px);
+  border-radius: 6px;
+  padding-left: 0.75em;
+  padding-right: 0.75em;
 `
 
 const MyGalleryControlOverlay = styled.div`
@@ -169,7 +184,16 @@ export const Gallery = (props: {
                 <Star color={starColor} fill={starColor} />
               </MyGalleryButton>
             )}
-            <MyGalleryButton className="ml-auto" onClick={props.onClose}>
+            <MyGalleryLink
+              as={"a"}
+              target="_blank"
+              rel="noopener noreferrer"
+              href={props.imageUrl}
+              className="ml-auto"
+            >
+              <Share />
+            </MyGalleryLink>
+            <MyGalleryButton className="ml-2" onClick={props.onClose}>
               <X />
             </MyGalleryButton>
           </TopRow>
