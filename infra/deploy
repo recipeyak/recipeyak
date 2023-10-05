@@ -52,8 +52,8 @@ main() {
         step "updating ui"
         docker run --name react --network host --log-driver=journald --env-file=/root/.env-production recipeyak/react:"$SHA"
         tmp=$(mktemp -d)
-        docker cp react:/var/app/dist "$tmp"
-        rsync --archive --recursive --verbose "$tmp/dist/" /var/app/dist/
+        docker cp react:/var/app "$tmp"
+        rsync --archive --recursive --verbose "$tmp/app/" /var/app/dist/
 
         
         rm -f /etc/nginx/sites-enabled/default
