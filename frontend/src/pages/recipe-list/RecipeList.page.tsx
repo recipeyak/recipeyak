@@ -120,15 +120,17 @@ function RecipeList(props: IRecipeList) {
           )}
         </div>
         <div className="fs-14px">
-          <span>show all: </span>{" "}
-          <CheckBox
-            onChange={() => {
-              setShowArchived((s) => !s)
-            }}
-            checked={showArchived}
-            name="optional"
-            className="mr-2"
-          />
+          <label>
+            show all:
+            <CheckBox
+              onChange={() => {
+                setShowArchived((s) => !s)
+              }}
+              checked={showArchived}
+              name="optional"
+              className="ml-1 mr-2"
+            />
+          </label>
         </div>
       </div>
       <div className="recipe-grid">
