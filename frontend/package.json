@@ -24,6 +24,7 @@
     "jsdom": "^20.0.0",
     "msw": "^0.44.2",
     "prettier": "^2.7.1",
+    "remark-breaks": "^4.0.0",
     "rollup-plugin-visualizer": "^5.7.1",
     "typescript": "^4.9.4",
     "vite": "^3.0.3",

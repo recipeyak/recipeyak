@@ -1,5 +1,6 @@
 import React from "react"
 import ReactMarkdown, { Components } from "react-markdown"
+import remarkBreaks from "remark-breaks"
 import remarkGfm from "remark-gfm"
 import smartypants from "remark-smartypants"
 
@@ -44,6 +45,7 @@ const MarkdownWrapper = styled.div`
 const ALLOWED_MARKDOWN_TYPES: (keyof Components)[] = [
   "text",
   "s",
+  "br",
   "blockquote",
   "p",
   "strong",
@@ -93,6 +95,22 @@ export function Markdown({
         remarkPlugins={[
           // enable auto-linking of urls & other github flavored markdown features
           remarkGfm,
+          // make new lines behave like github comments
+          //
+          //   Mars is
+          //   the fourth planet
+          //
+          // becomes:
+          //
+          //   <p>Mars is<br>
+          //   the fourth planet</p>
+          //
+          // instead of without the plugin:
+          //
+          //   <p>Mars is
+          //   the fourth planet</p>
+          //
+          remarkBreaks,
           // auto convert -- to em dash and similar
           smartypants,
         ]}
