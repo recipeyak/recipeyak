@@ -44,7 +44,6 @@ import { DragDrop, handleDndHover } from "@/dragDrop"
 import { IRecipe } from "@/queries/recipeFetch"
 import { useStepDelete } from "@/queries/stepDelete"
 import { useStepUpdate } from "@/queries/stepUpdate"
-import { normalizeUnitsFracs } from "@/text"
 
 interface IStepProps {
   readonly index: number
