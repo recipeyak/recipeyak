@@ -338,18 +338,24 @@ const MyRecipeTitle = styled.div`
   font-family: Georgia, serif;
 `
 
-const RecipeMetaItem = styled.div<{ inline?: boolean }>`
-  ${(props) =>
-    props.inline
-      ? `
-  display: flex;
-  gap: 0.25rem;
-  `
-      : `
-  display: grid;
-  grid-template-columns: 90px 1fr;
-`}
-`
+function RecipeMetaItem({
+  inline,
+  children,
+  label,
+}: {
+  inline?: boolean
+  children: React.ReactNode
+  label: string
+}) {
+  return (
+    <div style={{ display: "flex", gap: inline ? "0.25rem" : undefined }}>
+      <div className="bold" style={!inline ? { width: 90 } : undefined}>
+        {label}
+      </div>
+      <div className="selectable">{children}</div>
+    </div>
+  )
+}
 
 const RecipeDetailsContainer = styled.div<{ spanColumns?: boolean }>`
   display: flex;
@@ -708,28 +714,22 @@ function RecipeInfo(props: {
             </RecipeTitleCenter>
             <RecipeMetaContainer inline={inlineLayout}>
               {notEmpty(props.recipe.time) && (
-                <RecipeMetaItem inline={inlineLayout}>
-                  <div className="bold">Time</div>
-                  <div className="selectable">{props.recipe.time}</div>
+                <RecipeMetaItem inline={inlineLayout} label={"Time"}>
+                  {props.recipe.time}
                 </RecipeMetaItem>
               )}
               {notEmpty(props.recipe.servings) && (
-                <RecipeMetaItem inline={inlineLayout}>
-                  <div className="bold">Servings</div>
-                  <div className="selectable">{props.recipe.servings}</div>
+                <RecipeMetaItem inline={inlineLayout} label={"Servings"}>
+                  <RecipeSource source={props.recipe.servings} />
                 </RecipeMetaItem>
               )}
               {notEmpty(props.recipe.source) && (
-                <RecipeMetaItem inline={inlineLayout}>
-                  <div className="bold">From</div>
-                  <div className="selectable">
-                    <RecipeSource source={props.recipe.source} />
-                  </div>
+                <RecipeMetaItem inline={inlineLayout} label={"From"}>
+                  <RecipeSource source={props.recipe.source} />
                 </RecipeMetaItem>
               )}
               {(props.recipe.tags?.length ?? 0) > 0 && (
-                <RecipeMetaItem inline={inlineLayout}>
-                  <div className="bold">Tags</div>
+                <RecipeMetaItem inline={inlineLayout} label={"Tags"}>
                   <Box gap={2}>
                     {props.recipe.tags?.map((x) => (
                       <Link

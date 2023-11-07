@@ -263,7 +263,7 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
         </Box>
         {!isEditing ? (
           <Box dir="col">
-            <Markdown className="selectable">{note.text}</Markdown>
+            <Markdown>{note.text}</Markdown>
             <Box gap={1} dir="col">
               <Box wrap gap={1}>
                 {note.attachments.map((attachment) => (

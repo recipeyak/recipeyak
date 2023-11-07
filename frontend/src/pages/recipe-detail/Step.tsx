@@ -112,7 +112,7 @@ function Step({
 }
 
 export function StepView({ text }: { text: string }) {
-  return <Markdown className="selectable">{normalizeUnitsFracs(text)}</Markdown>
+  return <Markdown>{text}</Markdown>
 }
 
 function StepBody({
