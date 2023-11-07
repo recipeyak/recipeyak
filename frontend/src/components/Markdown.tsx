@@ -6,6 +6,7 @@ import smartypants from "remark-smartypants"
 
 import { Link } from "@/components/Routing"
 import * as settings from "@/settings"
+import { normalizeUnitsFracs } from "@/text"
 import { styled } from "@/theme"
 
 const MarkdownWrapper = styled.div`
@@ -78,18 +79,12 @@ const renderers = {
 interface IMarkdownProps {
   readonly children: string
   readonly onClick?: (_: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
-  readonly className?: string
   readonly title?: string
 }
 
-export function Markdown({
-  children: text,
-  className,
-  title,
-  onClick,
-}: IMarkdownProps) {
+export function Markdown({ children: text, title, onClick }: IMarkdownProps) {
   return (
-    <MarkdownWrapper className={className} title={title} onClick={onClick}>
+    <MarkdownWrapper className="selectable" title={title} onClick={onClick}>
       <ReactMarkdown
         allowedElements={ALLOWED_MARKDOWN_TYPES}
         remarkPlugins={[
@@ -114,7 +109,7 @@ export function Markdown({
           // auto convert -- to em dash and similar
           smartypants,
         ]}
-        children={text}
+        children={normalizeUnitsFracs(text)}
         components={renderers}
         unwrapDisallowed
       />

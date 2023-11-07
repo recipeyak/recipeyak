@@ -1,5 +1,5 @@
 import { parseISO } from "date-fns"
-import { groupBy } from "lodash-es"
+import { groupBy, orderBy } from "lodash-es"
 import React from "react"
 import { RouteComponentProps } from "react-router"
 
@@ -334,9 +334,12 @@ function ActivityLog({
   const activityByDay = Object.values(groupBy(activity, "created_date"))
   // Map<Date, Array<Activity>>
   for (const dayOfActivity of activityByDay) {
-    // Map<RecipeId, Array<Activity>>
+    // Array<Array<Activity>>
     const activityByRecipe = Object.values(
-      groupBy(dayOfActivity, (x) => [x.created_date, x.recipe_id]),
+      groupBy(orderBy(dayOfActivity, "created", "desc"), (x) => [
+        x.created_date,
+        x.recipe_id,
+      ]),
     )
     let isFirst = true
     for (const activitiesForRecipe of activityByRecipe) {
