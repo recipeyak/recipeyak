@@ -30,7 +30,7 @@ export function IngredientViewContent({
   return (
     <>
       <span className="fw-500">{normalizeUnitsFracs(quantity).trim()}</span>{" "}
-      {name.trim()}
+      {normalizeUnitsFracs(name.trim())}
       {fmtDescription.trim()}{" "}
       {optional ? <span className="text-muted">[optional]</span> : ""}
     </>

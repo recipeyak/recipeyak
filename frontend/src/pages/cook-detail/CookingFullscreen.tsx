@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
 
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
@@ -13,6 +13,7 @@ import { useCookChecklistUpdate } from "@/queries/cookChecklistUpdate"
 import { IIngredient, INote, IStep } from "@/queries/recipeFetch"
 import { notEmpty } from "@/text"
 import { styled } from "@/theme"
+import { getInitialIngredients } from "@/utils/ingredients"
 
 function useIngredients(recipeId: number) {
   const {
@@ -36,15 +37,23 @@ function useIngredients(recipeId: number) {
 function Ingredients({
   ingredients,
   recipeId,
+  sections,
 }: {
   ingredients: readonly IIngredient[]
   recipeId: number
+  readonly sections: readonly {
+    readonly id: number
+    readonly title: string
+    readonly position: string
+  }[]
 }) {
   const { checkedIngredients, isLoading, mutation } = useIngredients(recipeId)
 
   if (isLoading) {
     return null
   }
+
+  const combined = getInitialIngredients({ sections, ingredients })
 
   return (
     <div
@@ -53,11 +62,22 @@ function Ingredients({
         flexDirection: "column",
       }}
     >
-      {ingredients.map((i) => {
+      {combined.map((ingredientOrSection) => {
+        if (ingredientOrSection.kind === "section") {
+          return (
+            <div
+              key={`section-${ingredientOrSection.item.id}`}
+              className="bold text-small"
+            >
+              {ingredientOrSection.item.title}
+            </div>
+          )
+        }
+        const i = ingredientOrSection.item
         const isDone = checkedIngredients[i.id]
         return (
           <div
-            key={i.id}
+            key={`ingredient-${i.id}`}
             style={{ fontSize: "18px" }}
             className="d-flex align-items-start"
           >
@@ -178,6 +198,7 @@ export function CookingFullscreen({
   recipeId,
   recipeSource,
   ingredients,
+  sections,
   steps,
   notes,
 }: {
@@ -185,6 +206,11 @@ export function CookingFullscreen({
   readonly recipeName: string
   readonly recipeSource: string | null
   readonly ingredients: readonly IIngredient[]
+  readonly sections: readonly {
+    readonly id: number
+    readonly title: string
+    readonly position: string
+  }[]
   readonly steps: readonly IStep[]
   readonly notes: readonly INote[]
 }) {
@@ -258,7 +284,11 @@ export function CookingFullscreen({
           </Tabs>
           <div>
             {tab === "ingredients" ? (
-              <Ingredients ingredients={ingredients} recipeId={recipeId} />
+              <Ingredients
+                ingredients={ingredients}
+                sections={sections}
+                recipeId={recipeId}
+              />
             ) : tab === "steps" ? (
               <Steps steps={steps} />
             ) : tab === "notes" ? (

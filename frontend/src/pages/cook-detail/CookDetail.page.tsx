@@ -53,6 +53,7 @@ export default function CookDetail(
         recipeName={recipe.name}
         recipeSource={recipe.source}
         ingredients={recipe.ingredients}
+        sections={recipe.sections}
         steps={recipe.steps}
         notes={notes}
       />
