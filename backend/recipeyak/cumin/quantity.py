@@ -432,6 +432,9 @@ def parse_quantity_name(text: str) -> tuple[str, str]:
                         idx += 1
                     quantity += value[idx]
                     idx += 1
+                    # parse: 1/2 cup (8 Tablespoons)/115 grams butter
+                    if value[idx] == "/":
+                        in_quantity = True
                 for conjunction in ("plus", "+"):
                     if starts_with(value[idx:], conjunction):
                         quantity += conjunction

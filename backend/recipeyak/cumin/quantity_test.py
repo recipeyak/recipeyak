@@ -276,6 +276,10 @@ def test_adding_incompatible_units() -> None:
             "2 Tablespoons + 1/2 teaspoon extra-virgin olive oil",
             ("2 Tablespoons + 1/2 teaspoon", "extra-virgin olive oil"),
         ),
+        (
+            "1/2 cup (8 Tablespoons)/115 grams unsalted butter, very soft",
+            ("1/2 cup (8 Tablespoons)/115 grams", "unsalted butter, very soft"),
+        ),
     ],
 )
 def test_parse_quantity_name(ingredient: str, expected: tuple[str, str]) -> None:
