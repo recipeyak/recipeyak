@@ -42,6 +42,7 @@ import { notEmpty } from "@/text"
 import { styled } from "@/theme"
 import {
   getInitialIngredients,
+  Mutable,
   SectionsAndIngredients,
 } from "@/utils/ingredients"
 import { formatImgOpenGraph, imgixFmt } from "@/utils/url"
