@@ -73,6 +73,8 @@ def recipe_get_view(request: AuthedRequest) -> Response:
         .annotate(
             scheduled_count=Count(
                 "scheduledrecipe",
+                # only count scheduled recipes in the past 1.5 years.
+                # exclude recipes scheduled for the future.
                 filter=Q(
                     scheduledrecipe__on__lt=Now(),
                     scheduledrecipe__on__gt=Now() - timedelta(days=365 * 1.5),
