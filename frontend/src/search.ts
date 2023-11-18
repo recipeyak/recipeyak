@@ -27,7 +27,7 @@ function sortArchivedName(a: RecipeListItem, b: RecipeListItem) {
   if (!a.archived_at && b.archived_at) {
     return -1
   }
-  return byNameAlphabetical(a, b)
+  return b.scheduledCount - a.scheduledCount
 }
 
 function evalField(node: QueryNode, recipe: RecipeListItem): Match[] | null {

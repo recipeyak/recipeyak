@@ -5,6 +5,7 @@ from datetime import datetime
 import advocate
 import structlog
 from django.core.exceptions import ValidationError
+from django.db.models import Count
 from pydantic import BaseModel, Field
 from recipe_scrapers._exceptions import RecipeScrapersExceptions
 from rest_framework import status
@@ -50,6 +51,7 @@ class RecipeListItemPrimaryImage(BaseModel):
 class RecipeListItem(BaseModel):
     id: int
     name: str
+    scheduledCount: int
     # This odd syntax is required by pydantic
     # see: https://docs.pydantic.dev/usage/models/#required-optional-fields
     # Until V2 is released:
@@ -67,6 +69,7 @@ def recipe_get_view(request: AuthedRequest) -> Response:
     list_items = list[RecipeListItem]()
     for recipe in (
         filter_recipes(team=team)
+        .annotate(scheduled_count=Count("scheduledrecipe"))
         .prefetch_related(None)
         .prefetch_related(
             "ingredient_set",
@@ -100,6 +103,7 @@ def recipe_get_view(request: AuthedRequest) -> Response:
                 ingredients=ingredients,
                 archived_at=recipe.archived_at,
                 primaryImage=primary_image,
+                scheduledCount=recipe.scheduled_count,
             )
         )
 
