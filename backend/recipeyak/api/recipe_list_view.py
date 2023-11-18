@@ -75,7 +75,7 @@ def recipe_get_view(request: AuthedRequest) -> Response:
                 "scheduledrecipe",
                 filter=Q(
                     scheduledrecipe__on__lt=Now(),
-                    scheduledrecipe__on__gt=Now() - timedelta(days=365),
+                    scheduledrecipe__on__gt=Now() - timedelta(days=365 * 1.5),
                 ),
             )
         )
