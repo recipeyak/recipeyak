@@ -4,6 +4,7 @@
     "joelday.docthis",
     "esbenp.prettier-vscode",
     "ms-python.python",
+    "ms-python.mypy-type-checker",
     "ms-vscode.vscode-typescript-tslint-plugin",
     "ms-vsliveshare.vsliveshare",
     "peterjausovec.vscode-docker",

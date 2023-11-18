@@ -52,5 +52,7 @@
   "python.testing.autoTestDiscoverOnSaveEnabled": false,
   "python.testing.promptToConfigure": false,
   "explorer.excludeGitIgnore": true,
-  "editor.detectIndentation": false
+  "editor.detectIndentation": false,
+  "mypy-type-checker.cwd": "${workspaceFolder}/backend",
+  "mypy-type-checker.importStrategy": "fromEnvironment"
 }
