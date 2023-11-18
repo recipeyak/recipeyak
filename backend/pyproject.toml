@@ -48,6 +48,7 @@ boto3-stubs = {extras = ["s3"], version = "^1.24.44"}
 types-urllib3 = "^1.26.23"
 types-dj-database-url = "^1.0.0"
 mypy = "^1.0.0"
+# suport ms-python.mypy-type-checker extension.
 typing-extensions = "^4.8.0"
 
 
