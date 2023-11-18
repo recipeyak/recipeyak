@@ -21,7 +21,6 @@ class PublicUserSerializer(BaseModelSerializer):
 
 
 class TeamSerializer(BaseModelSerializer):
-
     emails = serializers.ListField(
         child=serializers.EmailField(write_only=True), write_only=True
     )

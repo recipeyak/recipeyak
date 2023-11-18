@@ -10,7 +10,6 @@ class PgStatStatements(CreateExtension):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("recipeyak", "0066_auto_20190105_1701")]
 
     operations = [PgStatStatements()]

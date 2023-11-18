@@ -6,7 +6,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("recipeyak", "0050_remove_recipe_deleted_at"),
         ("recipeyak", "0049_remove_recipe_deleted_at"),

@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("recipeyak", "0106_merge_0105_auto_20221219_2036_0105_scheduleevent"),
     ]

@@ -25,7 +25,6 @@ def add_creator_to_invite(apps: Any, schema_editor: Any) -> None:
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("recipeyak", "0042_invite_creator")]
 
     operations = [migrations.RunPython(add_creator_to_invite)]

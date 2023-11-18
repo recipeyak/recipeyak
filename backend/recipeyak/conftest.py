@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from datetime import date
-from logging import getLogger
 from typing import Any, Iterator
 from unittest.mock import patch
 
@@ -18,8 +17,6 @@ from recipeyak.models import (
     Team,
     User,
 )
-
-getLogger("flake8").propagate = False
 
 
 @pytest.fixture

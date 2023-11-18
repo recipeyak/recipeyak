@@ -48,7 +48,6 @@ class YamlResponse(HttpResponse):
 
 
 class RecipeExportSerializer(BaseModelSerializer):
-
     steps = serializers.ListField(child=serializers.CharField(), source="step_set.all")
 
     ingredients = IngredientSerializer(
@@ -81,7 +80,6 @@ class RecipeExportSerializer(BaseModelSerializer):
 def export_recipes_list_view(
     request: AuthedRequest, filetype: str, pk: str | None = None
 ) -> HttpResponse:
-
     team = get_team(request)
 
     queryset = filter_recipes(team=team).prefetch_related(

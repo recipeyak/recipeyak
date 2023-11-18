@@ -28,7 +28,7 @@ def iter_char_codes(x: str) -> Iterable[int]:
 
 
 def compare_positions(first_pos: str, second_pos: str) -> int:
-    return (first_pos < second_pos) - ((first_pos > second_pos))
+    return (first_pos < second_pos) - (first_pos > second_pos)
 
 
 def is_valid_position(pos: str) -> bool:
