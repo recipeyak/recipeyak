@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import advocate
 import structlog
 from django.core.exceptions import ValidationError
-from django.db.models import Count
+from django.db.models import Count, Q
+from django.db.models.functions import Now
 from pydantic import BaseModel, Field
 from recipe_scrapers._exceptions import RecipeScrapersExceptions
 from rest_framework import status
@@ -69,7 +70,15 @@ def recipe_get_view(request: AuthedRequest) -> Response:
     list_items = list[RecipeListItem]()
     for recipe in (
         filter_recipes(team=team)
-        .annotate(scheduled_count=Count("scheduledrecipe"))
+        .annotate(
+            scheduled_count=Count(
+                "scheduledrecipe",
+                filter=Q(
+                    scheduledrecipe__on__lt=Now(),
+                    scheduledrecipe__on__gt=Now() - timedelta(days=365),
+                ),
+            )
+        )
         .prefetch_related(None)
         .prefetch_related(
             "ingredient_set",
