@@ -21,6 +21,7 @@ function createRecipe(properties: {
     archived_at: null,
     ingredients: [],
     primaryImage: null,
+    scheduledCount: 1,
     ...properties,
   }
 }

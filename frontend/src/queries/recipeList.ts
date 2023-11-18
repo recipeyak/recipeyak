@@ -20,6 +20,7 @@ export type RecipeListItem = {
     url: string
     backgroundUrl: string | null
   } | null
+  readonly scheduledCount: number
 }
 
 const getRecipeList = () => {

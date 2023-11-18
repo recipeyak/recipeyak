@@ -20,14 +20,23 @@ export type Match = {
 }
 
 /** Sort archived recipes last, then sort alphabetically */
-function sortArchivedName(a: RecipeListItem, b: RecipeListItem) {
+function sortArchivedName(
+  a: RecipeListItem,
+  b: RecipeListItem,
+  query: QueryNode[],
+) {
   if (a.archived_at && !b.archived_at) {
     return 1
   }
   if (!a.archived_at && b.archived_at) {
     return -1
   }
-  return byNameAlphabetical(a, b)
+
+  if (query.length === 0) {
+    // sort A-Z if no query is provided.
+    return byNameAlphabetical(a, b)
+  }
+  return b.scheduledCount - a.scheduledCount
 }
 
 function evalField(node: QueryNode, recipe: RecipeListItem): Match[] | null {
@@ -130,8 +139,13 @@ export function searchRecipes(params: {
   }[]
 } {
   const query = parseQuery(params.query)
-  const matchingRecipes = evalQuery(query, params.recipes)
-    .map((x) => ({ recipe: x.recipe, match: x.match.fields }))
-    .sort((a, b) => sortArchivedName(a.recipe, b.recipe))
-  return { recipes: matchingRecipes }
+  const matchingRecipes = evalQuery(query, params.recipes).map((x) => ({
+    recipe: x.recipe,
+    match: x.match.fields,
+  }))
+
+  const rankedRecipes = matchingRecipes.sort((a, b) =>
+    sortArchivedName(a.recipe, b.recipe, query),
+  )
+  return { recipes: rankedRecipes }
 }
