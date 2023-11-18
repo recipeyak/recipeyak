@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import datetime, timedelta, timezone
 
 import pytest
 from rest_framework import status
@@ -18,7 +18,10 @@ def test_list_view(client: APIClient, user: User, team: Team, recipe: Recipe) ->
     assert res.status_code == status.HTTP_200_OK
     assert res.json()[0]["scheduledCount"] == 0
 
-    recipe.schedule(on=date(2020, 2, 10), user=user, team=team)
+    one_year_ago = datetime.now(tz=timezone.utc) - timedelta(days=365 * 1)
+    two_years_ago = datetime.now(tz=timezone.utc) - timedelta(days=365 * 2)
+    recipe.schedule(on=one_year_ago, user=user, team=team)
+    recipe.schedule(on=two_years_ago, user=user, team=team)
 
     res = client.get("/api/v1/recipes/")
     assert res.status_code == status.HTTP_200_OK
