@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta
+from typing import Any, cast
 
 import advocate
 import structlog
@@ -114,7 +115,7 @@ def recipe_get_view(request: AuthedRequest) -> Response:
                 ingredients=ingredients,
                 archived_at=recipe.archived_at,
                 primaryImage=primary_image,
-                scheduledCount=recipe.scheduled_count,
+                scheduledCount=cast(Any, recipe).scheduled_count,
             )
         )
 
