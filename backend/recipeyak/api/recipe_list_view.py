@@ -1,13 +1,14 @@
 from __future__ import annotations
 
-from datetime import datetime, timedelta
-from typing import Any, cast
+from collections import namedtuple
+from datetime import datetime
+from typing import Any, NamedTuple, cast
 
 import advocate
 import structlog
 from django.core.exceptions import ValidationError
-from django.db.models import Count, Q
-from django.db.models.functions import Now
+from django.db import connection
+from django.db.backends.utils import CursorWrapper
 from pydantic import BaseModel, Field
 from recipe_scrapers._exceptions import RecipeScrapersExceptions
 from rest_framework import status
@@ -27,12 +28,11 @@ from recipeyak.models import (
     Ingredient,
     Step,
     TimelineEvent,
-    filter_recipes,
     get_team,
 )
 from recipeyak.models.recipe import Recipe
 from recipeyak.models.team import Team
-from recipeyak.models.upload import Upload
+from recipeyak.models.upload import Upload, public_url
 from recipeyak.scraper import scrape_recipe
 
 logger = structlog.stdlib.get_logger()
@@ -65,46 +65,95 @@ class RecipeListItem(BaseModel):
     archived_at: datetime | None = Field(...)
     primaryImage: RecipeListItemPrimaryImage | None = Field(...)
 
+class ListQueryResult(NamedTuple):
+    id: int
+    name: str
+    author: str
+    scheduled_count: int
+    archived_at: datetime | None
+    tags: list[str]
+    ingredients: list[dict[str,Any]]
+    primary_image: dict[str,Any]
+
+def namedtuplefetchall(cursor: CursorWrapper) -> list[ListQueryResult]:
+    """
+    Return all rows from a cursor as a namedtuple.
+    Assume the column names are unique.
+    """
+    desc = cursor.description
+    if desc is None:
+        raise Exception("Description should exist")
+    
+    nt_result = namedtuple("Result", [col[0] for col in desc]) # type: ignore[misc]
+    return cast(list[ListQueryResult], [nt_result(*row) for row in cursor.fetchall()])
 
 def recipe_get_view(request: AuthedRequest) -> Response:
     team = get_team(request)
     list_items = list[RecipeListItem]()
-    for recipe in (
-        filter_recipes(team=team)
-        .annotate(
-            scheduled_count=Count(
-                "scheduledrecipe",
-                # only count scheduled recipes in the past 1.5 years.
-                # exclude recipes scheduled for the future.
-                filter=Q(
-                    scheduledrecipe__on__lt=Now(),
-                    scheduledrecipe__on__gt=Now() - timedelta(days=365 * 1.5),
-                ),
-            )
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+select
+    core_recipe.id,
+	core_recipe.name,
+	core_recipe.author,
+	(
+		select count(*)
+		from core_scheduledrecipe
+		where core_scheduledrecipe.on > (now() - '1.5 years'::interval)
+			and core_scheduledrecipe.on < now()
+		    and core_scheduledrecipe.recipe_id = core_recipe.id
+    ) scheduled_count,
+    core_recipe.tags,
+    core_recipe.archived_at, 
+    (
+		select json_agg(sub.ingredient) ingredients
+		from (
+			select json_build_object(
+                'id', id,
+                'quantity', quantity,
+                'name', name
+            ) ingredient
+			from core_ingredient
+			where recipe_id = core_recipe.id
+        ) sub
+    ) ingredients,
+    (
+        select
+            json_build_object(
+                'id', id,
+                'key', key,
+                'background_url', background_url
+            ) primary_image
+        from
+            core_upload
+        where core_upload.recipe_id = core_recipe.id
+            and core_upload.id = core_recipe.primary_image_id
+        limit 1
+    ) primary_image
+from core_recipe
+where core_recipe.team_id = %(team_id)s
+            """,
+            {"team_id": team.id,},
         )
-        .prefetch_related(None)
-        .prefetch_related(
-            "ingredient_set",
-            "primary_image",
-        )
-    ):
+        recipes = namedtuplefetchall(cursor)
+    for recipe in recipes:
         ingredients = list[RecipeListItemIngredient]()
-        for ingre in recipe.ingredient_set.all():
+        for ingre in recipe.ingredients:
             ingredients.append(
                 RecipeListItemIngredient(
-                    id=ingre.id, quantity=ingre.quantity, name=ingre.name
+                    id=ingre['id'], quantity=ingre['quantity'], name=ingre['name']
                 )
             )
 
+
         primary_image = (
-            RecipeListItemPrimaryImage(
-                id=recipe.primary_image.id,
-                url=recipe.primary_image.public_url(),
-                backgroundUrl=recipe.primary_image.background_url,
+                RecipeListItemPrimaryImage(
+                    id=recipe.primary_image['id'],
+                    url=public_url(recipe.primary_image['key']),
+                    backgroundUrl=recipe.primary_image['background_url'],
+                ) if recipe.primary_image else None
             )
-            if recipe.primary_image is not None
-            else None
-        )
 
         list_items.append(
             RecipeListItem(
@@ -115,7 +164,7 @@ def recipe_get_view(request: AuthedRequest) -> Response:
                 ingredients=ingredients,
                 archived_at=recipe.archived_at,
                 primaryImage=primary_image,
-                scheduledCount=cast(Any, recipe).scheduled_count,
+                scheduledCount=recipe.scheduled_count,
             )
         )
 
