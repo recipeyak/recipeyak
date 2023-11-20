@@ -5,7 +5,7 @@ description = ""
 authors = ["Steve Dignam <steve@dignam.xyz>", "Christopher Dignam <chris@dignam.xyz>"]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.10"
 djangorestframework = "^3.12.4"
 Django = "^3.2.9"
 dj-database-url = "0.4.2"
@@ -40,7 +40,7 @@ ably = "^2.0.1"
 pytest = "7.2.0"
 pytest-django = "4.5.2"
 ipdb = "^0.13.9"
-django-types = "^0.16.0"
+django-types = "^0.19.1"
 types-PyYAML = "^6.0.0"
 types-requests = "^2.25.11"
 syrupy = "^3.0.5"
@@ -48,7 +48,7 @@ black = "^22.6.0"
 boto3-stubs = {extras = ["s3"], version = "^1.24.44"}
 types-urllib3 = "^1.26.23"
 types-dj-database-url = "^1.0.0"
-mypy = "^0.991"
+mypy = "^1.7.0"
 
 [tool.black]
 exclude = '''
