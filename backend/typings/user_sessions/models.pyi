@@ -17,7 +17,7 @@ class Session(models.Model):
     session_key: models.CharField[str]
     session_data: models.TextField[str]
     expire_date: models.DateTimeField[datetime]
-    objects: SessionManager
+    objects: SessionManager  # type: ignore[misc]
 
     class Meta:
         verbose_name = "session"

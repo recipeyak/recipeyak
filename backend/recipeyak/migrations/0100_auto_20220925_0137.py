@@ -14,14 +14,14 @@ def migration_positions_up(apps: Any, schema_editor: Any) -> None:
         next_pos = ordering.FIRST_POSITION
         for ingredient_like in sorted(
             itertools.chain(recipe.ingredient_set.all(), recipe.section_set.all()),
-            key=lambda x: x.position,  # type: ignore [no-any-return]
+            key=lambda x: x.position,
         ):
             ingredient_like.position_str = next_pos
             ingredient_like.save()
             next_pos = ordering.position_after(next_pos)
 
         next_pos = ordering.FIRST_POSITION
-        for step in sorted(recipe.step_set.all(), key=lambda x: x.position):  # type: ignore [no-any-return]
+        for step in sorted(recipe.step_set.all(), key=lambda x: x.position):
             step.position_str = next_pos
             step.save()
             next_pos = ordering.position_after(next_pos)
