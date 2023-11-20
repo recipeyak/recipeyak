@@ -60,6 +60,7 @@ sentry_sdk.init(
     release=GIT_SHA,
     send_default_pii=True,
     traces_sample_rate=1.0,
+    profiles_sample_rate=1.0,
 )
 
 REST_FRAMEWORK = {
