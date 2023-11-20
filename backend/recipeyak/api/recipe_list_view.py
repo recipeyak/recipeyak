@@ -65,6 +65,7 @@ class RecipeListItem(BaseModel):
     archived_at: datetime | None = Field(...)
     primaryImage: RecipeListItemPrimaryImage | None = Field(...)
 
+
 class ListQueryResult(NamedTuple):
     id: int
     name: str
@@ -72,8 +73,9 @@ class ListQueryResult(NamedTuple):
     scheduled_count: int
     archived_at: datetime | None
     tags: list[str]
-    ingredients: list[dict[str,Any]]
-    primary_image: dict[str,Any]
+    ingredients: list[dict[str, Any]]
+    primary_image: dict[str, Any]
+
 
 def namedtuplefetchall(cursor: CursorWrapper) -> list[ListQueryResult]:
     """
@@ -83,9 +85,10 @@ def namedtuplefetchall(cursor: CursorWrapper) -> list[ListQueryResult]:
     desc = cursor.description
     if desc is None:
         raise Exception("Description should exist")
-    
-    nt_result = namedtuple("Result", [col[0] for col in desc]) # type: ignore[misc]
+
+    nt_result = namedtuple("Result", [col[0] for col in desc])  # type: ignore[misc]
     return cast(list[ListQueryResult], [nt_result(*row) for row in cursor.fetchall()])
+
 
 def recipe_get_view(request: AuthedRequest) -> Response:
     team = get_team(request)
@@ -134,7 +137,9 @@ select
 from core_recipe
 where core_recipe.team_id = %(team_id)s
             """,
-            {"team_id": team.id,},
+            {
+                "team_id": team.id,
+            },
         )
         recipes = namedtuplefetchall(cursor)
     for recipe in recipes:
@@ -142,18 +147,19 @@ where core_recipe.team_id = %(team_id)s
         for ingre in recipe.ingredients:
             ingredients.append(
                 RecipeListItemIngredient(
-                    id=ingre['id'], quantity=ingre['quantity'], name=ingre['name']
+                    id=ingre["id"], quantity=ingre["quantity"], name=ingre["name"]
                 )
             )
 
-
         primary_image = (
-                RecipeListItemPrimaryImage(
-                    id=recipe.primary_image['id'],
-                    url=public_url(recipe.primary_image['key']),
-                    backgroundUrl=recipe.primary_image['background_url'],
-                ) if recipe.primary_image else None
+            RecipeListItemPrimaryImage(
+                id=recipe.primary_image["id"],
+                url=public_url(recipe.primary_image["key"]),
+                backgroundUrl=recipe.primary_image["background_url"],
             )
+            if recipe.primary_image
+            else None
+        )
 
         list_items.append(
             RecipeListItem(
