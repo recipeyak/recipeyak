@@ -46,7 +46,6 @@ python-versions = ">=3.6.2"
 [package.dependencies]
 idna = ">=2.8"
 sniffio = ">=1.1"
-typing-extensions = {version = "*", markers = "python_version < \"3.8\""}
 
 [package.extras]
 doc = ["packaging", "sphinx-rtd-theme", "sphinx-autodoc-typehints (>=1.2.0)"]
@@ -69,9 +68,6 @@ category = "main"
 optional = false
 python-versions = ">=3.6"
 
-[package.dependencies]
-typing-extensions = {version = "*", markers = "python_version < \"3.8\""}
-
 [package.extras]
 tests = ["pytest", "pytest-asyncio", "mypy (>=0.800)"]
 
@@ -82,9 +78,6 @@ description = "An asyncio PostgreSQL driver"
 category = "main"
 optional = false
 python-versions = ">=3.7.0"
-
-[package.dependencies]
-typing-extensions = {version = ">=3.7.4.3", markers = "python_version < \"3.8\""}
 
 [package.extras]
 dev = ["Cython (>=0.29.24,<0.30.0)", "pytest (>=6.0)", "Sphinx (>=4.1.2,<4.2.0)", "sphinxcontrib-asyncio (>=0.3.0,<0.4.0)", "sphinx-rtd-theme (>=0.5.2,<0.6.0)", "flake8 (>=5.0.4,<5.1.0)", "uvloop (>=0.15.3)"]
@@ -153,9 +146,6 @@ click = ">=8.0.0"
 mypy-extensions = ">=0.4.3"
 pathspec = ">=0.9.0"
 platformdirs = ">=2"
-tomli = {version = ">=1.1.0", markers = "python_full_version < \"3.11.0a7\""}
-typed-ast = {version = ">=1.4.2", markers = "python_version < \"3.8\" and implementation_name == \"cpython\""}
-typing-extensions = {version = ">=3.10.0.0", markers = "python_version < \"3.10\""}
 
 [package.extras]
 colorama = ["colorama (>=0.4.3)"]
@@ -181,8 +171,8 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "boto3-stubs"
-version = "1.29.3"
-description = "Type annotations for boto3 1.29.3 generated with mypy-boto3-builder 7.20.3"
+version = "1.29.4"
+description = "Type annotations for boto3 1.29.4 generated with mypy-boto3-builder 7.20.3"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
@@ -231,7 +221,7 @@ batch = ["mypy-boto3-batch (>=1.29.0,<1.30.0)"]
 bedrock = ["mypy-boto3-bedrock (>=1.29.0,<1.30.0)"]
 bedrock-runtime = ["mypy-boto3-bedrock-runtime (>=1.29.0,<1.30.0)"]
 billingconductor = ["mypy-boto3-billingconductor (>=1.29.0,<1.30.0)"]
-boto3 = ["boto3 (==1.29.3)", "botocore (==1.32.3)"]
+boto3 = ["boto3 (==1.29.4)", "botocore (==1.32.4)"]
 braket = ["mypy-boto3-braket (>=1.29.0,<1.30.0)"]
 budgets = ["mypy-boto3-budgets (>=1.29.0,<1.30.0)"]
 ce = ["mypy-boto3-ce (>=1.29.0,<1.30.0)"]
@@ -623,7 +613,6 @@ python-versions = ">=3.7"
 
 [package.dependencies]
 colorama = {version = "*", markers = "platform_system == \"Windows\""}
-importlib-metadata = {version = "*", markers = "python_version < \"3.8\""}
 
 [[package]]
 name = "colorama"
@@ -695,11 +684,14 @@ bcrypt = ["bcrypt"]
 
 [[package]]
 name = "django-types"
-version = "0.16.0"
+version = "0.19.1"
 description = "Type stubs for Django"
 category = "dev"
 optional = false
 python-versions = ">=3.7,<4.0"
+
+[package.dependencies]
+types-psycopg2 = ">=2.9.21.13"
 
 [[package]]
 name = "django-user-sessions"
@@ -760,17 +752,6 @@ dnspython = ">=1.15.0"
 idna = ">=2.0.0"
 
 [[package]]
-name = "exceptiongroup"
-version = "1.0.0rc9"
-description = "Backport of PEP 654 (exception groups)"
-category = "dev"
-optional = false
-python-versions = ">=3.7"
-
-[package.extras]
-test = ["pytest (>=6)"]
-
-[[package]]
 name = "extruct"
 version = "0.13.0"
 description = "Extract embedded metadata from HTML markup"
@@ -825,9 +806,6 @@ description = "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1"
 category = "main"
 optional = false
 python-versions = ">=3.7"
-
-[package.dependencies]
-typing-extensions = {version = "*", markers = "python_version < \"3.8\""}
 
 [[package]]
 name = "h2"
@@ -943,21 +921,6 @@ description = "Internationalized Domain Names in Applications (IDNA)"
 category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-
-[[package]]
-name = "importlib-metadata"
-version = "1.7.0"
-description = "Read metadata from Python packages"
-category = "main"
-optional = false
-python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
-
-[package.dependencies]
-zipp = ">=0.5"
-
-[package.extras]
-docs = ["sphinx", "rst.linker"]
-testing = ["packaging", "pep517", "importlib-resources (>=1.3)"]
 
 [[package]]
 name = "iniconfig"
@@ -1126,22 +1089,20 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "mypy"
-version = "0.991"
+version = "1.7.0"
 description = "Optional static typing for Python"
 category = "dev"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 
 [package.dependencies]
-mypy-extensions = ">=0.4.3"
-tomli = {version = ">=1.1.0", markers = "python_version < \"3.11\""}
-typed-ast = {version = ">=1.4.0,<2", markers = "python_version < \"3.8\""}
-typing-extensions = ">=3.10"
+mypy-extensions = ">=1.0.0"
+typing-extensions = ">=4.1.0"
 
 [package.extras]
 dmypy = ["psutil (>=4.0)"]
 install-types = ["pip"]
-python2 = ["typed-ast (>=1.4.0,<2)"]
+mypyc = ["setuptools (>=50)"]
 reports = ["lxml"]
 
 [[package]]
@@ -1157,11 +1118,11 @@ typing-extensions = {version = ">=4.1.0", markers = "python_version < \"3.12\""}
 
 [[package]]
 name = "mypy-extensions"
-version = "0.4.3"
-description = "Experimental type system extensions for programs checked with the mypy typechecker."
+version = "1.0.0"
+description = "Type system extensions for programs checked with the mypy type checker."
 category = "dev"
 optional = false
-python-versions = "*"
+python-versions = ">=3.5"
 
 [[package]]
 name = "ndg-httpsclient"
@@ -1292,9 +1253,6 @@ category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
-[package.dependencies]
-importlib-metadata = {version = ">=0.12", markers = "python_version < \"3.8\""}
-
 [package.extras]
 dev = ["pre-commit", "tox"]
 
@@ -1423,12 +1381,9 @@ python-versions = ">=3.7"
 [package.dependencies]
 attrs = ">=19.2.0"
 colorama = {version = "*", markers = "sys_platform == \"win32\""}
-exceptiongroup = {version = ">=1.0.0rc8", markers = "python_version < \"3.11\""}
-importlib-metadata = {version = ">=0.12", markers = "python_version < \"3.8\""}
 iniconfig = "*"
 packaging = "*"
 pluggy = ">=0.12,<2.0"
-tomli = {version = ">=1.0.0", markers = "python_version < \"3.11\""}
 
 [package.extras]
 testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.7.2)", "requests", "xmlschema"]
@@ -1495,7 +1450,6 @@ optional = false
 python-versions = ">=3.7"
 
 [package.dependencies]
-importlib-metadata = {version = "*", markers = "python_version < \"3.8.0\""}
 isodate = "*"
 pyparsing = "*"
 
@@ -1680,10 +1634,6 @@ category = "main"
 optional = false
 python-versions = ">=3.7"
 
-[package.dependencies]
-importlib-metadata = {version = "*", markers = "python_version < \"3.8\""}
-typing-extensions = {version = "*", markers = "python_version < \"3.8\""}
-
 [package.extras]
 dev = ["structlog"]
 docs = ["furo", "myst-parser", "sphinx", "sphinx-notfound-page", "sphinxcontrib-mermaid", "twisted"]
@@ -1725,14 +1675,6 @@ optional = false
 python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [[package]]
-name = "tomli"
-version = "2.0.1"
-description = "A lil' TOML parser"
-category = "dev"
-optional = false
-python-versions = ">=3.7"
-
-[[package]]
 name = "traitlets"
 version = "4.3.2"
 description = "Traitlets Python config system"
@@ -1747,14 +1689,6 @@ six = "*"
 
 [package.extras]
 test = ["pytest", "mock"]
-
-[[package]]
-name = "typed-ast"
-version = "1.4.3"
-description = "a fork of Python 2 and 3 ast modules with type comment support"
-category = "dev"
-optional = false
-python-versions = "*"
 
 [[package]]
 name = "typer"
@@ -1796,6 +1730,14 @@ description = "Typing stubs for Pillow"
 category = "main"
 optional = false
 python-versions = "*"
+
+[[package]]
+name = "types-psycopg2"
+version = "2.9.21.16"
+description = "Typing stubs for psycopg2"
+category = "dev"
+optional = false
+python-versions = ">=3.7"
 
 [[package]]
 name = "types-pyyaml"
@@ -1893,24 +1835,11 @@ python-versions = ">=3.7"
 [package.dependencies]
 idna = ">=2.0"
 multidict = ">=4.0"
-typing-extensions = {version = ">=3.7.4", markers = "python_version < \"3.8\""}
-
-[[package]]
-name = "zipp"
-version = "3.1.0"
-description = "Backport of pathlib-compatible object wrapper for zip files"
-category = "main"
-optional = false
-python-versions = ">=3.6"
-
-[package.extras]
-docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
-testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
 lock-version = "1.1"
-python-versions = "^3.7"
-content-hash = "5c54c43dd5e1faa3a41c720b8880235cb772a3508935052f08abae853bf2e21e"
+python-versions = "^3.11"
+content-hash = "fd9bc685d0b8a43499a717aa04fd87d833bdb9c003a86a7bf7fc288c55ba9e80"
 
 [metadata.files]
 ably = []
@@ -1944,7 +1873,6 @@ djangorestframework = []
 djangorestframework-types = []
 dnspython = []
 email-validator = []
-exceptiongroup = []
 extruct = []
 filelock = []
 gunicorn = []
@@ -1958,7 +1886,6 @@ httpx = []
 hyperframe = []
 icalendar = []
 idna = []
-importlib-metadata = []
 iniconfig = []
 ipdb = []
 ipython = []
@@ -2022,13 +1949,12 @@ structlog = []
 syrupy = []
 tldextract = []
 toml = []
-tomli = []
 traitlets = []
-typed-ast = []
 typer = []
 types-awscrt = []
 types-dj-database-url = []
 types-pillow = []
+types-psycopg2 = []
 types-pyyaml = []
 types-requests = []
 types-s3transfer = []
@@ -2040,4 +1966,3 @@ wcwidth = []
 webencodings = []
 websockets = []
 yarl = []
-zipp = []
