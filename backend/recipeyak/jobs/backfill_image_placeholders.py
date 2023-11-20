@@ -124,6 +124,7 @@ def main(dry_run: bool = False) -> None:
     sentry_sdk.init(
         send_default_pii=True,
         traces_sample_rate=1.0,
+        profiles_sample_rate=1.0,
     )
     with sentry_sdk.monitor(monitor_slug="backfill-image-placeholders"):
         start = time.monotonic()
