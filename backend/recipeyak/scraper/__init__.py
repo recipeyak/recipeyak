@@ -27,6 +27,11 @@ from recipeyak.scraper.fetch import fetch_bytes, fetch_content_length
 
 
 @dataclass
+class IngredientGroup:
+    name: str | None
+    ingredients: list[str]
+
+@dataclass
 class ScrapeResult:
     title: str | None
     total_time: str | None
@@ -35,6 +40,8 @@ class ScrapeResult:
     upload_id: int | None
     ingredients: list[str]
     instructions: list[str]
+    # the first param of the tuple will be None in the case of a
+    ingredient_groups: list[IngredientGroup]
     author: str | None
     canonical_url: str | None
     # db id
@@ -163,6 +170,14 @@ def scrape_recipe(*, url: str, user: User) -> ScrapeResult:
     except AttributeError:
         author = None
 
+    ingredient_groups = list[IngredientGroup]()
+    try:
+        for group in parsed.ingredient_groups():
+            ingredient_groups.append(IngredientGroup(name=group.purpose, ingredients=group.ingredients))
+    except ValueError:
+        # There's a chance the library will throw an error
+        ingredient_groups = [IngredientGroup(name=None, ingredients=parsed.ingredients())]
+
     scrape_result = ScrapeResult(
         canonical_url=parsed.canonical_url(),
         title=parsed.title(),
@@ -170,6 +185,7 @@ def scrape_recipe(*, url: str, user: User) -> ScrapeResult:
         yields=yields,
         image=image_url,
         ingredients=parsed.ingredients(),
+        ingredient_groups=ingredient_groups,
         instructions=parsed.instructions_list(),
         author=author,
         upload_id=upload.id if upload is not None else None,
