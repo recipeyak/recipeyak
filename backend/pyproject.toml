@@ -13,7 +13,7 @@ gunicorn = "20.1.0"
 pyyaml = "^5.1"
 django-user-sessions = "^1.6"
 python-dotenv = "0.21.0"
-typing_extensions = "*"
+typing_extensions = "^4.8.0"
 icalendar = "^4.0"
 djangorestframework-types = "^0.2.0"
 orjson = "3.8.1"
@@ -106,7 +106,8 @@ python_files = "*_test.py *_tests.py"
 addopts = "-s --pdbcls IPython.terminal.debugger:TerminalPdb --reuse-db -p no:warnings"
 
 [tool.mypy]
-mypy_path = "./backend/typings"
+mypy_path = "./typings"
+files = ["**/*.py"]
 
 show_column_numbers = true
 show_error_codes = true

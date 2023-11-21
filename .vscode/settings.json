@@ -7,24 +7,10 @@
   "typescript.updateImportsOnFileMove.enabled": "always",
   "python.defaultInterpreterPath": "${workspaceFolder}/backend/.venv/bin/python",
   "python.envFile": "${workspaceFolder}/.vscode/.env",
-  "python.linting.mypyEnabled": true,
-  "python.linting.mypyArgs": [
-    "--ignore-missing-imports",
-    "--follow-imports=silent",
-    "--show-column-numbers",
-    "--config-file",
-    "${workspaceFolder}/backend/pyproject.toml"
-  ],
-  "python.linting.flake8Enabled": true,
-  "python.linting.flake8Args": [
-    "--config",
-    "${workspaceFolder}/backend/tox.ini"
-  ],
   "python.testing.pytestArgs": ["backend"],
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,
   "typescript.tsdk": "frontend/node_modules/typescript/lib",
-  "eslint.alwaysShowStatus": true,
   "eslint.lintTask.enable": true,
   "eslint.validate": [
     "javascriptreact",
@@ -61,10 +47,14 @@
     "editor.tabSize": 2
   },
   "scss.format.enable": true,
-  "isort.importStrategy": "fromEnvironment",
-  "isort.args": ["--sp", "./backend/pyproject.toml"],
   "python.testing.autoTestDiscoverOnSaveEnabled": false,
   "python.testing.promptToConfigure": false,
   "explorer.excludeGitIgnore": true,
-  "editor.detectIndentation": false
+  "editor.detectIndentation": false,
+  "mypy-type-checker.cwd": "${workspaceFolder}/backend",
+  "mypy-type-checker.importStrategy": "fromEnvironment",
+  "mypy-type-checker.interpreter": [
+    "${workspaceFolder}/backend/.venv/bin/python3"
+  ],
+  "mypy-type-checker.args": ["--config-file=pyproject.toml"]
 }
