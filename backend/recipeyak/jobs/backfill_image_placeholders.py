@@ -88,7 +88,7 @@ async def job(*, dry_run: bool, database_url: str, storage_hostname: str) -> Non
         )
 
     id_to_placeholder: dict[int, str] = {}
-    for (upload_id, url, image_bytes) in results:
+    for upload_id, url, image_bytes in results:
         log.info("generating placeholder", url=url, upload_id=upload_id)
         try:
             id_to_placeholder[upload_id] = get_placeholder_image(BytesIO(image_bytes))
@@ -111,10 +111,7 @@ async def job(*, dry_run: bool, database_url: str, storage_hostname: str) -> Non
     set background_url = $2
     where id = $1 and background_url is null
     """,
-        [
-            (upload_id, background_url)
-            for (upload_id, background_url) in id_to_placeholder.items()
-        ],
+        list(id_to_placeholder.items()),
     )
 
 

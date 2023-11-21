@@ -20,7 +20,7 @@ class ScheduledRecipeManager(models.Manager["ScheduledRecipe"]):
         on: date,
         team: Team,
         user: User,
-    ) -> "ScheduledRecipe":
+    ) -> ScheduledRecipe:
         """
         add to existing scheduled recipe count for dupes
         """
@@ -51,9 +51,9 @@ class ScheduledRecipe(CommonInfo):
 
     class Meta:
         db_table = "core_scheduledrecipe"
-        ordering = ["-on"]
+        ordering = ["-on"]  # noqa: RUF012
         # This was previously defined in raw sql: https://github.com/recipeyak/recipeyak/blob/8952d2592f8a13edfcaa63566d99c83c7594a910/backend/core/migrations/0061_auto_20180630_0131.py#L10-L20
-        constraints = [
+        constraints = [  # noqa: RUF012
             models.CheckConstraint(
                 check=models.Q(~(models.Q(team_id=None) & models.Q(user_id=None))),
                 name="owner_required",

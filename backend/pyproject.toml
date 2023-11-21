@@ -13,7 +13,7 @@ gunicorn = "20.1.0"
 pyyaml = "^5.1"
 django-user-sessions = "^1.6"
 python-dotenv = "0.21.0"
-typing_extensions = "*"
+typing_extensions = "^4.8.0"
 icalendar = "^4.0"
 djangorestframework-types = "^0.2.0"
 orjson = "3.8.1"
@@ -30,7 +30,6 @@ typer = "^0.7.0"
 structlog = "^22.3.0"
 types-Pillow = "^9.3.0"
 pillow-heif = "^0.9.0"
-ruff = "^0.0.206"
 tldextract = "^3.4.0"
 sentry-sdk = "^1.35.0"
 ably = "^2.0.1"
@@ -44,19 +43,11 @@ django-types = "^0.19.1"
 types-PyYAML = "^6.0.0"
 types-requests = "^2.25.11"
 syrupy = "^3.0.5"
-black = "^22.6.0"
 boto3-stubs = {extras = ["s3"], version = "^1.24.44"}
 types-urllib3 = "^1.26.23"
 types-dj-database-url = "^1.0.0"
 mypy = "^1.7.0"
-
-[tool.black]
-exclude = '''
-/(
-  | \.venv
-  | node_modules
-)/
-'''
+ruff = "^0.1.6"
 
 [tool.ruff]
 select = [
@@ -93,8 +84,13 @@ ignore = [
     "RET508", # if, elif, else with break is also fine
 ]
 unfixable = ["ERA001"] # we want to check ourselves before we delete commented out code. Also this doesn't cleanup all of it.
-update-check = false
 target-version = "py311"
+
+[tool.ruff.lint.per-file-ignores]
+"recipeyak/migrations/*" = [
+    # it's very common to use class vars in Django migrations.
+    "RUF012",
+]
 
 [tool.ruff.isort]
 known-third-party = ["django"]
@@ -110,7 +106,8 @@ python_files = "*_test.py *_tests.py"
 addopts = "-s --pdbcls IPython.terminal.debugger:TerminalPdb --reuse-db -p no:warnings"
 
 [tool.mypy]
-mypy_path = "./backend/typings"
+mypy_path = "./typings"
+files = ["**/*.py"]
 
 show_column_numbers = true
 show_error_codes = true

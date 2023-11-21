@@ -29,7 +29,7 @@ class Section(CommonInfo):
 
     class Meta:
         db_table = "core_section"
-        ordering = ["position"]
+        ordering = ["position"]  # noqa: RUF012
 
     def __repr__(self) -> str:
         return f"<Section id={self.id} title='{self.title}' position='{self.position}'>"

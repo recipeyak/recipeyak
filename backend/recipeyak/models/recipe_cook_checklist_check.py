@@ -30,7 +30,7 @@ class RecipeCookChecklistCheck(CommonInfo):
     class Meta:
         db_table = "recipe_cook_checklist_check"
 
-        constraints = [
+        constraints = [  # noqa: RUF012
             models.UniqueConstraint(
                 fields=("recipe", "ingredient"),
                 name="recipe_ingredient_uniq",

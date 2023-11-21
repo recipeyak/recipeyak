@@ -33,9 +33,9 @@ class RecipeView(CommonInfo):
     objects = Manager["RecipeView"]()
 
     class Meta:
-        ordering = ["-last_visited_at"]
+        ordering = ["-last_visited_at"]  # noqa: RUF012
         db_table = "recipe_view"
-        constraints = [
+        constraints = [  # noqa: RUF012
             models.UniqueConstraint(
                 fields=("recipe", "user"),
                 name="one_user_view_row_per_recipe",

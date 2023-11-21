@@ -2,7 +2,7 @@
 set -e
 
 main() {
-  ./.venv/bin/black .
+  ./.venv/bin/ruff format .
   ./.venv/bin/ruff . --fix
 }
 

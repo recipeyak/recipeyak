@@ -6,7 +6,7 @@ https://web.archive.org/web/20200326040431/https://www.figma.com/figbuild/symlin
 https://steve.dignam.xyz/2020/03/31/practical-ordering/
 """
 import math
-from typing import Iterable
+from collections.abc import Iterable
 
 START_CHAR_CODE = 32
 END_CHAR_CODE = 126
@@ -28,7 +28,7 @@ def iter_char_codes(x: str) -> Iterable[int]:
 
 
 def compare_positions(first_pos: str, second_pos: str) -> int:
-    return (first_pos < second_pos) - ((first_pos > second_pos))
+    return (first_pos < second_pos) - (first_pos > second_pos)
 
 
 def is_valid_position(pos: str) -> bool:
@@ -41,7 +41,7 @@ def is_valid_position(pos: str) -> bool:
 
 
 def position_before(pos: str) -> str:
-    assert_dev(0 != len(pos))
+    assert_dev(len(pos) != 0)
     i = len(pos) - 1
     for i in reversed(range(len(pos))):
         cur_char_code = ord(pos[i])
@@ -55,7 +55,7 @@ def position_before(pos: str) -> str:
 
 
 def position_after(pos: str) -> str:
-    assert_dev(0 != len(pos))
+    assert_dev(len(pos) != 0)
     for i in reversed(range(len(pos))):
         cur_char_code = ord(pos[i])
         if cur_char_code < END_CHAR_CODE:

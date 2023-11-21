@@ -1,4 +1,4 @@
-from datetime import date, datetime, timezone
+from datetime import UTC, date, datetime
 
 import pytest
 from rest_framework import status
@@ -62,7 +62,7 @@ def test_updating_scheduled_recipe_on_date(
     client.force_authenticate(user)
     res = client.patch(
         f"/api/v1/t/{team.id}/calendar/{scheduled_recipe.id}/",
-        {"on": datetime.now(timezone.utc).date()},
+        {"on": datetime.now(UTC).date()},
     )
     assert res.status_code == status.HTTP_200_OK
     assert (

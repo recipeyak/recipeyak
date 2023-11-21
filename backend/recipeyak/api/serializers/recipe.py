@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
-from typing import Any, Iterable, cast
+from collections.abc import Iterable
+from datetime import UTC, datetime, timedelta
+from typing import Any, Literal, cast
 
 import pydantic
 import tldextract
 from rest_framework import serializers
-from typing_extensions import Literal
 
 from recipeyak.api.base.serialization import BaseModelSerializer, BaseRelatedField
 from recipeyak.api.serializers.team import PublicUserSerializer
@@ -164,7 +164,7 @@ class RecipeSerializer(BaseModelSerializer):
         return items
 
     def get_recentSchedules(self, obj: Recipe) -> list[dict[str, Any]]:
-        now = datetime.now(timezone.utc).date()
+        now = datetime.now(UTC).date()
         return [
             {"id": s.id, "on": s.on}
             for s in obj.scheduledrecipe_set.all()

@@ -99,27 +99,27 @@ def recipe_get_view(request: AuthedRequest) -> Response:
             """
 select
     core_recipe.id,
-	core_recipe.name,
-	core_recipe.author,
-	(
-		select count(*)
-		from core_scheduledrecipe
-		where core_scheduledrecipe.on > (now() - '1.5 years'::interval)
-			and core_scheduledrecipe.on < now()
-		    and core_scheduledrecipe.recipe_id = core_recipe.id
+    core_recipe.name,
+    core_recipe.author,
+    (
+        select count(*)
+        from core_scheduledrecipe
+        where core_scheduledrecipe.on > (now() - '1.5 years'::interval)
+            and core_scheduledrecipe.on < now()
+            and core_scheduledrecipe.recipe_id = core_recipe.id
     ) scheduled_count,
     core_recipe.tags,
     core_recipe.archived_at, 
     (
-		select json_agg(sub.ingredient) ingredients
-		from (
-			select json_build_object(
+        select json_agg(sub.ingredient) ingredients
+        from (
+            select json_build_object(
                 'id', id,
                 'quantity', quantity,
                 'name', name
             ) ingredient
-			from core_ingredient
-			where recipe_id = core_recipe.id
+            from core_ingredient
+            where recipe_id = core_recipe.id
         ) sub
     ) ingredients,
     (

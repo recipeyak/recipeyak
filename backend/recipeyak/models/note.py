@@ -30,7 +30,7 @@ class Note(CommonInfo):
     reactions: "models.QuerySet[Reaction]"
 
     class Meta:
-        ordering = ["-created"]
+        ordering = ["-created"]  # noqa: RUF012
         db_table = "core_note"
 
     def __str__(self) -> str:

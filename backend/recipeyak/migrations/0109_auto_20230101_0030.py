@@ -38,7 +38,6 @@ def migrate(apps: Any, schema_editor: Any) -> None:
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("recipeyak", "0108_auto_20221224_2014"),
     ]

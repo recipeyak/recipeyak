@@ -27,7 +27,6 @@ def copy_user_to_generic_forwards(apps: Any, schema_editor: Any) -> None:
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("contenttypes", "0002_remove_content_type_name"),
         ("recipeyak", "0037_auto_20180304_0138"),

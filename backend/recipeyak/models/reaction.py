@@ -18,8 +18,8 @@ class Reaction(CommonInfo):
     note_id: int
 
     class Meta:
-        ordering = ["-created"]
-        constraints = [
+        ordering = ["-created"]  # noqa: RUF012
+        constraints = [  # noqa: RUF012
             models.UniqueConstraint(
                 fields=("emoji", "created_by", "note"),
                 name="one_reaction_per_user",

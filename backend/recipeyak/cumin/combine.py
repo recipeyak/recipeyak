@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from collections import defaultdict
+from collections.abc import Sequence
 from dataclasses import dataclass, field
-from typing import Sequence
 
 from recipeyak.cumin.inflect import singularize
 from recipeyak.cumin.quantity import BaseUnit, Quantity, parse_quantity

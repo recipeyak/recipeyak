@@ -6,7 +6,6 @@ import recipeyak.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("recipeyak", "0080_auto_20200809_1840")]
 
     operations = [

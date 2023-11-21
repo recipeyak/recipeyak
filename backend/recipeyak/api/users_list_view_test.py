@@ -78,7 +78,6 @@ class Shape:
 
 
 def matches_shape(res: Response, shape: Shape) -> bool:
-
     assert res.request.get("PATH_INFO") == shape.url
 
     obj = res.json()[0] if isinstance(res.json(), list) else res.json()
@@ -89,7 +88,7 @@ def matches_shape(res: Response, shape: Shape) -> bool:
         if k not in obj:
             return False
 
-        if obj[k] is None and v is not None:
+        if obj[k] is None and v is not None:  # noqa: SIM114
             return False
         elif not isinstance(obj[k], v):
             return False

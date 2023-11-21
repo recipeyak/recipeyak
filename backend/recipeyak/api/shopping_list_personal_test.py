@@ -60,7 +60,6 @@ def test_fetching_shoppinglist(
 def test_fetching_shoppinglist_with_team_recipe(
     client: APIClient, team: Team, user: User, recipe: Recipe
 ) -> None:
-
     client.force_authenticate(user)
 
     assert team.is_member(user)

@@ -2,7 +2,7 @@ import re
 from dataclasses import dataclass
 from enum import Enum
 from itertools import chain
-from typing import Pattern
+from re import Pattern
 
 
 class DeviceKind(str, Enum):

@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models, transaction
 from django.db.models import QuerySet
 from django.db.models.manager import Manager
-from typing_extensions import Literal
 
 from recipeyak.models.base import CommonInfo
 from recipeyak.models.invite import Invite

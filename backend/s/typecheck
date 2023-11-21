@@ -2,7 +2,7 @@
 set -e
 
 main() {
-  ./.venv/bin/mypy --config-file pyproject.toml . "${@}"
+  ./.venv/bin/mypy --config-file pyproject.toml "${@}"
 }
 
 main "$@"

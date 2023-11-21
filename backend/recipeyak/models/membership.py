@@ -1,9 +1,8 @@
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Literal
 
 from django.db import models
 from django.db.models.manager import Manager
 from django.utils.crypto import get_random_string
-from typing_extensions import Literal
 
 from recipeyak.models.base import CommonInfo
 
