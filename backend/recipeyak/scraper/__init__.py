@@ -31,6 +31,7 @@ class IngredientGroup:
     name: str | None
     ingredients: list[str]
 
+
 @dataclass
 class ScrapeResult:
     title: str | None
@@ -173,10 +174,14 @@ def scrape_recipe(*, url: str, user: User) -> ScrapeResult:
     ingredient_groups = list[IngredientGroup]()
     try:
         for group in parsed.ingredient_groups():
-            ingredient_groups.append(IngredientGroup(name=group.purpose, ingredients=group.ingredients))
+            ingredient_groups.append(
+                IngredientGroup(name=group.purpose, ingredients=group.ingredients)
+            )
     except ValueError:
         # There's a chance the library will throw an error
-        ingredient_groups = [IngredientGroup(name=None, ingredients=parsed.ingredients())]
+        ingredient_groups = [
+            IngredientGroup(name=None, ingredients=parsed.ingredients())
+        ]
 
     scrape_result = ScrapeResult(
         canonical_url=parsed.canonical_url(),
