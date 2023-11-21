@@ -2310,13 +2310,13 @@ rdflib = ">=5.0.0"
 
 [[package]]
 name = "recipe-scrapers"
-version = "14.23.0"
+version = "14.52.0"
 description = "Python package, scraping recipes from all over the internet"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.8"
 files = [
-    {file = "recipe_scrapers-14.23.0-py3-none-any.whl", hash = "sha256:a90e560c8efd41ff8528badf0ddab5d0410c40509e29554e9b93f05571ef2014"},
-    {file = "recipe_scrapers-14.23.0.tar.gz", hash = "sha256:507ad4611cd39b55c1a8a09d974f39c9e8b3d1e70eadfaecc1447f47be2e81c7"},
+    {file = "recipe_scrapers-14.52.0-py3-none-any.whl", hash = "sha256:3514048808c7b7de467bfa56bea3921ecff637441cde9085186345e3ce7cabdc"},
+    {file = "recipe_scrapers-14.52.0.tar.gz", hash = "sha256:3d1d2cf7ad8c5fd73b5a0e921b3505daeddb42da705ef5c68523a465ccd8cd8f"},
 ]
 
 [package.dependencies]
@@ -2937,4 +2937,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "323d9428adaee7064940ea18cbc2dc7fa7cee9b471e972597dde868f81c5c6a9"
+content-hash = "bdfa711a7a078db9304b5eb66130622f0b2f7a6eda0eb57f792b35b4ecc15033"
