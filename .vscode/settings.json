@@ -5,7 +5,7 @@
   "files.insertFinalNewline": true,
   "typescript.preferences.importModuleSpecifier": "non-relative",
   "typescript.updateImportsOnFileMove.enabled": "always",
-  "python.defaultInterpreterPath": "${workspaceFolder}/backenv/.venv/bin/python",
+  "python.defaultInterpreterPath": "${workspaceFolder}/backend/.venv/bin/python",
   "python.envFile": "${workspaceFolder}/.vscode/.env",
   "python.linting.mypyEnabled": true,
   "python.linting.mypyArgs": [

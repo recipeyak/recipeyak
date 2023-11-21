@@ -93,7 +93,7 @@ class Unit(str, Enum):
     # handle the result
     UNKNOWN = "UNKNOWN"
 
-    def base_unit(self) -> "BaseUnit":
+    def base_unit(self) -> BaseUnit:
         if self in VOLUME:
             return BaseUnit.VOLUME
         if self in MASS:
@@ -168,7 +168,7 @@ class Quantity:
     unit: Unit
     unknown_unit: str | None = None
 
-    def __add__(self, other: "Quantity") -> "Quantity":
+    def __add__(self, other: Quantity) -> Quantity:
         if self.unit == other.unit != Unit.UNKNOWN:
             return Quantity(quantity=self.quantity + other.quantity, unit=self.unit)
         if (
@@ -203,7 +203,7 @@ class Quantity:
         unit = str(self.unit)
         return f"{self.quantity} {unit}"
 
-    def to_base_unit(self) -> "Quantity":
+    def to_base_unit(self) -> Quantity:
         if self.unit.base_unit() == BaseUnit.VOLUME:
             return Quantity(
                 unit=Unit.MILLILITER, quantity=VOLUME[self.unit] * self.quantity
@@ -250,12 +250,12 @@ def _parse_quantity(val: str) -> Quantity:
 
 @dataclass
 class UnhandledCaseError(Exception):
-    case: "Unit"
+    case: Unit
 
 
 @dataclass
 class IncompatibleUnitError(Exception):
-    units: tuple["Unit", "Unit"]
+    units: tuple[Unit, Unit]
 
 
 @enum.unique

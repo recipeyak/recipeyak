@@ -102,13 +102,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     schedule_team_id: int | None
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS: list[str] = []
+    REQUIRED_FIELDS: list[str] = []  # noqa: RUF012
 
     objects = UserManager()
 
     class Meta:
         db_table = "core_myuser"
-        constraints = [
+        constraints = [  # noqa: RUF012
             models.CheckConstraint(
                 check=models.Q(theme__in=("light", "solarized", "autumn")),
                 name="theme_is_valid",

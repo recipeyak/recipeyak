@@ -28,4 +28,4 @@ def test_db_blocker_fails_with_proper_settings(settings: Any, recipe: Recipe) ->
     queryset = Recipe.objects.all()
 
     with pytest.raises(UnexpectedDatabaseAccess):
-        RecipeSerializer(queryset, many=True).data
+        RecipeSerializer(queryset, many=True).data  # noqa: B018

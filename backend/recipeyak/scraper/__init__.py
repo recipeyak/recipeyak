@@ -98,10 +98,7 @@ def get_largest_image(urls: list[str | None]) -> str | None:
         content_length = fetch_content_length(url=url)
         if content_length is None:
             continue
-        if max_size is None:
-            max_size = content_length
-            max_url = url
-        elif content_length > max_size:
+        if max_size is None or content_length > max_size:
             max_size = content_length
             max_url = url
     return max_url

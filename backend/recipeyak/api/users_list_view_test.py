@@ -88,7 +88,7 @@ def matches_shape(res: Response, shape: Shape) -> bool:
         if k not in obj:
             return False
 
-        if obj[k] is None and v is not None:
+        if obj[k] is None and v is not None:  # noqa: SIM114
             return False
         elif not isinstance(obj[k], v):
             return False

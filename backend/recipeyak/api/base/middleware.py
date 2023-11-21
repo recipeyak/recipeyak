@@ -1,7 +1,7 @@
 import enum
 import logging
 import time
-from typing import Callable
+from collections.abc import Callable
 from uuid import uuid4
 
 import pydantic
@@ -169,7 +169,7 @@ class HealthCheckMiddleware:
                 row = cursor.fetchone()
                 if row is None:
                     return HttpResponseServerError(ReadinessError.PG_BAD_RESPONSE)
-        except Exception:  # noqa: BLE001
+        except Exception:
             log.exception("could not connect to postgres")
             return HttpResponseServerError(ReadinessError.PG_CANNOT_CONNECT)
 

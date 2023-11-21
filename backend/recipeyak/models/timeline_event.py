@@ -24,4 +24,4 @@ class TimelineEvent(CommonInfo):
 
     class Meta:
         db_table = "timeline_event"
-        ordering = ["-created"]
+        ordering = ["-created"]  # noqa: RUF012

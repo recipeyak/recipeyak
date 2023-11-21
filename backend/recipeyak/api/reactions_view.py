@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from typing import Literal
 
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
@@ -9,7 +10,6 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from typing_extensions import Literal
 
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import RequestParams
@@ -45,7 +45,7 @@ def note_reaction_create_view(request: AuthedRequest, note_pk: int) -> Response:
             reaction = user_reactions(user=request.user).filter(note=note).get()
         else:
             raise
-    return Response(list(serialize_reactions([reaction]))[0])
+    return Response(next(iter(serialize_reactions([reaction]))))
 
 
 @api_view(["DELETE"])

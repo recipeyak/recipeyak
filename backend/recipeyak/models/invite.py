@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 class InviteManager(models.Manager["Invite"]):
     def create_invite(
         self, email: str, team: Team, level: str, creator: User
-    ) -> "Invite":
+    ) -> Invite:
         user = User.objects.filter(email=email).first()
         if not user:
             user = User.objects.create_user(email=email)

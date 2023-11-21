@@ -86,6 +86,12 @@ ignore = [
 unfixable = ["ERA001"] # we want to check ourselves before we delete commented out code. Also this doesn't cleanup all of it.
 target-version = "py311"
 
+[tool.ruff.lint.per-file-ignores]
+"recipeyak/migrations/*" = [
+    # it's very common to use class vars in Django migrations.
+    "RUF012",
+]
+
 [tool.ruff.isort]
 known-third-party = ["django"]
 known-first-party = ["recipeyak"]
