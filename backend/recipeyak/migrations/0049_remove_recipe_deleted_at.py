@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("recipeyak", "0048_auto_20180510_2050")]
 
     operations = [migrations.RemoveField(model_name="recipe", name="deleted_at")]

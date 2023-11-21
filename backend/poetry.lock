@@ -134,27 +134,6 @@ html5lib = ["html5lib"]
 lxml = ["lxml"]
 
 [[package]]
-name = "black"
-version = "22.6.0"
-description = "The uncompromising code formatter."
-category = "dev"
-optional = false
-python-versions = ">=3.6.2"
-
-[package.dependencies]
-click = ">=8.0.0"
-mypy-extensions = ">=0.4.3"
-pathspec = ">=0.9.0"
-platformdirs = ">=2"
-tomli = {version = ">=1.1.0", markers = "python_full_version < \"3.11.0a7\""}
-
-[package.extras]
-colorama = ["colorama (>=0.4.3)"]
-d = ["aiohttp (>=3.7.4)"]
-jupyter = ["ipython (>=7.8.0)", "tokenize-rt (>=3.2.0)"]
-uvloop = ["uvloop (>=0.15.2)"]
-
-[[package]]
 name = "boto3"
 version = "1.24.44"
 description = "The AWS SDK for Python"
@@ -1190,14 +1169,6 @@ qa = ["flake8 (==3.8.3)", "mypy (==0.782)"]
 testing = ["docopt", "pytest (<6.0.0)"]
 
 [[package]]
-name = "pathspec"
-version = "0.9.0"
-description = "Utility library for gitignore style pattern matching of file paths."
-category = "dev"
-optional = false
-python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
-
-[[package]]
 name = "pexpect"
 version = "4.6.0"
 description = "Pexpect allows easy control of interactive console applications."
@@ -1245,18 +1216,6 @@ dev = ["pytest", "defusedxml", "packaging", "numpy", "pympler", "opencv-python",
 docs = ["sphinx (>=4.4)", "sphinx-issues (>=3.0.1)", "sphinx-rtd-theme (>=1.0)"]
 tests = ["pytest", "defusedxml", "packaging", "numpy", "pympler"]
 tests-min = ["pytest", "defusedxml", "packaging"]
-
-[[package]]
-name = "platformdirs"
-version = "2.5.2"
-description = "A small Python module for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
-category = "dev"
-optional = false
-python-versions = ">=3.7"
-
-[package.extras]
-docs = ["furo (>=2021.7.5b38)", "proselint (>=0.10.2)", "sphinx-autodoc-typehints (>=1.12)", "sphinx (>=4)"]
-test = ["appdirs (==1.4.4)", "pytest-cov (>=2.7)", "pytest-mock (>=3.6)", "pytest (>=6)"]
 
 [[package]]
 name = "pluggy"
@@ -1547,9 +1506,9 @@ idna2008 = ["idna"]
 
 [[package]]
 name = "ruff"
-version = "0.0.206"
-description = "An extremely fast Python linter, written in Rust."
-category = "main"
+version = "0.1.6"
+description = "An extremely fast Python linter and code formatter, written in Rust."
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 
@@ -1862,7 +1821,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "73e7df099de6028b68cd8aa4f0a586ec1815100ea3bd7b8297ba40e3a7090366"
+content-hash = "323d9428adaee7064940ea18cbc2dc7fa7cee9b471e972597dde868f81c5c6a9"
 
 [metadata.files]
 ably = []
@@ -1875,7 +1834,6 @@ asyncpg-stubs = []
 attrs = []
 backcall = []
 beautifulsoup4 = []
-black = []
 boto3 = []
 boto3-stubs = []
 botocore = []
@@ -1932,12 +1890,10 @@ netifaces = []
 orjson = []
 packaging = []
 parso = []
-pathspec = []
 pexpect = []
 pickleshare = []
 pillow = []
 pillow-heif = []
-platformdirs = []
 pluggy = []
 prompt-toolkit = []
 psycopg2-binary = []

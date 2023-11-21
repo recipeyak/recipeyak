@@ -78,7 +78,6 @@ class Shape:
 
 
 def matches_shape(res: Response, shape: Shape) -> bool:
-
     assert res.request.get("PATH_INFO") == shape.url
 
     obj = res.json()[0] if isinstance(res.json(), list) else res.json()

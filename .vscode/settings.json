@@ -3,8 +3,6 @@
   "javascript.format.enable": true,
   "typescript.format.enable": true,
   "files.insertFinalNewline": true,
-  "python.formatting.provider": "black",
-
   "typescript.preferences.importModuleSpecifier": "non-relative",
   "typescript.updateImportsOnFileMove.enabled": "always",
   "python.defaultInterpreterPath": "${workspaceFolder}/backenv/.venv/bin/python",

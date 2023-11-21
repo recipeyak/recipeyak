@@ -380,7 +380,6 @@ def test_create_team_invite(
             status.HTTP_201_CREATED,
         ),
     ]:
-
         res = client.post(url, data)
         assert res.status_code == s, description
 

@@ -19,7 +19,6 @@ def forwards_func(apps: Any, schema_editor: Any) -> None:
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("recipeyak", "0075_auto_20200227_0349")]
 
     operations = [

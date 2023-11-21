@@ -237,7 +237,7 @@ WHERE
         )
         results = cursor.fetchall()
     out: list[Activity] = []
-    for (recipe_id, recipe_name, created_date, created, note_id, type) in results:
+    for recipe_id, recipe_name, created_date, created, note_id, type in results:
         out.append(
             Activity(
                 recipe_id=recipe_id,
