@@ -17,7 +17,7 @@ import { getInitialIngredients } from "@/utils/ingredients"
 
 function useIngredients(recipeId: number) {
   const {
-    isLoading,
+    isPending,
     isError,
     data: checkedIngredients,
     error,
@@ -27,11 +27,11 @@ function useIngredients(recipeId: number) {
   if (isError) {
     throw error
   }
-  if (isLoading) {
-    return { checkedIngredients, isLoading, mutation } as const
+  if (isPending) {
+    return { checkedIngredients, isPending, mutation } as const
   }
 
-  return { checkedIngredients, isLoading, mutation } as const
+  return { checkedIngredients, isPending, mutation } as const
 }
 
 function Ingredients({
@@ -47,9 +47,9 @@ function Ingredients({
     readonly position: string
   }[]
 }) {
-  const { checkedIngredients, isLoading, mutation } = useIngredients(recipeId)
+  const { checkedIngredients, isPending, mutation } = useIngredients(recipeId)
 
-  if (isLoading) {
+  if (isPending) {
     return null
   }
 

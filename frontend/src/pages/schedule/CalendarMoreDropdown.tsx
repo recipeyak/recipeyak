@@ -39,7 +39,7 @@ export function ICalConfig({
             />
             <Button
               size="small"
-              loading={regenLink.isLoading}
+              loading={regenLink.isPending}
               onClick={() => {
                 regenLink.mutate()
               }}

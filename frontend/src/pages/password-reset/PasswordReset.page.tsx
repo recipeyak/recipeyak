@@ -88,7 +88,7 @@ function PasswordReset() {
         </FormField>
 
         <FormField className="d-flex flex-space-between align-items-center">
-          <Button loading={resetPassword.isLoading} type="submit">
+          <Button loading={resetPassword.isPending} type="submit">
             Send Reset Email
           </Button>
 

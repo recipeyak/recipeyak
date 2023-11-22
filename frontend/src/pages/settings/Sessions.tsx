@@ -81,7 +81,7 @@ function Session(props: ISession) {
           onClick={() => {
             sessionDelete.mutate({ sessionId: props.id })
           }}
-          loading={sessionDelete.isLoading}
+          loading={sessionDelete.isPending}
         >
           Logout
         </Button>
@@ -96,7 +96,7 @@ function SessionList() {
   const [showAll, setShowAll] = useState(false)
   const preview = 5
 
-  if (sessions.isLoading) {
+  if (sessions.isPending) {
     return <Loader />
   }
 
@@ -127,7 +127,7 @@ function SessionList() {
         onClick={() => {
           sessonsDeleteAll.mutate()
         }}
-        loading={sessonsDeleteAll.isLoading}
+        loading={sessonsDeleteAll.isPending}
       >
         Logout Other Sessions
       </Button>

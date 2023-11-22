@@ -161,7 +161,7 @@ function EmailEditForm(props: IEmailEditForm) {
           {isEditing ? (
             <Box gap={2}>
               <Button
-                disabled={updateEmail.isLoading}
+                disabled={updateEmail.isPending}
                 name="email"
                 size="small"
                 onClick={() => {
@@ -176,7 +176,7 @@ function EmailEditForm(props: IEmailEditForm) {
                 size="small"
                 name="email"
                 type="submit"
-                loading={updateEmail.isLoading}
+                loading={updateEmail.isPending}
                 value="save email"
               >
                 Save

@@ -20,7 +20,7 @@ module.exports = {
     "import",
     "@tanstack/query",
   ],
-  extends: ["prettier"],
+  extends: ["prettier", "plugin:@tanstack/eslint-plugin-query/recommended"],
   settings: {
     react: {
       version: "detect",
@@ -37,8 +37,6 @@ module.exports = {
     "simple-import-sort/exports": "error",
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "error",
-    "@tanstack/query/exhaustive-deps": "error",
-    "@tanstack/query/prefer-query-object-syntax": "error",
     "no-restricted-syntax": [
       "error",
       {

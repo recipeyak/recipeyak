@@ -22,10 +22,12 @@ export function useUserFetch() {
   // TODO: this api call could be removed with a preload
   const queryClient = useQueryClient()
   return useQuery({
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryKey: ["user-detail"],
-    queryFn: () => getUser().then(unwrapResult),
-    onSuccess: (res) => {
+    queryFn: async () => {
+      const res = await getUser().then(unwrapResult)
       login(res, queryClient)
+      return res
     },
   })
 }

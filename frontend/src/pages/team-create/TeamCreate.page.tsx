@@ -74,7 +74,7 @@ function TeamCreate() {
         <Button
           type="submit"
           variant="primary"
-          loading={teamCreate.isLoading}
+          loading={teamCreate.isPending}
           className="justify-self-left"
         >
           Create Team

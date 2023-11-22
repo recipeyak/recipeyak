@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query"
+import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
 import { useTeamId } from "@/hooks"
 import { getCalendarRecipeList } from "@/queries/scheduledRecipeList"
@@ -18,6 +18,6 @@ export function useScheduledRecipeSettingsFetch() {
     },
     select: (data) => data.settings,
     // Schedule recipes plop in due the way we overlap/prefetch without this
-    keepPreviousData: true,
+    placeholderData: keepPreviousData,
   })
 }

@@ -80,7 +80,7 @@ const MemberRow = ({
                 memberId: membershipID,
               })
             }}
-            loading={deleteTeamMember.isLoading}
+            loading={deleteTeamMember.isPending}
           >
             {isUser ? "leave" : "remove"}
           </Button>

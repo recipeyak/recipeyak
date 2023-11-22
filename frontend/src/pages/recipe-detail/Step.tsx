@@ -192,7 +192,7 @@ function StepBody({
             <Button
               onClick={removeStep}
               size="small"
-              loading={remove.isLoading}
+              loading={remove.isPending}
               type="button"
               name="delete"
             >
@@ -211,7 +211,7 @@ function StepBody({
               variant="primary"
               size="small"
               onClick={updateStep}
-              loading={update.isLoading}
+              loading={update.isPending}
               name="save"
             >
               Save

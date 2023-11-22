@@ -40,7 +40,7 @@ function TeamInvite(props: ITeamInviteProps) {
   if (teamInfo.isError) {
     return <div>error loading team</div>
   }
-  if (teamInfo.isLoading) {
+  if (teamInfo.isPending) {
     return <div>loading team...</div>
   }
 
@@ -107,7 +107,7 @@ function TeamInvite(props: ITeamInviteProps) {
         <Button
           type="submit"
           variant="primary"
-          loading={sendInvites.isLoading}
+          loading={sendInvites.isPending}
           className="justify-self-left"
         >
           Send Invite

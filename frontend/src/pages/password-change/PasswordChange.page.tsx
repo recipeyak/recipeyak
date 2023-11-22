@@ -108,7 +108,7 @@ function PasswordChange() {
           variant="primary"
           type="submit"
           className="w-100"
-          loading={passwordChange.isLoading}
+          loading={passwordChange.isPending}
         >
           Update
         </Button>

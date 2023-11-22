@@ -158,7 +158,7 @@ export function CalendarDayItemModal({
                     <select
                       value={day}
                       onChange={handleSelectChange}
-                      disabled={findNextOpen.isLoading}
+                      disabled={findNextOpen.isPending}
                     >
                       {options.map((opt) => {
                         return (
@@ -172,9 +172,9 @@ export function CalendarDayItemModal({
                       <Button
                         size="small"
                         onClick={handleFindNextOpen}
-                        disabled={findNextOpen.isLoading}
+                        disabled={findNextOpen.isPending}
                       >
-                        {!findNextOpen.isLoading ? "find" : "finding..."}
+                        {!findNextOpen.isPending ? "find" : "finding..."}
                       </Button>
                     </div>
                   </Box>
@@ -186,9 +186,9 @@ export function CalendarDayItemModal({
                   size="small"
                   variant="danger"
                   onClick={handleDelete}
-                  disabled={scheduledRecipeDelete.isLoading}
+                  disabled={scheduledRecipeDelete.isPending}
                 >
-                  {!scheduledRecipeDelete.isLoading ? "delete" : "deleting..."}
+                  {!scheduledRecipeDelete.isPending ? "delete" : "deleting..."}
                 </Button>
                 <Box gap={2}>
                   <Button size="small" onClick={onClose}>
@@ -198,9 +198,9 @@ export function CalendarDayItemModal({
                     size="small"
                     variant="primary"
                     onClick={handleSave}
-                    disabled={scheduldRecipeUpdate.isLoading}
+                    disabled={scheduldRecipeUpdate.isPending}
                   >
-                    {!scheduldRecipeUpdate.isLoading ? "save" : "saving..."}
+                    {!scheduldRecipeUpdate.isPending ? "save" : "saving..."}
                   </Button>
                 </Box>
               </Box>

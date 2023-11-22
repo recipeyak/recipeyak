@@ -20,7 +20,9 @@ export function useTeamDelete() {
     onSuccess: (_res, vars) => {
       history.push(pathHome({}))
       toast.success(`Team deleted`)
-      queryClient.removeQueries(["teams", vars.teamId])
+      queryClient.removeQueries({
+        queryKey: ["teams", vars.teamId],
+      })
     },
     onError: (res) => {
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unsafe-assignment

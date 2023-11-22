@@ -143,9 +143,9 @@ export function ScheduleModal({
                 size="small"
                 variant="primary"
                 onClick={handleSave}
-                disabled={scheduledRecipeCreate.isLoading}
+                disabled={scheduledRecipeCreate.isPending}
               >
-                {!scheduledRecipeCreate.isLoading
+                {!scheduledRecipeCreate.isPending
                   ? "schedule"
                   : "scheduling..."}
               </Button>

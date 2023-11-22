@@ -157,7 +157,7 @@ export default function Profile(
 ) {
   const userInfo = useUserById({ id: props.match.params.userId })
 
-  if (userInfo.isLoading) {
+  if (userInfo.isPending) {
     return <Loader />
   }
 

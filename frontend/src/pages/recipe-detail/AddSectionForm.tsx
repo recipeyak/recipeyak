@@ -77,7 +77,7 @@ export function AddSectionForm({
             disabled={addDisabled}
             size="small"
             type="submit"
-            loading={createSection.isLoading}
+            loading={createSection.isPending}
           >
             Save
           </Button>

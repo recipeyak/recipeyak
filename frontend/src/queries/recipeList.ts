@@ -32,10 +32,5 @@ export function useRecipeList() {
   return useQuery({
     queryKey: [teamID, "recipes-list"],
     queryFn: () => getRecipeList().then(unwrapResult),
-    onSuccess: () => {
-      // NOTE: we don't save all these recipes as it exceeds the localStorage
-      // limit of 5MB (we try to save 3MB of data but that ends up being too
-      // much for safari.)
-    },
   })
 }

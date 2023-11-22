@@ -43,7 +43,7 @@ function CreateFromURLForm() {
         <Button
           variant="primary"
           type="submit"
-          loading={recipeCreate.isLoading}
+          loading={recipeCreate.isPending}
         >
           Import
         </Button>
@@ -104,7 +104,7 @@ function CreateManuallyForm() {
           }
         </div>
       ) : null}
-      <Button variant="primary" type="submit" loading={recipeCreate.isLoading}>
+      <Button variant="primary" type="submit" loading={recipeCreate.isPending}>
         Add Manually
       </Button>
     </form>
