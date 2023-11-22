@@ -133,12 +133,15 @@ interface IAuthRouteProps extends Pick<RouteProps, "exact" | "path"> {
 }
 
 const PrivateRoute = ({ component: Component, ...rest }: IAuthRouteProps) => {
-  const authenticated = useIsLoggedIn()
+  const { isLoggedIn, isPending } = useIsLoggedIn()
+  if (isPending) {
+    return null
+  }
   return (
     <BaseRoute
       {...rest}
       render={(props) => {
-        return authenticated ? (
+        return isLoggedIn ? (
           <>
             <ScrollRestore />
             <Component {...props} />
@@ -160,12 +163,16 @@ const PublicOnlyRoute = ({
   component: Component,
   ...rest
 }: IAuthRouteProps) => {
-  const authenticated = useIsLoggedIn()
+  const { isLoggedIn, isPending } = useIsLoggedIn()
+  if (isPending) {
+    return null
+  }
+
   return (
     <BaseRoute
       {...rest}
       render={(props) => {
-        return !authenticated ? (
+        return !isLoggedIn ? (
           <>
             <ScrollRestore />
             <Component {...props} />

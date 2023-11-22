@@ -1,4 +1,6 @@
+import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { experimental_createPersister } from "@tanstack/react-query-persist-client"
 
 import { login } from "@/auth"
 import { http } from "@/http"
@@ -29,5 +31,10 @@ export function useUserFetch() {
       login(res, queryClient)
       return res
     },
+    gcTime: Infinity,
+    persister: experimental_createPersister({
+      storage: localStorage,
+      prefix: "user-fetch",
+    }),
   })
 }
