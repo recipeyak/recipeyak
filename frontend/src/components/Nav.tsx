@@ -227,11 +227,7 @@ const BetterNavItem = styled.div`
 `
 
 export function Navbar() {
-  const { isLoggedIn, isPending } = useIsLoggedIn()
-  if (isPending) {
-    return null
-  }
-
+  const isLoggedIn = useIsLoggedIn()
   return (
     <NavContainer>
       <BetterNavItem
