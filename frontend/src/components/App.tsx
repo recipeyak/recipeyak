@@ -1,11 +1,11 @@
 import "@/components/scss/main.scss"
 
+import * as Sentry from "@sentry/react"
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister"
 import { QueryClient, useIsRestoring } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client"
 import { AxiosError } from "axios"
-import raven from "raven-js"
 import React, { useEffect } from "react"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
@@ -97,9 +97,7 @@ export const queryClient = new QueryClient({
 const persister = createSyncStoragePersister({
   storage: localStorage,
   retry: ({ error }) => {
-    raven.captureException(error, {
-      extra: "problem persisting",
-    })
+    Sentry.captureException(error)
     // eslint-disable-next-line no-console
     console.error("problem persisting")
     // eslint-disable-next-line no-console

@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/react"
 import axios, {
   AxiosError,
   AxiosRequestConfig,
@@ -6,7 +7,6 @@ import axios, {
 } from "axios"
 import { Either, left } from "fp-ts/lib/Either"
 import * as t from "io-ts"
-import raven from "raven-js"
 
 import { logout } from "@/auth"
 import { queryClient } from "@/components/App"
@@ -84,13 +84,13 @@ const handleResponseError = (error: AxiosError) => {
   if (maintenanceMode) {
     location.reload()
   } else if (serverError || requestTimeout) {
-    raven.captureException(error)
+    Sentry.captureException(error)
   } else if (unAuthenticated) {
     logout(queryClient)
   } else {
     // NOTE(chdsbd): I think it's a good idea just to report any other bad
     // status to Sentry.
-    raven.captureException(error, { level: "info" })
+    Sentry.captureException(error, { level: "info" })
   }
 
   return Promise.reject(error)
