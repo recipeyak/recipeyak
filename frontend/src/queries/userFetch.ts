@@ -1,9 +1,4 @@
-import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister"
-import {
-  useQuery,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query"
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
 import { experimental_createPersister } from "@tanstack/react-query-persist-client"
 
 import { login } from "@/auth"
