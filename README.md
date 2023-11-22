@@ -65,6 +65,7 @@ To have a centralized location where multiple people can organize a meal plan.
 | [Simple Weekly Meal Planner](https://simpleweeklymealplanner.com)                                             | [2022-05-04](https://www.whois.com/whois/simpleweeklymealplanner.com)                                                                                                      | ❌                                      |
 | [Lollipop](https://www.lollipopai.com)                                                                        | [2022-06-29](https://techcrunch.com/2021/06/29/lollipop-ai-launches-online-grocery-marketplace-where-you-can-build-your-own-recipes/)                                      | ❌                                      |
 | [Umami](https://www.umami.recipes)                                                                            | [2022-07-12](https://web.archive.org/web/20220801023533/https://apps.apple.com/us/app/umami-recipes/id1597523594)                                                          | ❌                                      |
+| [Potluck](https://www.inkandswitch.com/potluck/)                                                              | [2022-11-01](https://web.archive.org/web/20221101163749/https://www.inkandswitch.com/potluck/)                                                                             | ❌                                      |
 
 ## Dev
 
