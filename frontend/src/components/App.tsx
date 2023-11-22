@@ -6,16 +6,17 @@ import { QueryClient, useIsRestoring } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client"
 import { AxiosError } from "axios"
+import { createBrowserHistory } from "history"
 import React, { useEffect } from "react"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import { HelmetProvider } from "react-helmet-async"
 import {
-  BrowserRouter as Router,
   Redirect,
-  Route as BaseRoute,
+  Route as RRBaseRoute,
   RouteComponentProps,
   RouteProps,
+  Router,
   Switch,
 } from "react-router-dom"
 
@@ -62,9 +63,27 @@ import {
   pathTeamList,
   pathTeamSettings,
 } from "@/paths"
-import { GIT_SHA } from "@/settings"
+import { GIT_SHA, SENTRY_DSN } from "@/settings"
 import { theme, ThemeProvider, themeSet } from "@/theme"
 import { Toaster } from "@/toast"
+
+const history = createBrowserHistory()
+const BaseRoute = Sentry.withSentryRouting(RRBaseRoute)
+
+Sentry.init({
+  dsn: SENTRY_DSN,
+  release: GIT_SHA || "",
+  integrations: [
+    new Sentry.BrowserTracing({
+      // See docs for support of different versions of variation of react router
+      // https://docs.sentry.io/platforms/javascript/guides/react/configuration/integrations/react-router/
+      routingInstrumentation: Sentry.reactRouterV5Instrumentation(history),
+    }),
+  ],
+  tracesSampleRate: 1.0,
+})
+// eslint-disable-next-line no-console
+console.log("version:", GIT_SHA, "\nsentry:", SENTRY_DSN)
 
 const MAX_RETRIES = 6
 const HTTP_STATUS_TO_NOT_RETRY = [400, 401, 403, 404]
@@ -195,7 +214,7 @@ function AppRouter() {
     return null
   }
   return (
-    <Router>
+    <Router history={history}>
       <Switch>
         <PublicOnlyRoute exact path={pathLogin.pattern} component={Login} />
         <PublicOnlyRoute
@@ -293,7 +312,7 @@ function AppRouter() {
   )
 }
 
-function Base() {
+function App() {
   return (
     <PersistQueryClientProvider
       client={queryClient}
@@ -336,4 +355,4 @@ function Base() {
   )
 }
 
-export default Base
+export default Sentry.withProfiler(App)
