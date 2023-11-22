@@ -9,7 +9,7 @@ import { teamURL } from "@/urls"
 
 function TeamsList() {
   const teams = useTeamList()
-  if (teams.isLoading) {
+  if (teams.isPending) {
     return <Loader />
   }
 

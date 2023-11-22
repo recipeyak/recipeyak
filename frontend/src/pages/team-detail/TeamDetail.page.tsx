@@ -120,11 +120,11 @@ function TeamSettings({ id, name: initialName }: { id: number; name: string }) {
           onClick={() => {
             deleteTeam()
           }}
-          loading={teamDelete.isLoading}
+          loading={teamDelete.isPending}
         >
           Delete Team
         </Button>
-        <Button variant="primary" type="submit" loading={teamUpdate.isLoading}>
+        <Button variant="primary" type="submit" loading={teamUpdate.isPending}>
           Save Changes
         </Button>
       </div>
@@ -159,7 +159,7 @@ function Team(props: RouteComponentProps<{ teamId: string }>) {
     return <div>error fetching team</div>
   }
 
-  if (teamInfo.isLoading) {
+  if (teamInfo.isPending) {
     return <div>loading team...</div>
   }
 
@@ -183,7 +183,7 @@ function Team(props: RouteComponentProps<{ teamId: string }>) {
         <TeamMembers
           id={id}
           name={teamInfo.data.name}
-          loading={teamMembers.isLoading}
+          loading={teamMembers.isPending}
           members={teamMembers.data ?? []}
         />
       )}

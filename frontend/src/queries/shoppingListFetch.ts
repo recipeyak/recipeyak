@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query"
+import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
 import { toISODateString } from "@/date"
 import { useTeamId } from "@/hooks"
@@ -77,6 +77,6 @@ export function useShoppingListFetch({
   return useQuery({
     queryKey: [teamId, "shopping-list", startDay, endDay],
     queryFn: () => getShoppingList(teamId, startDay, endDay).then(unwrapResult),
-    keepPreviousData: true,
+    placeholderData: keepPreviousData,
   })
 }

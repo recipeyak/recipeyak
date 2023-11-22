@@ -13,7 +13,7 @@ import { rest, server } from "@/testUtils"
 const queryClientPersistent = new QueryClient({
   defaultOptions: {
     queries: {
-      cacheTime: 1000 * 60 * 60 * 24 * 7, // 7 days
+      gcTime: 1000 * 60 * 60 * 24 * 7, // 7 days
     },
   },
 })

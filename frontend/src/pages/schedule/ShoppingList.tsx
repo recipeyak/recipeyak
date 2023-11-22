@@ -126,12 +126,12 @@ const ShoppingListList = React.forwardRef<
         overflowY: "auto",
         maxHeight: 425, // looks good on mobile & desktop
         color:
-          props.items.isLoading || props.items.isRefetching
+          props.items.isPending || props.items.isRefetching
             ? "hsl(0, 0%, 71%)"
             : "",
       }}
     >
-      {props.items.isLoading ? (
+      {props.items.isPending ? (
         <div className="text-center">loading...</div>
       ) : (
         <div ref={ref} className="selectable">

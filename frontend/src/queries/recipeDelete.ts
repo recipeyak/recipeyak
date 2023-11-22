@@ -19,7 +19,9 @@ export function useRecipeDelete() {
       deleteRecipe(recipeId).then(unwrapResult),
     onSuccess: (_res, vars) => {
       history.push(pathRecipesList({}))
-      queryClient.removeQueries([teamId, "recipes", vars.recipeId])
+      queryClient.removeQueries({
+        queryKey: [teamId, "recipes", vars.recipeId],
+      })
     },
   })
 }

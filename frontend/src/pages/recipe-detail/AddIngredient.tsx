@@ -131,7 +131,7 @@ function AddIngredientForm({
             disabled={addDisabled}
             size="small"
             type="submit"
-            loading={createIngredient.isLoading}
+            loading={createIngredient.isPending}
           >
             Add
           </Button>

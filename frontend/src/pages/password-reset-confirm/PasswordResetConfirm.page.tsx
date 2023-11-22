@@ -128,7 +128,7 @@ function PasswordResetConfirmation(props: RouteProps) {
             <FormControl>
               <Button
                 variant="primary"
-                loading={resetPassword.isLoading}
+                loading={resetPassword.isPending}
                 type="submit"
               >
                 Change Password

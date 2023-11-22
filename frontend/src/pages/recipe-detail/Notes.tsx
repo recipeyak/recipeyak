@@ -102,7 +102,7 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
   return {
     draftText,
     isEditing,
-    isUpdating: updateNote.isLoading,
+    isUpdating: updateNote.isPending,
     onCancel,
     onDelete,
     onEditorChange,
@@ -498,7 +498,7 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
     editorText,
     onEditorFocus,
     onCreate,
-    isLoading: createNote.isLoading,
+    isLoading: createNote.isPending,
     onCancel,
     isDisabled,
     addUploads: (upload: UploadSuccess) => {

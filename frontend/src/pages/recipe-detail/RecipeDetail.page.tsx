@@ -452,7 +452,7 @@ function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
           size="small"
           type="submit"
           variant="primary"
-          loading={updateRecipe.isLoading}
+          loading={updateRecipe.isPending}
           onClick={onSave}
           name="save recipe"
         >
@@ -813,7 +813,7 @@ export function Recipe(props: IRecipeProps) {
     openPrimaryImage,
   } = useGallery(uploads, myRecipe?.id ?? null, myRecipe?.primaryImage ?? null)
 
-  if (maybeRecipe.isLoading) {
+  if (maybeRecipe.isPending) {
     return <Loader />
   }
 

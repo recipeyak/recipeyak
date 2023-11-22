@@ -86,7 +86,7 @@ function AddStep({ recipeId, onCancel, index, position }: IAddStepProps) {
             disabled={step === ""}
             type="submit"
             name="save step"
-            loading={addStep.isLoading}
+            loading={addStep.isPending}
           >
             Add
           </Button>

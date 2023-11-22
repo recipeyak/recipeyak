@@ -116,7 +116,7 @@ export default function Login() {
             <Button
               variant="primary"
               type="submit"
-              loading={authLogin.isLoading}
+              loading={authLogin.isPending}
             >
               Submit
             </Button>

@@ -26,7 +26,7 @@ export default function CookDetail(
     maybeRecipe.data?.name,
   )
 
-  if (maybeRecipe.isLoading) {
+  if (maybeRecipe.isPending) {
     return <Loader />
   }
 

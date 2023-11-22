@@ -24,26 +24,29 @@ export function onRecipeDeletion(
   vars: { teamId: number; scheduledRecipeId: number },
 ) {
   let deletedCalRecipe: ICalRecipe | undefined
-  queryClient.setQueriesData([vars.teamId, "calendar"], (data: unknown) => {
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    const oldData = data as CalendarResponse | undefined
-    // TODO: we also need to be careful about shape of the data changing due to persistance
-    if (oldData == null) {
-      return oldData
-    }
-    const updatedScheduledRecipes: ICalRecipe[] = []
-    oldData.scheduledRecipes.forEach((calRecipe) => {
-      if (calRecipe.id !== vars.scheduledRecipeId) {
-        updatedScheduledRecipes.push(calRecipe)
-      } else {
-        deletedCalRecipe = calRecipe
+  queryClient.setQueriesData(
+    { queryKey: [vars.teamId, "calendar"] },
+    (data: unknown) => {
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      const oldData = data as CalendarResponse | undefined
+      // TODO: we also need to be careful about shape of the data changing due to persistance
+      if (oldData == null) {
+        return oldData
       }
-    })
-    return {
-      ...oldData,
-      scheduledRecipes: updatedScheduledRecipes,
-    }
-  })
+      const updatedScheduledRecipes: ICalRecipe[] = []
+      oldData.scheduledRecipes.forEach((calRecipe) => {
+        if (calRecipe.id !== vars.scheduledRecipeId) {
+          updatedScheduledRecipes.push(calRecipe)
+        } else {
+          deletedCalRecipe = calRecipe
+        }
+      })
+      return {
+        ...oldData,
+        scheduledRecipes: updatedScheduledRecipes,
+      }
+    },
+  )
   return { deletedCalRecipe }
 }
 

@@ -54,7 +54,7 @@ export function Dropdown({
   const updateRecipe = useRecipeUpdate()
   const deleteRecipe = useRecipeDelete()
 
-  const isDeleting = deleteRecipe.isLoading
+  const isDeleting = deleteRecipe.isPending
 
   const handleCopyIngredients = React.useCallback(() => {
     copyToClipboard(ingredients)

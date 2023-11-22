@@ -40,7 +40,7 @@ export function onScheduledRecipeUpdateSuccess(params: {
   updatedCalRecipe: ICalRecipe
 }) {
   params.queryClient.setQueriesData(
-    [params.teamID, "calendar"],
+    { queryKey: [params.teamID, "calendar"] },
     (data: unknown) => {
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       const oldData = data as CalendarResponse | undefined
@@ -66,28 +66,31 @@ export function useScheduledRecipeUpdate() {
     mutationFn: scheduledRecipeUpdate,
     onMutate: (vars) => {
       let previousOn: string | undefined
-      queryClient.setQueriesData([vars.teamID, "calendar"], (data: unknown) => {
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        const oldData = data as CalendarResponse | undefined
-        // TODO: we also need to be careful about shape of the data changing due to persistance
-        if (oldData == null) {
-          return oldData
-        }
-        const updatedScheduledRecipes = oldData.scheduledRecipes.map(
-          (calRecipe) => {
-            if (calRecipe.id === vars.scheduledRecipeId) {
-              previousOn = calRecipe.on
-              return { ...calRecipe, on: vars.update.on }
-            } else {
-              return calRecipe
-            }
-          },
-        )
-        return {
-          ...oldData,
-          scheduledRecipes: updatedScheduledRecipes,
-        }
-      })
+      queryClient.setQueriesData(
+        { queryKey: [vars.teamID, "calendar"] },
+        (data: unknown) => {
+          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+          const oldData = data as CalendarResponse | undefined
+          // TODO: we also need to be careful about shape of the data changing due to persistance
+          if (oldData == null) {
+            return oldData
+          }
+          const updatedScheduledRecipes = oldData.scheduledRecipes.map(
+            (calRecipe) => {
+              if (calRecipe.id === vars.scheduledRecipeId) {
+                previousOn = calRecipe.on
+                return { ...calRecipe, on: vars.update.on }
+              } else {
+                return calRecipe
+              }
+            },
+          )
+          return {
+            ...oldData,
+            scheduledRecipes: updatedScheduledRecipes,
+          }
+        },
+      )
 
       return {
         optimisticScheduledRecipeId: vars.scheduledRecipeId,
@@ -106,27 +109,30 @@ export function useScheduledRecipeUpdate() {
       if (context == null) {
         return
       }
-      queryClient.setQueriesData([vars.teamID, "calendar"], (data: unknown) => {
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        const oldData = data as CalendarResponse | undefined
-        // TODO: we also need to be careful about shape of the data changing due to persistance
-        if (oldData == null) {
-          return oldData
-        }
-        const updatedScheduledRecipes = oldData.scheduledRecipes.map(
-          (calRecipe) => {
-            if (calRecipe.id === vars.scheduledRecipeId) {
-              return { ...calRecipe, on: context.previousOn }
-            } else {
-              return calRecipe
-            }
-          },
-        )
-        return {
-          ...oldData,
-          scheduledRecipes: updatedScheduledRecipes,
-        }
-      })
+      queryClient.setQueriesData(
+        { queryKey: [vars.teamID, "calendar"] },
+        (data: unknown) => {
+          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+          const oldData = data as CalendarResponse | undefined
+          // TODO: we also need to be careful about shape of the data changing due to persistance
+          if (oldData == null) {
+            return oldData
+          }
+          const updatedScheduledRecipes = oldData.scheduledRecipes.map(
+            (calRecipe) => {
+              if (calRecipe.id === vars.scheduledRecipeId) {
+                return { ...calRecipe, on: context.previousOn }
+              } else {
+                return calRecipe
+              }
+            },
+          )
+          return {
+            ...oldData,
+            scheduledRecipes: updatedScheduledRecipes,
+          }
+        },
+      )
     },
   })
 }

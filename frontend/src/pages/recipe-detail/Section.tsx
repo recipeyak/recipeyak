@@ -120,7 +120,7 @@ export function Section({
                     sectionId,
                   })
                 }}
-                loading={deleteSection.isLoading}
+                loading={deleteSection.isPending}
               >
                 Delete
               </Button>
@@ -141,7 +141,7 @@ export function Section({
                 disabled={addDisabled}
                 size="small"
                 type="submit"
-                loading={updateSection.isLoading}
+                loading={updateSection.isPending}
               >
                 Save
               </Button>

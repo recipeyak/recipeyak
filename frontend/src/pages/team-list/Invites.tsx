@@ -23,7 +23,7 @@ function InviteButtons({ invite }: { invite: IInvite }) {
   return (
     <div className="d-flex justify-space-between align-items-center">
       <Button
-        loading={declineInvite.isLoading}
+        loading={declineInvite.isPending}
         onClick={() => {
           declineInvite.mutate({ inviteId: invite.id })
         }}
@@ -34,7 +34,7 @@ function InviteButtons({ invite }: { invite: IInvite }) {
       </Button>
       <Button
         variant="primary"
-        loading={acceptInvite.isLoading}
+        loading={acceptInvite.isPending}
         onClick={() => {
           acceptInvite.mutate({ inviteId: invite.id })
         }}
@@ -59,7 +59,7 @@ function TeamName({ teamId, name, active }: ITeamNameProps) {
 }
 export function Invites() {
   const invites = useInviteList()
-  if (invites.isLoading) {
+  if (invites.isPending) {
     return <Loader />
   }
 

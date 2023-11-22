@@ -124,7 +124,7 @@ function Signup() {
           <FormErrorHandler error={errors != null ? [errors] : null} />
 
           <FormField className="d-flex flex-space-between align-items-center">
-            <Button variant="primary" type="submit" loading={signup.isLoading}>
+            <Button variant="primary" type="submit" loading={signup.isPending}>
               Submit
             </Button>
 

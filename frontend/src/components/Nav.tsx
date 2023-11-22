@@ -51,7 +51,7 @@ function LogoutButton() {
       onClick={() => {
         logoutUser.mutate()
       }}
-      loading={logoutUser.isLoading}
+      loading={logoutUser.isPending}
       className="w-100"
     >
       Logout
@@ -77,12 +77,16 @@ function TeamSelect() {
     // navTo is async so we can't count on the URL to have changed by the time we refetch the data
     history.push(url)
     // TODO: we should abstract this -- it's hacky
-    void queryClient.invalidateQueries([teamID])
-    void queryClient.invalidateQueries(["user-detail"])
+    void queryClient.invalidateQueries({
+      queryKey: [teamID],
+    })
+    void queryClient.invalidateQueries({
+      queryKey: ["user-detail"],
+    })
   }
   const teams = useTeamList()
   return (
-    <Select onChange={onChange} value={value} disabled={teams.isLoading}>
+    <Select onChange={onChange} value={value} disabled={teams.isPending}>
       {teams.isSuccess
         ? teams.data.map((t) => (
             <option key={t.id} value={t.id}>

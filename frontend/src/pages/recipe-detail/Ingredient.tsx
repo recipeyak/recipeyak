@@ -191,7 +191,7 @@ export function Ingredient(props: {
                 })
               }}
               size="small"
-              loading={removeIngredient.isLoading}
+              loading={removeIngredient.isPending}
             >
               Delete
             </Button>
@@ -209,7 +209,7 @@ export function Ingredient(props: {
               size="small"
               type="submit"
               disabled={emptyField({ quantity, name })}
-              loading={updateIngredient.isLoading}
+              loading={updateIngredient.isPending}
             >
               Update
             </Button>
