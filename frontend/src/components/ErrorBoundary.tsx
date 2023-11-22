@@ -4,10 +4,6 @@ import * as React from "react"
 import { Button } from "@/components/Buttons"
 import Logo from "@/components/Logo"
 
-interface IErrorBoundaryState {
-  readonly error: null | Error
-}
-
 const ErrorReportButton = () => (
   <Button
     size="small"
