@@ -1,5 +1,9 @@
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import {
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query"
 import { experimental_createPersister } from "@tanstack/react-query-persist-client"
 
 import { login } from "@/auth"
@@ -23,7 +27,7 @@ const getUser = () => http.get<IUser>("/api/v1/user/")
 export function useUserFetch() {
   // TODO: this api call could be removed with a preload
   const queryClient = useQueryClient()
-  return useQuery({
+  return useSuspenseQuery({
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryKey: ["user-detail"],
     queryFn: async () => {
