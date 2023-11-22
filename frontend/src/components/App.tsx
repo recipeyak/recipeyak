@@ -133,12 +133,15 @@ interface IAuthRouteProps extends Pick<RouteProps, "exact" | "path"> {
 }
 
 const PrivateRoute = ({ component: Component, ...rest }: IAuthRouteProps) => {
-  const authenticated = useIsLoggedIn()
+  const { isLoggedIn, isPending } = useIsLoggedIn()
+  if (isPending) {
+    return null
+  }
   return (
     <BaseRoute
       {...rest}
       render={(props) => {
-        return authenticated ? (
+        return isLoggedIn ? (
           <>
             <ScrollRestore />
             <Component {...props} />
@@ -160,12 +163,16 @@ const PublicOnlyRoute = ({
   component: Component,
   ...rest
 }: IAuthRouteProps) => {
-  const authenticated = useIsLoggedIn()
+  const { isLoggedIn, isPending } = useIsLoggedIn()
+  if (isPending) {
+    return null
+  }
+
   return (
     <BaseRoute
       {...rest}
       render={(props) => {
-        return !authenticated ? (
+        return !isLoggedIn ? (
           <>
             <ScrollRestore />
             <Component {...props} />
@@ -320,7 +327,7 @@ function App() {
         // NOTE: Ideally we'd only bust the cache when the cache schema changes
         // in a backwards incompatible way but calculating that is annoying so
         // just break it on every deploy
-        buster: "1231232341039433",
+        buster: GIT_SHA,
         persister,
         maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
         dehydrateOptions: {

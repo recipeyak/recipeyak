@@ -58,7 +58,10 @@ function PasswordReset() {
 
   const errors = formatError(resetPassword.error)
 
-  const isLoggedIn = useIsLoggedIn()
+  const { isLoggedIn, isPending } = useIsLoggedIn()
+  if (isPending) {
+    return null
+  }
 
   const redirect = isLoggedIn
     ? { name: "Home", route: "/" }

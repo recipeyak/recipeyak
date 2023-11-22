@@ -133,9 +133,9 @@ export function useUser() {
   }
 }
 
-export function useIsLoggedIn(): boolean {
-  const userId = useUserId()
-  return userId != null
+export function useIsLoggedIn() {
+  const { data, isPending } = useUserFetch()
+  return { isLoggedIn: data?.id != null, isPending } as const
 }
 
 export function useTeamId(): number {
