@@ -1,6 +1,6 @@
+import * as Sentry from "@sentry/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
-import raven from "raven-js"
 import { useHistory } from "react-router"
 
 import { http } from "@/http"
@@ -40,7 +40,7 @@ export function useTeamDelete() {
             err.response.data.detail
           : "The team you are attempting to delete doesn't exist"
       } else {
-        raven.captureException(err)
+        Sentry.captureException(err)
       }
       toast.error(message)
     },

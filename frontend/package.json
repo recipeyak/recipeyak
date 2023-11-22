@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
-    "@darkobits/vite-plugin-favicons": "^0.1.7",
+    "@darkobits/vite-plugin-favicons": "^0.3.0",
     "@tanstack/eslint-plugin-query": "^4.29.0",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "@ably-labs/react-hooks": "^2.1.1",
+    "@sentry/react": "^7.81.1",
     "@tanstack/query-sync-storage-persister": "^4.2.3",
     "@tanstack/react-query": "^4.2.3",
     "@tanstack/react-query-devtools": "^4.20.4",
@@ -51,7 +52,6 @@
     "immer": "^9.0.15",
     "io-ts": "^2.2.9",
     "lodash-es": "^4.17.21",
-    "raven-js": "^3.20.1",
     "react": "^18.2.0",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
