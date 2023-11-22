@@ -320,7 +320,7 @@ function App() {
         // NOTE: Ideally we'd only bust the cache when the cache schema changes
         // in a backwards incompatible way but calculating that is annoying so
         // just break it on every deploy
-        buster: "1231232341039433",
+        buster: GIT_SHA,
         persister,
         maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
         dehydrateOptions: {
