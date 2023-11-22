@@ -3,12 +3,8 @@ import LandingPage from "@/pages/index/LandingPage"
 import UserHome from "@/pages/index/UserHome"
 
 const Home = () => {
-  const { isLoggedIn, isPending } = useIsLoggedIn()
-  if (isPending) {
-    return null
-  }
-
-  return isLoggedIn ? <UserHome /> : <LandingPage />
+  const loggedIn = useIsLoggedIn()
+  return loggedIn ? <UserHome /> : <LandingPage />
 }
 
 export default Home
