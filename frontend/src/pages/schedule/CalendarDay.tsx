@@ -66,6 +66,8 @@ interface ICalendarDayContainerProps {
 
 const CalendarDayContainer = styled.div<ICalendarDayContainerProps>`
   flex: 1 1 0%;
+  display: flex;
+  flex-direction: column;
   padding: 0.25rem;
   background-color: var(--color-background-calendar-day);
   transition: background-color 0.2s;
@@ -86,6 +88,10 @@ const CalendarDayContainer = styled.div<ICalendarDayContainerProps>`
   @media (max-width: ${(p) => p.theme.medium}) {
     width: 100%;
   }
+`
+
+const CalendarUl = styled.ul`
+  overflow-y: auto;
 `
 
 interface ICalendarDayProps {
@@ -165,7 +171,7 @@ function CalendarDay({ date, scheduledRecipes, teamID }: ICalendarDayProps) {
       isSelectedDay={isSelectedDay}
     >
       <Title date={date} />
-      <ul>
+      <CalendarUl>
         {scheduled.map((x) => (
           <CalendarItem
             key={x.id}
@@ -184,7 +190,7 @@ function CalendarDay({ date, scheduledRecipes, teamID }: ICalendarDayProps) {
             }}
           />
         ))}
-      </ul>
+      </CalendarUl>
     </CalendarDayContainer>
   )
 }
