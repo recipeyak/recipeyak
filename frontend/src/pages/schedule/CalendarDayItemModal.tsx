@@ -232,7 +232,7 @@ function RescheduleSection({
                   <select
                     value={day}
                     onChange={handleSelectChange}
-                    disabled={findNextOpen.isLoading}
+                    disabled={findNextOpen.isPending}
                   >
                     {options.map((opt) => {
                       return (
@@ -246,9 +246,9 @@ function RescheduleSection({
                     <Button
                       size="small"
                       onClick={handleFindNextOpen}
-                      disabled={findNextOpen.isLoading}
+                      disabled={findNextOpen.isPending}
                     >
-                      {!findNextOpen.isLoading ? "find" : "finding..."}
+                      {!findNextOpen.isPending ? "find" : "finding..."}
                     </Button>
                   </div>
                 </Box>
