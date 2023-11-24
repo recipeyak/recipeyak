@@ -17,11 +17,7 @@ const ErrorReportButton = () => (
   </Button>
 )
 
-export default function ErrorBoundary({
-  children,
-}: {
-  children?: React.ReactNode
-}) {
+export function ErrorBoundary({ children }: { children?: React.ReactNode }) {
   return (
     <Sentry.ErrorBoundary
       fallback={(args) => (

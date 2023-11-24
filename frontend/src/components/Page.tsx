@@ -1,15 +1,57 @@
 import React, { useEffect } from "react"
 import { Link } from "react-router-dom"
 
+import { ErrorBoundary } from "@/components/ErrorBoundary"
+import { Footer } from "@/components/Footer"
 import { Helmet } from "@/components/Helmet"
 import Logo from "@/components/Logo"
+import { Navbar } from "@/components/Nav"
 import { pathHome } from "@/paths"
 
-interface IAuthContainerProps {
-  readonly children: React.ReactNode
+const ContainerBase = ({
+  children,
+  includeSearch = true,
+}: {
+  children: React.ReactNode
+  includeSearch?: boolean
+}) => (
+  <>
+    <Navbar includeSearch={includeSearch} />
+    <ErrorBoundary>{children}</ErrorBoundary>
+  </>
+)
+
+const Container = ({ children }: { children: React.ReactNode }) => (
+  <>
+    <div className="pb-3 pt-0 w-100 pl-3 pr-3">
+      <ErrorBoundary>{children}</ErrorBoundary>
+    </div>
+    <Footer />
+  </>
+)
+
+export function NavPage({
+  children,
+  includeSearch = true,
+  noContainer,
+}: {
+  children: React.ReactNode
+  includeSearch?: boolean
+  noContainer?: boolean
+}) {
+  if (noContainer) {
+    return (
+      <ContainerBase includeSearch={includeSearch}>{children}</ContainerBase>
+    )
+  }
+  return (
+    <ContainerBase includeSearch={includeSearch}>
+      <Container>{children}</Container>
+    </ContainerBase>
+  )
 }
 
-function AuthContainer(props: IAuthContainerProps) {
+export function AuthPage(props: { children: React.ReactNode }) {
   useEffect(() => {
     const el = document.querySelector("html")
     if (el) {
@@ -47,5 +89,3 @@ function AuthContainer(props: IAuthContainerProps) {
     </div>
   )
 }
-
-export default AuthContainer

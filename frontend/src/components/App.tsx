@@ -7,7 +7,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client"
 import { AxiosError } from "axios"
 import { createBrowserHistory } from "history"
-import React, { useEffect } from "react"
+import React, { Suspense, useEffect } from "react"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import { HelmetProvider } from "react-helmet-async"
@@ -20,29 +20,28 @@ import {
   Switch,
 } from "react-router-dom"
 
-import { Container, ContainerBase } from "@/components/Base"
-import ErrorBoundary from "@/components/ErrorBoundary"
+import { ErrorBoundary } from "@/components/ErrorBoundary"
 import { Helmet } from "@/components/Helmet"
 import { ScrollRestore } from "@/components/ScrollRestore"
 import { useIsLoggedIn, useUserTheme } from "@/hooks"
-import NotFound from "@/pages/404/404.page"
-import CookDetailPage from "@/pages/cook-detail/CookDetail.page"
-import Home from "@/pages/index/Index.page"
-import Login from "@/pages/login/Login.page"
-import PasswordChangePage from "@/pages/password-change/PasswordChange.page"
-import PasswordResetPage from "@/pages/password-reset/PasswordReset.page"
-import PasswordResetConfirmPage from "@/pages/password-reset-confirm/PasswordResetConfirm.page"
-import ProfilePage from "@/pages/profile/Profile.page"
-import RecipeCreatePage from "@/pages/recipe-create/RecipeCreate.page"
-import RecipeDetailPage from "@/pages/recipe-detail/RecipeDetail.page"
-import RecipeListPage from "@/pages/recipe-list/RecipeList.page"
-import SchedulePage from "@/pages/schedule/Schedule.page"
-import SettingsPage from "@/pages/settings/Settings.page"
-import SignupPage from "@/pages/signup/Signup.page"
-import TeamCreatePage from "@/pages/team-create/TeamCreate.page"
-import TeamDetailPage from "@/pages/team-detail/TeamDetail.page"
-import TeamInvitePage from "@/pages/team-invite/TeamInvite.page"
-import TeamsListPage from "@/pages/team-list/TeamList.page"
+import { NotFoundPage } from "@/pages/404/404.page"
+import { CookDetailPage } from "@/pages/cook-detail/CookDetail.page"
+import { HomePage } from "@/pages/index/Index.page"
+import { LoginPage } from "@/pages/login/Login.page"
+import { PasswordChangePage } from "@/pages/password-change/PasswordChange.page"
+import { PasswordResetPage } from "@/pages/password-reset/PasswordReset.page"
+import { PasswordResetConfirmPage } from "@/pages/password-reset-confirm/PasswordResetConfirm.page"
+import { ProfilePage } from "@/pages/profile/Profile.page"
+import { RecipeCreatePage } from "@/pages/recipe-create/RecipeCreate.page"
+import { RecipeDetailPage } from "@/pages/recipe-detail/RecipeDetail.page"
+import { RecipeListPage } from "@/pages/recipe-list/RecipeList.page"
+import { SchedulePage } from "@/pages/schedule/Schedule.page"
+import { SettingsPage } from "@/pages/settings/Settings.page"
+import { SignupPage } from "@/pages/signup/Signup.page"
+import { TeamCreatePage } from "@/pages/team-create/TeamCreate.page"
+import { TeamDetailPage } from "@/pages/team-detail/TeamDetail.page"
+import { TeamInvitePage } from "@/pages/team-invite/TeamInvite.page"
+import { TeamListPage } from "@/pages/team-list/TeamList.page"
 import {
   pathCookDetail,
   pathHome,
@@ -216,7 +215,7 @@ function AppRouter() {
   return (
     <Router history={history}>
       <Switch>
-        <PublicOnlyRoute exact path={pathLogin.pattern} component={Login} />
+        <PublicOnlyRoute exact path={pathLogin.pattern} component={LoginPage} />
         <PublicOnlyRoute
           exact
           path={pathSignup.pattern}
@@ -232,81 +231,78 @@ function AppRouter() {
           path={pathPasswordConfirm.pattern}
           component={PasswordResetConfirmPage}
         />
-        <ContainerBase>
+        <Switch>
+          <Route exact path={pathHome.pattern} component={HomePage} />
+          <PrivateRoute
+            exact
+            path={pathSchedule.pattern}
+            component={SchedulePage}
+          />
+
           <Switch>
-            <Route exact path={pathHome.pattern} component={Home} />
             <PrivateRoute
               exact
-              path={pathSchedule.pattern}
-              component={SchedulePage}
+              path={pathRecipeAdd.pattern}
+              component={RecipeCreatePage}
             />
-            <Container>
-              <Switch>
-                <PrivateRoute
-                  exact
-                  path={pathRecipeAdd.pattern}
-                  component={RecipeCreatePage}
-                />
-                <PrivateRoute
-                  exact
-                  path={pathRecipesList.pattern}
-                  component={RecipeListPage}
-                />
-                <PrivateRoute
-                  exact
-                  path={pathRecipeDetail.pattern}
-                  component={RecipeDetailPage}
-                />
-                <PrivateRoute
-                  exact
-                  path={pathCookDetail.pattern}
-                  component={CookDetailPage}
-                />
-                <PrivateRoute
-                  exact
-                  path={pathSettings.pattern}
-                  component={SettingsPage}
-                />
-                <PrivateRoute
-                  exact
-                  path={pathProfileById.pattern}
-                  component={ProfilePage}
-                />
-                <PrivateRoute
-                  exact
-                  path={pathPassword.pattern}
-                  component={PasswordChangePage}
-                />
-                <PrivateRoute
-                  exact
-                  path={pathTeamCreate.pattern}
-                  component={TeamCreatePage}
-                />
-                <PrivateRoute
-                  exact
-                  path={pathTeamInvite.pattern}
-                  component={TeamInvitePage}
-                />
-                <PrivateRoute
-                  exact
-                  path={pathTeamSettings.pattern}
-                  component={TeamDetailPage}
-                />
-                <PrivateRoute
-                  exact
-                  path={pathTeamDetail.pattern}
-                  component={TeamDetailPage}
-                />
-                <PrivateRoute
-                  exact
-                  path={pathTeamList.pattern}
-                  component={TeamsListPage}
-                />
-                <Route component={NotFound} />
-              </Switch>
-            </Container>
+            <PrivateRoute
+              exact
+              path={pathRecipesList.pattern}
+              component={RecipeListPage}
+            />
+            <PrivateRoute
+              exact
+              path={pathRecipeDetail.pattern}
+              component={RecipeDetailPage}
+            />
+            <PrivateRoute
+              exact
+              path={pathCookDetail.pattern}
+              component={CookDetailPage}
+            />
+            <PrivateRoute
+              exact
+              path={pathSettings.pattern}
+              component={SettingsPage}
+            />
+            <PrivateRoute
+              exact
+              path={pathProfileById.pattern}
+              component={ProfilePage}
+            />
+            <PrivateRoute
+              exact
+              path={pathPassword.pattern}
+              component={PasswordChangePage}
+            />
+            <PrivateRoute
+              exact
+              path={pathTeamCreate.pattern}
+              component={TeamCreatePage}
+            />
+            <PrivateRoute
+              exact
+              path={pathTeamInvite.pattern}
+              component={TeamInvitePage}
+            />
+            <PrivateRoute
+              exact
+              path={pathTeamSettings.pattern}
+              component={TeamDetailPage}
+            />
+            <PrivateRoute
+              exact
+              path={pathTeamDetail.pattern}
+              component={TeamDetailPage}
+            />
+            <PrivateRoute
+              exact
+              path={pathTeamList.pattern}
+              component={TeamListPage}
+            />
+            <Route component={NotFoundPage} />
           </Switch>
-        </ContainerBase>
+        </Switch>
       </Switch>
     </Router>
   )
@@ -314,44 +310,49 @@ function AppRouter() {
 
 function App() {
   return (
-    <PersistQueryClientProvider
-      client={queryClient}
-      persistOptions={{
-        // NOTE: Ideally we'd only bust the cache when the cache schema changes
-        // in a backwards incompatible way but calculating that is annoying so
-        // just break it on every deploy
-        buster: GIT_SHA,
-        persister,
-        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-        dehydrateOptions: {
-          // see: https://github.com/TanStack/query/discussions/3735#discussioncomment-3007804
-          shouldDehydrateQuery: (query) => {
-            // NOTE: list endpoint for recipes is huge, like 2MB for 400ish recipes
-            // we manually cache each recipe but don't include the list itself as that
-            // doubles the total storage and there's only 5MB of localStorage to work
-            // with.
-            if (query.queryKey.includes("recipes-list")) {
-              return false
-            }
-            // default implementation
-            return query.state.status === "success"
+    // Wrap with Suspsense to help in development with hot reloading.
+    //
+    // A component suspended while responding to synchronous input. This will cause the UI to
+    <Suspense>
+      <PersistQueryClientProvider
+        client={queryClient}
+        persistOptions={{
+          // NOTE: Ideally we'd only bust the cache when the cache schema changes
+          // in a backwards incompatible way but calculating that is annoying so
+          // just break it on every deploy
+          buster: GIT_SHA,
+          persister,
+          maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+          dehydrateOptions: {
+            // see: https://github.com/TanStack/query/discussions/3735#discussioncomment-3007804
+            shouldDehydrateQuery: (query) => {
+              // NOTE: list endpoint for recipes is huge, like 2MB for 400ish recipes
+              // we manually cache each recipe but don't include the list itself as that
+              // doubles the total storage and there's only 5MB of localStorage to work
+              // with.
+              if (query.queryKey.includes("recipes-list")) {
+                return false
+              }
+              // default implementation
+              return query.state.status === "success"
+            },
           },
-        },
-      }}
-    >
-      <ReactQueryDevtools initialIsOpen={false} />
-      <ThemeProvider theme={theme}>
-        <HelmetProvider>
-          <DndProvider backend={HTML5Backend}>
-            <ErrorBoundary>
-              <Helmet />
-              <Toaster toastOptions={{ position: "bottom-center" }} />
-              <AppRouter />
-            </ErrorBoundary>
-          </DndProvider>
-        </HelmetProvider>
-      </ThemeProvider>
-    </PersistQueryClientProvider>
+        }}
+      >
+        <ReactQueryDevtools initialIsOpen={false} />
+        <ThemeProvider theme={theme}>
+          <HelmetProvider>
+            <DndProvider backend={HTML5Backend}>
+              <ErrorBoundary>
+                <Helmet />
+                <Toaster toastOptions={{ position: "bottom-center" }} />
+                <AppRouter />
+              </ErrorBoundary>
+            </DndProvider>
+          </HelmetProvider>
+        </ThemeProvider>
+      </PersistQueryClientProvider>
+    </Suspense>
   )
 }
 

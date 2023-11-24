@@ -4,13 +4,13 @@ import React, { useState } from "react"
 import { Link, useHistory } from "react-router-dom"
 
 import { login } from "@/auth"
-import AuthContainer from "@/components/AuthContainer"
 import { BorderBox } from "@/components/BorderBox"
 import { Button } from "@/components/Buttons"
 import { FormField } from "@/components/FormField"
 import { EmailInput, FormErrorHandler, PasswordInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Label } from "@/components/Label"
+import { AuthPage } from "@/components/Page"
 import { Tab, Tabs } from "@/components/Tabs"
 import {
   pathLogin,
@@ -39,7 +39,7 @@ function formatError(error: unknown) {
   }
 }
 
-function Signup() {
+export function SignupPage() {
   const [email, setEmail] = useState("")
   const [password1, setPassword1] = useState("")
   const [password2, setPassword2] = useState("")
@@ -68,7 +68,7 @@ function Signup() {
   const errors = formatError(signup.error)
 
   return (
-    <AuthContainer>
+    <AuthPage>
       <BorderBox p={3}>
         <Helmet title="Sign Up" />
         <Tabs>
@@ -132,8 +132,6 @@ function Signup() {
           </FormField>
         </form>
       </BorderBox>
-    </AuthContainer>
+    </AuthPage>
   )
 }
-
-export default Signup

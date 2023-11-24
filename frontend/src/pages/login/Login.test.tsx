@@ -6,7 +6,7 @@ import userEvent from "@testing-library/user-event"
 import { HelmetProvider } from "react-helmet-async"
 import { BrowserRouter, useLocation } from "react-router-dom"
 
-import Login from "@/pages/login/Login.page"
+import { LoginPage as Login } from "@/pages/login/Login.page"
 import { IUserResponse } from "@/queries/authLogin"
 import { rest, server } from "@/testUtils"
 

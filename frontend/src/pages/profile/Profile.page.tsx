@@ -7,6 +7,7 @@ import { assertNever } from "@/assert"
 import { Box } from "@/components/Box"
 import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
+import { NavPage } from "@/components/Page"
 import { Link } from "@/components/Routing"
 import { pathRecipeDetail } from "@/paths"
 import { useUserById } from "@/queries/userById"
@@ -152,9 +153,7 @@ function formatNumber(val: number) {
   return new Intl.NumberFormat().format(val)
 }
 
-export default function Profile(
-  props: RouteComponentProps<{ userId: string }>,
-) {
+export function ProfilePage(props: RouteComponentProps<{ userId: string }>) {
   const userInfo = useUserById({ id: props.match.params.userId })
 
   if (userInfo.isPending) {
@@ -181,48 +180,50 @@ export default function Profile(
   )
 
   return (
-    <Box
-      style={{
-        maxWidth: 700,
-        marginLeft: "auto",
-        marginRight: "auto",
-      }}
-      dir="col"
-    >
-      <Helmet title="Profile" />
+    <NavPage>
+      <Box
+        style={{
+          maxWidth: 700,
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
+        dir="col"
+      >
+        <Helmet title="Profile" />
 
-      <Box dir="col" align="center">
-        <ProfileImg avatarURL={userInfo.data.avatar_url} />
-        <span className="fs-6">{userInfo.data.name}</span>
-        <span>Joined {joinedDateStr}</span>
+        <Box dir="col" align="center">
+          <ProfileImg avatarURL={userInfo.data.avatar_url} />
+          <span className="fs-6">{userInfo.data.name}</span>
+          <span>Joined {joinedDateStr}</span>
+        </Box>
+
+        <span className="fs-6">Stats</span>
+
+        <Box dir="row" align="start" wrap gap={2}>
+          {allStats.map(([value, name, Icon]) => {
+            return (
+              <Box
+                key={name}
+                gap={1}
+                align="center"
+                style={{
+                  padding: "0.5rem",
+                  paddingTop: "0.25rem",
+                  paddingBottom: "0.25rem",
+                  border: "1px solid lightgray",
+                  borderRadius: 6,
+                }}
+              >
+                <Icon /> {name} · {formatNumber(value)}
+              </Box>
+            )
+          })}
+        </Box>
+
+        <div className="fs-6">Activity</div>
+        <ActivityLog activity={userInfo.data.activity} />
       </Box>
-
-      <span className="fs-6">Stats</span>
-
-      <Box dir="row" align="start" wrap gap={2}>
-        {allStats.map(([value, name, Icon]) => {
-          return (
-            <Box
-              key={name}
-              gap={1}
-              align="center"
-              style={{
-                padding: "0.5rem",
-                paddingTop: "0.25rem",
-                paddingBottom: "0.25rem",
-                border: "1px solid lightgray",
-                borderRadius: 6,
-              }}
-            >
-              <Icon /> {name} · {formatNumber(value)}
-            </Box>
-          )
-        })}
-      </Box>
-
-      <div className="fs-6">Activity</div>
-      <ActivityLog activity={userInfo.data.activity} />
-    </Box>
+    </NavPage>
   )
 }
 

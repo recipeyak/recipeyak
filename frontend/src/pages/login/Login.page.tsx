@@ -5,13 +5,13 @@ import React from "react"
 import { Link, useHistory, useLocation } from "react-router-dom"
 
 import { login } from "@/auth"
-import AuthContainer from "@/components/AuthContainer"
 import { BorderBox } from "@/components/BorderBox"
 import { Button } from "@/components/Buttons"
 import { FormField } from "@/components/FormField"
 import { FormErrorHandler, PasswordInput, TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Label } from "@/components/Label"
+import { AuthPage } from "@/components/Page"
 import { Tab, Tabs } from "@/components/Tabs"
 import { pathLogin, pathPasswordReset, pathSignup } from "@/paths"
 import { useAuthLogin } from "@/queries/authLogin"
@@ -41,7 +41,7 @@ function formatError(error: unknown) {
   }
 }
 
-export default function Login() {
+export function LoginPage() {
   const [email, setEmail] = React.useState("")
   const [password, setPassword] = React.useState("")
   const history = useHistory()
@@ -65,7 +65,7 @@ export default function Login() {
   const errors = formatError(authLogin.error)
 
   return (
-    <AuthContainer>
+    <AuthPage>
       <BorderBox p={3}>
         <Helmet title="Login" />
         <Tabs>
@@ -124,6 +124,6 @@ export default function Login() {
           </FormField>
         </form>
       </BorderBox>
-    </AuthContainer>
+    </AuthPage>
   )
 }

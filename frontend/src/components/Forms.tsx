@@ -77,7 +77,7 @@ const StyledInput = styled.input<{ isDanger?: boolean }>`
   ${(p) => p.isDanger && `border-color: var(--color-danger);`}
 `
 
-type BaseInputProps = {
+type BaseInputProps = React.ComponentProps<"input"> & {
   className?: string
   error?: boolean
   type?: React.HTMLInputTypeAttribute
@@ -96,17 +96,39 @@ type BaseInputProps = {
   readOnly?: boolean
   onClick?: (e: React.MouseEvent<HTMLInputElement>) => void
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onFocus?: (e: React.ChangeEvent<HTMLInputElement>) => void
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>
+  ref?:
+    | ((instance: HTMLInputElement | null) => void)
+    | React.RefObject<HTMLInputElement>
+    | null
+    | undefined
 }
 
-const BaseInput = ({ className, error = false, ...props }: BaseInputProps) => {
-  return <StyledInput className={className} isDanger={error} {...props} />
-}
+const BaseInput = React.forwardRef(
+  (
+    { className, error = false, ...props }: BaseInputProps,
+    ref: BaseInputProps["ref"],
+  ) => {
+    return (
+      <StyledInput
+        className={className}
+        isDanger={error}
+        {...props}
+        ref={ref}
+      />
+    )
+  },
+)
 
-const createInput =
-  (type: React.InputHTMLAttributes<HTMLInputElement>["type"]) =>
-  (props: Omit<BaseInputProps, "type">) =>
-    <BaseInput {...props} type={type} />
+const createInput = (
+  type: React.InputHTMLAttributes<HTMLInputElement>["type"],
+) =>
+  React.forwardRef(
+    (props: Omit<BaseInputProps, "type">, ref: BaseInputProps["ref"]) => (
+      <BaseInput {...props} type={type} ref={ref} />
+    ),
+  )
 
 export const TextInput = createInput("text")
 export const SearchInput = createInput("search")

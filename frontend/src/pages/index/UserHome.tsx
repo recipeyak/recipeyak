@@ -11,19 +11,19 @@ import useOnClickOutside from "use-onclickoutside"
 
 import { isMobile } from "@/browser"
 import { Box } from "@/components/Box"
-import Footer from "@/components/Footer"
 import * as forms from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Image } from "@/components/Image"
 import { Loader } from "@/components/Loader"
+import { NavPage } from "@/components/Page"
 import { Tag } from "@/components/Tag"
 import { useTeamId } from "@/hooks"
 import { pathRecipeDetail, pathRecipesList, pathSchedule } from "@/paths"
 import { useRecentlyCreatedRecipesList } from "@/queries/recentlyCreatedRecipesList"
 import { useRecentlyViewedRecipesList } from "@/queries/recentlyViewedRecipesList"
-import { useRecipeList } from "@/queries/recipeList"
+import { RecipeListItem, useRecipeList } from "@/queries/recipeList"
 import { useSchedulePreviewList } from "@/queries/schedulePreviewList"
-import { searchRecipes } from "@/search"
+import { Match, searchRecipes } from "@/search"
 import { css, styled } from "@/theme"
 import { removeQueryParams, setQueryParams } from "@/utils/querystring"
 import { imgixFmt } from "@/utils/url"
@@ -351,39 +351,21 @@ function searchQueryFromUrl() {
   return new URLSearchParams(window.location.search).get("search") ?? ""
 }
 
-const UserHome = () => {
-  const history = useHistory()
-  const [searchQuery, setSearchQuery] =
-    React.useState<string>(searchQueryFromUrl)
-  const recipes = useRecipeList()
-  const setQuery = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchQuery(event.target.value)
-    },
-    [],
-  )
-
-  const ref = React.useRef(null)
-  // close our search panel and clear our search query when we click outside our
-  // dropdown.
-  useOnClickOutside(ref, () => {
-    setSearchQuery("")
-  })
-
-  useEffect(() => {
-    const newSearchQuery = searchQuery || ""
-    if (newSearchQuery.length === 0) {
-      removeQueryParams(history, ["search"])
-    } else {
-      setQueryParams(history, { search: newSearchQuery })
-    }
-  }, [searchQuery, history])
-
-  const filteredRecipes = recipes.isSuccess
-    ? searchRecipes({ recipes: recipes.data, query: searchQuery })
-    : { recipes: [] }
-
-  const suggestions = filteredRecipes.recipes
+export function SearchResult({
+  isLoading,
+  searchResults,
+  searchQuery,
+  onClick,
+}: {
+  searchQuery: string
+  isLoading: boolean
+  onClick?: () => void
+  searchResults: {
+    readonly recipe: RecipeListItem
+    readonly match: Match[]
+  }[]
+}) {
+  const suggestions = searchResults
     .map((result, index) => {
       const { recipe, match: matches } = result
 
@@ -418,8 +400,72 @@ const UserHome = () => {
       )
     })
     .slice(0, 7)
+  return (
+    <SuggestionBox onClick={onClick}>
+      {!isLoading ? (
+        <>
+          {searchResults.length === 0 && (
+            <SuggestionInfo>No Results Found</SuggestionInfo>
+          )}
+          {suggestions}
+          <BrowseRecipesContainer>
+            <MatchType>matches: {searchResults.length}</MatchType>
+
+            <Link
+              to={{
+                pathname: pathRecipesList({}),
+                search: `search=${encodeURIComponent(searchQuery)}`,
+              }}
+            >
+              Browse
+            </Link>
+          </BrowseRecipesContainer>
+        </>
+      ) : (
+        <SuggestionInfo>Loading...</SuggestionInfo>
+      )}
+    </SuggestionBox>
+  )
+}
+
+/**
+ * Implementation is very similar to "Search" in Nav.tsx.
+ */
+function Search() {
+  const history = useHistory()
+  const [searchQuery, setSearchQuery] =
+    React.useState<string>(searchQueryFromUrl)
+  const recipes = useRecipeList()
+  const setQuery = React.useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(event.target.value)
+    },
+    [],
+  )
+
+  const ref = React.useRef(null)
+  // close our search panel and clear our search query when we click outside our
+  // dropdown.
+  useOnClickOutside(ref, () => {
+    setSearchQuery("")
+  })
+
+  useEffect(() => {
+    const newSearchQuery = searchQuery || ""
+    if (newSearchQuery.length === 0) {
+      removeQueryParams(history, ["search"])
+    } else {
+      setQueryParams(history, { search: newSearchQuery })
+    }
+  }, [searchQuery, history])
+
+  const filteredRecipes = recipes.isSuccess
+    ? searchRecipes({ recipes: recipes.data, query: searchQuery })
+    : { recipes: [] }
 
   const handleSearchKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // We need to extract the key from the synthetic event before we lose the
+    // event.
     const key = e.key
     const suggestion = filteredRecipes.recipes[0]
     if (!suggestion) {
@@ -433,66 +479,45 @@ const UserHome = () => {
   }
 
   return (
-    <>
-      <div className="pr-2 pl-2 pb-2">
-        <Helmet title="Home" />
-        <SearchInputAligner>
-          <SearchInputContainer ref={ref}>
-            <SearchInput
-              autoFocus={!isMobile()}
-              autoCorrect="false"
-              autoComplete="false"
-              autoCapitalize="false"
-              spellCheck="false"
-              value={searchQuery}
-              onChange={setQuery}
-              onKeyDown={handleSearchKeydown}
-              placeholder="Search your recipes..."
-            />
-            {searchQuery && (
-              <SuggestionBox>
-                {recipes.isSuccess ? (
-                  <>
-                    {suggestions.length === 0 && (
-                      <SuggestionInfo>No Results Found</SuggestionInfo>
-                    )}
-                    {suggestions}
-                    <BrowseRecipesContainer>
-                      <MatchType>
-                        matches: {filteredRecipes.recipes.length}
-                      </MatchType>
-
-                      <Link
-                        to={{
-                          pathname: pathRecipesList({}),
-                          search: `search=${encodeURIComponent(searchQuery)}`,
-                        }}
-                      >
-                        Browse
-                      </Link>
-                    </BrowseRecipesContainer>
-                  </>
-                ) : (
-                  <SuggestionInfo>Loading...</SuggestionInfo>
-                )}
-              </SuggestionBox>
-            )}
-            <SearchOptions>
-              fields <Code>author:Jane Doe</Code>,{" "}
-              <Code>ingredient:onions</Code>, <Code>name:cake</Code>
-            </SearchOptions>
-          </SearchInputContainer>
-        </SearchInputAligner>
-        <div className="d-flex flex-wrap justify-content-center column-gap-1rem row-gap-1rem align-items-start">
-          <SchedulePreview />
-          <RecentlyViewed />
-          <RecentlyCreated />
-        </div>
-      </div>
-
-      <Footer />
-    </>
+    <SearchInputAligner>
+      <SearchInputContainer ref={ref}>
+        <SearchInput
+          autoFocus={!isMobile()}
+          autoCorrect="false"
+          autoComplete="false"
+          autoCapitalize="false"
+          spellCheck="false"
+          value={searchQuery}
+          onChange={setQuery}
+          onKeyDown={handleSearchKeydown}
+          placeholder="Search your recipes..."
+        />
+        {searchQuery && (
+          <SearchResult
+            isLoading={recipes.isLoading}
+            searchQuery={searchQuery}
+            searchResults={filteredRecipes.recipes}
+          />
+        )}
+        <SearchOptions>
+          fields <Code>author:Jane Doe</Code>, <Code>ingredient:onions</Code>,{" "}
+          <Code>name:cake</Code>
+        </SearchOptions>
+      </SearchInputContainer>
+    </SearchInputAligner>
   )
 }
 
-export default UserHome
+export const UserHome = () => {
+  return (
+    <NavPage includeSearch={false}>
+      <Helmet title="Home" />
+      <Search />
+      <div className="d-flex flex-wrap justify-content-center column-gap-1rem row-gap-1rem align-items-start">
+        <SchedulePreview />
+        <RecentlyViewed />
+        <RecentlyCreated />
+      </div>
+    </NavPage>
+  )
+}

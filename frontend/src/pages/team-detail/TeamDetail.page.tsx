@@ -9,6 +9,7 @@ import { TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Label } from "@/components/Label"
 import { Loader } from "@/components/Loader"
+import { NavPage } from "@/components/Page"
 import { Tab, Tabs } from "@/components/Tabs"
 import { useUserId } from "@/hooks"
 import MemberRow from "@/pages/team-detail/MemberRow"
@@ -147,7 +148,7 @@ const is404 = (err: unknown) =>
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   (err as AxiosError | undefined)?.response?.status === 404
 
-function Team(props: RouteComponentProps<{ teamId: string }>) {
+export function TeamDetailPage(props: RouteComponentProps<{ teamId: string }>) {
   const id = parseInt(props.match.params.teamId, 10)
   const teamInfo = useTeam({ teamId: id })
   const teamMembers = useTeamMembersList({ teamId: id })
@@ -166,29 +167,29 @@ function Team(props: RouteComponentProps<{ teamId: string }>) {
   const isSettings = props.match.url.endsWith("settings")
 
   return (
-    <div style={{ maxWidth: 800, marginLeft: "auto", marginRight: "auto" }}>
-      <Helmet title="Team" />
-      <TeamName name={teamInfo.data.name} />
-      <Tabs>
-        <Tab isActive={!isSettings}>
-          <Link to={teamURL(id, teamInfo.data.name)}>Team</Link>
-        </Tab>
-        <Tab isActive={isSettings}>
-          <Link to={teamSettingsURL(id, teamInfo.data.name)}>Settings</Link>
-        </Tab>
-      </Tabs>
-      {isSettings ? (
-        <TeamSettings id={id} name={teamInfo.data.name} />
-      ) : (
-        <TeamMembers
-          id={id}
-          name={teamInfo.data.name}
-          loading={teamMembers.isPending}
-          members={teamMembers.data ?? []}
-        />
-      )}
-    </div>
+    <NavPage>
+      <div style={{ maxWidth: 800, marginLeft: "auto", marginRight: "auto" }}>
+        <Helmet title="Team" />
+        <TeamName name={teamInfo.data.name} />
+        <Tabs>
+          <Tab isActive={!isSettings}>
+            <Link to={teamURL(id, teamInfo.data.name)}>Team</Link>
+          </Tab>
+          <Tab isActive={isSettings}>
+            <Link to={teamSettingsURL(id, teamInfo.data.name)}>Settings</Link>
+          </Tab>
+        </Tabs>
+        {isSettings ? (
+          <TeamSettings id={id} name={teamInfo.data.name} />
+        ) : (
+          <TeamMembers
+            id={id}
+            name={teamInfo.data.name}
+            loading={teamMembers.isPending}
+            members={teamMembers.data ?? []}
+          />
+        )}
+      </div>
+    </NavPage>
   )
 }
-
-export default Team

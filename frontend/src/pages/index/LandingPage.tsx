@@ -2,7 +2,7 @@ import React from "react"
 import { Link } from "react-router-dom"
 
 import { Button } from "@/components/Buttons"
-import Footer from "@/components/Footer"
+import { Footer } from "@/components/Footer"
 import { pathRecipeAdd, pathSignup } from "@/paths"
 import addRecipeImg from "@/static/images/pages/add-recipe.png"
 import copyShoppingList from "@/static/images/pages/copy-shopping-list.png"
