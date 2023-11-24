@@ -12,7 +12,7 @@ const CardImgContainer = styled.div<{
 }>`
   ${(p) => (p.width != null ? `min-width: ${p.width}px;` : `width: 100%;`)}
 
-  ${(p) => (p.height != null ? `min-height: ${p.height}px;` : `height: 100%`)}
+  ${(p) => (p.height != null ? `min-height: ${p.height}px;` : `height: 100%;`)}
 
   ${(p) => p.rounded && `border-radius: 6px;`}
   ${(p) =>

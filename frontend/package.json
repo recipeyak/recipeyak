@@ -11,6 +11,7 @@
     "@types/node": "^18.6.2",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
+    "@types/styled-components": "^5.1.32",
     "@typescript-eslint/eslint-plugin": "^6.12.0",
     "@typescript-eslint/parser": "^6.12.0",
     "@vitejs/plugin-react": "^2.0.0",
@@ -43,7 +44,6 @@
     "@types/react-router": "^5.1.7",
     "@types/react-router-dom": "^5.1.5",
     "@types/react-textarea-autosize": "^4.3.3",
-    "@types/styled-components": "^5.1.32",
     "axios": "^0.18.0",
     "date-fns": "^2.4.1",
     "dnd-core": "^9.3.4",
@@ -67,7 +67,7 @@
     "remark-smartypants": "^2.0.0",
     "sass": "^1.54.0",
     "static-path": "^0.0.4",
-    "styled-components": "^6.1.1",
+    "styled-components": "^5.0.0",
     "use-onclickoutside": "^0.4.1"
   },
   "volta": {
