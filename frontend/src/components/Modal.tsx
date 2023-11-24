@@ -45,6 +45,13 @@ const ModalBackground = styled.div`
   inset: 0;
 `
 
+const ModalBorderBox = styled(BorderBox)`
+  // hide border radius when collapsed
+  @media (max-width: 450px) {
+    border-radius: initial;
+  }
+`
+
 export function Modal({ show, content, onClose, title }: IModalProps) {
   const ref = useRef<HTMLDivElement>(null)
   useGlobalEvent({
@@ -64,13 +71,13 @@ export function Modal({ show, content, onClose, title }: IModalProps) {
     >
       <ModalBackground onClick={onClose} />
       <ModalContainer>
-        <BorderBox display="flex" flexDirection="column" h={100}>
+        <ModalBorderBox display="flex" flexDirection="column" h={100}>
           <Box space="between" mb={2}>
             <h1 className="fs-14px fw-500">{title}</h1>
             <CloseButton onClose={onClose} />
           </Box>
           {content}
-        </BorderBox>
+        </ModalBorderBox>
       </ModalContainer>
     </ModalPositioner>
   )
