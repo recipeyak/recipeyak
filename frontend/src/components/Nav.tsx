@@ -1,5 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query"
+import React from "react"
 import { Link, useHistory } from "react-router-dom"
+import useOnClickOutside from "use-onclickoutside"
 
 import { Avatar } from "@/components/Avatar"
 import { Button } from "@/components/Buttons"
@@ -8,15 +10,17 @@ import {
   DropdownMenu,
   useDropdown,
 } from "@/components/Dropdown"
-import { Select } from "@/components/Forms"
+import { SearchInput, Select } from "@/components/Forms"
 import Logo from "@/components/Logo"
 import { NavLink } from "@/components/Routing"
 import { useIsLoggedIn, useTeamId, useUser } from "@/hooks"
+import { SearchResult } from "@/pages/index/UserHome"
 import {
   pathHome,
   pathLogin,
   pathProfileById,
   pathRecipeAdd,
+  pathRecipeDetail,
   pathRecipesList,
   pathSchedule,
   pathSettings,
@@ -24,7 +28,9 @@ import {
   pathTeamList,
 } from "@/paths"
 import { useAuthLogout } from "@/queries/authLogout"
+import { useRecipeList } from "@/queries/recipeList"
 import { useTeamList } from "@/queries/teamList"
+import { searchRecipes } from "@/search"
 import { styled } from "@/theme"
 
 interface IUserAvatarProps {
@@ -138,7 +144,7 @@ function WordMark() {
 
 function AuthButtons() {
   return (
-    <div className="d-flex">
+    <div className="d-flex justify-self-end">
       <BetterNavItem as={NavLink} to={pathLogin({})}>
         Login
       </BetterNavItem>
@@ -152,7 +158,7 @@ function AuthButtons() {
 function NavButtons() {
   const teamId = useTeamId()
   return (
-    <div className="d-flex align-center p-relative justify-content-center flex-wrap">
+    <div className="d-flex align-center p-relative justify-content-center flex-wrap justify-self-end">
       <DropdownContainer>
         <div className="d-flex">
           <BetterNavItem
@@ -189,10 +195,18 @@ const NavContainer = styled.nav`
   margin-bottom: 0.25rem;
   padding-left: 0.75rem;
   padding-right: 0.75rem;
-  display: flex;
   justify-content: space-between;
   flex-shrink: 0;
   height: 3rem;
+
+  @media (min-width: 920px) {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 919px) {
+    display: flex;
+  }
 `
 
 const BetterNavItem = styled.div`
@@ -226,6 +240,83 @@ const BetterNavItem = styled.div`
   }
 `
 
+const SearchInputContainer = styled.div`
+  display: flex;
+  width: 100%;
+`
+
+/**
+ *
+ * Implementation is very similar to "Search" in UserHome.tsx.
+ */
+function Search() {
+  const history = useHistory()
+  const recipes = useRecipeList()
+  const [searchQuery, setSearchQuery] = React.useState("")
+  // If a user clicks outside of the dropdown, we want to hide the dropdown, but
+  // keep their search query.
+  //
+  // The alternative would be to clear the search query when clicking outside,
+  // but I'm not sure that's desirable.
+  const [isClosed, setIsClosed] = React.useState(false)
+
+  const ref = React.useRef(null)
+  useOnClickOutside(ref, () => {
+    setIsClosed(true)
+  })
+
+  const resetForm = () => {
+    setSearchQuery("")
+    setIsClosed(false)
+  }
+
+  const filteredRecipes = recipes.isSuccess
+    ? searchRecipes({ recipes: recipes.data, query: searchQuery })
+    : { recipes: [] }
+
+  const handleSearchKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // We need to extract the key from the synthetic event before we lose the
+    // event.
+    const key = e.key
+    const suggestion = filteredRecipes.recipes[0]
+    if (!suggestion) {
+      return
+    }
+    if (key === "Enter") {
+      resetForm()
+      history.push(
+        pathRecipeDetail({ recipeId: suggestion.recipe.id.toString() }),
+      )
+    }
+  }
+
+  return (
+    <SearchInputContainer ref={ref}>
+      <SearchInput
+        value={searchQuery}
+        placeholder="search your recipes..."
+        onChange={(e) => {
+          setSearchQuery(e.target.value)
+        }}
+        onKeyDown={handleSearchKeydown}
+        onFocus={() => {
+          setIsClosed(false)
+        }}
+      />
+      {searchQuery && !isClosed && (
+        <SearchResult
+          isLoading={recipes.isLoading}
+          searchQuery={searchQuery}
+          searchResults={filteredRecipes.recipes}
+          onClick={() => {
+            resetForm()
+          }}
+        />
+      )}
+    </SearchInputContainer>
+  )
+}
+
 export function Navbar() {
   const isLoggedIn = useIsLoggedIn()
   return (
@@ -233,7 +324,7 @@ export function Navbar() {
       <BetterNavItem
         as={Link}
         to={pathHome({})}
-        className="pb-1 pt-1 pl-0 pr-0 fw-normal"
+        className="pb-1 pt-1 pl-0 pr-0 fw-normal align justify-self-left"
       >
         <Logo width="40px" />
         {isLoggedIn ? (
@@ -242,6 +333,9 @@ export function Navbar() {
           <WordMark />
         )}
       </BetterNavItem>
+      <div className="d-flex align-items-center">
+        <Search />
+      </div>
       {isLoggedIn ? <NavButtons /> : <AuthButtons />}
     </NavContainer>
   )

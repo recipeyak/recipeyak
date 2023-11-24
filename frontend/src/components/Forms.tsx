@@ -96,6 +96,7 @@ type BaseInputProps = {
   readOnly?: boolean
   onClick?: (e: React.MouseEvent<HTMLInputElement>) => void
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onFocus?: (e: React.ChangeEvent<HTMLInputElement>) => void
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>
 }
 
