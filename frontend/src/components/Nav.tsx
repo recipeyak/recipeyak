@@ -245,6 +245,13 @@ const SearchInputContainer = styled.div`
   width: 100%;
 `
 
+const SearchResultContainer = styled.div`
+  position: absolute;
+  z-index: 10;
+  top: 60px;
+  max-width: 400px;
+`
+
 /**
  *
  * Implementation is very similar to "Search" in UserHome.tsx.
@@ -314,14 +321,16 @@ function Search() {
         }}
       />
       {searchQuery && !isClosed && (
-        <SearchResult
-          isLoading={recipes.isLoading}
-          searchQuery={searchQuery}
-          searchResults={filteredRecipes.recipes}
-          onClick={() => {
-            resetForm()
-          }}
-        />
+        <SearchResultContainer>
+          <SearchResult
+            isLoading={recipes.isLoading}
+            searchQuery={searchQuery}
+            searchResults={filteredRecipes.recipes}
+            onClick={() => {
+              resetForm()
+            }}
+          />
+        </SearchResultContainer>
       )}
     </SearchInputContainer>
   )
