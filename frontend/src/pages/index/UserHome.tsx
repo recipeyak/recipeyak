@@ -110,11 +110,7 @@ const ScheduleContainer = styled.div`
 `
 
 const SuggestionBox = styled.div`
-  position: absolute;
-  z-index: 10;
-  top: 60px;
   background: var(--color-background-card);
-  max-width: 400px;
   width: 100%;
   border-style: solid;
   border-width: 1px;
@@ -122,6 +118,13 @@ const SuggestionBox = styled.div`
   border-radius: 5px;
   padding: 0.25rem;
   display: inline-grid;
+`
+
+const SearchResultContainer = styled.div`
+  position: absolute;
+  z-index: 10;
+  top: 60px;
+  max-width: 400px;
 `
 
 const suggestionStyle = css`
@@ -493,11 +496,13 @@ function Search() {
           placeholder="Search your recipes..."
         />
         {searchQuery && (
-          <SearchResult
-            isLoading={recipes.isLoading}
-            searchQuery={searchQuery}
-            searchResults={filteredRecipes.recipes}
-          />
+          <SearchResultContainer>
+            <SearchResult
+              isLoading={recipes.isLoading}
+              searchQuery={searchQuery}
+              searchResults={filteredRecipes.recipes}
+            />
+          </SearchResultContainer>
         )}
         <SearchOptions>
           fields <Code>author:Jane Doe</Code>, <Code>ingredient:onions</Code>,{" "}
