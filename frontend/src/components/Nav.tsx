@@ -13,7 +13,7 @@ import {
 import { SearchInput, Select } from "@/components/Forms"
 import Logo from "@/components/Logo"
 import { NavLink } from "@/components/Routing"
-import { useIsLoggedIn, useTeamId, useUser } from "@/hooks"
+import { useGlobalEvent, useIsLoggedIn, useTeamId, useUser } from "@/hooks"
 import { SearchResult } from "@/pages/index/UserHome"
 import {
   pathHome,
@@ -259,10 +259,19 @@ function Search() {
   // The alternative would be to clear the search query when clicking outside,
   // but I'm not sure that's desirable.
   const [isClosed, setIsClosed] = React.useState(false)
+  const searchInputRef = React.useRef<HTMLInputElement>(null)
 
   const ref = React.useRef(null)
   useOnClickOutside(ref, () => {
     setIsClosed(true)
+  })
+
+  useGlobalEvent({
+    keyDown(e) {
+      if (e.key === "k" && e.metaKey) {
+        searchInputRef.current?.focus()
+      }
+    },
   })
 
   const resetForm = () => {
@@ -293,6 +302,7 @@ function Search() {
   return (
     <SearchInputContainer ref={ref}>
       <SearchInput
+        ref={searchInputRef}
         value={searchQuery}
         placeholder="search your recipes..."
         onChange={(e) => {
