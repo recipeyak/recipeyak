@@ -17,7 +17,7 @@ export function CloseButton({ onClose }: { onClose?: () => void }) {
       <Box
         style={{
           background: "var(--color-background-card)",
-          color: "white",
+          color: "var(--color-text)",
           borderStyle: "none !important",
           boxShadow: "none !important",
           backdropFilter: "blur(10px)",
