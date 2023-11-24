@@ -250,6 +250,7 @@ const SearchResultContainer = styled.div`
   z-index: 10;
   top: 60px;
   max-width: 400px;
+  width: 100%;
 
   @media (max-width: 475px) {
     left: 0;
