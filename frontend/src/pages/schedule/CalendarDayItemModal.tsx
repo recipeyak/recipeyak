@@ -10,7 +10,32 @@ import { TimelineEvent } from "@/pages/recipe-detail/Notes"
 import { useScheduledRecipeDelete } from "@/queries/scheduledRecipeDelete"
 import { useScheduledRecipeFindNextOpen } from "@/queries/scheduledRecipeFindNextOpen"
 import { useScheduledRecipeUpdate } from "@/queries/scheduledRecipeUpdate"
+import { styled } from "@/theme"
 import { recipeURL } from "@/urls"
+
+const ButtonContainerFullSize = styled(Box)`
+  @media (max-width: 450px) {
+    display: none;
+  }
+`
+
+const ButtonContainerMobile = styled(Box)`
+  display: none;
+  @media (max-width: 450px) {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+`
+
+const RecipeName = styled(Link)`
+  font-size: 1rem;
+
+  @media (max-width: 450px) {
+    font-size: 1.25rem;
+  }
+`
 
 const options = [
   "Sunday",
@@ -59,11 +84,9 @@ export function CalendarDayItemModal({
       content={
         <>
           <Box dir="col" gap={2}>
-            <Link to={to} className="fs-4">
-              {recipeName}
-            </Link>
+            <RecipeName to={to}>{recipeName}</RecipeName>
 
-            <Box space="between">
+            <ButtonContainerFullSize space="between">
               <Button
                 size="small"
                 active={reschedulerOpen}
@@ -76,7 +99,7 @@ export function CalendarDayItemModal({
               <Button size="small" variant="primary" to={to}>
                 View Recipe
               </Button>
-            </Box>
+            </ButtonContainerFullSize>
           </Box>
 
           {reschedulerOpen && (
@@ -101,6 +124,20 @@ export function CalendarDayItemModal({
               is_scraped: false,
             }}
           />
+          <ButtonContainerMobile>
+            <Button
+              size="normal"
+              active={reschedulerOpen}
+              onClick={() => {
+                setReschedulerOpen((val) => !val)
+              }}
+            >
+              Reschedule
+            </Button>
+            <Button size="normal" variant="primary" to={to}>
+              View Recipe
+            </Button>
+          </ButtonContainerMobile>
         </>
       }
     />

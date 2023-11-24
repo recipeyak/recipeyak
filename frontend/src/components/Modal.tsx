@@ -31,6 +31,12 @@ const ModalContainer = styled.div`
   position: relative;
   margin-top: 8vh;
   width: 400px;
+
+  @media (max-width: 450px) {
+    width: 100%;
+    margin: 0;
+    height: 100dvh;
+  }
 `
 
 const ModalBackground = styled.div`
