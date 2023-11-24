@@ -9,12 +9,10 @@ const StyledFooter = styled.footer`
   margin-top: auto;
 `
 
-const Footer = () => (
+export const Footer = () => (
   <StyledFooter>
     <span className="no-print">
       Recipe Yak • <a href="https://github.com/recipeyak/recipeyak">src</a>
     </span>
   </StyledFooter>
 )
-
-export default Footer

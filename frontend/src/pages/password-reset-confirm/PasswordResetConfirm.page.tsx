@@ -4,7 +4,6 @@ import React, { useState } from "react"
 import { RouteComponentProps, useHistory } from "react-router-dom"
 
 import { login } from "@/auth"
-import AuthContainer from "@/components/AuthContainer"
 import { BorderBox } from "@/components/BorderBox"
 import { Button } from "@/components/Buttons"
 import { FormControl } from "@/components/FormControl"
@@ -12,6 +11,7 @@ import { FormField } from "@/components/FormField"
 import { FormErrorHandler, PasswordInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Label } from "@/components/Label"
+import { AuthPage } from "@/components/Page"
 import { pathHome, pathLogin } from "@/paths"
 import { useAuthPasswordResetConfirm } from "@/queries/authPasswordResetConfirm"
 import { toast } from "@/toast"
@@ -50,7 +50,7 @@ function formatError(error: unknown) {
   return {}
 }
 
-function PasswordResetConfirmation(props: RouteProps) {
+export function PasswordResetConfirmPage(props: RouteProps) {
   const [newPassword1, setNewPassword1] = useState("")
   const [newPassword2, setNewPassword2] = useState("")
   const resetPassword = useAuthPasswordResetConfirm()
@@ -87,7 +87,7 @@ function PasswordResetConfirmation(props: RouteProps) {
   const errors = formatError(resetPassword.error)
 
   return (
-    <AuthContainer>
+    <AuthPage>
       <BorderBox p={3}>
         <Helmet title="Password Reset" />
         <form onSubmit={handleReset}>
@@ -141,8 +141,6 @@ function PasswordResetConfirmation(props: RouteProps) {
           </FormField>
         </form>
       </BorderBox>
-    </AuthContainer>
+    </AuthPage>
   )
 }
-
-export default PasswordResetConfirmation

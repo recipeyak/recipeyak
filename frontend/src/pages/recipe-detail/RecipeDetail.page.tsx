@@ -10,6 +10,7 @@ import { Helmet } from "@/components/Helmet"
 import { Image } from "@/components/Image"
 import { Loader } from "@/components/Loader"
 import { Meta } from "@/components/Meta"
+import { NavPage } from "@/components/Page"
 import { Tag } from "@/components/Tag"
 import { formatHumanDate } from "@/date"
 import { useGlobalEvent } from "@/hooks"
@@ -784,7 +785,7 @@ const RecipeDetailGrid = styled.div<{ enableLargeImageRow: boolean }>`
   }
 `
 
-export function Recipe(props: IRecipeProps) {
+export function RecipeDetailPage(props: IRecipeProps) {
   const recipeId = parseInt(props.match.params.recipeId, 10)
 
   const maybeRecipe = useRecipeFetch({ recipeId })
@@ -844,7 +845,7 @@ export function Recipe(props: IRecipeProps) {
   }
 
   return (
-    <div>
+    <NavPage>
       <Helmet title={recipe.name} />
       <Meta
         title={recipeTitle}
@@ -900,8 +901,6 @@ export function Recipe(props: IRecipeProps) {
           />
         )}
       </RecipeDetailGrid>
-    </div>
+    </NavPage>
   )
 }
-
-export default Recipe

@@ -2,13 +2,13 @@ import { AxiosError } from "axios"
 import React, { useState } from "react"
 import { Link } from "react-router-dom"
 
-import AuthContainer from "@/components/AuthContainer"
 import { BorderBox } from "@/components/BorderBox"
 import { Button } from "@/components/Buttons"
 import { FormField } from "@/components/FormField"
 import { EmailInput, FormErrorHandler } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Label } from "@/components/Label"
+import { AuthPage } from "@/components/Page"
 import { useIsLoggedIn } from "@/hooks"
 import { useAuthPasswordReset } from "@/queries/authPasswordReset"
 import { toast } from "@/toast"
@@ -31,7 +31,7 @@ function formatError(error: unknown) {
   return {}
 }
 
-function PasswordReset() {
+export function PasswordResetPage() {
   const [email, setEmail] = useState("")
 
   const resetPassword = useAuthPasswordReset()
@@ -65,7 +65,7 @@ function PasswordReset() {
     : { name: "Login", route: "/login" }
 
   return (
-    <AuthContainer>
+    <AuthPage>
       <Helmet title="Password Reset" />
       <BorderBox p={3} as="form" onSubmit={handleReset}>
         <h1 className="is-5 mb-2 fw-500">Password Reset</h1>
@@ -95,8 +95,6 @@ function PasswordReset() {
           <Link to={redirect.route}>{redirect.name} →</Link>
         </FormField>
       </BorderBox>
-    </AuthContainer>
+    </AuthPage>
   )
 }
-
-export default PasswordReset

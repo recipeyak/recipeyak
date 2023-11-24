@@ -5,7 +5,7 @@ import { RadioButton, TextInput } from "@/components/Forms"
 import { roles } from "@/pages/team-invite/TeamInvite.page"
 import { useTeamCreate } from "@/queries/teamCreate"
 
-function TeamCreate() {
+export function TeamCreatePage() {
   const [name, setName] = useState("")
   const [emails, setEmails] = useState("")
   const [level, setLevel] = useState<"admin" | "contributor" | "read">(
@@ -83,5 +83,3 @@ function TeamCreate() {
     </div>
   )
 }
-
-export default TeamCreate

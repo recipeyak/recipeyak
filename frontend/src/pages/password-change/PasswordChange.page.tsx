@@ -8,6 +8,7 @@ import { FormField } from "@/components/FormField"
 import { PasswordInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Label } from "@/components/Label"
+import { NavPage } from "@/components/Page"
 import { pathHome } from "@/paths"
 import { useAuthPasswordChange } from "@/queries/authPasswordChange"
 import { toast } from "@/toast"
@@ -31,7 +32,7 @@ function formatError(error: unknown) {
   return
 }
 
-function PasswordChange() {
+export function PasswordChangePage() {
   const [oldPassword, setOldPassword] = useState("")
   const [newPassword, setNewPassword] = useState("")
   const [newPasswordAgain, setNewPasswordAgain] = useState("")
@@ -58,64 +59,64 @@ function PasswordChange() {
   const error = formatError(passwordChange.error)
 
   return (
-    <form onSubmit={handleSubmit} className="max-width-400px margin-0-auto">
-      <Helmet title="Password Change" />
-      <h2 className="title is-3">Password Change</h2>
+    <NavPage>
+      <form onSubmit={handleSubmit} className="max-width-400px margin-0-auto">
+        <Helmet title="Password Change" />
+        <h2 className="title is-3">Password Change</h2>
 
-      <FormField>
-        <Label>Current Password</Label>
+        <FormField>
+          <Label>Current Password</Label>
+          <FormControl>
+            <PasswordInput
+              autoFocus
+              onChange={(e) => {
+                setOldPassword(e.target.value)
+              }}
+              error={error?.code === "invalid_password"}
+              name="oldPassword"
+              required
+            />
+          </FormControl>
+        </FormField>
+
+        <FormField>
+          <Label>New Password</Label>
+          <FormControl>
+            <PasswordInput
+              onChange={(e) => {
+                setNewPassword(e.target.value)
+              }}
+              name="newPassword"
+              required
+            />
+          </FormControl>
+        </FormField>
+
+        <FormField>
+          <Label>New Password Again</Label>
+          <FormControl>
+            <PasswordInput
+              onChange={(e) => {
+                setNewPasswordAgain(e.target.value)
+              }}
+              name="newPasswordAgain"
+              required
+            />
+          </FormControl>
+        </FormField>
+
         <FormControl>
-          <PasswordInput
-            autoFocus
-            onChange={(e) => {
-              setOldPassword(e.target.value)
-            }}
-            error={error?.code === "invalid_password"}
-            name="oldPassword"
-            required
-          />
+          <Button
+            variant="primary"
+            type="submit"
+            className="w-100"
+            loading={passwordChange.isPending}
+          >
+            Update
+          </Button>
         </FormControl>
-      </FormField>
-
-      <FormField>
-        <Label>New Password</Label>
-        <FormControl>
-          <PasswordInput
-            onChange={(e) => {
-              setNewPassword(e.target.value)
-            }}
-            name="newPassword"
-            required
-          />
-        </FormControl>
-      </FormField>
-
-      <FormField>
-        <Label>New Password Again</Label>
-        <FormControl>
-          <PasswordInput
-            onChange={(e) => {
-              setNewPasswordAgain(e.target.value)
-            }}
-            name="newPasswordAgain"
-            required
-          />
-        </FormControl>
-      </FormField>
-
-      <FormControl>
-        <Button
-          variant="primary"
-          type="submit"
-          className="w-100"
-          loading={passwordChange.isPending}
-        >
-          Update
-        </Button>
-      </FormControl>
-      {error != null && <div>{error.message}</div>}
-    </form>
+        {error != null && <div>{error.message}</div>}
+      </form>
+    </NavPage>
   )
 }
-
-export default PasswordChange

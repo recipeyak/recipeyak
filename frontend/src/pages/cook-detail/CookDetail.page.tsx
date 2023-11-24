@@ -3,6 +3,7 @@ import { RouteComponentProps } from "react-router"
 import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
 import { Meta } from "@/components/Meta"
+import { NavPage } from "@/components/Page"
 import { CookingFullscreen } from "@/pages/cook-detail/CookingFullscreen"
 import { pathCookDetail } from "@/paths"
 import { INote, TimelineItem, useRecipeFetch } from "@/queries/recipeFetch"
@@ -13,7 +14,7 @@ function isNote(x: TimelineItem): x is INote {
   return x.type === "note"
 }
 
-export default function CookDetail(
+export function CookDetailPage(
   props: RouteComponentProps<{ recipeId: string }>,
 ) {
   const recipeId = parseInt(props.match.params.recipeId, 10)
@@ -42,7 +43,7 @@ export default function CookDetail(
   }
 
   return (
-    <div>
+    <NavPage>
       <Helmet title={recipe.name} />
       <Meta
         title={recipeTitle}
@@ -57,6 +58,6 @@ export default function CookDetail(
         steps={recipe.steps}
         notes={notes}
       />
-    </div>
+    </NavPage>
   )
 }

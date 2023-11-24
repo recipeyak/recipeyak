@@ -10,6 +10,7 @@ import { RadioButton, TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { BetterLabel } from "@/components/Label"
 import { Loader } from "@/components/Loader"
+import { NavPage } from "@/components/Page"
 import { useUserTheme } from "@/hooks"
 import Sessions from "@/pages/settings/Sessions"
 import { pathLogin, pathPassword } from "@/paths"
@@ -358,7 +359,7 @@ function ThemePicker() {
   )
 }
 
-function Settings() {
+export function SettingsPage() {
   const userInfo = useUserFetch()
 
   if (!userInfo.isSuccess) {
@@ -366,35 +367,35 @@ function Settings() {
   }
 
   return (
-    <Box
-      style={{
-        maxWidth: 800,
-        marginLeft: "auto",
-        marginRight: "auto",
-      }}
-      dir="col"
-      gap={4}
-    >
-      <Helmet title="Settings" />
+    <NavPage>
+      <Box
+        style={{
+          maxWidth: 800,
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
+        dir="col"
+        gap={4}
+      >
+        <Helmet title="Settings" />
 
-      <h1 className="fs-8">User settings</h1>
+        <h1 className="fs-8">User settings</h1>
 
-      <Box dir="col" align="start">
-        <ProfileImg avatarURL={userInfo.data.avatar_url} />
+        <Box dir="col" align="start">
+          <ProfileImg avatarURL={userInfo.data.avatar_url} />
 
-        <Box dir="col" style={{ maxWidth: 400 }} gap={2}>
-          <EmailEditForm email={userInfo.data.email} />
-          <NameForm initialValue={userInfo.data.name} />
-          <ChangePassword />
+          <Box dir="col" style={{ maxWidth: 400 }} gap={2}>
+            <EmailEditForm email={userInfo.data.email} />
+            <NameForm initialValue={userInfo.data.name} />
+            <ChangePassword />
+          </Box>
         </Box>
-      </Box>
-      <ThemePicker />
+        <ThemePicker />
 
-      <Export />
-      <Sessions />
-      <DangerZone />
-    </Box>
+        <Export />
+        <Sessions />
+        <DangerZone />
+      </Box>
+    </NavPage>
   )
 }
-
-export default Settings

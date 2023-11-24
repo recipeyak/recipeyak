@@ -1,15 +1,11 @@
-import { ContainerBase } from "@/components/Base"
 import { useIsLoggedIn } from "@/hooks"
 import LandingPage from "@/pages/index/LandingPage"
-import UserHome from "@/pages/index/UserHome"
+import { UserHome } from "@/pages/index/UserHome"
 
-const Home = () => {
+export const HomePage = () => {
   const loggedIn = useIsLoggedIn()
-  return (
-    <ContainerBase includeSearch={false}>
-      {loggedIn ? <UserHome /> : <LandingPage />}
-    </ContainerBase>
-  )
+  if (loggedIn) {
+    return <UserHome />
+  }
+  return <LandingPage />
 }
-
-export default Home

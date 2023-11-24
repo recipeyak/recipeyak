@@ -11,11 +11,11 @@ import useOnClickOutside from "use-onclickoutside"
 
 import { isMobile } from "@/browser"
 import { Box } from "@/components/Box"
-import Footer from "@/components/Footer"
 import * as forms from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Image } from "@/components/Image"
 import { Loader } from "@/components/Loader"
+import { NavPage } from "@/components/Page"
 import { Tag } from "@/components/Tag"
 import { useTeamId } from "@/hooks"
 import { pathRecipeDetail, pathRecipesList, pathSchedule } from "@/paths"
@@ -508,22 +508,16 @@ function Search() {
   )
 }
 
-const UserHome = () => {
+export const UserHome = () => {
   return (
-    <>
-      <div className="pr-2 pl-2 pb-2">
-        <Helmet title="Home" />
-        <Search />
-        <div className="d-flex flex-wrap justify-content-center column-gap-1rem row-gap-1rem align-items-start">
-          <SchedulePreview />
-          <RecentlyViewed />
-          <RecentlyCreated />
-        </div>
+    <NavPage includeSearch={false}>
+      <Helmet title="Home" />
+      <Search />
+      <div className="d-flex flex-wrap justify-content-center column-gap-1rem row-gap-1rem align-items-start">
+        <SchedulePreview />
+        <RecentlyViewed />
+        <RecentlyCreated />
       </div>
-
-      <Footer />
-    </>
+    </NavPage>
   )
 }
-
-export default UserHome

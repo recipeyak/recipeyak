@@ -5,6 +5,7 @@ import { useHistory } from "react-router"
 import { Button } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
+import { NavPage } from "@/components/Page"
 import { pathRecipeDetail } from "@/paths"
 import { useRecipeCreate } from "@/queries/recipeCreate"
 
@@ -111,14 +112,16 @@ function CreateManuallyForm() {
   )
 }
 
-export default function RecipeCreate() {
+export function RecipeCreatePage() {
   return (
-    <div style={{ maxWidth: 500 }} className="mx-auto text-center">
-      <Helmet title="Add Recipe" />
-      <h1 className="fs-2rem mb-2">Add Recipe</h1>
-      <CreateFromURLForm />
-      <div className="text-center mt-4">or</div>
-      <CreateManuallyForm />
-    </div>
+    <NavPage>
+      <div style={{ maxWidth: 500 }} className="mx-auto text-center">
+        <Helmet title="Add Recipe" />
+        <h1 className="fs-2rem mb-2">Add Recipe</h1>
+        <CreateFromURLForm />
+        <div className="text-center mt-4">or</div>
+        <CreateManuallyForm />
+      </div>
+    </NavPage>
   )
 }

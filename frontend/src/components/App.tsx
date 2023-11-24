@@ -20,29 +20,28 @@ import {
   Switch,
 } from "react-router-dom"
 
-import { Container, ContainerBase } from "@/components/Base"
-import ErrorBoundary from "@/components/ErrorBoundary"
+import { ErrorBoundary } from "@/components/ErrorBoundary"
 import { Helmet } from "@/components/Helmet"
 import { ScrollRestore } from "@/components/ScrollRestore"
 import { useIsLoggedIn, useUserTheme } from "@/hooks"
-import NotFound from "@/pages/404/404.page"
-import CookDetailPage from "@/pages/cook-detail/CookDetail.page"
-import Home from "@/pages/index/Index.page"
-import Login from "@/pages/login/Login.page"
-import PasswordChangePage from "@/pages/password-change/PasswordChange.page"
-import PasswordResetPage from "@/pages/password-reset/PasswordReset.page"
-import PasswordResetConfirmPage from "@/pages/password-reset-confirm/PasswordResetConfirm.page"
-import ProfilePage from "@/pages/profile/Profile.page"
-import RecipeCreatePage from "@/pages/recipe-create/RecipeCreate.page"
-import RecipeDetailPage from "@/pages/recipe-detail/RecipeDetail.page"
+import { NotFoundPage } from "@/pages/404/404.page"
+import { CookDetailPage } from "@/pages/cook-detail/CookDetail.page"
+import { HomePage } from "@/pages/index/Index.page"
+import { LoginPage } from "@/pages/login/Login.page"
+import { PasswordChangePage } from "@/pages/password-change/PasswordChange.page"
+import { PasswordResetPage } from "@/pages/password-reset/PasswordReset.page"
+import { PasswordResetConfirmPage } from "@/pages/password-reset-confirm/PasswordResetConfirm.page"
+import { ProfilePage } from "@/pages/profile/Profile.page"
+import { RecipeCreatePage } from "@/pages/recipe-create/RecipeCreate.page"
+import { RecipeDetailPage } from "@/pages/recipe-detail/RecipeDetail.page"
 import { RecipeListPage } from "@/pages/recipe-list/RecipeList.page"
-import SchedulePage from "@/pages/schedule/Schedule.page"
-import SettingsPage from "@/pages/settings/Settings.page"
-import SignupPage from "@/pages/signup/Signup.page"
-import TeamCreatePage from "@/pages/team-create/TeamCreate.page"
-import TeamDetailPage from "@/pages/team-detail/TeamDetail.page"
-import TeamInvitePage from "@/pages/team-invite/TeamInvite.page"
-import TeamsListPage from "@/pages/team-list/TeamList.page"
+import { SchedulePage } from "@/pages/schedule/Schedule.page"
+import { SettingsPage } from "@/pages/settings/Settings.page"
+import { SignupPage } from "@/pages/signup/Signup.page"
+import { TeamCreatePage } from "@/pages/team-create/TeamCreate.page"
+import { TeamDetailPage } from "@/pages/team-detail/TeamDetail.page"
+import { TeamInvitePage } from "@/pages/team-invite/TeamInvite.page"
+import { TeamListPage } from "@/pages/team-list/TeamList.page"
 import {
   pathCookDetail,
   pathHome,
@@ -216,7 +215,7 @@ function AppRouter() {
   return (
     <Router history={history}>
       <Switch>
-        <PublicOnlyRoute exact path={pathLogin.pattern} component={Login} />
+        <PublicOnlyRoute exact path={pathLogin.pattern} component={LoginPage} />
         <PublicOnlyRoute
           exact
           path={pathSignup.pattern}
@@ -233,7 +232,7 @@ function AppRouter() {
           component={PasswordResetConfirmPage}
         />
         <Switch>
-          <Route exact path={pathHome.pattern} component={Home} />
+          <Route exact path={pathHome.pattern} component={HomePage} />
           <PrivateRoute
             exact
             path={pathSchedule.pattern}
@@ -299,9 +298,9 @@ function AppRouter() {
             <PrivateRoute
               exact
               path={pathTeamList.pattern}
-              component={TeamsListPage}
+              component={TeamListPage}
             />
-            <Route component={NotFound} />
+            <Route component={NotFoundPage} />
           </Switch>
         </Switch>
       </Switch>

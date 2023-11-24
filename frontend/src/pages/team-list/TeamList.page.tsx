@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom"
 
 import { Button } from "@/components/Buttons"
 import { Loader } from "@/components/Loader"
+import { NavPage } from "@/components/Page"
 import { Invites } from "@/pages/team-list/Invites"
 import { pathTeamCreate } from "@/paths"
 import { useTeamList } from "@/queries/teamList"
@@ -34,20 +35,22 @@ function TeamsList() {
   )
 }
 
-export default function TeamsPage() {
+export function TeamListPage() {
   return (
-    <div style={{ maxWidth: 800 }} className="mx-auto mw-800">
-      <section className="d-flex justify-space-between align-items-center">
-        <h2 className="fs-6">Teams</h2>
-        <Button to={pathTeamCreate({})}>Create a Team</Button>
-      </section>
+    <NavPage>
+      <div style={{ maxWidth: 800 }} className="mx-auto mw-800">
+        <section className="d-flex justify-space-between align-items-center">
+          <h2 className="fs-6">Teams</h2>
+          <Button to={pathTeamCreate({})}>Create a Team</Button>
+        </section>
 
-      <TeamsList />
+        <TeamsList />
 
-      <div>
-        <h2 className="fs-6">Invites</h2>
-        <Invites />
+        <div>
+          <h2 className="fs-6">Invites</h2>
+          <Invites />
+        </div>
       </div>
-    </div>
+    </NavPage>
   )
 }

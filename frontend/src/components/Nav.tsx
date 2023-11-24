@@ -158,7 +158,7 @@ function AuthButtons() {
 function NavButtons() {
   const teamId = useTeamId()
   return (
-    <div className="d-flex align-center p-relative justify-content-center flex-wrap justify-self-end">
+    <div className="d-flex align-center p-relative justify-content-center  justify-self-end">
       <DropdownContainer>
         <div className="d-flex">
           <BetterNavItem
