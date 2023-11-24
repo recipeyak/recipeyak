@@ -343,7 +343,7 @@ export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
           <WordMark />
         )}
       </BetterNavItem>
-      <div className="d-flex align-items-center">
+      <div className="d-flex align-items-center flex-grow ml-3">
         {includeSearch && <Search />}
       </div>
       {isLoggedIn ? <NavButtons /> : <AuthButtons />}
