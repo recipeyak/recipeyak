@@ -18,9 +18,11 @@ export function Box({
   wrap,
   lineHeight,
   style,
+  className,
   onClick,
 }: {
   dir?: "col" | "row"
+  className?: string
   children: React.ReactNode
   space?: "between" | "end"
   m?: 0 | 1 | 2 | 3 | 4
@@ -75,6 +77,7 @@ export function Box({
         grow === 1 && "flex-grow-1",
         wrap && "flex-wrap",
         lineHeight === "tight" && "line-height-tight",
+        className,
       )}
       children={children}
       style={style}
