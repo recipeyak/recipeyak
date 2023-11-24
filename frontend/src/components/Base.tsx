@@ -4,9 +4,15 @@ import ErrorBoundary from "@/components/ErrorBoundary"
 import Footer from "@/components/Footer"
 import { Navbar } from "@/components/Nav"
 
-export const ContainerBase = ({ children }: { children: React.ReactNode }) => (
+export const ContainerBase = ({
+  children,
+  includeSearch = true,
+}: {
+  children: React.ReactNode
+  includeSearch?: boolean
+}) => (
   <>
-    <Navbar />
+    <Navbar includeSearch={includeSearch} />
     <ErrorBoundary>{children}</ErrorBoundary>
   </>
 )

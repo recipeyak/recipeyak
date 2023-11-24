@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import { useHistory } from "react-router"
 
 import cls from "@/classnames"
+import Container, { ContainerBase } from "@/components/Base"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { CheckBox, SearchInput } from "@/components/Forms"
@@ -174,7 +175,7 @@ function getSearch(qs: string): string {
 }
 
 // TODO(sbdchd): this really shouldn't be shared like it is
-function RecipesListSearch({
+export function RecipesListSearch({
   noPadding,
   drag,
   scroll,
@@ -200,16 +201,28 @@ function RecipesListSearch({
   }
 
   return (
-    <div className={cls(noPadding ? "" : "mw-1000px ml-auto mr-auto")}>
-      <SearchInput
-        value={query}
-        className={cls(noPadding ? "" : "mb-2")}
-        onChange={handleQueryChange}
-        placeholder="search • optionally prepended a tag, 'author:' 'name:' 'ingredient:"
-      />
-      <RecipeList query={query} drag={drag} scroll={scroll} />
-    </div>
+    <ContainerBase includeSearch={false}>
+      <Container>
+        <div className={cls(noPadding ? "" : "mw-1000px ml-auto mr-auto")}>
+          <SearchInput
+            value={query}
+            className={cls(noPadding ? "" : "mb-2")}
+            onChange={handleQueryChange}
+            placeholder="search • optionally prepended a tag, 'author:' 'name:' 'ingredient:"
+          />
+          <RecipeList query={query} drag={drag} scroll={scroll} />
+        </div>
+      </Container>
+    </ContainerBase>
   )
 }
 
-export default RecipesListSearch
+export function RecipeListPage() {
+  return (
+    <ContainerBase includeSearch={false}>
+      <Container>
+        <RecipesListSearch />
+      </Container>
+    </ContainerBase>
+  )
+}

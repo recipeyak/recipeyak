@@ -35,7 +35,7 @@ import PasswordResetConfirmPage from "@/pages/password-reset-confirm/PasswordRes
 import ProfilePage from "@/pages/profile/Profile.page"
 import RecipeCreatePage from "@/pages/recipe-create/RecipeCreate.page"
 import RecipeDetailPage from "@/pages/recipe-detail/RecipeDetail.page"
-import RecipeListPage from "@/pages/recipe-list/RecipeList.page"
+import { RecipeListPage } from "@/pages/recipe-list/RecipeList.page"
 import SchedulePage from "@/pages/schedule/Schedule.page"
 import SettingsPage from "@/pages/settings/Settings.page"
 import SignupPage from "@/pages/signup/Signup.page"
@@ -232,81 +232,78 @@ function AppRouter() {
           path={pathPasswordConfirm.pattern}
           component={PasswordResetConfirmPage}
         />
-        <ContainerBase>
+        <Switch>
+          <Route exact path={pathHome.pattern} component={Home} />
+          <PrivateRoute
+            exact
+            path={pathSchedule.pattern}
+            component={SchedulePage}
+          />
+
           <Switch>
-            <Route exact path={pathHome.pattern} component={Home} />
             <PrivateRoute
               exact
-              path={pathSchedule.pattern}
-              component={SchedulePage}
+              path={pathRecipeAdd.pattern}
+              component={RecipeCreatePage}
             />
-            <Container>
-              <Switch>
-                <PrivateRoute
-                  exact
-                  path={pathRecipeAdd.pattern}
-                  component={RecipeCreatePage}
-                />
-                <PrivateRoute
-                  exact
-                  path={pathRecipesList.pattern}
-                  component={RecipeListPage}
-                />
-                <PrivateRoute
-                  exact
-                  path={pathRecipeDetail.pattern}
-                  component={RecipeDetailPage}
-                />
-                <PrivateRoute
-                  exact
-                  path={pathCookDetail.pattern}
-                  component={CookDetailPage}
-                />
-                <PrivateRoute
-                  exact
-                  path={pathSettings.pattern}
-                  component={SettingsPage}
-                />
-                <PrivateRoute
-                  exact
-                  path={pathProfileById.pattern}
-                  component={ProfilePage}
-                />
-                <PrivateRoute
-                  exact
-                  path={pathPassword.pattern}
-                  component={PasswordChangePage}
-                />
-                <PrivateRoute
-                  exact
-                  path={pathTeamCreate.pattern}
-                  component={TeamCreatePage}
-                />
-                <PrivateRoute
-                  exact
-                  path={pathTeamInvite.pattern}
-                  component={TeamInvitePage}
-                />
-                <PrivateRoute
-                  exact
-                  path={pathTeamSettings.pattern}
-                  component={TeamDetailPage}
-                />
-                <PrivateRoute
-                  exact
-                  path={pathTeamDetail.pattern}
-                  component={TeamDetailPage}
-                />
-                <PrivateRoute
-                  exact
-                  path={pathTeamList.pattern}
-                  component={TeamsListPage}
-                />
-                <Route component={NotFound} />
-              </Switch>
-            </Container>
+            <PrivateRoute
+              exact
+              path={pathRecipesList.pattern}
+              component={RecipeListPage}
+            />
+            <PrivateRoute
+              exact
+              path={pathRecipeDetail.pattern}
+              component={RecipeDetailPage}
+            />
+            <PrivateRoute
+              exact
+              path={pathCookDetail.pattern}
+              component={CookDetailPage}
+            />
+            <PrivateRoute
+              exact
+              path={pathSettings.pattern}
+              component={SettingsPage}
+            />
+            <PrivateRoute
+              exact
+              path={pathProfileById.pattern}
+              component={ProfilePage}
+            />
+            <PrivateRoute
+              exact
+              path={pathPassword.pattern}
+              component={PasswordChangePage}
+            />
+            <PrivateRoute
+              exact
+              path={pathTeamCreate.pattern}
+              component={TeamCreatePage}
+            />
+            <PrivateRoute
+              exact
+              path={pathTeamInvite.pattern}
+              component={TeamInvitePage}
+            />
+            <PrivateRoute
+              exact
+              path={pathTeamSettings.pattern}
+              component={TeamDetailPage}
+            />
+            <PrivateRoute
+              exact
+              path={pathTeamDetail.pattern}
+              component={TeamDetailPage}
+            />
+            <PrivateRoute
+              exact
+              path={pathTeamList.pattern}
+              component={TeamsListPage}
+            />
+            <Route component={NotFound} />
           </Switch>
-        </ContainerBase>
+        </Switch>
       </Switch>
     </Router>
   )

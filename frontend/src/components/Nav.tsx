@@ -317,7 +317,7 @@ function Search() {
   )
 }
 
-export function Navbar() {
+export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
   const isLoggedIn = useIsLoggedIn()
   return (
     <NavContainer>
@@ -334,7 +334,7 @@ export function Navbar() {
         )}
       </BetterNavItem>
       <div className="d-flex align-items-center">
-        <Search />
+        {includeSearch && <Search />}
       </div>
       {isLoggedIn ? <NavButtons /> : <AuthButtons />}
     </NavContainer>
