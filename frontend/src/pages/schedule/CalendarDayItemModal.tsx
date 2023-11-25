@@ -13,20 +13,10 @@ import { useScheduledRecipeUpdate } from "@/queries/scheduledRecipeUpdate"
 import { styled } from "@/theme"
 import { recipeURL } from "@/urls"
 
-const ButtonContainerFullSize = styled(Box)`
-  @media (max-width: 450px) {
-    display: none;
-  }
-`
-
-const ButtonContainerMobile = styled(Box)`
-  display: none;
-  @media (max-width: 450px) {
-    margin-top: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
+const ButtonContainer = styled(Box)`
+  margin-top: auto;
+  flex-direction: column;
+  gap: 0.5rem;
 `
 
 const RecipeName = styled(Link)`
@@ -85,21 +75,6 @@ export function CalendarDayItemModal({
         <>
           <Box dir="col" gap={2}>
             <RecipeName to={to}>{recipeName}</RecipeName>
-
-            <ButtonContainerFullSize space="between">
-              <Button
-                size="small"
-                active={reschedulerOpen}
-                onClick={() => {
-                  setReschedulerOpen((val) => !val)
-                }}
-              >
-                Reschedule
-              </Button>
-              <Button size="small" variant="primary" to={to}>
-                View Recipe
-              </Button>
-            </ButtonContainerFullSize>
           </Box>
 
           {reschedulerOpen && (
@@ -115,6 +90,7 @@ export function CalendarDayItemModal({
           <hr className="my-2" />
 
           <TimelineEvent
+            className="mb-2"
             enableLinking={false}
             event={{
               id: scheduledId,
@@ -124,7 +100,7 @@ export function CalendarDayItemModal({
               is_scraped: false,
             }}
           />
-          <ButtonContainerMobile>
+          <ButtonContainer>
             <Button
               size="normal"
               active={reschedulerOpen}
@@ -137,7 +113,7 @@ export function CalendarDayItemModal({
             <Button size="normal" variant="primary" to={to}>
               View Recipe
             </Button>
-          </ButtonContainerMobile>
+          </ButtonContainer>
         </>
       }
     />
