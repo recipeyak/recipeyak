@@ -11,7 +11,6 @@ RUN yarn install
 
 COPY . /var/app/
 
-ARG FRONTEND_SENTRY_DSN
 ARG FRONTEND_GIT_SHA
 
 RUN s/build
