@@ -344,7 +344,7 @@ function Search() {
 }
 
 export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
-  const isLoggedIn = useIsLoggedIn()
+  const { authenticated: isLoggedIn } = useIsLoggedIn()
   return (
     <NavContainer>
       <BetterNavItem

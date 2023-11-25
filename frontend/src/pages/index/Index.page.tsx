@@ -3,7 +3,7 @@ import LandingPage from "@/pages/index/LandingPage"
 import { UserHome } from "@/pages/index/UserHome"
 
 export const HomePage = () => {
-  const loggedIn = useIsLoggedIn()
+  const { authenticated: loggedIn } = useIsLoggedIn()
   if (loggedIn) {
     return <UserHome />
   }

@@ -132,7 +132,7 @@ interface IAuthRouteProps extends Pick<RouteProps, "exact" | "path"> {
 }
 
 const PrivateRoute = ({ component: Component, ...rest }: IAuthRouteProps) => {
-  const authenticated = useIsLoggedIn()
+  const { authenticated } = useIsLoggedIn()
   return (
     <BaseRoute
       {...rest}
@@ -159,7 +159,7 @@ const PublicOnlyRoute = ({
   component: Component,
   ...rest
 }: IAuthRouteProps) => {
-  const authenticated = useIsLoggedIn()
+  const { authenticated } = useIsLoggedIn()
   return (
     <BaseRoute
       {...rest}
@@ -200,6 +200,7 @@ const Route = ({
 )
 
 function AppRouter() {
+  const { isLoading: isLoadingAuth } = useIsLoggedIn()
   const theme = useUserTheme()
   useEffect(() => {
     themeSet(theme)
@@ -212,6 +213,15 @@ function AppRouter() {
     // milliseconds it looks like a glitchy flash
     return null
   }
+  // wait for auth status to load before showing a page.
+  //
+  // if we have cache, this will be quick. Otherwise we wait for the network request.
+  //
+  // It would be better if we injected user info when serving index.html.
+  if (isLoadingAuth) {
+    return null
+  }
+
   return (
     <Router history={history}>
       <Switch>
