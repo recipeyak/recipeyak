@@ -11,6 +11,7 @@ import landingImg from "@/static/images/pages/schedule.png"
 import searchImg from "@/static/images/pages/search.png"
 import shopImg from "@/static/images/pages/shop.png"
 import teamImg from "@/static/images/pages/team.png"
+import { styled } from "@/theme"
 
 const isOdd = (i: number) => i % 2 !== 0
 
@@ -18,13 +19,28 @@ interface IFeaturesContainerProps {
   readonly children: JSX.Element[]
 }
 
+const Subtitle = styled.h2`
+  font-weight: bold;
+  font-size: 3rem;
+  @media (min-width: 920px) {
+    font-size: 4.5rem;
+    text-align: left;
+  }
+`
+
+const HomeContainer = styled.div`
+  max-width: 1024px;
+  margin: 0 auto;
+  position: relative;
+`
+
 function FeaturesContainer({ children }: IFeaturesContainerProps) {
   return (
     <section className="bg-primary color-white pt-4 pb-4 pr-4 pl-4">
-      <section className="home-container">
-        <h2 className="home-subtitle bold">Features</h2>
+      <HomeContainer>
+        <Subtitle>Features</Subtitle>
         <ul className="d-grid gap-1rem">{children}</ul>
-      </section>
+      </HomeContainer>
     </section>
   )
 }
@@ -35,9 +51,29 @@ interface IFeatureProps {
   readonly index: number
 }
 
+const FeatureGrid = styled.li`
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(1, 1fr);
+  font-size: 2rem;
+
+  @media (min-width: 841px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 841px) {
+    .grid-column-2 {
+      grid-column: unset;
+    }
+    .grid-row-1 {
+      grid-row: unset;
+    }
+  }
+`
+
 function Feature({ text, imageURL, index }: IFeatureProps) {
   return (
-    <li className="feature-grid" key={text}>
+    <FeatureGrid key={text}>
       <p
         className={`align-self-center ${
           isOdd(index) ? "grid-column-2 grid-row-1" : ""
@@ -48,7 +84,7 @@ function Feature({ text, imageURL, index }: IFeatureProps) {
       <div className="fact-img align-self-center ">
         <img className="box-shadow-normal " src={imageURL} alt="" />
       </div>
-    </li>
+    </FeatureGrid>
   )
 }
 
@@ -58,10 +94,10 @@ interface IHowItWorksContainerProps {
 function HowItWorksContainer({ children }: IHowItWorksContainerProps) {
   return (
     <section className="pt-4 pr-4 pl-4">
-      <section className="home-container d-grid">
+      <HomeContainer className="d-grid">
         <h2 className="home-subtitle bold">How it works</h2>
         <ol className="d-grid gap-2rem">{children}</ol>
-      </section>
+      </HomeContainer>
     </section>
   )
 }
@@ -73,7 +109,7 @@ interface IHowToProps {
 
 function HowTo({ content, index, imageURL }: IHowToProps) {
   return (
-    <li className="feature-grid" key={imageURL}>
+    <FeatureGrid key={imageURL}>
       <p className="align-self-center">
         <b>
           {index + 1}
@@ -82,10 +118,9 @@ function HowTo({ content, index, imageURL }: IHowToProps) {
         {content}
       </p>
       <div className="fact-img">
-        {/* tslint:disable-next-line:no-unsafe-any */}
         <img className="box-shadow-normal " src={imageURL} alt="" />
       </div>
-    </li>
+    </FeatureGrid>
   )
 }
 
@@ -143,56 +178,59 @@ const howToSteps = [
   },
 ]
 
+const HeroText = styled.h1`
+  text-align: center;
+  font-size: 4rem;
+  line-height: 4rem;
+  // chosen empirically
+  max-width: 900px;
+`
+
 const LandingPage = () => {
   return (
     <NavPage includeSearch={false} noContainer>
-      <div>
-        <section className="home-container d-grid gap-1rem pb-4 pr-4 pl-4">
-          <section className="d-flex justify-content-center mb-2">
-            <h1 className="home-hero-text">
-              A place to store, share, and create recipes
-            </h1>
-          </section>
-
-          <Button
-            to={pathSignup({})}
-            variant="primary"
-            size="large"
-            className="justify-self-center"
-          >
-            Create Account
-          </Button>
-        </section>
-        <section className="pt-4 bg-50-50-primary pr-4 pl-4">
-          <section className="home-container">
-            {/* tslint:disable-next-line:no-unsafe-any */}
-            <img className="box-shadow-normal" src={landingImg} alt="" />
-          </section>
+      <HomeContainer className="d-grid gap-1rem pb-4 pr-4 pl-4">
+        <section className="d-flex justify-content-center mb-2">
+          <HeroText>A place to store, share, and create recipes</HeroText>
         </section>
 
-        <FeaturesContainer>
-          {features.map(({ text, imgURL }, i) => (
-            <Feature key={imgURL} text={text} imageURL={imgURL} index={i} />
-          ))}
-        </FeaturesContainer>
+        <Button
+          to={pathSignup({})}
+          variant="primary"
+          size="large"
+          className="justify-self-center"
+        >
+          Create Account
+        </Button>
+      </HomeContainer>
+      <section className="pt-4 bg-50-50-primary pr-4 pl-4">
+        <HomeContainer>
+          <img className="box-shadow-normal" src={landingImg} alt="" />
+        </HomeContainer>
+      </section>
 
-        <HowItWorksContainer>
-          {howToSteps.map(({ text, imgURL }, i) => (
-            <HowTo key={imgURL} content={text} imageURL={imgURL} index={i} />
-          ))}
+      <FeaturesContainer>
+        {features.map(({ text, imgURL }, i) => (
+          <Feature key={imgURL} text={text} imageURL={imgURL} index={i} />
+        ))}
+      </FeaturesContainer>
 
-          <Button
-            to={pathSignup({})}
-            variant="primary"
-            size="large"
-            className="justify-self-center mt-4 mb-2"
-          >
-            Create Account
-          </Button>
-        </HowItWorksContainer>
+      <HowItWorksContainer>
+        {howToSteps.map(({ text, imgURL }, i) => (
+          <HowTo key={imgURL} content={text} imageURL={imgURL} index={i} />
+        ))}
 
-        <Footer />
-      </div>
+        <Button
+          to={pathSignup({})}
+          variant="primary"
+          size="large"
+          className="justify-self-center mt-4 mb-2"
+        >
+          Create Account
+        </Button>
+      </HowItWorksContainer>
+
+      <Footer />
     </NavPage>
   )
 }
