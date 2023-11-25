@@ -11,6 +11,11 @@ $text-color: #4a4a4a;
 @import "../../bulma.sass";
 @import "./helpers.scss";
 
+// enable tailwind
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   // theme-light
   --color-background: white;
