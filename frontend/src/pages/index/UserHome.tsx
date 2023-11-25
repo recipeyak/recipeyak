@@ -124,6 +124,7 @@ const SearchResultContainer = styled.div`
   position: absolute;
   z-index: 10;
   top: 60px;
+  width: 100%;
   max-width: 400px;
 `
 
