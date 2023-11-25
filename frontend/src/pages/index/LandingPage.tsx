@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 
 import { Button } from "@/components/Buttons"
 import { Footer } from "@/components/Footer"
+import { NavPage } from "@/components/Page"
 import { pathRecipeAdd, pathSignup } from "@/paths"
 import addRecipeImg from "@/static/images/pages/add-recipe.png"
 import copyShoppingList from "@/static/images/pages/copy-shopping-list.png"
@@ -187,7 +188,7 @@ const HeroText = styled.h1`
 
 const LandingPage = () => {
   return (
-    <div>
+    <NavPage includeSearch={false} noContainer>
       <HomeContainer className="d-grid gap-1rem pb-4 pr-4 pl-4">
         <section className="d-flex justify-content-center mb-2">
           <HeroText>A place to store, share, and create recipes</HeroText>
@@ -230,7 +231,7 @@ const LandingPage = () => {
       </HowItWorksContainer>
 
       <Footer />
-    </div>
+    </NavPage>
   )
 }
 
