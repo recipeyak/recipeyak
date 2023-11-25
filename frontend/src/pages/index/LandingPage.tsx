@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 
 import { Button } from "@/components/Buttons"
 import { Footer } from "@/components/Footer"
+import { NavPage } from "@/components/Page"
 import { pathRecipeAdd, pathSignup } from "@/paths"
 import addRecipeImg from "@/static/images/pages/add-recipe.png"
 import copyShoppingList from "@/static/images/pages/copy-shopping-list.png"
@@ -144,53 +145,55 @@ const howToSteps = [
 
 const LandingPage = () => {
   return (
-    <div>
-      <section className="home-container d-grid gap-1rem pb-4 pr-4 pl-4">
-        <section className="d-flex justify-content-center mb-2">
-          <h1 className="home-hero-text">
-            A place to store, share, and create recipes
-          </h1>
+    <NavPage includeSearch={false} noContainer>
+      <div>
+        <section className="home-container d-grid gap-1rem pb-4 pr-4 pl-4">
+          <section className="d-flex justify-content-center mb-2">
+            <h1 className="home-hero-text">
+              A place to store, share, and create recipes
+            </h1>
+          </section>
+
+          <Button
+            to={pathSignup({})}
+            variant="primary"
+            size="large"
+            className="justify-self-center"
+          >
+            Create Account
+          </Button>
+        </section>
+        <section className="pt-4 bg-50-50-primary pr-4 pl-4">
+          <section className="home-container">
+            {/* tslint:disable-next-line:no-unsafe-any */}
+            <img className="box-shadow-normal" src={landingImg} alt="" />
+          </section>
         </section>
 
-        <Button
-          to={pathSignup({})}
-          variant="primary"
-          size="large"
-          className="justify-self-center"
-        >
-          Create Account
-        </Button>
-      </section>
-      <section className="pt-4 bg-50-50-primary pr-4 pl-4">
-        <section className="home-container">
-          {/* tslint:disable-next-line:no-unsafe-any */}
-          <img className="box-shadow-normal" src={landingImg} alt="" />
-        </section>
-      </section>
+        <FeaturesContainer>
+          {features.map(({ text, imgURL }, i) => (
+            <Feature key={imgURL} text={text} imageURL={imgURL} index={i} />
+          ))}
+        </FeaturesContainer>
 
-      <FeaturesContainer>
-        {features.map(({ text, imgURL }, i) => (
-          <Feature key={imgURL} text={text} imageURL={imgURL} index={i} />
-        ))}
-      </FeaturesContainer>
+        <HowItWorksContainer>
+          {howToSteps.map(({ text, imgURL }, i) => (
+            <HowTo key={imgURL} content={text} imageURL={imgURL} index={i} />
+          ))}
 
-      <HowItWorksContainer>
-        {howToSteps.map(({ text, imgURL }, i) => (
-          <HowTo key={imgURL} content={text} imageURL={imgURL} index={i} />
-        ))}
+          <Button
+            to={pathSignup({})}
+            variant="primary"
+            size="large"
+            className="justify-self-center mt-4 mb-2"
+          >
+            Create Account
+          </Button>
+        </HowItWorksContainer>
 
-        <Button
-          to={pathSignup({})}
-          variant="primary"
-          size="large"
-          className="justify-self-center mt-4 mb-2"
-        >
-          Create Account
-        </Button>
-      </HowItWorksContainer>
-
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </NavPage>
   )
 }
 
