@@ -117,7 +117,6 @@ function HowTo({ content, index, imageURL }: IHowToProps) {
         {content}
       </p>
       <div className="fact-img">
-        {/* tslint:disable-next-line:no-unsafe-any */}
         <img className="box-shadow-normal " src={imageURL} alt="" />
       </div>
     </FeatureGrid>
@@ -205,7 +204,6 @@ const LandingPage = () => {
       </HomeContainer>
       <section className="pt-4 bg-50-50-primary pr-4 pl-4">
         <HomeContainer>
-          {/* tslint:disable-next-line:no-unsafe-any */}
           <img className="box-shadow-normal" src={landingImg} alt="" />
         </HomeContainer>
       </section>
