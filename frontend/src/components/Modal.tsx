@@ -73,7 +73,7 @@ export function Modal({ show, content, onClose, title }: IModalProps) {
       <ModalContainer>
         <ModalBorderBox display="flex" flexDirection="column" h={100}>
           <Box space="between" mb={2}>
-            <h1 className="fs-14px fw-500">{title}</h1>
+            <h1 className="text-[14px] font-medium">{title}</h1>
             <CloseButton onClose={onClose} />
           </Box>
           {content}

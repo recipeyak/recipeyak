@@ -32,21 +32,21 @@ const MemberRow = ({
   const isUser = user.id === userID
   return (
     <tr key={membershipID}>
-      <td className="d-flex align-items-center pr-4">
+      <td className="flex items-center pr-4">
         <Avatar avatarURL={avatarURL} className="mr-2" />
-        <div className="d-flex direction-column">
+        <div className="flex flex-col">
           <b>{email}</b>
         </div>
       </td>
-      <td className="vertical-align-middle pr-4">
+      <td className="pr-4 align-middle">
         {!isActive ? (
-          <section className="d-flex align-items-start direction-column">
-            <p className="bold">invite sent</p>
+          <section className="flex flex-col items-start">
+            <p className="font-bold">invite sent</p>
             <Button size="small">Resend Invite</Button>
           </section>
         ) : null}
       </td>
-      <td className="vertical-align-middle pr-4">
+      <td className="pr-4 align-middle">
         {isTeamAdmin ? (
           <Select
             value={level}
@@ -69,7 +69,7 @@ const MemberRow = ({
           </p>
         )}
       </td>
-      <td className="vertical-align-middle text-right">
+      <td className="text-right align-middle">
         {isUser || isTeamAdmin ? (
           <Button
             variant="danger"

@@ -110,7 +110,7 @@ export function Dropdown({
 
   return (
     <DropdownContainer ref={ref} className={className}>
-      <Button size="small" className="fs-14px" onClick={toggle}>
+      <Button size="small" className="text-[14px]" onClick={toggle}>
         Actions <Chevron />
       </Button>
       <DropdownMenu isOpen={isOpen} position="left">

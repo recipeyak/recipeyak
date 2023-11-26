@@ -9,7 +9,7 @@ import React, { useEffect, useRef, useState } from "react"
 import { useHistory } from "react-router"
 import { Link } from "react-router-dom"
 
-import { classNames } from "@/classnames"
+import { clx } from "@/classnames"
 import { BorderBox } from "@/components/BorderBox"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
@@ -86,7 +86,7 @@ function ShoppingListItem({
 }: IShoppingListItemProps) {
   // padding serves to prevent the button from appearing in front of text
   // we also use <section>s instead of <p>s to avoid extra new lines in Chrome
-  const cls = classNames("text-small", { "mr-15": isFirst })
+  const cls = clx("text-sm", { "mr-15": isFirst })
 
   const units = normalizeUnitsFracs(quantitiesToString(quantities))
 
@@ -134,7 +134,7 @@ const ShoppingListList = React.forwardRef<
       {props.items.isPending ? (
         <div className="text-center">loading...</div>
       ) : (
-        <div ref={ref} className="selectable">
+        <div ref={ref} className="cursor-auto select-text">
           {groups.map(([groupName, values], groupIndex) => {
             values.sort((x, y) => ingredientByNameAlphabetical(x[0], y[0]))
             return (
@@ -182,7 +182,7 @@ function RecipeAccordian({
   return (
     <Box dir="col" space="between">
       <Box space="between" align="center" w={100}>
-        <div className="fw-500">
+        <div className="font-medium">
           {recipes?.length ?? "-"}{" "}
           {recipes?.length === 1 ? "recipe" : "recipes"}
         </div>
@@ -202,7 +202,7 @@ function RecipeAccordian({
               <Link
                 key={r.scheduledRecipeId}
                 to={pathRecipeDetail({ recipeId: r.recipeId.toString() })}
-                className="text-truncate"
+                className="line-clamp-1 text-ellipsis"
               >
                 {r.recipeName}
               </Link>
@@ -276,7 +276,7 @@ function ShoppingList() {
             placeholder="from"
             value={formatMonth(startDay)}
           />
-          <h2 className="fs-4">→</h2>
+          <h2 className="text-base">→</h2>
           <DateInput
             onChange={handleSetEndDay}
             placeholder="to"

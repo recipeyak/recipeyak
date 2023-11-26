@@ -67,7 +67,7 @@ function Ingredients({
           return (
             <div
               key={`section-${ingredientOrSection.item.id}`}
-              className="bold text-small"
+              className="text-sm font-bold"
             >
               {ingredientOrSection.item.title}
             </div>
@@ -79,7 +79,7 @@ function Ingredients({
           <div
             key={`ingredient-${i.id}`}
             style={{ fontSize: "18px" }}
-            className="d-flex align-items-start"
+            className="flex items-start"
           >
             <input
               id={`ingredient-${i.id}`}
@@ -95,7 +95,7 @@ function Ingredients({
             />
             <label
               htmlFor={`ingredient-${i.id}`}
-              className="selectable"
+              className="cursor-auto select-text"
               style={{
                 paddingLeft: "0.5rem",
                 paddingBottom: "0.5rem",
@@ -141,12 +141,12 @@ function Steps({ steps }: { steps: readonly IStep[] }) {
               fontWeight: isSelected ? "500" : undefined,
               paddingBottom: "1rem",
             }}
-            className="d-flex flex-direction-column"
+            className="flex flex-col"
           >
             <div
               style={{
                 fontSize: "14px",
-                fontWeight: isSelected ? "bold" : "500",
+                fontWeight: isSelected ? "font-bold" : "500",
                 textDecoration: isSelected ? "underline" : undefined,
                 textUnderlineOffset: "0.25rem",
               }}
@@ -247,7 +247,7 @@ export function CookingFullscreen({
           }}
         >
           <div
-            className="selectable"
+            className="cursor-auto select-text"
             style={{
               fontSize: "2rem",
               lineHeight: "1em",

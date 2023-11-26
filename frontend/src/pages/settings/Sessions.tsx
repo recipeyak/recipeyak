@@ -71,7 +71,7 @@ function Session(props: ISession) {
           <Box gap={2}>
             <div>Last used: {lastActivity}</div>
             {props.current ? (
-              <span className="has-text-success fw-500">Current</span>
+              <span className="font-medium text-green-500">Current</span>
             ) : null}
           </Box>
         </Box>
@@ -101,7 +101,11 @@ function SessionList() {
   }
 
   if (sessions.isError) {
-    return <p className="text-muted">Failure fetching sessions</p>
+    return (
+      <p className="text-[var(--color-text-muted)]">
+        Failure fetching sessions
+      </p>
+    )
   }
 
   return (
@@ -138,7 +142,7 @@ function SessionList() {
 export default function Sessions() {
   return (
     <Box dir="col">
-      <label className="fw-bold">Sessions</label>
+      <label className="font-bold">Sessions</label>
       <SessionList />
     </Box>
   )

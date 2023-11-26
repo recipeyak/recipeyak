@@ -84,7 +84,11 @@ interface IMarkdownProps {
 
 export function Markdown({ children: text, title, onClick }: IMarkdownProps) {
   return (
-    <MarkdownWrapper className="selectable" title={title} onClick={onClick}>
+    <MarkdownWrapper
+      className="cursor-auto select-text"
+      title={title}
+      onClick={onClick}
+    >
       <ReactMarkdown
         allowedElements={ALLOWED_MARKDOWN_TYPES}
         remarkPlugins={[

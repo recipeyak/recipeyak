@@ -98,7 +98,7 @@ export function Section({
             })
           }}
         >
-          <div className="mb-2 mt-2">
+          <div className="my-2">
             <TextInput
               onChange={(e) => {
                 setLocalTitle(e.target.value)
@@ -110,7 +110,7 @@ export function Section({
             />
           </div>
           <FormField isGrouped>
-            <FormControl className="flex-grow">
+            <FormControl className="grow">
               <Button
                 size="small"
                 type="button"
@@ -157,7 +157,7 @@ export function Section({
     <li
       ref={editingEnabled ? ref : undefined}
       style={style}
-      className="mt-1 bold text-small selectable"
+      className="mt-1 cursor-auto select-text text-sm font-bold"
       title={editingEnabled ? "click to edit" : undefined}
       onClick={() => {
         if (editingEnabled) {

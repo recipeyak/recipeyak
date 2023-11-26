@@ -28,7 +28,7 @@ import { css, styled } from "@/theme"
 function DayOfWeek({ date }: { date: Date }) {
   const dayOfWeek = format(date, "E")
   return (
-    <div className="d-none d-medium-block">
+    <div className="block md:hidden">
       <span>{dayOfWeek}</span>
       <span className="mx-1">∙</span>
     </div>
@@ -38,7 +38,7 @@ function DayOfWeek({ date }: { date: Date }) {
 const Title = ({ date }: { readonly date: Date }) => {
   const dateFmtText = isFirstDayOfMonth(date) ? "MMM d" : "d"
   return (
-    <div className="d-flex fs-14px">
+    <div className="flex text-[14px]">
       <DayOfWeek date={date} />
       <span>{format(date, dateFmtText)}</span>
     </div>

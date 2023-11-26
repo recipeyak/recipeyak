@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { useDrag, useDrop } from "react-dnd"
 
 import { isMobile } from "@/browser"
-import cls from "@/classnames"
+import { clx } from "@/classnames"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { FormControl } from "@/components/FormControl"
@@ -137,38 +137,40 @@ export function Ingredient(props: {
   const inner = editing ? (
     <form onSubmit={handleSubmit}>
       <FormField>
-        <div className="add-ingredient-grid">
-          <TextInput
-            onChange={(e) => {
-              setQuantity(e.target.value)
-            }}
-            autoFocus
-            value={quantity}
-            className="input-quantity"
-            placeholder="3 lbs"
-          />
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-row gap-2">
+            <TextInput
+              onChange={(e) => {
+                setQuantity(e.target.value)
+              }}
+              autoFocus
+              value={quantity}
+              className="!w-1/3"
+              placeholder="3 lbs"
+            />
 
-          <TextInput
-            onChange={(e) => {
-              setName(e.target.value)
-            }}
-            value={name}
-            className="input-ingredient"
-            placeholder="tomato"
-          />
+            <TextInput
+              onChange={(e) => {
+                setName(e.target.value)
+              }}
+              value={name}
+              className=" !w-2/3"
+              placeholder="tomato"
+            />
+          </div>
 
           <TextInput
             onChange={(e) => {
               setDescription(e.target.value)
             }}
             value={description}
-            className="input-ingredient grid-entire-row"
+            className="col-span-full"
             placeholder="diced at 3cm in width"
           />
         </div>
       </FormField>
 
-      <label className="d-flex align-items-center cursor-pointer mb-2">
+      <label className="mb-2 flex cursor-pointer items-center">
         <CheckBox
           onChange={() => {
             setOptional((prev) => !prev)
@@ -234,7 +236,7 @@ export function Ingredient(props: {
     >
       <section
         title={props.isEditing ? "click to edit" : undefined}
-        className={cls({ "cursor-pointer": props.isEditing })}
+        className={clx({ "cursor-pointer": props.isEditing })}
         onClick={() => {
           if (props.isEditing && !editing) {
             enableEditing()

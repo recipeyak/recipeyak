@@ -32,7 +32,7 @@
 import React, { useRef, useState } from "react"
 import { useDrag, useDrop } from "react-dnd"
 
-import cls from "@/classnames"
+import { clx } from "@/classnames"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { FormControl } from "@/components/FormControl"
@@ -227,7 +227,7 @@ function StepBody({
   return (
     <div>
       <section
-        className={cls({ "cursor-pointer": editingEnabled })}
+        className={clx({ "cursor-pointer": editingEnabled })}
         title={editingEnabled ? "click to edit" : undefined}
         onClick={() => {
           if (!editingEnabled) {

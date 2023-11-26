@@ -5,7 +5,7 @@ import slice from "lodash-es/slice"
 import React, { useState } from "react"
 import { Smile } from "react-feather"
 
-import { classNames as cls } from "@/classnames"
+import { clx } from "@/classnames"
 import { useUserId } from "@/hooks"
 import { Reaction } from "@/queries/recipeFetch"
 import { styled } from "@/theme"
@@ -87,7 +87,7 @@ const ReactionButton = styled.div<{ pressed: boolean }>`
 
 const REACTION_EMOJIS = ["❤️", "😆", "🤮"] as const
 
-export type ReactionType = typeof REACTION_EMOJIS[number]
+export type ReactionType = (typeof REACTION_EMOJIS)[number]
 
 function reactionTypeToName(x: ReactionType): string {
   return {
@@ -161,7 +161,7 @@ export function ReactionPopover(props: {
       animation={false}
       interactive
       content={
-        <ReactionContainer className="box-shadow-normal">
+        <ReactionContainer className="shadow">
           {REACTION_EMOJIS.map((emoji, index) => {
             return (
               <ReactionButton
@@ -173,7 +173,7 @@ export function ReactionPopover(props: {
                 pressed={
                   findReaction(props.reactions, emoji, userId ?? 0) != null
                 }
-                className={cls({ "ml-1": index > 0 })}
+                className={clx({ "ml-1": index > 0 })}
               >
                 {emoji}
               </ReactionButton>
@@ -183,7 +183,7 @@ export function ReactionPopover(props: {
       }
     >
       <OpenReactions
-        className={cls("cursor-pointer", props.className)}
+        className={clx("cursor-pointer", props.className)}
         onClick={() => {
           setVisible((s) => !s)
         }}
@@ -207,7 +207,7 @@ export function ReactionsFooter(props: {
       (x) => orderBy(x.reactions, (reaction) => reaction.created)[0],
     )
   return (
-    <NoteActionsContainer className="text-muted">
+    <NoteActionsContainer className="text-[var(--color-text-muted)] print:!hidden">
       {groupedReactions.map(({ emoji, reactions }) => (
         <UpvoteReaction
           key={emoji}
@@ -215,7 +215,7 @@ export function ReactionsFooter(props: {
           onClick={() => {
             props.onClick(emoji)
           }}
-          className="cursor-pointer text-muted"
+          className="cursor-pointer text-[var(--color-text-muted)]"
         >
           <EmojiContainer>{emoji}</EmojiContainer>
           <ReactionCount>{reactions.length}</ReactionCount>

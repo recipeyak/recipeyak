@@ -7,9 +7,14 @@ $border-color: #dbdbdb;
 
 $text-color: #4a4a4a;
 
+// bulma reset
 @import "./reset.scss";
+// actual bulma css
 @import "../../bulma.sass";
-@import "./helpers.scss";
+// actual tailwind css
+// we're not using the tailwind reset, didn't like how it setup ::placeholder color
+@tailwind components;
+@tailwind utilities;
 
 :root {
   // theme-light
@@ -62,8 +67,6 @@ $text-color: #4a4a4a;
 
   --color-input-placeholder: rgb(208, 197, 180);
 
-  --color-link: var(--color-text);
-
   --color-border: #{$border-color};
   --color-accent: hsla(15, 50%, 82%, 0.865);
 
@@ -93,8 +96,6 @@ $text-color: #4a4a4a;
   --color-text-disabled: var(--color-text);
 
   --color-input-placeholder: #b1b1b1;
-
-  --color-link: var(--color-text);
 
   --color-border: #93a1a1;
   --color-accent: #657b83;
@@ -128,10 +129,6 @@ body {
   height: 100%;
 }
 
-::placeholder {
-  color: var(--color-input-placeholder);
-}
-
 #root {
   height: 100%;
   display: flex;
@@ -157,42 +154,14 @@ section.section {
   padding: 1.5rem;
 }
 
-// bulma override since small buttons are hard to read with the font weight
-.is-small {
-  font-weight: 600;
-  select {
-    font-weight: 600;
-  }
-}
-
 a {
-  color: var(--color-link);
-  // transition: color 0.2s;
+  color: inherit;
 
   @media (hover: hover) {
     &:hover {
       color: var(--color-link-hover);
       text-decoration: underline;
     }
-  }
-}
-
-.add-ingredient-grid {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 0.5rem;
-}
-
-.recipe-grid {
-  display: grid;
-  gap: 0.5rem;
-  // support two columns on iOS.
-
-  @media (max-width: 449px) {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  }
-  @media (min-width: 450px) {
-    grid-template-columns: repeat(auto-fill, minmax(225px, 1fr));
   }
 }
 
@@ -203,41 +172,4 @@ input::-webkit-calendar-picker-indicator {
 
 input[type="date"]::-webkit-input-placeholder {
   visibility: hidden !important;
-}
-
-@media print {
-  .no-print,
-  img,
-  nav {
-    display: none !important;
-  }
-
-  .text-muted {
-    color: black !important;
-  }
-
-  body {
-    border-top: none !important;
-    color: black !important;
-  }
-
-  html {
-    font-size: 14px;
-  }
-
-  a,
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  label,
-  p {
-    color: black !important;
-  }
-
-  @page {
-    margin-bottom: 1rem;
-  }
 }

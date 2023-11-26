@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { useHistory } from "react-router"
 
-import cls from "@/classnames"
+import { clx } from "@/classnames"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { CheckBox, SearchInput } from "@/components/Forms"
@@ -40,7 +40,7 @@ function AddRecipeCallToAction() {
 
 function NoMatchingRecipe({ query }: { readonly query: string }) {
   return (
-    <p className="grid-entire-row justify-center break-word">
+    <p className="col-span-full justify-self-center [word-break:break-word]">
       No recipes found matching <strong>{query}</strong>
     </p>
   )
@@ -66,6 +66,19 @@ const RecipeScroll = styled.div<{ scroll: boolean | undefined }>`
        // edges of the recipe boxes get cut without extra padding
        padding: 0.125rem; 
      }`}
+`
+
+const RecipeGrid = styled.div`
+  display: grid;
+  gap: 0.5rem;
+  // support two columns on iOS.
+
+  @media (max-width: 449px) {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+  @media (min-width: 450px) {
+    grid-template-columns: repeat(auto-fill, minmax(225px, 1fr));
+  }
 `
 
 function RecipeList(props: IRecipeList) {
@@ -112,14 +125,14 @@ function RecipeList(props: IRecipeList) {
 
   return (
     <RecipeScroll scroll={props.scroll}>
-      <div className="mb-2 d-flex justify-space-between flex-wrap">
-        <div className="fs-14px mr-2">
+      <div className="mb-2 flex flex-wrap justify-between">
+        <div className="mr-2 text-[14px]">
           results: {normalResults.length + archivedResults.length}{" "}
           {archivedResults.length > 0 && (
             <>({archivedResults.length} archived)</>
           )}
         </div>
-        <div className="fs-14px">
+        <div className="text-[14px]">
           <label>
             show all:
             <CheckBox
@@ -133,19 +146,19 @@ function RecipeList(props: IRecipeList) {
           </label>
         </div>
       </div>
-      <div className="recipe-grid">
+      <RecipeGrid>
         <Results recipes={normalResults} query={props.query} />
-      </div>
+      </RecipeGrid>
       {archivedResults.length > 0 && showArchived ? (
         <>
-          <div className="d-flex align-items-center">
-            <hr className="flex-grow-1" />
-            <b className="mx-4 my-4">Archived Recipes</b>
-            <hr className="flex-grow-1" />
+          <div className="flex items-center">
+            <hr className="grow" />
+            <b className="m-4">Archived Recipes</b>
+            <hr className="grow" />
           </div>
-          <div className="recipe-grid">
+          <RecipeGrid>
             <Results recipes={archivedResults} query={props.query} />
-          </div>
+          </RecipeGrid>
         </>
       ) : null}
     </RecipeScroll>
@@ -200,10 +213,10 @@ export function RecipeSearchList({
   }
 
   return (
-    <div className={cls(noPadding ? "" : "mw-1000px ml-auto mr-auto")}>
+    <div className={clx(noPadding ? "" : "ml-auto mr-auto max-w-[1000px]")}>
       <SearchInput
         value={query}
-        className={cls(noPadding ? "" : "mb-2")}
+        className={clx(noPadding ? "" : "mb-2")}
         onChange={handleQueryChange}
         placeholder="search • optionally prepended a tag, 'author:' 'name:' 'ingredient:"
       />

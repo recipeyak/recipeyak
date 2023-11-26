@@ -39,7 +39,7 @@ export function AddSectionForm({
   const addDisabled = section === ""
   return (
     <form onSubmit={handleSubmit}>
-      <div className="mb-2 mt-2">
+      <div className="my-2">
         <TextInput
           onChange={(e) => {
             setSection(e.target.value)
@@ -51,7 +51,7 @@ export function AddSectionForm({
         />
       </div>
       <FormField isGrouped>
-        <FormControl className="flex-grow">
+        <FormControl className="grow">
           <Button
             size="small"
             type="button"

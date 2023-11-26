@@ -34,7 +34,7 @@ export function TagEditor({
         </Tag>
       ))}
       <TextInput
-        className="max-width-200px"
+        className="max-w-[200px]"
         placeholder="new tag"
         value={newTag}
         onChange={(e) => {

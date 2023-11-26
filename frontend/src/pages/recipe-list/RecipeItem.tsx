@@ -1,7 +1,7 @@
 import { useDrag } from "react-dnd"
 import { Link } from "react-router-dom"
 
-import { classNames } from "@/classnames"
+import { clx } from "@/classnames"
 import { Card, CardContent } from "@/components/Card"
 import { DragIcon } from "@/components/icons"
 import { Image } from "@/components/Image"
@@ -21,12 +21,8 @@ interface IRecipeTitleProps {
 
 function RecipeTitle({ url, name, dragable }: IRecipeTitleProps) {
   return (
-    <div className="flex-grow d-flex justify-between">
-      <Link
-        tabIndex={0}
-        to={url}
-        className="align-self-start mb-1 flex-grow-1 line-height-tight"
-      >
+    <div className="flex grow justify-between">
+      <Link tabIndex={0} to={url} className="mb-1 grow self-start leading-5">
         {name}
       </Link>
       {dragable && <DragIcon />}
@@ -81,7 +77,7 @@ function RecipeListItem({
   const authorMatch = matches.find((x) => x.kind === "author")
 
   const recipeContent = (
-    <div className="h-100 p-2 pt-0 line-height-tight">
+    <div className="h-full p-2 leading-5">
       <div tabIndex={0} className="mb-1">
         {name}
       </div>
@@ -90,9 +86,7 @@ function RecipeListItem({
         <Ingredient>{ingredientMatch.value}</Ingredient>
       ) : null}
       {author !== "" && (
-        <small
-          className={classNames("d-block", { "fw-bold": authorMatch != null })}
-        >
+        <small className={clx("block", { "font-bold": authorMatch != null })}>
           {author}
         </small>
       )}
@@ -135,8 +129,8 @@ interface IMetaProps {
 function Meta({ author, bold }: IMetaProps) {
   return (
     <div
-      className={classNames("d-flex", "align-items-center", {
-        "fw-bold": bold,
+      className={clx("flex", "items-center", {
+        "font-bold": bold,
       })}
     >
       {author !== "" ? <small>{author}</small> : null}
@@ -193,7 +187,7 @@ export function RecipeItem({
   const authorMatch = matches.find((x) => x.kind === "author")
 
   const recipeContent = (
-    <CardContent className="h-100 d-flex flex-column">
+    <CardContent className="flex h-full flex-col">
       <RecipeTitle name={name} url={url} dragable={!!props.drag} />
       {ingredientMatch != null ? (
         <Ingredient>{ingredientMatch.value}</Ingredient>

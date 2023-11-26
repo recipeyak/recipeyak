@@ -1,6 +1,6 @@
 import { uniq } from "lodash-es"
 
-export function classNames(
+export function clx(
   ...args: (
     | string
     | undefined
@@ -32,5 +32,3 @@ export function classNames(
 
   return uniq(classes).join(" ")
 }
-
-export default classNames

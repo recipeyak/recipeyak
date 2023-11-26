@@ -29,8 +29,8 @@ function CreateFromURLForm() {
   }
   return (
     <form onSubmit={handleImport}>
-      <div className="text-left fw-bold fs-14px">URL</div>
-      <div className="d-flex">
+      <div className="text-left text-[14px] font-bold">URL</div>
+      <div className="flex">
         <TextInput
           placeholder="https://cooking.nytimes.com..."
           name="recipe url"
@@ -50,7 +50,7 @@ function CreateFromURLForm() {
         </Button>
       </div>
       {recipeCreate.isError ? (
-        <div className="has-text-danger text-left mb-1">
+        <div className="mb-1 text-left text-[var(--color-danger)]">
           Error:{" "}
           {
             // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unsafe-member-access
@@ -86,7 +86,7 @@ function CreateManuallyForm() {
   }
   return (
     <form onSubmit={handleManualAdd}>
-      <div className="text-left fw-bold fs-14px">Title</div>
+      <div className="text-left text-[14px] font-bold">Title</div>
       <TextInput
         placeholder="Butternutt Squash Soup"
         name="recipe url"
@@ -97,7 +97,7 @@ function CreateManuallyForm() {
         }}
       />
       {recipeCreate.isError ? (
-        <div className="has-text-danger text-left mb-1">
+        <div className="mb-1 text-left text-[var(--color-danger)]">
           Error:
           {
             // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -117,9 +117,9 @@ export function RecipeCreatePage() {
     <NavPage>
       <div style={{ maxWidth: 500 }} className="mx-auto text-center">
         <Helmet title="Add Recipe" />
-        <h1 className="fs-2rem mb-2">Add Recipe</h1>
+        <h1 className="mb-2 text-[2rem]">Add Recipe</h1>
         <CreateFromURLForm />
-        <div className="text-center mt-4">or</div>
+        <div className="mt-4 text-center">or</div>
         <CreateManuallyForm />
       </div>
     </NavPage>

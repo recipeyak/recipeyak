@@ -231,7 +231,7 @@ function RescheduleSection({
                 value={toISODateString(localDate)}
                 onChange={handleDateChange}
                 type="date"
-                className="w-100"
+                className="w-full"
                 style={{
                   border: "1px solid var(--color-border)",
                   borderRadius: 5,
@@ -241,7 +241,7 @@ function RescheduleSection({
               <details>
                 <summary>shortcuts</summary>
                 <Box gap={2} align="center">
-                  <div className="fs-14px">next open</div>
+                  <div className="text-[14px]">next open</div>
                   <select
                     value={day}
                     onChange={handleSelectChange}

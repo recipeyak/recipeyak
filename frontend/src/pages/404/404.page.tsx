@@ -1,6 +1,6 @@
 export const NotFoundPage = () => (
   <section>
-    <h1 className="fs-10rem bold text-center">404</h1>
-    <p className="fs-3rem text-center">Nothing here 🌵</p>
+    <h1 className="text-center text-[10rem] font-bold">404</h1>
+    <p className="text-center text-[3rem]">Nothing here 🌵</p>
   </section>
 )

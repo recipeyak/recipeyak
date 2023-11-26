@@ -1,5 +1,7 @@
 // https://prettier.io/docs/en/options.html
 module.exports = {
+  plugins: ["prettier-plugin-tailwindcss"],
+  tailwindFunctions: ["clx", "clsx", "classNames", "cls", "className"],
   semi: false,
   useTabs: false,
   tabWidth: 2,

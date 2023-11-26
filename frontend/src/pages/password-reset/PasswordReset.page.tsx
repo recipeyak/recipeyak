@@ -68,7 +68,7 @@ export function PasswordResetPage() {
     <AuthPage>
       <Helmet title="Password Reset" />
       <BorderBox p={3} as="form" onSubmit={handleReset}>
-        <h1 className="is-5 mb-2 fw-500">Password Reset</h1>
+        <h1 className="mb-2 text-xl font-medium">Password Reset</h1>
 
         <FormErrorHandler error={errors.nonFieldErrors} />
 
@@ -87,7 +87,7 @@ export function PasswordResetPage() {
           <FormErrorHandler error={errors.email} />
         </FormField>
 
-        <FormField className="d-flex flex-space-between align-items-center">
+        <FormField className="flex items-center justify-between">
           <Button loading={resetPassword.isPending} type="submit">
             Send Reset Email
           </Button>
