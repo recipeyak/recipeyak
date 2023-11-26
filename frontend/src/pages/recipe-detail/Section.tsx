@@ -98,7 +98,7 @@ export function Section({
             })
           }}
         >
-          <div className="mb-2 mt-2">
+          <div className="my-2">
             <TextInput
               onChange={(e) => {
                 setLocalTitle(e.target.value)

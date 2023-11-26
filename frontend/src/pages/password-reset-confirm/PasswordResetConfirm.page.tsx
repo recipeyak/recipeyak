@@ -91,7 +91,7 @@ export function PasswordResetConfirmPage(props: RouteProps) {
       <BorderBox p={3}>
         <Helmet title="Password Reset" />
         <form onSubmit={handleReset}>
-          <h1 className="is-5">Password Reset Confirmation</h1>
+          <h1 className="text-xl">Password Reset Confirmation</h1>
 
           <FormErrorHandler error={errors.nonFieldErrors} />
 

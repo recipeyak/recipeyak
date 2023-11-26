@@ -45,7 +45,7 @@ export function SchedulePage(props: IScheduleProps) {
 
   return (
     <NavPage includeSearch={false} noContainer>
-      <ScheduleContainer className="flex h-screen grow pl-2 pr-2">
+      <ScheduleContainer className="flex h-screen grow px-2">
         <Helmet title="Schedule" />
         <Sidebar teamID={teamID} />
         <Calendar teamID={teamID} />

@@ -62,7 +62,7 @@ export function PasswordChangePage() {
     <NavPage>
       <form onSubmit={handleSubmit} className="mx-auto my-0 max-w-[400px]">
         <Helmet title="Password Change" />
-        <h2 className="title is-3">Password Change</h2>
+        <h2 className="text-xl">Password Change</h2>
 
         <FormField>
           <Label>Current Password</Label>

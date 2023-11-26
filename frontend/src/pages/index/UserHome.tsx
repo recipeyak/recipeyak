@@ -519,7 +519,7 @@ export const UserHome = () => {
     <NavPage includeSearch={false}>
       <Helmet title="Home" />
       <Search />
-      <div className="flex flex-wrap items-start justify-center gap-x-4 gap-y-4">
+      <div className="flex flex-wrap items-start justify-center gap-4">
         <SchedulePreview />
         <RecentlyViewed />
         <RecentlyCreated />

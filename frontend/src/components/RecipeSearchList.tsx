@@ -153,7 +153,7 @@ function RecipeList(props: IRecipeList) {
         <>
           <div className="flex items-center">
             <hr className="grow" />
-            <b className="mx-4 my-4">Archived Recipes</b>
+            <b className="m-4">Archived Recipes</b>
             <hr className="grow" />
           </div>
           <RecipeGrid>

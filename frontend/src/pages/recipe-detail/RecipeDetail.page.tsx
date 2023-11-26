@@ -277,9 +277,9 @@ const ArchiveMessage = styled.div`
 function RecipeBanner({ children }: { readonly children: React.ReactNode }) {
   return (
     <div className="flex items-center">
-      <hr className="mb-0 mt-0 grow" />
+      <hr className="my-0 grow" />
       <ArchiveMessage>{children}</ArchiveMessage>
-      <hr className="mb-0 mt-0 grow" />
+      <hr className="my-0 grow" />
     </div>
   )
 }

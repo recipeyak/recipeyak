@@ -50,7 +50,6 @@ const Clock = ({ size }: { size: number }) => (
     strokeWidth={2}
     strokeLinecap="round"
     strokeLinejoin="round"
-    className="feather feather-clock"
   >
     <circle cx={12} cy={12} r={10} />
     <path d="M12 6v6l4 2" />

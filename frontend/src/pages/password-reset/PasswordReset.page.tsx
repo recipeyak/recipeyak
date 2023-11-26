@@ -68,7 +68,7 @@ export function PasswordResetPage() {
     <AuthPage>
       <Helmet title="Password Reset" />
       <BorderBox p={3} as="form" onSubmit={handleReset}>
-        <h1 className="is-5 mb-2 font-medium">Password Reset</h1>
+        <h1 className="mb-2 text-xl font-medium">Password Reset</h1>
 
         <FormErrorHandler error={errors.nonFieldErrors} />
 

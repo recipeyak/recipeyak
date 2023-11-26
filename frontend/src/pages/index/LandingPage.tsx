@@ -36,7 +36,7 @@ const HomeContainer = styled.div`
 
 function FeaturesContainer({ children }: IFeaturesContainerProps) {
   return (
-    <section className="bg-[var(--color-primary)] pb-4 pl-4 pr-4 pt-4 text-white">
+    <section className="bg-[var(--color-primary)] p-4 text-white">
       <HomeContainer>
         <Subtitle>Features</Subtitle>
         <ul className="grid gap-4">{children}</ul>
@@ -88,9 +88,9 @@ interface IHowItWorksContainerProps {
 }
 function HowItWorksContainer({ children }: IHowItWorksContainerProps) {
   return (
-    <section className="pl-4 pr-4 pt-4">
+    <section className="px-4 pt-4">
       <HomeContainer className="grid">
-        <h2 className="home-subtitle font-bold">How it works</h2>
+        <h2 className="font-bold">How it works</h2>
         <ol className="grid gap-8">{children}</ol>
       </HomeContainer>
     </section>
@@ -184,7 +184,7 @@ const HeroText = styled.h1`
 const LandingPage = () => {
   return (
     <NavPage includeSearch={false} noContainer>
-      <HomeContainer className="grid gap-4 pb-4 pl-4 pr-4">
+      <HomeContainer className="grid gap-4 px-4 pb-4">
         <section className="mb-2 flex justify-center">
           <HeroText>A place to store, share, and create recipes</HeroText>
         </section>
@@ -198,7 +198,7 @@ const LandingPage = () => {
           Create Account
         </Button>
       </HomeContainer>
-      <section className="bg-50-50-primary bg-gradient-to-b from-[var(--color-background)] from-50% to-[var(--color-primary)] to-50% pl-4 pr-4 pt-4">
+      <section className="bg-gradient-to-b from-[var(--color-background)] from-50% to-[var(--color-primary)] to-50% px-4 pt-4">
         <HomeContainer>
           <img className="shadow" src={landingImg} alt="" />
         </HomeContainer>

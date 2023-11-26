@@ -350,7 +350,7 @@ export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
       <BetterNavItem
         as={Link}
         to={pathHome({})}
-        className="!justify-start pb-1 pl-0 pr-0 pt-1 font-normal"
+        className="!justify-start px-0 py-1 font-normal"
       >
         <Logo width="40px" />
         {isLoggedIn ? (

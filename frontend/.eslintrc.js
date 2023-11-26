@@ -20,7 +20,11 @@ module.exports = {
     "import",
     "@tanstack/query",
   ],
-  extends: ["prettier", "plugin:@tanstack/eslint-plugin-query/recommended"],
+  extends: [
+    "prettier",
+    "plugin:@tanstack/eslint-plugin-query/recommended",
+    "plugin:tailwindcss/recommended",
+  ],
   settings: {
     react: {
       version: "detect",

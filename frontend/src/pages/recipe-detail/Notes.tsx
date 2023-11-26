@@ -824,7 +824,7 @@ function FileWithStatus({
               <StyledProgress
                 value={progress}
                 max="100"
-                className="progress is-primary"
+                className="accent-[var(--color-primary)]"
               />
             </ProgressBarContainer>
           )}

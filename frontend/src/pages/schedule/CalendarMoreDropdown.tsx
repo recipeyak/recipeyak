@@ -35,7 +35,7 @@ export function ICalConfig({
               value={settings.data.calendarLink}
               readOnly
               onClick={selectTarget}
-              className="min-width-0 mr-3 grow"
+              className="mr-3 min-w-0 grow"
             />
             <Button
               size="small"
