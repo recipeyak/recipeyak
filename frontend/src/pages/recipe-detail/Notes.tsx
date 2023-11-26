@@ -1050,7 +1050,7 @@ export function NoteContainer(props: INoteContainerProps) {
                 note={timelineItem}
                 openImage={props.openImage}
                 recipeId={props.recipeId}
-                className="pb-2"
+                className="mb-2"
               />
             )
           }
@@ -1059,7 +1059,7 @@ export function NoteContainer(props: INoteContainerProps) {
               <TimelineEvent
                 key={"recipe-recipe" + String(timelineItem.id)}
                 event={timelineItem}
-                className="mb-4 py-4"
+                className="mb-2"
               />
             )
         }
