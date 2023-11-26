@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { useHistory } from "react-router"
 
-import cls from "@/classnames"
+import { clx } from "@/classnames"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { CheckBox, SearchInput } from "@/components/Forms"
@@ -125,8 +125,8 @@ function RecipeList(props: IRecipeList) {
 
   return (
     <RecipeScroll scroll={props.scroll}>
-      <div className="mb-2 flex justify-between flex-wrap">
-        <div className="text-[14px] mr-2">
+      <div className="mb-2 flex flex-wrap justify-between">
+        <div className="mr-2 text-[14px]">
           results: {normalResults.length + archivedResults.length}{" "}
           {archivedResults.length > 0 && (
             <>({archivedResults.length} archived)</>
@@ -213,10 +213,10 @@ export function RecipeSearchList({
   }
 
   return (
-    <div className={cls(noPadding ? "" : "max-w-[1000px] ml-auto mr-auto")}>
+    <div className={clx(noPadding ? "" : "ml-auto mr-auto max-w-[1000px]")}>
       <SearchInput
         value={query}
-        className={cls(noPadding ? "" : "mb-2")}
+        className={clx(noPadding ? "" : "mb-2")}
         onChange={handleQueryChange}
         placeholder="search • optionally prepended a tag, 'author:' 'name:' 'ingredient:"
       />

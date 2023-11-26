@@ -201,7 +201,7 @@ function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
 
 function HelpPrompt() {
   return (
-    <p className="hidden mt-2 mb-1 md:block">
+    <p className="mb-1 mt-2 hidden md:block">
       press <kbd>?</kbd> for help
     </p>
   )

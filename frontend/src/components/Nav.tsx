@@ -158,7 +158,7 @@ function AuthButtons() {
 function NavButtons() {
   const teamId = useTeamId()
   return (
-    <div className="flex items-center relative justify-center  justify-self-end">
+    <div className="relative flex items-center justify-center  justify-self-end">
       <DropdownContainer>
         <div className="flex">
           <BetterNavItem
@@ -350,16 +350,16 @@ export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
       <BetterNavItem
         as={Link}
         to={pathHome({})}
-        className="pb-1 pt-1 pl-0 pr-0 font-normal !justify-start"
+        className="!justify-start pb-1 pl-0 pr-0 pt-1 font-normal"
       >
         <Logo width="40px" />
         {isLoggedIn ? (
-          <span className="ml-2 font-medium hidden sm:block">Home</span>
+          <span className="ml-2 hidden font-medium sm:block">Home</span>
         ) : (
           <WordMark />
         )}
       </BetterNavItem>
-      <div className="flex items-center grow ml-3">
+      <div className="ml-3 flex grow items-center">
         {includeSearch && <Search />}
       </div>
       {isLoggedIn ? <NavButtons /> : <AuthButtons />}

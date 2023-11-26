@@ -63,7 +63,7 @@ function AddIngredientForm({
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="flex flex-col gap-2 mb-2">
+      <div className="mb-2 flex flex-col gap-2">
         <div className="flex flex-row gap-2">
           <TextInput
             id="firstinput"
@@ -102,7 +102,7 @@ function AddIngredientForm({
         </div>
       </div>
 
-      <label className="flex items-center cursor-pointer mb-2">
+      <label className="mb-2 flex cursor-pointer items-center">
         <CheckBox
           onChange={() => {
             setOptional((prev) => !prev)

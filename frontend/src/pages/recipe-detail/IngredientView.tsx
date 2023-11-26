@@ -52,7 +52,7 @@ export default function IngredientView({
 }: IIngredientVIewProps) {
   return (
     <IngredientViewInner
-      className="justify-between select-text cursor-auto"
+      className="cursor-auto select-text justify-between"
       ref={dragRef}
     >
       <IngredientViewContent

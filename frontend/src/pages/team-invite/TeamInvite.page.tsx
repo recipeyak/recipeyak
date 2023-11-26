@@ -50,11 +50,11 @@ export function TeamInvitePage(props: ITeamInviteProps) {
       <div style={{ maxWidth: 800, marginLeft: "auto", marginRight: "auto" }}>
         <Helmet title="Team Invite" />
         <Link to={teamURL(id, teamInfo.data.name)}>
-          <h1 className="text-4xl text-center font-medium p-4">
+          <h1 className="p-4 text-center text-4xl font-medium">
             {teamInfo.data.name}
           </h1>
         </Link>
-        <section className="flex justify-between items-center mb-2">
+        <section className="mb-2 flex items-center justify-between">
           <h2 className="text-2xl">Invite Team Members</h2>
         </section>
 

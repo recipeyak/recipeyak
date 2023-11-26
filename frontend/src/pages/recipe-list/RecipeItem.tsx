@@ -1,7 +1,7 @@
 import { useDrag } from "react-dnd"
 import { Link } from "react-router-dom"
 
-import { classNames } from "@/classnames"
+import { clx } from "@/classnames"
 import { Card, CardContent } from "@/components/Card"
 import { DragIcon } from "@/components/icons"
 import { Image } from "@/components/Image"
@@ -21,8 +21,8 @@ interface IRecipeTitleProps {
 
 function RecipeTitle({ url, name, dragable }: IRecipeTitleProps) {
   return (
-    <div className="grow flex justify-between">
-      <Link tabIndex={0} to={url} className="self-start mb-1 grow leading-5">
+    <div className="flex grow justify-between">
+      <Link tabIndex={0} to={url} className="mb-1 grow self-start leading-5">
         {name}
       </Link>
       {dragable && <DragIcon />}
@@ -86,9 +86,7 @@ function RecipeListItem({
         <Ingredient>{ingredientMatch.value}</Ingredient>
       ) : null}
       {author !== "" && (
-        <small
-          className={classNames("block", { "font-bold": authorMatch != null })}
-        >
+        <small className={clx("block", { "font-bold": authorMatch != null })}>
           {author}
         </small>
       )}
@@ -131,7 +129,7 @@ interface IMetaProps {
 function Meta({ author, bold }: IMetaProps) {
   return (
     <div
-      className={classNames("flex", "items-center", {
+      className={clx("flex", "items-center", {
         "font-bold": bold,
       })}
     >
@@ -189,7 +187,7 @@ export function RecipeItem({
   const authorMatch = matches.find((x) => x.kind === "author")
 
   const recipeContent = (
-    <CardContent className="h-full flex flex-col">
+    <CardContent className="flex h-full flex-col">
       <RecipeTitle name={name} url={url} dragable={!!props.drag} />
       {ingredientMatch != null ? (
         <Ingredient>{ingredientMatch.value}</Ingredient>

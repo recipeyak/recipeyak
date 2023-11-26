@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { useDrag, useDrop } from "react-dnd"
 
 import { isMobile } from "@/browser"
-import cls from "@/classnames"
+import { clx } from "@/classnames"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { FormControl } from "@/components/FormControl"
@@ -170,7 +170,7 @@ export function Ingredient(props: {
         </div>
       </FormField>
 
-      <label className="flex items-center cursor-pointer mb-2">
+      <label className="mb-2 flex cursor-pointer items-center">
         <CheckBox
           onChange={() => {
             setOptional((prev) => !prev)
@@ -236,7 +236,7 @@ export function Ingredient(props: {
     >
       <section
         title={props.isEditing ? "click to edit" : undefined}
-        className={cls({ "cursor-pointer": props.isEditing })}
+        className={clx({ "cursor-pointer": props.isEditing })}
         onClick={() => {
           if (props.isEditing && !editing) {
             enableEditing()

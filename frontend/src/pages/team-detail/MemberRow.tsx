@@ -38,15 +38,15 @@ const MemberRow = ({
           <b>{email}</b>
         </div>
       </td>
-      <td className="align-middle pr-4">
+      <td className="pr-4 align-middle">
         {!isActive ? (
-          <section className="flex items-start flex-col">
+          <section className="flex flex-col items-start">
             <p className="font-bold">invite sent</p>
             <Button size="small">Resend Invite</Button>
           </section>
         ) : null}
       </td>
-      <td className="align-middle pr-4">
+      <td className="pr-4 align-middle">
         {isTeamAdmin ? (
           <Select
             value={level}
@@ -69,7 +69,7 @@ const MemberRow = ({
           </p>
         )}
       </td>
-      <td className="align-middle text-right">
+      <td className="text-right align-middle">
         {isUser || isTeamAdmin ? (
           <Button
             variant="danger"

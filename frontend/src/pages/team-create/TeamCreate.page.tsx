@@ -22,7 +22,7 @@ export function TeamCreatePage() {
     <div style={{ maxWidth: 800, marginLeft: "auto", marginRight: "auto" }}>
       <h1 className="text-4xl">Create Team</h1>
       <form action="" onSubmit={handleSubmit}>
-        <label className="flex items-center mb-3">
+        <label className="mb-3 flex items-center">
           Name
           <TextInput
             value={name}

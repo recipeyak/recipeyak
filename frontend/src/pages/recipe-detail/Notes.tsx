@@ -3,7 +3,7 @@ import orderBy from "lodash-es/orderBy"
 import React, { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
 
-import { classNames as cls } from "@/classnames"
+import { clx } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
@@ -165,7 +165,7 @@ function SharedEntry({
   return (
     <div
       ref={ref}
-      className={cls(
+      className={clx(
         {
           "animate-highlighted-fade": isSharedNote,
         },
@@ -234,7 +234,7 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
   }
 
   return (
-    <SharedEntry className={cls("flex items-start", className)} id={noteHtmlId}>
+    <SharedEntry className={clx("flex items-start", className)} id={noteHtmlId}>
       <Avatar
         avatarURL={note.created_by.avatar_url}
         className="mr-2 print:!hidden"
@@ -259,7 +259,7 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
           />
           {note.created_by.id === userId ? (
             <SmallAnchor
-              className="ml-2 text-[var(--color-text-muted)] cursor-pointer print:hidden"
+              className="ml-2 cursor-pointer text-[var(--color-text-muted)] print:hidden"
               onClick={onNoteClick}
             >
               edit
@@ -400,7 +400,7 @@ export function TimelineEvent({
   const action =
     event.action === "created" && event.is_scraped ? "imported" : event.action
   return (
-    <SharedEntry id={eventId} className={cls("flex items-center", className)}>
+    <SharedEntry id={eventId} className={clx("flex items-center", className)}>
       <Avatar
         avatarURL={event.created_by?.avatar_url ?? null}
         className="mr-2 print:!hidden"
@@ -622,7 +622,7 @@ function FilePreview({
             gridArea: "1 / 1",
             backgroundImage: `url(${backgroundUrl})`,
           }}
-          className="after:content-[''] after:absolute after:h-full after:w-full after:rounded-md after:backdrop-blur-[6px] after:pointer-events-none h-[100px] w-[100px] rounded-md object-cover relative bg-no-repeat bg-center bg-cover"
+          className="relative h-[100px] w-[100px] rounded-md bg-cover bg-center bg-no-repeat object-cover after:pointer-events-none after:absolute after:h-full after:w-full after:rounded-md after:backdrop-blur-[6px] after:content-['']"
         />
       )}
     </div>
@@ -748,7 +748,7 @@ function useFileUpload(
             url: x.url,
             contentType: x.contentType,
             state: "success",
-          } as const),
+          }) as const,
       ),
   ]
 
@@ -901,7 +901,7 @@ function FileUploader({
           ))}
         </FileUploadContainer>
       )}
-      <DragDropLabel className="text-[var(--color-text-muted)] mb-2">
+      <DragDropLabel className="mb-2 text-[var(--color-text-muted)]">
         <input
           type="file"
           multiple
@@ -1004,7 +1004,7 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
       </UploadContainer>
 
       {isEditing && (
-        <div className="flex justify-end items-center">
+        <div className="flex items-center justify-end">
           <Button
             size="small"
             className="mr-3"

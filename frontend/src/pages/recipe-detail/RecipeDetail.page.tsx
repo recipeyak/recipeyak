@@ -277,9 +277,9 @@ const ArchiveMessage = styled.div`
 function RecipeBanner({ children }: { readonly children: React.ReactNode }) {
   return (
     <div className="flex items-center">
-      <hr className="grow mb-0 mt-0" />
+      <hr className="mb-0 mt-0 grow" />
       <ArchiveMessage>{children}</ArchiveMessage>
-      <hr className="grow mb-0 mt-0" />
+      <hr className="mb-0 mt-0 grow" />
     </div>
   )
 }
@@ -320,7 +320,7 @@ function RecipeMetaItem({
       <div className="font-bold" style={!inline ? { width: 90 } : undefined}>
         {label}
       </div>
-      <div className="select-text cursor-auto">{children}</div>
+      <div className="cursor-auto select-text">{children}</div>
     </div>
   )
 }
@@ -439,7 +439,7 @@ function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
           }}
         />
       </div>
-      <div className="flex col-span-full items-end justify-end mt-4">
+      <div className="col-span-full mt-4 flex items-end justify-end">
         <Button
           size="small"
           className="mr-3"
@@ -662,11 +662,11 @@ function RecipeInfo(props: {
           <>
             <RecipeTitleCenter>
               <RecipeTitleContainer>
-                <MyRecipeTitle className="select-text cursor-auto">
+                <MyRecipeTitle className="cursor-auto select-text">
                   {props.recipe.name}
                 </MyRecipeTitle>
                 {notEmpty(props.recipe.author) && (
-                  <div className="select-text cursor-auto">
+                  <div className="cursor-auto select-text">
                     By{" "}
                     <Link
                       to={{
@@ -850,7 +850,7 @@ export function RecipeDetailPage(props: IRecipeProps) {
   }
 
   return (
-    <NavPage className="!text-black">
+    <NavPage>
       <Helmet title={recipe.name} />
       <Meta
         title={recipeTitle}

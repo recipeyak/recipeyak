@@ -71,7 +71,7 @@ function Session(props: ISession) {
           <Box gap={2}>
             <div>Last used: {lastActivity}</div>
             {props.current ? (
-              <span className="text-green-500 font-medium">Current</span>
+              <span className="font-medium text-green-500">Current</span>
             ) : null}
           </Box>
         </Box>

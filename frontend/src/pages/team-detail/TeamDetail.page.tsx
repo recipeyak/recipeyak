@@ -36,7 +36,7 @@ function Members({ teamID, loading, members }: IMembersProps) {
     )
     return (
       <div className="block w-full overflow-x-auto">
-        <table className="border-spacing-y-4 border-separate">
+        <table className="border-separate border-spacing-y-4">
           <tbody>
             {members.map((x) => (
               <MemberRow
@@ -76,7 +76,7 @@ interface ITeamMembers {
 
 const TeamMembers = ({ id, name, members, loading }: ITeamMembers) => (
   <>
-    <section className="flex justify-between items-center">
+    <section className="flex items-center justify-between">
       <h2 className="text-2xl">Members</h2>
       <Button variant="primary" to={inviteURL(id, name)}>
         Invite
@@ -117,7 +117,7 @@ function TeamSettings({ id, name: initialName }: { id: number; name: string }) {
           name="name"
         />
       </FormField>
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <Button
           variant="danger"
           onClick={() => {
@@ -141,7 +141,7 @@ interface ITeamNameProps {
 const TeamName = ({ name }: ITeamNameProps) => {
   return (
     <div>
-      <h1 className="text-4xl text-center font-medium p-3">{name}</h1>
+      <h1 className="p-3 text-center text-4xl font-medium">{name}</h1>
     </div>
   )
 }

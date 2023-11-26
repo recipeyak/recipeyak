@@ -30,12 +30,12 @@ export function ICalConfig({
       <div>Sync this RecipeYak schedule with your personal calendar.</div>
       {settings.data.syncEnabled ? (
         <>
-          <div className="flex justify-between items-center mt-1">
+          <div className="mt-1 flex items-center justify-between">
             <TextInput
               value={settings.data.calendarLink}
               readOnly
               onClick={selectTarget}
-              className="mr-3 min-width-0 grow"
+              className="min-width-0 mr-3 grow"
             />
             <Button
               size="small"
@@ -51,7 +51,7 @@ export function ICalConfig({
       ) : null}
       <Button
         variant="link"
-        className="block mx-auto underline shadow-none "
+        className="mx-auto block underline shadow-none "
         size="small"
         onClick={() => {
           const syncEnabled = !settings.data.syncEnabled

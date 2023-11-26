@@ -3,3 +3,5 @@ build/
 .eslintrc.js
 vite.config.ts
 vitest-setup.ts
+tailwind.config.js
+postcss.config.js

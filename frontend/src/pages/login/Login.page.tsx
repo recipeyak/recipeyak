@@ -112,7 +112,7 @@ export function LoginPage() {
             <FormErrorHandler error={errors?.nonFieldErrors} />
           </FormField>
 
-          <FormField className="flex justify-between items-center">
+          <FormField className="flex items-center justify-between">
             <Button
               variant="primary"
               type="submit"

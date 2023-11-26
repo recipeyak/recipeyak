@@ -15,7 +15,7 @@ interface ISidebarProps {
 
 function Sidebar({ teamID }: ISidebarProps) {
   return (
-    <div className="hidden sm:grid gap-2 auto-rows-min w-[250px] min-w-[250px] shrink-0 mr-2">
+    <div className="mr-2 hidden w-[250px] min-w-[250px] shrink-0 auto-rows-min gap-2 sm:grid">
       <RecipeSearchList teamID={teamID} scroll drag noPadding />
     </div>
   )
@@ -45,7 +45,7 @@ export function SchedulePage(props: IScheduleProps) {
 
   return (
     <NavPage includeSearch={false} noContainer>
-      <ScheduleContainer className="flex pl-2 pr-2 grow h-screen">
+      <ScheduleContainer className="flex h-screen grow pl-2 pr-2">
         <Helmet title="Schedule" />
         <Sidebar teamID={teamID} />
         <Calendar teamID={teamID} />

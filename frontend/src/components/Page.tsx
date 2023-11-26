@@ -23,7 +23,7 @@ const ContainerBase = ({
 
 const Container = ({ children }: { children: React.ReactNode }) => (
   <>
-    <div className="pb-3 pt-0 w-full pl-3 pr-3 print:!text-black">
+    <div className="w-full pb-3 pl-3 pr-3 pt-0 print:!text-black">
       <ErrorBoundary>{children}</ErrorBoundary>
     </div>
     <Footer />
@@ -80,7 +80,7 @@ export function AuthPage(props: { children: React.ReactNode }) {
       <Helmet title="Auth" />
       <Link
         to={pathHome({})}
-        className="pl-0 pr-0 text-[2rem] font-normal flex items-center justify-center pb-3 no-underline text-white"
+        className="flex items-center justify-center pb-3 pl-0 pr-0 text-[2rem] font-normal text-white no-underline"
       >
         <Logo light />
         <span className="font-medium">Recipe Yak</span>

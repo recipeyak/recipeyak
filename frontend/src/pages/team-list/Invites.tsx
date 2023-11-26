@@ -21,7 +21,7 @@ function InviteButtons({ invite }: { invite: IInvite }) {
   }
 
   return (
-    <div className="flex justify-between items-center">
+    <div className="flex items-center justify-between">
       <Button
         loading={declineInvite.isPending}
         onClick={() => {
@@ -69,7 +69,7 @@ export function Invites() {
 
   if (invites.data.length === 0) {
     return (
-      <p className="text-[var(--color-text-muted)] text-sm self-center">
+      <p className="self-center text-sm text-[var(--color-text-muted)]">
         No new notifications.
       </p>
     )

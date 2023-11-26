@@ -22,9 +22,9 @@ export function ErrorBoundary({ children }: { children?: React.ReactNode }) {
     <Sentry.ErrorBoundary
       fallback={(args) => (
         <div className="">
-          <section className="items-center flex flex-col justify-self-center">
+          <section className="flex flex-col items-center justify-self-center">
             <Logo width="150" />
-            <div className="flex flex-col text-xl justify-center text-center">
+            <div className="flex flex-col justify-center text-center text-xl">
               <h1 className="text-2xl">Something's gone wrong.</h1>
               <p>
                 Try to navigate{" "}

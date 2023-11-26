@@ -85,7 +85,7 @@ interface IMarkdownProps {
 export function Markdown({ children: text, title, onClick }: IMarkdownProps) {
   return (
     <MarkdownWrapper
-      className="select-text cursor-auto"
+      className="cursor-auto select-text"
       title={title}
       onClick={onClick}
     >

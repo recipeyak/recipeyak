@@ -1,6 +1,6 @@
 import React from "react"
 
-import cls from "@/classnames"
+import { clx } from "@/classnames"
 
 export function Box({
   dir = "row",
@@ -42,7 +42,7 @@ export function Box({
   return (
     <div
       onClick={onClick}
-      className={cls(
+      className={clx(
         "flex",
         dir === "col" && "flex-col",
         dir === "row" && "flex-row",

@@ -123,7 +123,7 @@ export function SignupPage() {
 
           <FormErrorHandler error={errors != null ? [errors] : null} />
 
-          <FormField className="flex justify-between items-center">
+          <FormField className="flex items-center justify-between">
             <Button variant="primary" type="submit" loading={signup.isPending}>
               Submit
             </Button>

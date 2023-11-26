@@ -86,7 +86,7 @@ interface IProfileImgProps {
 }
 function ProfileImg({ avatarURL }: IProfileImgProps) {
   return (
-    <a href="https://secure.gravatar.com" className="justify-self-center mr-3">
+    <a href="https://secure.gravatar.com" className="mr-3 justify-self-center">
       <img
         width="72px"
         height="72px"
@@ -305,7 +305,7 @@ function ThemePicker() {
       <BetterLabel>Theme</BetterLabel>
       <Box dir="col" gap={1} style={{ minWidth: 150 }}>
         <label
-          className="items-center flex rounded-md p-2 cursor-pointer"
+          className="flex cursor-pointer items-center rounded-md p-2"
           style={{
             border: "1px solid var(--color-border)",
           }}
@@ -322,7 +322,7 @@ function ThemePicker() {
         </label>
 
         <label
-          className="items-center flex rounded-md p-2 cursor-pointer"
+          className="flex cursor-pointer items-center rounded-md p-2"
           style={{
             border: "1px solid var(--color-border)",
           }}
@@ -339,7 +339,7 @@ function ThemePicker() {
         </label>
 
         <label
-          className="items-center flex rounded-md p-2 cursor-pointer"
+          className="flex cursor-pointer items-center rounded-md p-2"
           style={{
             border: "1px solid var(--color-border)",
           }}

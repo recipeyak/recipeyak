@@ -20,7 +20,7 @@ function TeamsList() {
 
   if (teams.data.length === 0) {
     return (
-      <p className="text-[var(--color-text-muted)] text-sm self-center">
+      <p className="self-center text-sm text-[var(--color-text-muted)]">
         No teams.
       </p>
     )
@@ -43,7 +43,7 @@ export function TeamListPage() {
   return (
     <NavPage>
       <div style={{ maxWidth: 800 }} className="mx-auto max-w-[800px]">
-        <section className="flex justify-between items-center">
+        <section className="flex items-center justify-between">
           <h2 className="text-2xl">Teams</h2>
           <Button to={pathTeamCreate({})}>Create a Team</Button>
         </section>

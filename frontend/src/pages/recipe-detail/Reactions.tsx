@@ -5,7 +5,7 @@ import slice from "lodash-es/slice"
 import React, { useState } from "react"
 import { Smile } from "react-feather"
 
-import { classNames as cls } from "@/classnames"
+import { clx } from "@/classnames"
 import { useUserId } from "@/hooks"
 import { Reaction } from "@/queries/recipeFetch"
 import { styled } from "@/theme"
@@ -87,7 +87,7 @@ const ReactionButton = styled.div<{ pressed: boolean }>`
 
 const REACTION_EMOJIS = ["❤️", "😆", "🤮"] as const
 
-export type ReactionType = typeof REACTION_EMOJIS[number]
+export type ReactionType = (typeof REACTION_EMOJIS)[number]
 
 function reactionTypeToName(x: ReactionType): string {
   return {
@@ -173,7 +173,7 @@ export function ReactionPopover(props: {
                 pressed={
                   findReaction(props.reactions, emoji, userId ?? 0) != null
                 }
-                className={cls({ "ml-1": index > 0 })}
+                className={clx({ "ml-1": index > 0 })}
               >
                 {emoji}
               </ReactionButton>
@@ -183,7 +183,7 @@ export function ReactionPopover(props: {
       }
     >
       <OpenReactions
-        className={cls("cursor-pointer", props.className)}
+        className={clx("cursor-pointer", props.className)}
         onClick={() => {
           setVisible((s) => !s)
         }}

@@ -67,7 +67,7 @@ function Ingredients({
           return (
             <div
               key={`section-${ingredientOrSection.item.id}`}
-              className="font-bold text-sm"
+              className="text-sm font-bold"
             >
               {ingredientOrSection.item.title}
             </div>
@@ -95,7 +95,7 @@ function Ingredients({
             />
             <label
               htmlFor={`ingredient-${i.id}`}
-              className="select-text cursor-auto"
+              className="cursor-auto select-text"
               style={{
                 paddingLeft: "0.5rem",
                 paddingBottom: "0.5rem",
@@ -247,7 +247,7 @@ export function CookingFullscreen({
           }}
         >
           <div
-            className="select-text cursor-auto"
+            className="cursor-auto select-text"
             style={{
               fontSize: "2rem",
               lineHeight: "1em",

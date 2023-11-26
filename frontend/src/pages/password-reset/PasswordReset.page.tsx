@@ -87,7 +87,7 @@ export function PasswordResetPage() {
           <FormErrorHandler error={errors.email} />
         </FormField>
 
-        <FormField className="flex justify-between items-center">
+        <FormField className="flex items-center justify-between">
           <Button loading={resetPassword.isPending} type="submit">
             Send Reset Email
           </Button>
