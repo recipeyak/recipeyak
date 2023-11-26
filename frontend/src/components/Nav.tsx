@@ -43,7 +43,7 @@ function UserAvatar({ onClick, url }: IUserAvatarProps) {
       as={Avatar}
       onClick={onClick}
       tabIndex={0}
-      className="p-0"
+      className="!p-0"
       avatarURL={url}
     />
   )
