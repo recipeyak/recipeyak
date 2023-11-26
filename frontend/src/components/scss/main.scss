@@ -1,16 +1,122 @@
-@import "./variables.scss";
+@import "./reset.css";
 
-$primary-color: adjust-hue(tomato, 5deg);
-$primary-color-shadow: transparentize($primary-color, 0.2);
-$primary: $primary-color;
-$border-color: #dbdbdb;
+html {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  min-width: 300px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  text-rendering: optimizeLegibility;
 
-$text-color: #4a4a4a;
+  height: 100%;
+  font-size: 16px;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+  color: var(--color-text);
+  background-color: var(--color-background);
+}
 
-// bulma reset
-@import "./reset.scss";
-// actual bulma css
-@import "../../bulma.sass";
+article,
+aside,
+figure,
+footer,
+header,
+hgroup,
+section {
+  display: block;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  font-family:
+    BlinkMacSystemFont,
+    -apple-system,
+    "Segoe UI",
+    "Roboto",
+    "Oxygen",
+    "Ubuntu",
+    "Cantarell",
+    "Fira Sans",
+    "Droid Sans",
+    "Helvetica Neue",
+    "Helvetica",
+    "Arial",
+    sans-serif;
+}
+
+code,
+pre {
+  -moz-osx-font-smoothing: auto;
+  -webkit-font-smoothing: auto;
+  font-family: monospace;
+}
+
+body {
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  height: 100%;
+}
+
+a {
+  color: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  transition: none 86ms ease-out;
+  @media (hover: hover) {
+    &:hover {
+      color: var(--color-link-hover);
+      text-decoration: underline;
+    }
+  }
+}
+
+hr {
+  background-color: var(--color-border);
+  border: none;
+  display: block;
+  height: 1px;
+  margin: 1.5rem 0;
+}
+
+img {
+  height: auto;
+  max-width: 100%;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  vertical-align: baseline;
+}
+
+small {
+  font-size: 0.875em;
+}
+
+span {
+  font-style: inherit;
+  font-weight: inherit;
+}
+
+strong {
+  font-weight: 700;
+}
+
+// Block
+table {
+  width: 100%;
+  td,
+  th {
+    text-align: left;
+    vertical-align: top;
+  }
+}
+
 // actual tailwind css
 // we're not using the tailwind reset, didn't like how it setup ::placeholder color
 @tailwind components;
@@ -20,13 +126,13 @@ $text-color: #4a4a4a;
   // theme-light
   --color-background: white;
 
-  --color-primary: #{$primary-color};
+  --color-primary: #e37857;
   --color-primary-button-text: var(--color-background);
-  --color-primary-shadow: #{$primary-color-shadow};
+  --color-primary-shadow: rgba(255, 114, 71, 0.8);
   --color-primary-active: #ff5f2e;
   --color-primary-disabled: #e03500;
 
-  --color-text: #{$text-color};
+  --color-text: #4a4a4a;
   --color-text-muted: rgba(115, 115, 115, 1);
   --color-text-disabled: var(--color-text);
 
@@ -35,7 +141,7 @@ $text-color: #4a4a4a;
   --color-link: var(--color-text);
   --color-link-hover: var(--color-link);
 
-  --color-border: #{$border-color};
+  --color-border: #dbdbdb;
 
   --color-accent: rgb(255, 114, 71);
 
@@ -57,7 +163,7 @@ $text-color: #4a4a4a;
 
   --color-primary: #e37857;
   --color-primary-button-text: white;
-  --color-primary-shadow: #{$primary-color-shadow};
+  --color-primary-shadow: rgba(255, 114, 71, 0.8);
   --color-primary-active: var(--color-primary);
   --color-primary-disabled: #b86349;
 
@@ -67,7 +173,7 @@ $text-color: #4a4a4a;
 
   --color-input-placeholder: rgb(208, 197, 180);
 
-  --color-border: #{$border-color};
+  --color-border: #dbdbdb;
   --color-accent: hsla(15, 50%, 82%, 0.865);
 
   --color-danger: #fb5274;
@@ -91,7 +197,7 @@ $text-color: #4a4a4a;
   --color-primary-active: var(--color-primary);
   --color-primary-disabled: var(--color-primary);
 
-  --color-text: #{$text-color};
+  --color-text: #4a4a4a;
   --color-text-muted: rgba(115, 115, 115, 1);
   --color-text-disabled: var(--color-text);
 
@@ -110,59 +216,6 @@ $text-color: #4a4a4a;
   --color-background-empty-image: var(--color-background-calendar-day);
 
   --margin-calendar-item-bottom: 0.5rem;
-}
-
-html {
-  height: 100%;
-  font-size: 16px;
-  user-select: none;
-  -webkit-user-select: none;
-  cursor: default;
-
-  color: var(--color-text);
-
-  background-color: var(--color-background);
-}
-
-body {
-  color: var(--color-text);
-  height: 100%;
-}
-
-#root {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-kbd {
-  color: var(--color-text);
-  padding: 0.1rem 0.2rem;
-  background-color: var(--color-background);
-  border-radius: 4px;
-  border: 1px solid var(--color-border);
-  border-bottom-width: 2px;
-}
-
-nav.nav,
-section.section {
-  background-color: transparent;
-}
-
-// override bulma
-section.section {
-  padding: 1.5rem;
-}
-
-a {
-  color: inherit;
-
-  @media (hover: hover) {
-    &:hover {
-      color: var(--color-link-hover);
-      text-decoration: underline;
-    }
-  }
 }
 
 // hide native chrome pickers
