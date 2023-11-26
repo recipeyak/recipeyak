@@ -1,17 +1,14 @@
 {
   // https://code.visualstudio.com/docs/editor/extension-gallery#_workspace-recommended-extensions
   "recommendations": [
-    "joelday.docthis",
     "esbenp.prettier-vscode",
     "ms-python.python",
-    "ms-vscode.vscode-typescript-tslint-plugin",
     "ms-vsliveshare.vsliveshare",
-    "peterjausovec.vscode-docker",
-    "jpoissonnier.vscode-styled-components",
     "wmaurer.change-case",
     "chdsbd.githubinator",
     "charliermarsh.ruff",
     "dbaeumer.vscode-eslint",
-    "redhat.vscode-yaml"
+    "redhat.vscode-yaml",
+    "bradlc.vscode-tailwindcss"
   ]
 }
