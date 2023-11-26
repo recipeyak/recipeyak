@@ -14,6 +14,7 @@ import { toISODateString } from "@/date"
 import CalendarDay from "@/pages/schedule/CalendarDay"
 import { ICalConfig } from "@/pages/schedule/CalendarMoreDropdown"
 import { IconSettings } from "@/pages/schedule/IconSettings"
+import { Kbd } from "@/pages/schedule/Kbd"
 import ShoppingList from "@/pages/schedule/ShoppingList"
 import { ICalRecipe } from "@/queries/scheduledRecipeCreate"
 import { useScheduledRecipeList } from "@/queries/scheduledRecipeList"
@@ -202,7 +203,7 @@ function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
 function HelpPrompt() {
   return (
     <p className="mb-1 mt-2 hidden md:block">
-      press <kbd>?</kbd> for help
+      press <Kbd>?</Kbd> for help
     </p>
   )
 }
