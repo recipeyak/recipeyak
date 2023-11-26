@@ -112,7 +112,9 @@ const BaseInput = React.forwardRef(
   ) => {
     return (
       <StyledInput
-        className={className}
+        className={
+          className + " " + "placeholder:text-[var(--color-input-placeholder)]"
+        }
         isDanger={error}
         {...props}
         ref={ref}
@@ -230,7 +232,9 @@ export function Select(props: {
   )
 }
 
-export const Textarea = styled(TextareaAutosize)<{
+export const Textarea = styled(TextareaAutosize).attrs({
+  className: "placeholder:text-[var(--color-input-placeholder)]",
+})<{
   isError?: boolean
   bottomFlat?: boolean
   minimized?: boolean

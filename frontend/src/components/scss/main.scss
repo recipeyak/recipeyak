@@ -9,13 +9,10 @@ $text-color: #4a4a4a;
 
 // bulma reset
 @import "./reset.scss";
-// enable tailwind
-// tailwind reset
-@tailwind base;
-
 // actual bulma css
 @import "../../bulma.sass";
 // actual tailwind css
+// we're not using the tailwind reset, didn't like how it setup ::placeholder color
 @tailwind components;
 @tailwind utilities;
 
@@ -130,10 +127,6 @@ html {
 body {
   color: var(--color-text);
   height: 100%;
-}
-
-::placeholder {
-  color: var(--color-input-placeholder);
 }
 
 #root {
