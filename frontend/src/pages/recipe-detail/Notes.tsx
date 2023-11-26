@@ -137,7 +137,7 @@ function NoteTimeStamp({ created }: { readonly created: string }) {
     <SmallTime
       title={prettyDate}
       dateTime={created}
-      className="text-[var(--color-text-muted)]"
+      className="text-[var(--color-text-muted)] print:text-black"
     >
       {humanizedDate}
     </SmallTime>
