@@ -58,7 +58,7 @@ function LogoutButton() {
         logoutUser.mutate()
       }}
       loading={logoutUser.isPending}
-      className="w-100"
+      className="w-full"
     >
       Logout
     </Button>
@@ -66,7 +66,7 @@ function LogoutButton() {
 }
 
 function UserEmail({ email }: { email: string }) {
-  return <p className="bold">{email}</p>
+  return <p className="font-bold">{email}</p>
 }
 
 function TeamSelect() {
@@ -121,7 +121,7 @@ function UserDropdown() {
         <UserEmail email={user.email} />
         <TeamSelect />
         {links.map(([to, text]) => (
-          <Link key={text} className="w-100" to={to} onClick={toggle}>
+          <Link key={text} className="w-full" to={to} onClick={toggle}>
             {text}
           </Link>
         ))}
@@ -144,7 +144,7 @@ function WordMark() {
 
 function AuthButtons() {
   return (
-    <div className="d-flex justify-self-end">
+    <div className="flex justify-self-end">
       <BetterNavItem as={NavLink} to={pathLogin({})}>
         Login
       </BetterNavItem>
@@ -158,9 +158,9 @@ function AuthButtons() {
 function NavButtons() {
   const teamId = useTeamId()
   return (
-    <div className="d-flex align-center p-relative justify-content-center  justify-self-end">
+    <div className="flex items-center relative justify-center  justify-self-end">
       <DropdownContainer>
-        <div className="d-flex">
+        <div className="flex">
           <BetterNavItem
             as={NavLink}
             to={pathRecipeAdd({})}
@@ -346,20 +346,20 @@ function Search() {
 export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
   const isLoggedIn = useIsLoggedIn()
   return (
-    <NavContainer>
+    <NavContainer className="print:!hidden">
       <BetterNavItem
         as={Link}
         to={pathHome({})}
-        className="pb-1 pt-1 pl-0 pr-0 fw-normal align justify-self-left"
+        className="pb-1 pt-1 pl-0 pr-0 font-normal !justify-start"
       >
         <Logo width="40px" />
         {isLoggedIn ? (
-          <span className="ml-2 fw-500 sm:d-none">Home</span>
+          <span className="ml-2 font-medium hidden sm:block">Home</span>
         ) : (
           <WordMark />
         )}
       </BetterNavItem>
-      <div className="d-flex align-items-center flex-grow ml-3">
+      <div className="flex items-center grow ml-3">
         {includeSearch && <Search />}
       </div>
       {isLoggedIn ? <NavButtons /> : <AuthButtons />}

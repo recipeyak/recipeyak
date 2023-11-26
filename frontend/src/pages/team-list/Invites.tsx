@@ -13,15 +13,15 @@ function InviteButtons({ invite }: { invite: IInvite }) {
   const declineInvite = useInviteDecline()
 
   if (invite.status === "declined") {
-    return <p className="text-muted">declined</p>
+    return <p className="text-[var(--color-text-muted)]">declined</p>
   }
 
   if (invite.status === "accepted") {
-    return <p className="text-muted">accepted</p>
+    return <p className="text-[var(--color-text-muted)]">accepted</p>
   }
 
   return (
-    <div className="d-flex justify-space-between align-items-center">
+    <div className="flex justify-between items-center">
       <Button
         loading={declineInvite.isPending}
         onClick={() => {
@@ -69,7 +69,7 @@ export function Invites() {
 
   if (invites.data.length === 0) {
     return (
-      <p className="text-muted text-small align-self-center">
+      <p className="text-[var(--color-text-muted)] text-sm self-center">
         No new notifications.
       </p>
     )
@@ -80,7 +80,7 @@ export function Invites() {
       {invites.data.map((invite) => {
         return (
           <div key={invite.id} className="mb-2">
-            <p className="mb-1 text-left break-word">
+            <p className="mb-1 text-left [word-break:break-word]">
               Invited to{" "}
               <TeamName
                 teamId={invite.team.id}

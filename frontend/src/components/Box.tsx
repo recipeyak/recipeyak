@@ -43,8 +43,8 @@ export function Box({
     <div
       onClick={onClick}
       className={cls(
-        "d-flex",
-        dir === "col" && "flex-column",
+        "flex",
+        dir === "col" && "flex-col",
         dir === "row" && "flex-row",
         m === 0 && "m-0",
         m === 1 && "m-1",
@@ -67,16 +67,16 @@ export function Box({
         gap === 2 && "gap-2",
         gap === 3 && "gap-3",
         gap === 4 && "gap-4",
-        space === "between" && "flex-space-between",
+        space === "between" && "justify-between",
         space === "end" && "justify-end",
-        align === "center" && "align-items-center",
-        align === "start" && "align-items-start",
-        align === "end" && "align-items-end",
-        w === 100 && "w-100",
-        shrink === 0 && "flex-shrink-0",
-        grow === 1 && "flex-grow-1",
+        align === "center" && "items-center",
+        align === "start" && "items-start",
+        align === "end" && "items-end",
+        w === 100 && "w-full",
+        shrink === 0 && "shrink-0",
+        grow === 1 && "grow",
         wrap && "flex-wrap",
-        lineHeight === "tight" && "line-height-tight",
+        lineHeight === "tight" && "leading-5",
         className,
       )}
       children={children}

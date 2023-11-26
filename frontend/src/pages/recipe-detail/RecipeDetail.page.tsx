@@ -276,10 +276,10 @@ const ArchiveMessage = styled.div`
 
 function RecipeBanner({ children }: { readonly children: React.ReactNode }) {
   return (
-    <div className="d-flex align-items-center">
-      <hr className="flex-grow mb-0 mt-0" />
+    <div className="flex items-center">
+      <hr className="grow mb-0 mt-0" />
       <ArchiveMessage>{children}</ArchiveMessage>
-      <hr className="flex-grow mb-0 mt-0" />
+      <hr className="grow mb-0 mt-0" />
     </div>
   )
 }
@@ -317,10 +317,10 @@ function RecipeMetaItem({
 }) {
   return (
     <div style={{ display: "flex", gap: inline ? "0.25rem" : undefined }}>
-      <div className="bold" style={!inline ? { width: 90 } : undefined}>
+      <div className="font-bold" style={!inline ? { width: 90 } : undefined}>
         {label}
       </div>
-      <div className="selectable">{children}</div>
+      <div className="select-text cursor-auto">{children}</div>
     </div>
   )
 }
@@ -387,7 +387,7 @@ function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
     }
   return (
     <div>
-      <label className="bold">
+      <label className="font-bold">
         Title
         <TextInput
           autoFocus
@@ -396,7 +396,7 @@ function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
           defaultValue={formState.name}
         />
       </label>
-      <label className="bold">
+      <label className="font-bold">
         Author
         <TextInput
           placeholder="Author"
@@ -404,7 +404,7 @@ function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
           onChange={handleChange("author")}
         />
       </label>
-      <label className="bold">
+      <label className="font-bold">
         Time
         <TextInput
           placeholder="1 hour"
@@ -412,7 +412,7 @@ function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
           onChange={handleChange("time")}
         />
       </label>
-      <label className="bold">
+      <label className="font-bold">
         Servings
         <TextInput
           placeholder="4 to 6 servings"
@@ -421,7 +421,7 @@ function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
           name="servings"
         />
       </label>
-      <label className="bold">
+      <label className="font-bold">
         From
         <TextInput
           placeholder="http://example.com/dumpling-soup"
@@ -430,7 +430,7 @@ function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
           name="source"
         />
       </label>
-      <div className="bold">
+      <div className="font-bold">
         Tags
         <TagEditor
           tags={formState.tags ?? []}
@@ -439,7 +439,7 @@ function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
           }}
         />
       </div>
-      <div className="d-flex grid-entire-row align-items-end justify-content-end mt-4">
+      <div className="flex col-span-full items-end justify-end mt-4">
         <Button
           size="small"
           className="mr-3"
@@ -615,7 +615,9 @@ function isNote(x: TimelineItem): x is INote {
   return x.type === "note"
 }
 
-const Caption = styled.div.attrs({ className: "text-muted" })`
+const Caption = styled.div.attrs({
+  className: "text-[var(--color-text-muted)]",
+})`
   position: absolute;
   right: 0;
   text-align: right;
@@ -640,7 +642,7 @@ function RecipeInfo(props: {
     <>
       <RecipeDetailsContainer spanColumns={inlineLayout}>
         <Dropdown
-          className="mr-auto"
+          className="mr-auto print:!hidden"
           recipeIsArchived={props.recipe.archived_at != null}
           recipeId={props.recipe.id}
           recipeName={props.recipe.name}
@@ -660,11 +662,11 @@ function RecipeInfo(props: {
           <>
             <RecipeTitleCenter>
               <RecipeTitleContainer>
-                <MyRecipeTitle className="selectable">
+                <MyRecipeTitle className="select-text cursor-auto">
                   {props.recipe.name}
                 </MyRecipeTitle>
                 {notEmpty(props.recipe.author) && (
-                  <div className="selectable">
+                  <div className="select-text cursor-auto">
                     By{" "}
                     <Link
                       to={{
@@ -731,7 +733,10 @@ function RecipeInfo(props: {
       </RecipeDetailsContainer>
       {(props.recipe.primaryImage || props.editingEnabled) && (
         <>
-          <ImageWrapper style={{ position: "relative" }}>
+          <ImageWrapper
+            style={{ position: "relative" }}
+            className="print:!hidden"
+          >
             <Image
               sources={{
                 url: imgixFmt(props.recipe.primaryImage?.url ?? ""),
@@ -845,7 +850,7 @@ export function RecipeDetailPage(props: IRecipeProps) {
   }
 
   return (
-    <NavPage>
+    <NavPage className="!text-black">
       <Helmet title={recipe.name} />
       <Meta
         title={recipeTitle}
@@ -883,6 +888,7 @@ export function RecipeDetailPage(props: IRecipeProps) {
 
       <RecipeDetailGrid
         enableLargeImageRow={!!recipe.primaryImage?.url || editingEnabled}
+        className="print:!flex print:!flex-col"
       >
         <RecipeInfo
           recipe={recipe}

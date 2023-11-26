@@ -35,8 +35,8 @@ function Members({ teamID, loading, members }: IMembersProps) {
       (x) => x.level === "admin" && x.user.id === userId,
     )
     return (
-      <div className="table-responsive">
-        <table className="table-spacing">
+      <div className="block w-full overflow-x-auto">
+        <table className="border-spacing-y-4 border-separate">
           <tbody>
             {members.map((x) => (
               <MemberRow
@@ -59,7 +59,9 @@ function Members({ teamID, loading, members }: IMembersProps) {
 
   return (
     <section>
-      <h1 className="text-center fs-6 bold text-muted">No Team Members</h1>
+      <h1 className="text-center text-2xl font-bold text-[var(--color-text-muted)]">
+        No Team Members
+      </h1>
       <p className="text-center">Add one via the Invite button</p>
     </section>
   )
@@ -74,8 +76,8 @@ interface ITeamMembers {
 
 const TeamMembers = ({ id, name, members, loading }: ITeamMembers) => (
   <>
-    <section className="d-flex justify-space-between align-items-center">
-      <h2 className="fs-6">Members</h2>
+    <section className="flex justify-between items-center">
+      <h2 className="text-2xl">Members</h2>
       <Button variant="primary" to={inviteURL(id, name)}>
         Invite
       </Button>
@@ -115,7 +117,7 @@ function TeamSettings({ id, name: initialName }: { id: number; name: string }) {
           name="name"
         />
       </FormField>
-      <div className="d-flex justify-space-between align-items-center">
+      <div className="flex justify-between items-center">
         <Button
           variant="danger"
           onClick={() => {
@@ -139,7 +141,7 @@ interface ITeamNameProps {
 const TeamName = ({ name }: ITeamNameProps) => {
   return (
     <div>
-      <h1 className="fs-9 text-center fw-500 p-3">{name}</h1>
+      <h1 className="text-4xl text-center font-medium p-3">{name}</h1>
     </div>
   )
 }

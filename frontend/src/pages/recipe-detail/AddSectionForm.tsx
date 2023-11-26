@@ -51,7 +51,7 @@ export function AddSectionForm({
         />
       </div>
       <FormField isGrouped>
-        <FormControl className="flex-grow">
+        <FormControl className="grow">
           <Button
             size="small"
             type="button"

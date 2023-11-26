@@ -50,10 +50,12 @@ export function TeamInvitePage(props: ITeamInviteProps) {
       <div style={{ maxWidth: 800, marginLeft: "auto", marginRight: "auto" }}>
         <Helmet title="Team Invite" />
         <Link to={teamURL(id, teamInfo.data.name)}>
-          <h1 className="fs-9 text-center fw-500 p-4">{teamInfo.data.name}</h1>
+          <h1 className="text-4xl text-center font-medium p-4">
+            {teamInfo.data.name}
+          </h1>
         </Link>
-        <section className="d-flex justify-space-between align-items-center mb-2">
-          <h2 className="fs-6">Invite Team Members</h2>
+        <section className="flex justify-between items-center mb-2">
+          <h2 className="text-2xl">Invite Team Members</h2>
         </section>
 
         <form
@@ -85,7 +87,7 @@ export function TeamInvitePage(props: ITeamInviteProps) {
             placeholder="emails seperated by commas • j@example.com,hey@example.com"
           />
           {roles.map((role, index) => (
-            <label key={index} className="d-flex align-items-center pb-4">
+            <label key={index} className="flex items-center pb-4">
               <RadioButton
                 className="mr-2"
                 name="level"
@@ -97,8 +99,10 @@ export function TeamInvitePage(props: ITeamInviteProps) {
                 }}
               />
               <div>
-                <h4 className="fs-4 fw-500">{role.name}</h4>
-                <p className="text-muted">{role.description}</p>
+                <h4 className="text-base font-medium">{role.name}</h4>
+                <p className="text-[var(--color-text-muted)]">
+                  {role.description}
+                </p>
               </div>
             </label>
           ))}
@@ -110,7 +114,6 @@ export function TeamInvitePage(props: ITeamInviteProps) {
             type="submit"
             variant="primary"
             loading={sendInvites.isPending}
-            className="justify-self-left"
           >
             Send Invite
           </Button>

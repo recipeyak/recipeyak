@@ -23,7 +23,7 @@ function ProfileImg({ avatarURL }: IProfileImgProps) {
         width={size}
         height={size}
         alt="user profile"
-        className="br-5"
+        className="rounded-md"
         src={avatarURL + `&s=${size}`}
       />
     </a>
@@ -193,11 +193,11 @@ export function ProfilePage(props: RouteComponentProps<{ userId: string }>) {
 
         <Box dir="col" align="center">
           <ProfileImg avatarURL={userInfo.data.avatar_url} />
-          <span className="fs-6">{userInfo.data.name}</span>
+          <span className="text-2xl">{userInfo.data.name}</span>
           <span>Joined {joinedDateStr}</span>
         </Box>
 
-        <span className="fs-6">Stats</span>
+        <span className="text-2xl">Stats</span>
 
         <Box dir="row" align="start" wrap gap={2}>
           {allStats.map(([value, name, Icon]) => {
@@ -220,7 +220,7 @@ export function ProfilePage(props: RouteComponentProps<{ userId: string }>) {
           })}
         </Box>
 
-        <div className="fs-6">Activity</div>
+        <div className="text-2xl">Activity</div>
         <ActivityLog activity={userInfo.data.activity} />
       </Box>
     </NavPage>
@@ -359,7 +359,7 @@ function ActivityLog({
           </div>
           <div style={{ lineHeight: "1.2" }}>
             <Link
-              className="text-truncate"
+              className="line-clamp-1 text-ellipsis"
               to={pathRecipeDetail({ recipeId: x.recipe_id.toString() })}
             >
               {x.recipe_name}

@@ -60,7 +60,7 @@ export function PasswordChangePage() {
 
   return (
     <NavPage>
-      <form onSubmit={handleSubmit} className="max-width-400px margin-0-auto">
+      <form onSubmit={handleSubmit} className="max-w-[400px] mx-auto my-0">
         <Helmet title="Password Change" />
         <h2 className="title is-3">Password Change</h2>
 
@@ -109,7 +109,7 @@ export function PasswordChangePage() {
           <Button
             variant="primary"
             type="submit"
-            className="w-100"
+            className="w-full"
             loading={passwordChange.isPending}
           >
             Update

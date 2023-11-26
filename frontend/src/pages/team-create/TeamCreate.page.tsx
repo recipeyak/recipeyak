@@ -20,9 +20,9 @@ export function TeamCreatePage() {
 
   return (
     <div style={{ maxWidth: 800, marginLeft: "auto", marginRight: "auto" }}>
-      <h1 className="fs-9">Create Team</h1>
+      <h1 className="text-4xl">Create Team</h1>
       <form action="" onSubmit={handleSubmit}>
-        <label className="d-flex align-center mb-3">
+        <label className="flex items-center mb-3">
           Name
           <TextInput
             value={name}
@@ -36,7 +36,7 @@ export function TeamCreatePage() {
         </label>
 
         <div>
-          <h2 className="fs-6">Invite Team Members</h2>
+          <h2 className="text-2xl">Invite Team Members</h2>
 
           <TextInput
             className="mb-4"
@@ -48,7 +48,7 @@ export function TeamCreatePage() {
             placeholder="emails seperated by commas • j@example.com,hey@example.com"
           />
           {roles.map(({ name, value, description }, id) => (
-            <label key={id} className="d-flex align-items-center pb-4">
+            <label key={id} className="flex items-center pb-4">
               <RadioButton
                 className="mr-2"
                 name="level"
@@ -60,8 +60,8 @@ export function TeamCreatePage() {
                 }}
               />
               <div>
-                <h4 className="fs-4 fw-500">{name}</h4>
-                <p className="text-muted">{description}</p>
+                <h4 className="text-base font-medium">{name}</h4>
+                <p className="text-[var(--color-text-muted)]">{description}</p>
               </div>
             </label>
           ))}
@@ -71,12 +71,7 @@ export function TeamCreatePage() {
           </p>
         </div>
 
-        <Button
-          type="submit"
-          variant="primary"
-          loading={teamCreate.isPending}
-          className="justify-self-left"
-        >
+        <Button type="submit" variant="primary" loading={teamCreate.isPending}>
           Create Team
         </Button>
       </form>

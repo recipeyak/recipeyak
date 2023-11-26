@@ -11,7 +11,7 @@ const StyledFooter = styled.footer`
 
 export const Footer = () => (
   <StyledFooter>
-    <span className="no-print">
+    <span className="print:hidden">
       Recipe Yak • <a href="https://github.com/recipeyak/recipeyak">src</a>
     </span>
   </StyledFooter>

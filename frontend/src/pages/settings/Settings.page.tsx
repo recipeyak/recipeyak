@@ -23,7 +23,7 @@ import { toast } from "@/toast"
 function Export() {
   return (
     <Box dir="col">
-      <label className="fw-bold">Export</label>
+      <label className="font-bold">Export</label>
       <p>
         {/* TODO: figure out how to type check these routes */}
         <a href="/recipes.yaml">recipes.yaml</a>
@@ -73,7 +73,7 @@ function DangerZone() {
   }
   return (
     <Box dir="col" align="start" gap={1}>
-      <label className="fw-bold">Danger Zone</label>
+      <label className="font-bold">Danger Zone</label>
       <Button size="small" onClick={deleteUserAccount} variant="danger">
         permanently delete my account
       </Button>
@@ -91,7 +91,7 @@ function ProfileImg({ avatarURL }: IProfileImgProps) {
         width="72px"
         height="72px"
         alt="user profile"
-        className="br-5"
+        className="rounded-md"
         src={avatarURL + "&s=72"}
       />
     </a>
@@ -112,7 +112,7 @@ function EmailEditForm(props: IEmailEditForm) {
   }
   return (
     <form
-      className="d-flex flex-column"
+      className="flex flex-col"
       onSubmit={(e) => {
         e.preventDefault()
         updateEmail.mutate(
@@ -212,7 +212,7 @@ function NameForm(props: { initialValue: string }) {
   }, [props.initialValue])
   return (
     <form
-      className="d-flex align-center"
+      className="flex items-center"
       onSubmit={(e) => {
         e.preventDefault()
         updateUser.mutate(
@@ -305,7 +305,7 @@ function ThemePicker() {
       <BetterLabel>Theme</BetterLabel>
       <Box dir="col" gap={1} style={{ minWidth: 150 }}>
         <label
-          className="align-items-center d-flex br-6 p-2 cursor-pointer"
+          className="items-center flex rounded-md p-2 cursor-pointer"
           style={{
             border: "1px solid var(--color-border)",
           }}
@@ -322,7 +322,7 @@ function ThemePicker() {
         </label>
 
         <label
-          className="align-items-center d-flex br-6 p-2 cursor-pointer"
+          className="items-center flex rounded-md p-2 cursor-pointer"
           style={{
             border: "1px solid var(--color-border)",
           }}
@@ -339,7 +339,7 @@ function ThemePicker() {
         </label>
 
         <label
-          className="align-items-center d-flex br-6 p-2 cursor-pointer"
+          className="items-center flex rounded-md p-2 cursor-pointer"
           style={{
             border: "1px solid var(--color-border)",
           }}
@@ -379,7 +379,7 @@ export function SettingsPage() {
       >
         <Helmet title="Settings" />
 
-        <h1 className="fs-8">User settings</h1>
+        <h1 className="text-3xl">User settings</h1>
 
         <Box dir="col" align="start">
           <ProfileImg avatarURL={userInfo.data.avatar_url} />

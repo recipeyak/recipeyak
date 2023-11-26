@@ -64,7 +64,9 @@ function AddStep({ recipeId, onCancel, index, position }: IAddStepProps) {
             name="step"
           />
           {addStep.error ? (
-            <p className="fs-4 has-text-danger">A step is required</p>
+            <p className="text-base text-[var(--color-danger)]">
+              A step is required
+            </p>
           ) : null}
         </FormControl>
       </FormField>

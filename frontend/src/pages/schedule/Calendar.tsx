@@ -25,7 +25,7 @@ function CalTitle({ dayTs }: { readonly dayTs: number }) {
   return (
     <div>
       <span>{format(dayTs, "MMM d")}</span>
-      <span className="hide-sm"> | {format(dayTs, "yyyy")}</span>
+      <span className="hidden sm:inline"> | {format(dayTs, "yyyy")}</span>
     </div>
   )
 }
@@ -158,7 +158,7 @@ function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
         }}
         title="Shopping List"
         content={
-          <div className="d-flex">
+          <div className="flex">
             <ShoppingList />
           </div>
         }
@@ -201,7 +201,7 @@ function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
 
 function HelpPrompt() {
   return (
-    <p className="mt-2 mb-1 hide-sm">
+    <p className="hidden mt-2 mb-1 md:block">
       press <kbd>?</kbd> for help
     </p>
   )

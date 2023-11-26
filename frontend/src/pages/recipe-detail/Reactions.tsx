@@ -161,7 +161,7 @@ export function ReactionPopover(props: {
       animation={false}
       interactive
       content={
-        <ReactionContainer className="box-shadow-normal">
+        <ReactionContainer className="shadow">
           {REACTION_EMOJIS.map((emoji, index) => {
             return (
               <ReactionButton
@@ -207,7 +207,7 @@ export function ReactionsFooter(props: {
       (x) => orderBy(x.reactions, (reaction) => reaction.created)[0],
     )
   return (
-    <NoteActionsContainer className="text-muted">
+    <NoteActionsContainer className="text-[var(--color-text-muted)] print:!hidden">
       {groupedReactions.map(({ emoji, reactions }) => (
         <UpvoteReaction
           key={emoji}
@@ -215,7 +215,7 @@ export function ReactionsFooter(props: {
           onClick={() => {
             props.onClick(emoji)
           }}
-          className="cursor-pointer text-muted"
+          className="cursor-pointer text-[var(--color-text-muted)]"
         >
           <EmojiContainer>{emoji}</EmojiContainer>
           <ReactionCount>{reactions.length}</ReactionCount>

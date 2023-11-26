@@ -73,12 +73,12 @@ export function SignupPage() {
         <Helmet title="Sign Up" />
         <Tabs>
           <Tab>
-            <Link to={pathLogin({})} className="text-decoration-none">
+            <Link to={pathLogin({})} className="no-underline">
               Login
             </Link>
           </Tab>
           <Tab isActive>
-            <Link to={pathSignup({})} className="text-decoration-none">
+            <Link to={pathSignup({})} className="no-underline">
               Sign Up
             </Link>
           </Tab>
@@ -123,7 +123,7 @@ export function SignupPage() {
 
           <FormErrorHandler error={errors != null ? [errors] : null} />
 
-          <FormField className="d-flex flex-space-between align-items-center">
+          <FormField className="flex justify-between items-center">
             <Button variant="primary" type="submit" loading={signup.isPending}>
               Submit
             </Button>

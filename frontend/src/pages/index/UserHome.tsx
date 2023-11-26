@@ -86,7 +86,7 @@ function ScheduledRecipe(props: {
       <Day>{props.day}</Day>
       <Box gap={1} dir="col" grow={1}>
         {props.recipes.length === 0 ? (
-          <div className="text-muted">—</div>
+          <div className="text-[var(--color-text-muted)]">—</div>
         ) : null}
         {props.recipes.map((x) => (
           <RecipeSlide key={x.id} recipe={x} />
@@ -301,8 +301,8 @@ function RecipeSlide({ recipe: r }: { recipe: Recipe }) {
           rounded
         />
         <Box dir="col" w={100}>
-          <div className="text-truncate">{r.name}</div>
-          <small className="text-truncate">{r.author}</small>
+          <div className="line-clamp-1 text-ellipsis">{r.name}</div>
+          <small className="line-clamp-1 text-ellipsis">{r.author}</small>
         </Box>
       </Box>
     </Link>
@@ -519,7 +519,7 @@ export const UserHome = () => {
     <NavPage includeSearch={false}>
       <Helmet title="Home" />
       <Search />
-      <div className="d-flex flex-wrap justify-content-center column-gap-1rem row-gap-1rem align-items-start">
+      <div className="flex flex-wrap justify-center gap-x-4 gap-y-4 items-start">
         <SchedulePreview />
         <RecentlyViewed />
         <RecentlyCreated />

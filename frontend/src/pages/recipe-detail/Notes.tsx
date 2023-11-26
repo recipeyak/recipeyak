@@ -19,6 +19,7 @@ import {
   ReactionsFooter,
   ReactionType,
 } from "@/pages/recipe-detail/Reactions"
+import { SectionTitle } from "@/pages/recipe-detail/RecipeHelpers"
 import { pathProfileById } from "@/paths"
 import { useNoteCreate } from "@/queries/noteCreate"
 import { useNoteDelete } from "@/queries/noteDelete"
@@ -133,7 +134,11 @@ function NoteTimeStamp({ created }: { readonly created: string }) {
   const prettyDate = formatAbsoluteDateTime(date, { includeYear: true })
   const humanizedDate = formatHumanDateTime(date)
   return (
-    <SmallTime title={prettyDate} dateTime={created} className="text-muted">
+    <SmallTime
+      title={prettyDate}
+      dateTime={created}
+      className="text-[var(--color-text-muted)]"
+    >
       {humanizedDate}
     </SmallTime>
   )
@@ -162,7 +167,7 @@ function SharedEntry({
       ref={ref}
       className={cls(
         {
-          "bg-highlight": isSharedNote,
+          "animate-highlighted-fade": isSharedNote,
         },
         className,
       )}
@@ -229,15 +234,15 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
   }
 
   return (
-    <SharedEntry
-      className={cls("d-flex align-items-start", className)}
-      id={noteHtmlId}
-    >
-      <Avatar avatarURL={note.created_by.avatar_url} className="mr-2" />
-      <div className="w-100">
+    <SharedEntry className={cls("flex items-start", className)} id={noteHtmlId}>
+      <Avatar
+        avatarURL={note.created_by.avatar_url}
+        className="mr-2 print:!hidden"
+      />
+      <div className="w-full">
         <Box align="center">
           <Link
-            className="fw-bold"
+            className="font-bold"
             to={pathProfileById({ userId: note.created_by.id.toString() })}
           >
             {note.created_by.name}
@@ -246,7 +251,7 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
             <NoteTimeStamp created={note.created} />
           </a>
           <ReactionPopover
-            className="ml-auto no-print"
+            className="ml-auto print:!hidden"
             onPick={(emoji) => {
               addOrRemoveReaction(emoji)
             }}
@@ -254,7 +259,7 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
           />
           {note.created_by.id === userId ? (
             <SmallAnchor
-              className="ml-2 text-muted cursor-pointer no-print"
+              className="ml-2 text-[var(--color-text-muted)] cursor-pointer print:hidden"
               onClick={onNoteClick}
             >
               edit
@@ -372,7 +377,7 @@ function MaybeLink({
     return <b>{children}</b>
   }
   return (
-    <Link to={to} className="fw-bold">
+    <Link to={to} className="font-bold">
       {children}
     </Link>
   )
@@ -395,15 +400,12 @@ export function TimelineEvent({
   const action =
     event.action === "created" && event.is_scraped ? "imported" : event.action
   return (
-    <SharedEntry
-      id={eventId}
-      className={cls("d-flex align-items-center", className)}
-    >
+    <SharedEntry id={eventId} className={cls("flex items-center", className)}>
       <Avatar
         avatarURL={event.created_by?.avatar_url ?? null}
-        className="mr-2"
+        className="mr-2 print:!hidden"
       />
-      <div className="d-flex flex-column">
+      <div className="flex flex-col">
         <div>
           <MaybeLink
             to={
@@ -599,7 +601,7 @@ function FilePreview({
 }) {
   return (
     <div
-      className="d-grid"
+      className="grid print:!hidden"
       style={{
         backgroundColor: "var(--color-background-empty-image)",
         borderRadius: 6,
@@ -620,7 +622,7 @@ function FilePreview({
             gridArea: "1 / 1",
             backgroundImage: `url(${backgroundUrl})`,
           }}
-          className="blurred-filter"
+          className="after:content-[''] after:absolute after:h-full after:w-full after:rounded-md after:backdrop-blur-[6px] after:pointer-events-none h-[100px] w-[100px] rounded-md object-cover relative bg-no-repeat bg-center bg-cover"
         />
       )}
     </div>
@@ -899,7 +901,7 @@ function FileUploader({
           ))}
         </FileUploadContainer>
       )}
-      <DragDropLabel className="text-muted mb-2">
+      <DragDropLabel className="text-[var(--color-text-muted)] mb-2">
         <input
           type="file"
           multiple
@@ -1002,7 +1004,7 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
       </UploadContainer>
 
       {isEditing && (
-        <div className="d-flex justify-end align-center">
+        <div className="flex justify-end items-center">
           <Button
             size="small"
             className="mr-3"
@@ -1036,8 +1038,9 @@ interface INoteContainerProps {
 export function NoteContainer(props: INoteContainerProps) {
   return (
     <>
-      <hr />
-      <NoteCreator recipeId={props.recipeId} className="pb-4 no-print" />
+      <hr className="print:hidden" />
+      <SectionTitle className="hidden print:block">Notes</SectionTitle>
+      <NoteCreator recipeId={props.recipeId} className="pb-4 print:hidden" />
       {orderBy(props.timelineItems, "created", "desc").map((timelineItem) => {
         switch (timelineItem.type) {
           case "note": {

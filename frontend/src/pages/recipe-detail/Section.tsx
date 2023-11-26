@@ -110,7 +110,7 @@ export function Section({
             />
           </div>
           <FormField isGrouped>
-            <FormControl className="flex-grow">
+            <FormControl className="grow">
               <Button
                 size="small"
                 type="button"
@@ -157,7 +157,7 @@ export function Section({
     <li
       ref={editingEnabled ? ref : undefined}
       style={style}
-      className="mt-1 bold text-small selectable"
+      className="mt-1 font-bold text-sm select-text cursor-auto"
       title={editingEnabled ? "click to edit" : undefined}
       onClick={() => {
         if (editingEnabled) {

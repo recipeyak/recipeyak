@@ -29,10 +29,16 @@ export function IngredientViewContent({
     : ""
   return (
     <>
-      <span className="fw-500">{normalizeUnitsFracs(quantity).trim()}</span>{" "}
+      <span className="font-medium">
+        {normalizeUnitsFracs(quantity).trim()}
+      </span>{" "}
       {normalizeUnitsFracs(name.trim())}
       {fmtDescription.trim()}{" "}
-      {optional ? <span className="text-muted">[optional]</span> : ""}
+      {optional ? (
+        <span className="text-[var(--color-text-muted)]">[optional]</span>
+      ) : (
+        ""
+      )}
     </>
   )
 }
@@ -46,7 +52,7 @@ export default function IngredientView({
 }: IIngredientVIewProps) {
   return (
     <IngredientViewInner
-      className="justify-space-between selectable"
+      className="justify-between select-text cursor-auto"
       ref={dragRef}
     >
       <IngredientViewContent

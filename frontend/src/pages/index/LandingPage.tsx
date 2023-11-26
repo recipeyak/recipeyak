@@ -36,10 +36,10 @@ const HomeContainer = styled.div`
 
 function FeaturesContainer({ children }: IFeaturesContainerProps) {
   return (
-    <section className="bg-primary color-white pt-4 pb-4 pr-4 pl-4">
+    <section className="bg-[var(--color-primary)] text-white pt-4 pb-4 pr-4 pl-4">
       <HomeContainer>
         <Subtitle>Features</Subtitle>
-        <ul className="d-grid gap-1rem">{children}</ul>
+        <ul className="grid gap-4">{children}</ul>
       </HomeContainer>
     </section>
   )
@@ -52,38 +52,33 @@ interface IFeatureProps {
 }
 
 const FeatureGrid = styled.li`
-  display: grid;
-  gap: 2rem;
-  grid-template-columns: repeat(1, 1fr);
+  display: flex;
   font-size: 2rem;
-
-  @media (min-width: 841px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media (max-width: 841px) {
-    .grid-column-2 {
-      grid-column: unset;
-    }
-    .grid-row-1 {
-      grid-row: unset;
-    }
-  }
+  gap: 2rem;
 `
 
 function Feature({ text, imageURL, index }: IFeatureProps) {
+  const description = <p className={`self-center md:w-1/2`}>{text}</p>
+  const image = (
+    <div className="self-center md:w-1/2">
+      <img className="shadow" src={imageURL} alt="" />
+    </div>
+  )
+
+  const [first, second] = isOdd(index)
+    ? [image, description]
+    : [description, image]
   return (
-    <FeatureGrid key={text}>
-      <p
-        className={`align-self-center ${
-          isOdd(index) ? "grid-column-2 grid-row-1" : ""
-        }`}
-      >
-        {text}
-      </p>
-      <div className="fact-img align-self-center ">
-        <img className="box-shadow-normal " src={imageURL} alt="" />
-      </div>
+    <FeatureGrid
+      key={text}
+      className={
+        isOdd(index)
+          ? "flex-wrap-reverse md:flex-nowrap"
+          : "flex-wrap md:flex-nowrap"
+      }
+    >
+      {first}
+      {second}
     </FeatureGrid>
   )
 }
@@ -94,9 +89,9 @@ interface IHowItWorksContainerProps {
 function HowItWorksContainer({ children }: IHowItWorksContainerProps) {
   return (
     <section className="pt-4 pr-4 pl-4">
-      <HomeContainer className="d-grid">
-        <h2 className="home-subtitle bold">How it works</h2>
-        <ol className="d-grid gap-2rem">{children}</ol>
+      <HomeContainer className="grid">
+        <h2 className="home-subtitle font-bold">How it works</h2>
+        <ol className="grid gap-8">{children}</ol>
       </HomeContainer>
     </section>
   )
@@ -109,16 +104,16 @@ interface IHowToProps {
 
 function HowTo({ content, index, imageURL }: IHowToProps) {
   return (
-    <FeatureGrid key={imageURL}>
-      <p className="align-self-center">
+    <FeatureGrid key={imageURL} className={"flex-wrap md:flex-nowrap"}>
+      <p className="self-center md:w-1/2">
         <b>
           {index + 1}
           {". "}
         </b>
         {content}
       </p>
-      <div className="fact-img">
-        <img className="box-shadow-normal " src={imageURL} alt="" />
+      <div className="md:w-1/2">
+        <img className="shadow " src={imageURL} alt="" />
       </div>
     </FeatureGrid>
   )
@@ -144,7 +139,7 @@ const howToSteps = [
     text: (
       <span>
         After logging in, add your recipes via the{" "}
-        <Link className="text-decoration-underline" to={pathRecipeAdd({})}>
+        <Link className="underline" to={pathRecipeAdd({})}>
           add recipe
         </Link>{" "}
         form.
@@ -189,8 +184,8 @@ const HeroText = styled.h1`
 const LandingPage = () => {
   return (
     <NavPage includeSearch={false} noContainer>
-      <HomeContainer className="d-grid gap-1rem pb-4 pr-4 pl-4">
-        <section className="d-flex justify-content-center mb-2">
+      <HomeContainer className="grid gap-4 pb-4 pr-4 pl-4">
+        <section className="flex justify-center mb-2">
           <HeroText>A place to store, share, and create recipes</HeroText>
         </section>
 
@@ -203,9 +198,9 @@ const LandingPage = () => {
           Create Account
         </Button>
       </HomeContainer>
-      <section className="pt-4 bg-50-50-primary pr-4 pl-4">
+      <section className="pt-4 bg-gradient-to-b from-[var(--color-background)] from-50% to-50% to-[var(--color-primary)] bg-50-50-primary pr-4 pl-4">
         <HomeContainer>
-          <img className="box-shadow-normal" src={landingImg} alt="" />
+          <img className="shadow" src={landingImg} alt="" />
         </HomeContainer>
       </section>
 

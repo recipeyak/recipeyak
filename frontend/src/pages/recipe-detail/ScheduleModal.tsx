@@ -24,7 +24,7 @@ function RecentSchedules({
 }) {
   return (
     <Box dir="col">
-      <div className="fw-bold">Recent Schedules</div>
+      <div className="font-bold">Recent Schedules</div>
       <Box dir="col" gap={2}>
         {orderBy(scheduleHistory, (x) => x.on).map((x, i) => {
           const on = parseISO(x.on)
@@ -35,12 +35,8 @@ function RecentSchedules({
           }
           return (
             <Box space="between" align="center" key={i}>
-              <Link
-                to={to}
-                className="flex-grow-1"
-                style={{ lineHeight: "1.3" }}
-              >
-                <div className="fw-500">
+              <Link to={to} className="grow" style={{ lineHeight: "1.3" }}>
+                <div className="font-medium">
                   {format(on, "E")} ∙ {formatHumanDate(on)}
                 </div>
                 <Box gap={1}>
@@ -119,7 +115,7 @@ export function ScheduleModal({
             value={toISODateString(isoDate)}
             onChange={handleDateChange}
             type="date"
-            className="mt-2 w-100"
+            className="mt-2 w-full"
             style={{
               border: "1px solid var(--color-border)",
               borderRadius: 5,
@@ -129,7 +125,7 @@ export function ScheduleModal({
 
           <Box space="between" align="center">
             {!isMobile() ? (
-              <Link to={openInCalendarUrl} className="text-small">
+              <Link to={openInCalendarUrl} className="text-sm">
                 open in calendar
               </Link>
             ) : (

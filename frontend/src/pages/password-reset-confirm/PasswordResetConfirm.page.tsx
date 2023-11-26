@@ -124,7 +124,7 @@ export function PasswordResetConfirmPage(props: RouteProps) {
             <FormErrorHandler error={errors.newPassword2} />
           </FormField>
 
-          <FormField className="d-flex flex-space-between">
+          <FormField className="flex justify-between">
             <FormControl>
               <Button
                 variant="primary"
