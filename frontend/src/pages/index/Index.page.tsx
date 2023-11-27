@@ -1,4 +1,4 @@
-import { useIsLoggedIn } from "@/hooks"
+import { useIsLoggedIn } from "@/auth"
 import LandingPage from "@/pages/index/LandingPage"
 import { UserHome } from "@/pages/index/UserHome"
 

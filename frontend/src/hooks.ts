@@ -133,11 +133,6 @@ export function useUser() {
   }
 }
 
-export function useIsLoggedIn(): boolean {
-  const userId = useUserId()
-  return userId != null
-}
-
 export function useTeamId(): number {
   const res = useUserFetch()
   // TODO: put this in the preload so we can avoid this

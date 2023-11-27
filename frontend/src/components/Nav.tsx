@@ -3,6 +3,7 @@ import React from "react"
 import { Link, useHistory } from "react-router-dom"
 import useOnClickOutside from "use-onclickoutside"
 
+import { useIsLoggedIn } from "@/auth"
 import { Avatar } from "@/components/Avatar"
 import { Button } from "@/components/Buttons"
 import {
@@ -13,7 +14,7 @@ import {
 import { SearchInput, Select } from "@/components/Forms"
 import Logo from "@/components/Logo"
 import { NavLink } from "@/components/Routing"
-import { useGlobalEvent, useIsLoggedIn, useTeamId, useUser } from "@/hooks"
+import { useGlobalEvent, useTeamId, useUser } from "@/hooks"
 import { SearchResult } from "@/pages/index/UserHome"
 import {
   pathHome,

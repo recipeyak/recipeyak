@@ -65,15 +65,7 @@ body {
 
 a {
   color: inherit;
-  cursor: pointer;
   text-decoration: none;
-  transition: none 86ms ease-out;
-  @media (hover: hover) {
-    &:hover {
-      color: var(--color-link-hover);
-      text-decoration: underline;
-    }
-  }
 }
 
 hr {

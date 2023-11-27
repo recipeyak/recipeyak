@@ -57,6 +57,7 @@ module.exports = {
       "length",
       "origin",
       "event",
+      "localStorage",
     ],
     "no-restricted-imports": [
       "error",
