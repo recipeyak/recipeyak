@@ -2,6 +2,7 @@
 import * as styledComponents from "styled-components"
 
 import { Theme } from "@/queries/userFetch"
+import { setItem } from "@/storage"
 
 const THEME_CACHE_KEY = "recipeyak-theme-v2"
 
@@ -11,7 +12,7 @@ export function themeSet(theme: Theme) {
     autumn: "theme-autumn",
     solarized: "theme-solarized",
   } as const
-  localStorage.setItem(THEME_CACHE_KEY, theme)
+  setItem(THEME_CACHE_KEY, theme)
   const html = document.documentElement
   // clear out all the existing themes
   html.classList.forEach((class_) => {
@@ -27,7 +28,7 @@ export function themeSet(theme: Theme) {
 }
 
 export function themeGet(): Theme {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, no-restricted-globals
   const storedValue = localStorage.getItem(THEME_CACHE_KEY) as Theme | null
   return storedValue ?? "light"
 }

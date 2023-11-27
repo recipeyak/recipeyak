@@ -8,6 +8,7 @@ export function logout(queryClient: QueryClient) {
   queryClient.clear()
   Sentry.setUser(null)
   themeSet("light")
+  localStorage.removeItem("loggedIn")
 }
 
 export function login(user: IUser, queryClient: QueryClient) {
@@ -19,4 +20,5 @@ export function login(user: IUser, queryClient: QueryClient) {
   queryClient.setQueryData<IUser>(["user-detail"], () => {
     return user
   })
+  localStorage.setItem("loggedIn", "1")
 }

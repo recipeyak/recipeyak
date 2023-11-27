@@ -20,10 +20,11 @@ import {
   Switch,
 } from "react-router-dom"
 
+import { useIsLoggedIn } from "@/auth"
 import { ErrorBoundary } from "@/components/ErrorBoundary"
 import { Helmet } from "@/components/Helmet"
 import { ScrollRestore } from "@/components/ScrollRestore"
-import { useIsLoggedIn, useUserTheme } from "@/hooks"
+import { useUserTheme } from "@/hooks"
 import { NotFoundPage } from "@/pages/404/404.page"
 import { CookDetailPage } from "@/pages/cook-detail/CookDetail.page"
 import { HomePage } from "@/pages/index/Index.page"
@@ -113,6 +114,7 @@ export const queryClient = new QueryClient({
 })
 
 const persister = createSyncStoragePersister({
+  // eslint-disable-next-line no-restricted-globals
   storage: localStorage,
   retry: ({ error }) => {
     Sentry.captureException(error)

@@ -82,7 +82,7 @@ th {
   text-align: left;
 }
 
-// fix for react-dnd
+/* fix for react-dnd */
 [draggable="true"] {
   user-select: auto !important;
 }
