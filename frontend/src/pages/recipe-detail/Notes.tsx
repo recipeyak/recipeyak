@@ -12,7 +12,6 @@ import { Markdown } from "@/components/Markdown"
 import { RotatingLoader } from "@/components/RoatingLoader"
 import { Link } from "@/components/Routing"
 import { formatAbsoluteDateTime, formatHumanDateTime } from "@/date"
-import { useUserId } from "@/hooks"
 import {
   findReaction,
   ReactionPopover,
@@ -36,8 +35,9 @@ import * as api from "@/queries/uploadCreate"
 import { isOk } from "@/result"
 import { styled } from "@/theme"
 import { toast } from "@/toast"
-import { notUndefined } from "@/utils/general"
-import { imgixFmt } from "@/utils/url"
+import { notUndefined } from "@/typeguard"
+import { imgixFmt } from "@/url"
+import { useUserId } from "@/useUserId"
 import { uuid4 } from "@/uuid"
 
 interface IUseNoteEditHandlers {

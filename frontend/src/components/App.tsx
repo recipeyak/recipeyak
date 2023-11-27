@@ -24,7 +24,6 @@ import { useIsLoggedIn } from "@/auth"
 import { ErrorBoundary } from "@/components/ErrorBoundary"
 import { Helmet } from "@/components/Helmet"
 import { ScrollRestore } from "@/components/ScrollRestore"
-import { useUserTheme } from "@/hooks"
 import { NotFoundPage } from "@/pages/404/404.page"
 import { CookDetailPage } from "@/pages/cook-detail/CookDetail.page"
 import { HomePage } from "@/pages/index/Index.page"
@@ -66,6 +65,7 @@ import {
 import { GIT_SHA, SENTRY_DSN } from "@/settings"
 import { theme, ThemeProvider, themeSet } from "@/theme"
 import { Toaster } from "@/toast"
+import { useUserTheme } from "@/useUserTheme"
 
 const history = createBrowserHistory()
 const BaseRoute = Sentry.withSentryRouting(RRBaseRoute)

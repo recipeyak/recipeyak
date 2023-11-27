@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query"
 
-import { useTeamId } from "@/hooks"
 import { http } from "@/http"
 import { IRecipe } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
+import { useTeamId } from "@/useTeamId"
 
 type ITimelineEvent = ICommentEvent | IScheduledRecipeEvent
 

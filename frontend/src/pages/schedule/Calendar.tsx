@@ -19,8 +19,8 @@ import ShoppingList from "@/pages/schedule/ShoppingList"
 import { ICalRecipe } from "@/queries/scheduledRecipeCreate"
 import { useScheduledRecipeList } from "@/queries/scheduledRecipeList"
 import { useScheduledRecipeSettingsFetch } from "@/queries/scheduledRecipeSettingsFetch"
+import { removeQueryParams, setQueryParams } from "@/querystring"
 import { styled } from "@/theme"
-import { removeQueryParams, setQueryParams } from "@/utils/querystring"
 
 function CalTitle({ dayTs }: { readonly dayTs: number }) {
   return (

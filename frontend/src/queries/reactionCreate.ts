@@ -1,10 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
 
-import { useTeamId, useUser } from "@/hooks"
 import { http } from "@/http"
 import { IRecipe, Reaction } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
+import { useTeamId } from "@/useTeamId"
+import { useUser } from "@/useUser"
 import { uuid4 } from "@/uuid"
 
 const createReaction = ({

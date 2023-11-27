@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight, Share, Star, X } from "react-feather"
 
 import { Button } from "@/components/Buttons"
 import { styled } from "@/theme"
-import { imgixFmt } from "@/utils/url"
+import { imgixFmt } from "@/url"
 
 const MyGalleryContainer = styled.div`
   opacity: 1 !important;

@@ -3,6 +3,7 @@ import { useState } from "react"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { Tab, Tabs } from "@/components/Tabs"
+import { getInitialIngredients } from "@/ingredients"
 import { IngredientViewContent } from "@/pages/recipe-detail/IngredientView"
 import { Note } from "@/pages/recipe-detail/Notes"
 import { RecipeSource } from "@/pages/recipe-detail/RecipeSource"
@@ -13,7 +14,6 @@ import { useCookChecklistUpdate } from "@/queries/cookChecklistUpdate"
 import { IIngredient, INote, IStep } from "@/queries/recipeFetch"
 import { notEmpty } from "@/text"
 import { styled } from "@/theme"
-import { getInitialIngredients } from "@/utils/ingredients"
 
 function useIngredients(recipeId: number) {
   const {
