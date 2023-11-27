@@ -1,11 +1,11 @@
 import { Avatar } from "@/components/Avatar"
 import { Button } from "@/components/Buttons"
 import { Select } from "@/components/Forms"
-import { useUser } from "@/hooks"
 import { IMember, ITeam } from "@/queries/teamFetch"
 import { useTeamMemberDelete } from "@/queries/teamMemberDelete"
 import { useTeamMemberUpdate } from "@/queries/teamMemberUpdate"
 import { IUser } from "@/queries/userFetch"
+import { useUserId } from "@/useUserId"
 
 const MemberRow = ({
   userID,
@@ -28,8 +28,7 @@ const MemberRow = ({
 }) => {
   const deleteTeamMember = useTeamMemberDelete()
   const updateTeamMember = useTeamMemberUpdate()
-  const user = useUser()
-  const isUser = user.id === userID
+  const isUser = useUserId() === userID
   return (
     <tr key={membershipID}>
       <td className="flex items-center pr-4">

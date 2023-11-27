@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { useTeamId } from "@/hooks"
 import { http } from "@/http"
 import { INote, IRecipe } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
+import { useTeamId } from "@/useTeamId"
 
 interface IAddNoteToRecipe {
   readonly recipeId: IRecipe["id"]

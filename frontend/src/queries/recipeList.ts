@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query"
 
-import { useTeamId } from "@/hooks"
 import { http } from "@/http"
 import { unwrapResult } from "@/query"
+import { useTeamId } from "@/useTeamId"
 
 export type RecipeListItem = {
   readonly id: number

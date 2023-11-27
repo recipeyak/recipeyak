@@ -13,7 +13,11 @@ import { Meta } from "@/components/Meta"
 import { NavPage } from "@/components/Page"
 import { Tag } from "@/components/Tag"
 import { formatHumanDate } from "@/date"
-import { useGlobalEvent } from "@/hooks"
+import {
+  getInitialIngredients,
+  Mutable,
+  SectionsAndIngredients,
+} from "@/ingredients"
 import * as ordering from "@/ordering"
 import AddIngredientOrSection from "@/pages/recipe-detail/AddIngredient"
 import AddStep from "@/pages/recipe-detail/AddStep"
@@ -41,13 +45,9 @@ import { useRecipeUpdate } from "@/queries/recipeUpdate"
 import { useSectionUpdate } from "@/queries/sectionUpdate"
 import { notEmpty } from "@/text"
 import { styled } from "@/theme"
-import {
-  getInitialIngredients,
-  Mutable,
-  SectionsAndIngredients,
-} from "@/utils/ingredients"
-import { formatImgOpenGraph, imgixFmt } from "@/utils/url"
-import { useAddSlugToUrl } from "@/utils/useAddSlugToUrl"
+import { formatImgOpenGraph, imgixFmt } from "@/url"
+import { useAddSlugToUrl } from "@/useAddSlugToUrl"
+import { useGlobalEvent } from "@/useGlobalEvent"
 
 function RecipeDetails({
   recipe,

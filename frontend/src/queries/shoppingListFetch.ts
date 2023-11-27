@@ -1,9 +1,9 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
 import { toISODateString } from "@/date"
-import { useTeamId } from "@/hooks"
 import { http } from "@/http"
 import { unwrapResult } from "@/query"
+import { useTeamId } from "@/useTeamId"
 
 const getShoppingList = (
   teamID: number | "personal",

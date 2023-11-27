@@ -1,8 +1,8 @@
 import { useRef } from "react"
 
 import { styled } from "@/theme"
+import { imgixFmt } from "@/url"
 import { useIntersectionObserver } from "@/useIntersectionObserver"
-import { imgixFmt } from "@/utils/url"
 
 const CardImgContainer = styled.div<{
   height: number | undefined

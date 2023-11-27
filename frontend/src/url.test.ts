@@ -1,4 +1,4 @@
-import { pathNamesEqual } from "@/utils/url"
+import { pathNamesEqual } from "@/url"
 
 test("pathNamesEqual", () => {
   expect(pathNamesEqual("/example/path", "/example/path")).toEqual(true)

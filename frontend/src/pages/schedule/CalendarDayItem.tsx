@@ -4,11 +4,11 @@ import { Link } from "react-router-dom"
 
 import { isInsideChangeWindow } from "@/date"
 import { DragDrop } from "@/dragDrop"
-import { useGlobalEvent } from "@/hooks"
 import { CalendarDayItemModal } from "@/pages/schedule/CalendarDayItemModal"
 import { IRecipe } from "@/queries/recipeFetch"
 import { styled } from "@/theme"
 import { recipeURL } from "@/urls"
+import { useGlobalEvent } from "@/useGlobalEvent"
 
 interface IRecipeLink {
   readonly id: IRecipe["id"] | string

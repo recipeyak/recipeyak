@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import * as t from "io-ts"
 
-import { useTeamId } from "@/hooks"
 import { http } from "@/http"
 import { CalendarResponse } from "@/queries/scheduledRecipeCreate"
 import { unwrapEither } from "@/query"
+import { useTeamId } from "@/useTeamId"
 
 function generateCalendarLink({ teamID }: { readonly teamID: number }) {
   return http.request({

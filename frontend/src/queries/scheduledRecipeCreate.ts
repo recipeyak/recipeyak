@@ -2,11 +2,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { addWeeks, startOfWeek, subWeeks } from "date-fns"
 
 import { toISODateString } from "@/date"
-import { useTeamId, useUser } from "@/hooks"
 import { http } from "@/http"
 import { IRecipe } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
 import { toast } from "@/toast"
+import { useTeamId } from "@/useTeamId"
+import { useUser } from "@/useUser"
 import { random32Id } from "@/uuid"
 
 export type CalendarResponse = {

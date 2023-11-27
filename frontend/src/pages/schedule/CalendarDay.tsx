@@ -11,7 +11,6 @@ import { useLocation } from "react-router"
 import { assertNever } from "@/assert"
 import { isInsideChangeWindow, toISODateString } from "@/date"
 import { DragDrop } from "@/dragDrop"
-import { useCurrentDay } from "@/hooks"
 import { IRecipeItemDrag } from "@/pages/recipe-list/RecipeItem"
 import {
   CalendarItem,
@@ -24,6 +23,7 @@ import {
 import { useScheduledRecipeDelete } from "@/queries/scheduledRecipeDelete"
 import { useScheduledRecipeUpdate } from "@/queries/scheduledRecipeUpdate"
 import { css, styled } from "@/theme"
+import { useCurrentDay } from "@/useCurrentDay"
 
 function DayOfWeek({ date }: { date: Date }) {
   const dayOfWeek = format(date, "E")

@@ -6,9 +6,9 @@ import React, { useState } from "react"
 import { Smile } from "react-feather"
 
 import { clx } from "@/classnames"
-import { useUserId } from "@/hooks"
 import { Reaction } from "@/queries/recipeFetch"
 import { styled } from "@/theme"
+import { useUserId } from "@/useUserId"
 
 const NoteActionsContainer = styled.div`
   font-size: 0.85rem;

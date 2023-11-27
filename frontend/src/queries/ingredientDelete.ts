@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
 
-import { useTeamId } from "@/hooks"
 import { http } from "@/http"
 import { IIngredient, IRecipe } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
+import { useTeamId } from "@/useTeamId"
 
 // TODO(sbdchd): this shouldn't require recipeID
 const deleteIngredient = (

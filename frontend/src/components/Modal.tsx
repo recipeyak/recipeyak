@@ -3,8 +3,8 @@ import React, { useRef } from "react"
 import { BorderBox } from "@/components/BorderBox"
 import { Box } from "@/components/Box"
 import { CloseButton } from "@/components/CloseButton"
-import { useGlobalEvent } from "@/hooks"
 import { styled } from "@/theme"
+import { useGlobalEvent } from "@/useGlobalEvent"
 
 interface IModalProps {
   readonly onClose: () => void

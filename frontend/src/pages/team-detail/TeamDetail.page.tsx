@@ -11,13 +11,13 @@ import { Label } from "@/components/Label"
 import { Loader } from "@/components/Loader"
 import { NavPage } from "@/components/Page"
 import { Tab, Tabs } from "@/components/Tabs"
-import { useUserId } from "@/hooks"
 import MemberRow from "@/pages/team-detail/MemberRow"
 import { useTeamDelete } from "@/queries/teamDelete"
 import { IMember, ITeam, useTeam } from "@/queries/teamFetch"
 import { useTeamMembersList } from "@/queries/teamMembersList"
 import { useTeamUpdate } from "@/queries/teamUpdate"
 import { inviteURL, teamSettingsURL, teamURL } from "@/urls"
+import { useUserId } from "@/useUserId"
 
 interface IMembersProps {
   readonly teamID: ITeam["id"]
