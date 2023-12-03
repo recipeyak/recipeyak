@@ -103,6 +103,7 @@ export function CalendarDayItemModal({
           <ButtonContainer>
             <Button
               size="normal"
+              borderHidden
               active={reschedulerOpen}
               onClick={() => {
                 setReschedulerOpen((val) => !val)
