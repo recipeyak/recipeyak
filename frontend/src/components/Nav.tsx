@@ -94,6 +94,7 @@ function TeamSelect() {
     })
   }
   const teams = useTeamList()
+  return null
   return (
     <Select onChange={onChange} value={value} disabled={teams.isPending}>
       {teams.isSuccess

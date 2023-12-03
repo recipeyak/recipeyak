@@ -2,9 +2,12 @@ import "@/components/scss/main.scss"
 
 import * as Sentry from "@sentry/react"
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister"
-import { QueryClient, useIsRestoring } from "@tanstack/react-query"
+import {
+  QueryClient,
+  QueryClientProvider as QueryClientProvider,
+  useIsRestoring,
+} from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
-import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client"
 import { AxiosError } from "axios"
 import { createBrowserHistory } from "history"
 import React, { Suspense, useEffect } from "react"
@@ -315,31 +318,31 @@ function App() {
     // Wrap with Suspsense to help in development with hot reloading.
     //
     // A component suspended while responding to synchronous input. This will cause the UI to
-    <Suspense>
-      <PersistQueryClientProvider
+    <>
+      <QueryClientProvider
         client={queryClient}
-        persistOptions={{
-          // NOTE: Ideally we'd only bust the cache when the cache schema changes
-          // in a backwards incompatible way but calculating that is annoying so
-          // just break it on every deploy
-          buster: GIT_SHA,
-          persister,
-          maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-          dehydrateOptions: {
-            // see: https://github.com/TanStack/query/discussions/3735#discussioncomment-3007804
-            shouldDehydrateQuery: (query) => {
-              // NOTE: list endpoint for recipes is huge, like 2MB for 400ish recipes
-              // we manually cache each recipe but don't include the list itself as that
-              // doubles the total storage and there's only 5MB of localStorage to work
-              // with.
-              if (query.queryKey.includes("recipes-list")) {
-                return false
-              }
-              // default implementation
-              return query.state.status === "success"
-            },
-          },
-        }}
+        // persistOptions={{
+        //   // NOTE: Ideally we'd only bust the cache when the cache schema changes
+        //   // in a backwards incompatible way but calculating that is annoying so
+        //   // just break it on every deploy
+        //   buster: GIT_SHA + "1",
+        //   persister,
+        //   maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+        //   dehydrateOptions: {
+        //     // see: https://github.com/TanStack/query/discussions/3735#discussioncomment-3007804
+        //     shouldDehydrateQuery: (query) => {
+        //       // NOTE: list endpoint for recipes is huge, like 2MB for 400ish recipes
+        //       // we manually cache each recipe but don't include the list itself as that
+        //       // doubles the total storage and there's only 5MB of localStorage to work
+        //       // with.
+        //       if (query.queryKey.includes("recipes-list")) {
+        //         return false
+        //       }
+        //       // default implementation
+        //       return query.state.status === "success"
+        //     },
+        //   },
+        // }}
       >
         <ReactQueryDevtools initialIsOpen={false} />
         <ThemeProvider theme={theme}>
@@ -353,8 +356,8 @@ function App() {
             </DndProvider>
           </HelmetProvider>
         </ThemeProvider>
-      </PersistQueryClientProvider>
-    </Suspense>
+      </QueryClientProvider>
+    </>
   )
 }
 

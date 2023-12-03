@@ -6,25 +6,27 @@
     "allowJs": true,
     "checkJs": true,
     "skipLibCheck": true,
-    "esModuleInterop": false,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "forceConsistentCasingInFileNames": true,
+    "incremental": true,
     "module": "ESNext",
     "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "baseUrl": ".",
     "noEmit": true,
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "types": ["vitest/globals", "vite/client"],
     "paths": {
       "@/*": ["./src/*"],
       "*": ["./node_modules/@types/*"]
-    }
+    },
+    "plugins": [{ "name": "next" }]
   },
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["src", "./dist/types/**/*.ts", "./next-env.d.ts"],
+  "exclude": ["./node_modules"]
 }

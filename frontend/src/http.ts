@@ -56,6 +56,7 @@ async function http3<T, A, O>({
       params,
       cancelToken,
       data,
+      baseURL: "http://127.0.0.1:8000/",
     })
     return shape.decode(r.data)
   } catch (e) {

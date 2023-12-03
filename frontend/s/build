@@ -2,7 +2,7 @@
 set -ex
 
 main() {
-  yarn vite build
+  yarn next build
 }
 
 main "$@"

@@ -2,6 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "devDependencies": {
     "@darkobits/vite-plugin-favicons": "^0.3.0",
     "@tanstack/eslint-plugin-query": "^5.8.4",
@@ -48,6 +49,7 @@
     "@types/react-router-dom": "^5.1.5",
     "@types/react-textarea-autosize": "^4.3.3",
     "axios": "^0.18.0",
+    "bufferutil": "^4.0.8",
     "date-fns": "^2.4.1",
     "dnd-core": "^9.3.4",
     "eslint-plugin-tailwindcss": "^3.13.0",
@@ -56,6 +58,7 @@
     "immer": "^9.0.15",
     "io-ts": "^2.2.9",
     "lodash-es": "^4.17.21",
+    "next": "13.4.19",
     "prettier": "^3.1.0",
     "react": "^18.2.0",
     "react-dnd": "^16.0.1",
@@ -73,10 +76,11 @@
     "sass": "^1.54.0",
     "static-path": "^0.0.4",
     "styled-components": "^5.0.0",
-    "use-onclickoutside": "^0.4.1"
+    "use-onclickoutside": "^0.4.1",
+    "utf-8-validate": "^6.0.3"
   },
   "volta": {
-    "node": "18.7.0",
+    "node": "20.10.0",
     "yarn": "1.22.17"
   }
 }
