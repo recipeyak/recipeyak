@@ -11,7 +11,6 @@ import { Helmet } from "@/components/Helmet"
 import { BetterLabel } from "@/components/Label"
 import { Loader } from "@/components/Loader"
 import { NavPage } from "@/components/Page"
-import { useUserTheme } from "@/hooks"
 import Sessions from "@/pages/settings/Sessions"
 import { pathLogin, pathPassword } from "@/paths"
 import { useUserDelete } from "@/queries/userDelete"
@@ -19,6 +18,7 @@ import { Theme, useUserFetch } from "@/queries/userFetch"
 import { useUserUpdate } from "@/queries/userUpdate"
 import { themeSet } from "@/theme"
 import { toast } from "@/toast"
+import { useUserTheme } from "@/useUserTheme"
 
 function Export() {
   return (

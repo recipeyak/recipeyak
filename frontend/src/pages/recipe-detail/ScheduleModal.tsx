@@ -9,11 +9,11 @@ import { Button } from "@/components/Buttons"
 import Clock from "@/components/icons"
 import { Modal } from "@/components/Modal"
 import { formatDistanceToNow, formatHumanDate, toISODateString } from "@/date"
-import { useTeamId } from "@/hooks"
 import { pathSchedule } from "@/paths"
 import { RecentSchedule } from "@/queries/recipeFetch"
 import { useScheduleRecipeCreate } from "@/queries/scheduledRecipeCreate"
-import { addQueryParams } from "@/utils/querystring"
+import { addQueryParams } from "@/querystring"
+import { useTeamId } from "@/useTeamId"
 
 function RecentSchedules({
   scheduleHistory,

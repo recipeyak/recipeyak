@@ -23,10 +23,10 @@ import {
   Unit,
   useShoppingListFetch,
 } from "@/queries/shoppingListFetch"
+import { removeQueryParams, setQueryParams } from "@/querystring"
 import { ingredientByNameAlphabetical } from "@/sorters"
 import { normalizeUnitsFracs } from "@/text"
 import { toast } from "@/toast"
-import { removeQueryParams, setQueryParams } from "@/utils/querystring"
 
 const selectElementText = (el: Element) => {
   const sel = window.getSelection()

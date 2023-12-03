@@ -2,11 +2,11 @@ import format from "date-fns/format"
 import { Link } from "react-router-dom"
 
 import { formatHumanDate } from "@/date"
-import { useTeamId } from "@/hooks"
 import { SectionTitle } from "@/pages/recipe-detail/RecipeHelpers"
 import { pathSchedule } from "@/paths"
 import { useTimelineList } from "@/queries/timelineList"
 import { styled } from "@/theme"
+import { useTeamId } from "@/useTeamId"
 
 interface ITimelineItemProps {
   readonly type: "comment" | "scheduled" | "created"

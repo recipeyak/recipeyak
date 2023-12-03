@@ -7,8 +7,8 @@ import { NavPage } from "@/components/Page"
 import { CookingFullscreen } from "@/pages/cook-detail/CookingFullscreen"
 import { pathCookDetail } from "@/paths"
 import { INote, TimelineItem, useRecipeFetch } from "@/queries/recipeFetch"
-import { formatImgOpenGraph } from "@/utils/url"
-import { useAddSlugToUrl } from "@/utils/useAddSlugToUrl"
+import { formatImgOpenGraph } from "@/url"
+import { useAddSlugToUrl } from "@/useAddSlugToUrl"
 
 function isNote(x: TimelineItem): x is INote {
   return x.type === "note"

@@ -2,8 +2,8 @@ import React, { useState } from "react"
 
 import { Box } from "@/components/Box"
 import { Modal } from "@/components/Modal"
-import { useGlobalEvent } from "@/hooks"
 import { Kbd } from "@/pages/schedule/Kbd"
+import { useGlobalEvent } from "@/useGlobalEvent"
 
 const keybinds = [
   {

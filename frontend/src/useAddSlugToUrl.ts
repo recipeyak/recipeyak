@@ -1,8 +1,8 @@
 import React from "react"
 import { useHistory, useLocation } from "react-router"
 
+import { pathNamesEqual } from "@/url"
 import { toURL } from "@/urls"
-import { pathNamesEqual } from "@/utils/url"
 
 /** On load, update the recipe URL to include the slugified recipe name */
 export function useAddSlugToUrl(rawPathname: string, name: string | undefined) {

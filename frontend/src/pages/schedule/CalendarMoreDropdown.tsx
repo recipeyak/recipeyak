@@ -3,9 +3,9 @@ import { UseQueryResult } from "@tanstack/react-query"
 import { Button } from "@/components/Buttons"
 import { selectTarget, TextInput } from "@/components/Forms"
 import { Loader } from "@/components/Loader"
-import { useTeamId } from "@/hooks"
 import { useScheduledRecipeSettingsRegenerateLink } from "@/queries/scheduledRecipeSettingsRegenerateLink"
 import { useScheduledRecipeSettingsUpdate } from "@/queries/scheduledRecipeSettingsUpdate"
+import { useTeamId } from "@/useTeamId"
 
 export function ICalConfig({
   settings,

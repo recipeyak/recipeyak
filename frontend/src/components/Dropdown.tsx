@@ -1,8 +1,8 @@
 import React from "react"
 
 import { Link } from "@/components/Routing"
-import { useOnClickOutside } from "@/hooks"
 import { css, styled } from "@/theme"
+import { useOnClickOutside } from "@/useOnClickOutside"
 
 export const DropdownContainer = styled.div`
   position: relative;

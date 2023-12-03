@@ -23,7 +23,7 @@ def main() -> None:
         "--no-pager",
         "diff",
         "--name-only",
-        "origin/master...",
+        "origin/main...",
         MIGRATIONS_DIRECTORY,
     ]
 

@@ -9,12 +9,12 @@ import parseISO from "date-fns/parseISO"
 import * as t from "io-ts"
 
 import { toISODateString } from "@/date"
-import { useTeamId } from "@/hooks"
 import { http } from "@/http"
 import { CalendarResponse } from "@/queries/scheduledRecipeCreate"
 import { onRecipeDeletion } from "@/queries/scheduledRecipeDelete"
 import { onScheduledRecipeUpdateSuccess } from "@/queries/scheduledRecipeUpdate"
 import { unwrapEither } from "@/query"
+import { useTeamId } from "@/useTeamId"
 
 configureAbly({
   authUrl: "/api/v1/auth/ably/",

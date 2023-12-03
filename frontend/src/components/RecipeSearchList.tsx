@@ -11,9 +11,9 @@ import { parseIntOrNull } from "@/parseIntOrNull"
 import { pathRecipeAdd } from "@/paths"
 import { useRecipeList } from "@/queries/recipeList"
 import { ITeam } from "@/queries/teamFetch"
+import { removeQueryParams, setQueryParams } from "@/querystring"
 import { searchRecipes } from "@/search"
 import { styled } from "@/theme"
-import { removeQueryParams, setQueryParams } from "@/utils/querystring"
 
 interface IResultsProps {
   readonly recipes: JSX.Element[]
