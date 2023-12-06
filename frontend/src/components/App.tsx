@@ -44,6 +44,7 @@ import { TeamInvitePage } from "@/pages/team-invite/TeamInvite.page"
 import { TeamListPage } from "@/pages/team-list/TeamList.page"
 import {
   pathCookDetail,
+  pathDeprecatedSchedule,
   pathHome,
   pathLogin,
   pathPassword,
@@ -240,7 +241,16 @@ function AppRouter() {
             path={pathSchedule.pattern}
             component={SchedulePage}
           />
-
+          <Route
+            path={pathDeprecatedSchedule.pattern}
+            component={() => (
+              <Redirect
+                to={{
+                  pathname: pathSchedule({}),
+                }}
+              />
+            )}
+          />
           <Switch>
             <PrivateRoute
               exact

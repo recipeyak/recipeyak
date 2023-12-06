@@ -10,7 +10,6 @@ import RecipeItem from "@/pages/recipe-list/RecipeItem"
 import { parseIntOrNull } from "@/parseIntOrNull"
 import { pathRecipeAdd } from "@/paths"
 import { useRecipeList } from "@/queries/recipeList"
-import { ITeam } from "@/queries/teamFetch"
 import { removeQueryParams, setQueryParams } from "@/querystring"
 import { searchRecipes } from "@/search"
 import { styled } from "@/theme"
@@ -195,7 +194,6 @@ export function RecipeSearchList({
   readonly scroll?: boolean
   readonly drag?: boolean
   readonly noPadding?: boolean
-  readonly teamID?: ITeam["id"] | null
 }) {
   const [query, setQuery] = useState(() => getSearch(window.location.search))
   const history = useHistory()
