@@ -25,7 +25,6 @@ const ButtonBase = styled.button<{
   isLarge?: boolean
   isLink?: boolean
   isActive?: boolean
-  borderHidden?: boolean
 }>`
   align-items: center;
   border: 1px solid transparent;
@@ -45,8 +44,7 @@ const ButtonBase = styled.button<{
 
   background-color: var(--color-background-card);
   color: var(--color-text);
-  border-color: ${(p) =>
-    p.borderHidden ? `var(--color-background-card);` : `var(--color-border);`}
+  border-color: var(--color-border);
 
   cursor: pointer;
   justify-content: center;
@@ -191,7 +189,6 @@ interface IButtonProps {
   readonly active?: boolean
   readonly style?: React.CSSProperties
   readonly className?: string
-  readonly borderHidden?: boolean
   readonly children: React.ReactNode
   readonly variant?: "primary" | "danger" | "link"
   readonly type?: "submit" | "reset" | "button" | undefined
