@@ -24,6 +24,7 @@ import { useScheduledRecipeDelete } from "@/queries/scheduledRecipeDelete"
 import { useScheduledRecipeUpdate } from "@/queries/scheduledRecipeUpdate"
 import { css, styled } from "@/theme"
 import { useCurrentDay } from "@/useCurrentDay"
+import { useTeamId } from "@/useTeamId"
 
 function DayOfWeek({ date }: { date: Date }) {
   const dayOfWeek = format(date, "E")
@@ -93,12 +94,12 @@ const CalendarDayContainer = styled.div<ICalendarDayContainerProps>`
 interface ICalendarDayProps {
   readonly date: Date
   readonly scheduledRecipes: ICalRecipe[]
-  readonly teamID: number
 }
 
-function CalendarDay({ date, scheduledRecipes, teamID }: ICalendarDayProps) {
+function CalendarDay({ date, scheduledRecipes }: ICalendarDayProps) {
   const today = useCurrentDay()
   const isToday = isSameDay(date, today)
+  const teamID = useTeamId()
 
   const location = useLocation()
   const params = new URLSearchParams(location.search)

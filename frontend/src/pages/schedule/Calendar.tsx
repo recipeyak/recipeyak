@@ -81,12 +81,11 @@ const WEEK_DAYS = 7
 interface IDaysProps {
   readonly start: Date
   readonly end: Date
-  readonly teamID: number
   readonly days: IDays
   readonly isError: boolean
 }
 
-function Days({ start, end, isError, teamID, days }: IDaysProps) {
+function Days({ start, end, isError, days }: IDaysProps) {
   if (isError) {
     return <p className="m-auto">error fetching calendar</p>
   }
@@ -108,7 +107,6 @@ function Days({ start, end, isError, teamID, days }: IDaysProps) {
                   scheduledRecipes={scheduledRecipes}
                   date={date}
                   key={date.toString()}
-                  teamID={teamID}
                 />
               )
             })}
@@ -215,11 +213,7 @@ function getToday(search: string): Date {
   return new Date()
 }
 
-interface ICalendarProps {
-  readonly teamID: number
-}
-
-export function Calendar({ teamID }: ICalendarProps) {
+export function Calendar() {
   const location = useLocation()
   const today = getToday(location.search)
   const weekStartDate = startOfWeek(today)
@@ -273,7 +267,6 @@ export function Calendar({ teamID }: ICalendarProps) {
         end={endDate}
         days={scheduledById}
         isError={scheduledRecipesResult.isError}
-        teamID={teamID}
       />
       <HelpPrompt />
     </Box>
