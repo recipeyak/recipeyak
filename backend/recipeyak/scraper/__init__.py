@@ -128,7 +128,6 @@ def scrape_recipe(*, url: str, user: User) -> ScrapeResult:
 
     parsed = scrape_html(html=html, org_url=url)  # type: ignore[arg-type]
     og_image_url = get_open_graph_image(html)
-
     image_url = get_largest_image([og_image_url, parsed.image()])
 
     upload: Upload | None = None
@@ -158,9 +157,15 @@ def scrape_recipe(*, url: str, user: User) -> ScrapeResult:
     except SchemaOrgException:
         total_time = None
 
-    try:
-        yields = parsed.yields()
-    except SchemaOrgException:
+    # We don't want to use the library's yields method as it's buggy
+    # see: https://github.com/hhursev/recipe-scrapers/issues/960
+    if yield_data := parsed.schema.data.get("recipeYield") or parsed.schema.data.get(
+        "yield"
+    ):
+        if isinstance(yield_data, list):
+            yield_data = yield_data[0]
+        yields = str(yield_data)
+    else:
         yields = None
 
     try:
