@@ -1,12 +1,21 @@
-import React from "react"
+import React, { ForwardedRef, forwardRef } from "react"
 
 import { Link } from "@/components/Routing"
 import { css, styled } from "@/theme"
 import { useOnClickOutside } from "@/useOnClickOutside"
 
-export const DropdownContainer = styled.div`
-  position: relative;
-`
+export const DropdownContainer = forwardRef(
+  (
+    { children }: { children: React.ReactNode },
+    ref: ForwardedRef<HTMLDivElement>,
+  ) => {
+    return (
+      <div className="relative print:!hidden" ref={ref}>
+        {children}
+      </div>
+    )
+  },
+)
 
 const dropdownItemStyle = css`
   display: flex;

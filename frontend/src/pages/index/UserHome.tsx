@@ -33,26 +33,6 @@ const SearchInput = styled(forms.SearchInput)`
   font-size: 18px;
 `
 
-const SearchInputAligner = styled.div`
-  display: flex;
-  justify-content: center;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-`
-
-const SearchInputContainer = styled.div`
-  max-width: 400px;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  position: relative;
-`
-
-const SearchOptions = styled.div`
-  font-size: 12px;
-  color: var(--color-text-muted);
-`
-
 const Code = styled.code`
   margin: 0 2px;
   padding: 0px 5px;
@@ -63,19 +43,9 @@ const Code = styled.code`
   white-space: pre;
 `
 
-const SectionTitle = styled.div`
-  font-size: 1rem;
-  padding-bottom: 0.25rem;
-  font-weight: 500;
-`
-
-const Day = styled.div`
-  font-weight: bold;
-  text-align: right;
-  font-size: 14px;
-  min-width: 2.5rem;
-  margin-right: 0.5rem;
-`
+function SectionTitle({ children }: { children: React.ReactNode }) {
+  return <div className="pb-1 text-base font-medium">{children}</div>
+}
 
 function ScheduledRecipe(props: {
   readonly day: string
@@ -83,7 +53,9 @@ function ScheduledRecipe(props: {
 }) {
   return (
     <Box>
-      <Day>{props.day}</Day>
+      <div className="mr-2 min-w-[2.5rem] text-right text-[14px] font-bold">
+        {props.day}
+      </div>
       <Box gap={1} dir="col" grow={1}>
         {props.recipes.length === 0 ? (
           <div className="text-[var(--color-text-muted)]">—</div>
@@ -118,14 +90,6 @@ const SuggestionBox = styled.div`
   border-radius: 5px;
   padding: 0.25rem;
   display: inline-grid;
-`
-
-const SearchResultContainer = styled.div`
-  position: absolute;
-  z-index: 10;
-  top: 60px;
-  width: 100%;
-  max-width: 400px;
 `
 
 const suggestionStyle = css`
@@ -163,9 +127,7 @@ const RecipeMatchPiece = styled.div<{ readonly firstItem?: boolean }>`
   margin-left: 1rem;
   font-weight: bold;
 `
-const SuggestionAuthorContainer = styled.span`
-  flex-grow: 1;
-`
+
 const SuggestionAuthor = styled.span<{ readonly bold: boolean }>`
   font-weight: ${(props) => (props.bold ? "bold" : "normal")};
 `
@@ -176,9 +138,6 @@ const RecipeName = styled.span<{ readonly bold: boolean }>`
   text-overflow: ellipsis;
   white-space: pre;
 `
-const MatchType = styled.span`
-  color: var(--color-text-muted);
-`
 
 const BrowseRecipesContainer = styled.div`
   ${suggestionStyle}
@@ -188,10 +147,6 @@ const BrowseRecipesContainer = styled.div`
   margin-top: 0.5rem;
   display: flex;
   justify-content: space-between;
-`
-
-const NameAuthorContainer = styled.div`
-  display: flex;
 `
 
 type Recipe = {
@@ -385,17 +340,17 @@ export function SearchResult({
           to={pathRecipeDetail({ recipeId: recipe.id.toString() })}
           firstItem={index === 0}
         >
-          <NameAuthorContainer>
+          <div className="flex">
             <RecipeName bold={nameMatch != null}>{recipe.name} </RecipeName>
             {recipe.author && (
-              <SuggestionAuthorContainer>
+              <span className="grow">
                 by{" "}
                 <SuggestionAuthor bold={authorMatch != null}>
                   {recipe.author}
                 </SuggestionAuthor>
-              </SuggestionAuthorContainer>
+              </span>
             )}
-          </NameAuthorContainer>
+          </div>
           {ingredientMatch != null ? (
             <RecipeMatchPiece>{ingredientMatch.value}</RecipeMatchPiece>
           ) : null}
@@ -413,7 +368,9 @@ export function SearchResult({
           )}
           {suggestions}
           <BrowseRecipesContainer>
-            <MatchType>matches: {searchResults.length}</MatchType>
+            <span className="text-[var(--color-text-muted)]">
+              matches: {searchResults.length}
+            </span>
 
             <Link
               to={{
@@ -483,8 +440,8 @@ function Search() {
   }
 
   return (
-    <SearchInputAligner>
-      <SearchInputContainer ref={ref}>
+    <div className="flex justify-center py-4">
+      <div ref={ref} className="relative flex max-w-[400px] grow flex-col">
         <SearchInput
           autoFocus={!isMobile()}
           autoCorrect="false"
@@ -497,20 +454,20 @@ function Search() {
           placeholder="Search your recipes..."
         />
         {searchQuery && (
-          <SearchResultContainer>
+          <div className="absolute top-[60px] z-10 w-full max-w-[400px]">
             <SearchResult
               isLoading={recipes.isLoading}
               searchQuery={searchQuery}
               searchResults={filteredRecipes.recipes}
             />
-          </SearchResultContainer>
+          </div>
         )}
-        <SearchOptions>
+        <div className="text-[12px] text-[var(--color-text-muted)]">
           fields <Code>author:Jane Doe</Code>, <Code>ingredient:onions</Code>,{" "}
           <Code>name:cake</Code>
-        </SearchOptions>
-      </SearchInputContainer>
-    </SearchInputAligner>
+        </div>
+      </div>
+    </div>
   )
 }
 

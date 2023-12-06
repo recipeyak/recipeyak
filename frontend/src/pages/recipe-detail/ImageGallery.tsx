@@ -26,19 +26,6 @@ const MyGalleryImg = styled.img.attrs({ loading: "eager" })`
   object-fit: contain;
 `
 
-const MyGalleryImgContainer = styled.div`
-  display: flex;
-  height: 100%;
-`
-
-const MyGalleryScrollWrap = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-`
-
 const MyGalleryBackground = styled.div`
   opacity: 0.8;
   background: #000;
@@ -147,8 +134,8 @@ export const Gallery = (props: {
   return (
     <MyGalleryContainer>
       <MyGalleryBackground />
-      <MyGalleryScrollWrap>
-        <MyGalleryImgContainer onClick={onClick}>
+      <div className="absolute left-0 top-0 h-full w-full">
+        <div className="flex h-full" onClick={onClick}>
           {props.contentType.startsWith("application/pdf") ? (
             // tried using <embed /> but it would fail to load the pdf after the
             // dom node was unmounted and remounted
@@ -176,7 +163,7 @@ export const Gallery = (props: {
               onClick={onClick}
             />
           )}
-        </MyGalleryImgContainer>
+        </div>
         <MyGalleryControlOverlay>
           <TopRow>
             {props.enableStarButton && (
@@ -210,7 +197,7 @@ export const Gallery = (props: {
             )}
           </NavButtonRow>
         </MyGalleryControlOverlay>
-      </MyGalleryScrollWrap>
+      </div>
     </MyGalleryContainer>
   )
 }

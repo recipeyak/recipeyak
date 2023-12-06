@@ -1,7 +1,16 @@
-import { styled } from "@/theme"
+import { clx } from "@/classnames"
 
-export const FormControl = styled.div`
-  font-size: 1rem;
-  position: relative;
-  text-align: left;
-`
+export function FormControl({
+  className,
+  children,
+}: {
+  className?: string
+  children: React.ReactNode
+}) {
+  return (
+    <div
+      className={clx("relative text-left text-base", className)}
+      children={children}
+    />
+  )
+}

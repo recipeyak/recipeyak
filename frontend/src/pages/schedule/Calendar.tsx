@@ -76,12 +76,6 @@ const CalendarWeekContainer = styled.div`
   }
 `
 
-const DaysContainer = styled.div`
-  margin-bottom: 0.5rem;
-  flex-grow: 1;
-  height: 100%;
-`
-
 const WEEK_DAYS = 7
 
 interface IDaysProps {
@@ -98,7 +92,7 @@ function Days({ start, end, isError, teamID, days }: IDaysProps) {
   }
 
   return (
-    <DaysContainer>
+    <div className="mb-2 h-full grow">
       {chunk(eachDayOfInterval({ start, end }), WEEK_DAYS).map((dates) => {
         const firstDay = first(dates)
         if (firstDay == null) {
@@ -121,7 +115,7 @@ function Days({ start, end, isError, teamID, days }: IDaysProps) {
           </CalendarWeekContainer>
         )
       })}
-    </DaysContainer>
+    </div>
   )
 }
 

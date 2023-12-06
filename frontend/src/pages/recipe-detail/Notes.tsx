@@ -125,22 +125,18 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
   }
 }
 
-const SmallTime = styled.time`
-  font-size: 0.85rem;
-`
-
 function NoteTimeStamp({ created }: { readonly created: string }) {
   const date = new Date(created)
   const prettyDate = formatAbsoluteDateTime(date, { includeYear: true })
   const humanizedDate = formatHumanDateTime(date)
   return (
-    <SmallTime
+    <time
       title={prettyDate}
       dateTime={created}
-      className="text-[var(--color-text-muted)] print:text-black"
+      className="text-[0.85rem] text-[var(--color-text-muted)] print:text-black"
     >
       {humanizedDate}
-    </SmallTime>
+    </time>
   )
 }
 
@@ -177,10 +173,6 @@ function SharedEntry({
     </div>
   )
 }
-
-const SmallAnchor = styled.a`
-  font-size: 0.825rem;
-`
 
 interface INoteProps {
   readonly note: INote
@@ -234,11 +226,11 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
   }
 
   return (
-    <SharedEntry className={clx("flex items-start", className)} id={noteHtmlId}>
-      <Avatar
-        avatarURL={note.created_by.avatar_url}
-        className="mr-2 print:!hidden"
-      />
+    <SharedEntry
+      className={clx("flex items-start gap-2", className)}
+      id={noteHtmlId}
+    >
+      <Avatar avatarURL={note.created_by.avatar_url} />
       <div className="w-full">
         <Box align="center">
           <Link
@@ -258,12 +250,12 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
             reactions={note.reactions}
           />
           {note.created_by.id === userId ? (
-            <SmallAnchor
-              className="ml-2 cursor-pointer text-[var(--color-text-muted)] print:hidden"
+            <a
+              className="ml-2 cursor-pointer text-[0.825rem] text-[var(--color-text-muted)] print:hidden"
               onClick={onNoteClick}
             >
               edit
-            </SmallAnchor>
+            </a>
           ) : null}
         </Box>
         {!isEditing ? (
@@ -400,11 +392,11 @@ export function TimelineEvent({
   const action =
     event.action === "created" && event.is_scraped ? "imported" : event.action
   return (
-    <SharedEntry id={eventId} className={clx("flex items-center", className)}>
-      <Avatar
-        avatarURL={event.created_by?.avatar_url ?? null}
-        className="mr-2 print:!hidden"
-      />
+    <SharedEntry
+      id={eventId}
+      className={clx("flex items-center gap-2", className)}
+    >
+      <Avatar avatarURL={event.created_by?.avatar_url ?? null} />
       <div className="flex flex-col">
         <div>
           <MaybeLink
@@ -540,11 +532,6 @@ const DragDropLabel = styled.label`
   background-color: var(--color-background-card);
 `
 
-const NoteWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-`
-
 const FileUploadContainer = styled.div`
   border-style: solid;
   border-top-style: none;
@@ -557,9 +544,6 @@ const FileUploadContainer = styled.div`
   gap: 0.25rem;
 `
 
-const FilePreviewParent = styled.div`
-  position: relative;
-`
 const CloseButton = styled.button`
   z-index: 10;
   position: absolute;
@@ -628,29 +612,6 @@ function FilePreview({
     </div>
   )
 }
-
-const LoaderContainer = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  display: flex;
-`
-
-const BrokenFileContainer = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  display: flex;
-`
-
-const BrokenFile = styled.div`
-  margin: auto;
-  font-size: 2rem;
-`
 
 // todo: clear changes on cancellation
 function useFileUpload(
@@ -766,10 +727,6 @@ function useFileUpload(
   } as const
 }
 
-const FileAnchor = styled.a`
-  position: relative;
-`
-
 const ProgressBarContainer = styled.div`
   z-index: 10;
   position: absolute;
@@ -781,11 +738,6 @@ const ProgressBarContainer = styled.div`
   display: flex;
   align-items: end;
   justify-content: center;
-`
-
-const StyledProgress = styled.progress`
-  height: 0.2rem;
-  border-radius: 0;
 `
 
 function FileWithStatus({
@@ -803,10 +755,11 @@ function FileWithStatus({
 }) {
   return (
     <>
-      <FileAnchor
+      <a
         href={url}
         target="_blank"
         rel="noreferrer"
+        className="relative"
         onClick={(e) => {
           e.stopPropagation()
         }}
@@ -821,23 +774,23 @@ function FileWithStatus({
           // hide the progress bar once it is complete
           progress !== 100 && (
             <ProgressBarContainer>
-              <StyledProgress
+              <progress
                 value={progress}
                 max="100"
-                className="accent-[var(--color-primary)]"
+                className="h-[0.2rem] rounded-none accent-[var(--color-primary)]"
               />
             </ProgressBarContainer>
           )}
-      </FileAnchor>
+      </a>
       {state === "failed" && (
-        <BrokenFileContainer title="Image upload failed">
-          <BrokenFile>❌</BrokenFile>
-        </BrokenFileContainer>
+        <div className="absolute inset-0 flex" title="Image upload failed">
+          <div className="m-auto text-[2rem]">❌</div>
+        </div>
       )}
       {state === "loading" && (
-        <LoaderContainer title="Image uploading...">
+        <div className="absolute inset-0 flex" title="Image uploading...">
           <RotatingLoader />
-        </LoaderContainer>
+        </div>
       )}
     </>
   )
@@ -880,7 +833,7 @@ function FileUploader({
             // NOTE(sbdchd): it's important that the `localId` is consistent
             // throughout the upload content, otherwise we'll wipe out the DOM
             // node and there will be a flash as the image changes.
-            <FilePreviewParent key={f.localId}>
+            <div key={f.localId} className="relative">
               <FileWithStatus
                 progress={f.progress}
                 url={f.url}
@@ -897,7 +850,7 @@ function FileUploader({
               >
                 &times;
               </CloseButton>
-            </FilePreviewParent>
+            </div>
           ))}
         </FileUploadContainer>
       )}
@@ -933,7 +886,8 @@ function UploadContainer({
   addFiles: (files: FileList) => void
 }) {
   return (
-    <NoteWrapper
+    <div
+      className="flex flex-col"
       onDragOver={(event) => {
         event.dataTransfer.dropEffect = "copy"
       }}
@@ -945,7 +899,7 @@ function UploadContainer({
       }}
     >
       {children}
-    </NoteWrapper>
+    </div>
   )
 }
 

@@ -7,7 +7,6 @@ import { RecipeSearchList } from "@/components/RecipeSearchList"
 import Calendar from "@/pages/schedule/Calendar"
 import HelpMenuModal from "@/pages/schedule/HelpMenuModal"
 import { useUserUpdate } from "@/queries/userUpdate"
-import { styled } from "@/theme"
 
 interface ISidebarProps {
   readonly teamID: number
@@ -26,10 +25,6 @@ interface IScheduleProps
     teamId: string
   }> {}
 
-const ScheduleContainer = styled.div`
-  height: calc(100vh - 3rem);
-`
-
 export function SchedulePage(props: IScheduleProps) {
   const teamID = getTeamID(props.match.params)
 
@@ -45,12 +40,12 @@ export function SchedulePage(props: IScheduleProps) {
 
   return (
     <NavPage includeSearch={false} noContainer>
-      <ScheduleContainer className="flex h-screen grow px-2">
+      <div className="flex h-[calc(100vh-3rem)] grow px-2">
         <Helmet title="Schedule" />
         <Sidebar teamID={teamID} />
         <Calendar teamID={teamID} />
         <HelpMenuModal />
-      </ScheduleContainer>
+      </div>
     </NavPage>
   )
 }
