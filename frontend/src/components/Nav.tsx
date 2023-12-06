@@ -42,13 +42,7 @@ interface IUserAvatarProps {
 }
 function UserAvatar({ onClick, url }: IUserAvatarProps) {
   return (
-    <BetterNavItem
-      as={Avatar}
-      onClick={onClick}
-      tabIndex={0}
-      className="!p-0"
-      avatarURL={url}
-    />
+    <BetterNavItem as={Avatar} onClick={onClick} tabIndex={0} avatarURL={url} />
   )
 }
 

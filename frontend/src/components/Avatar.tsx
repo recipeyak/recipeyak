@@ -25,12 +25,19 @@ function UserProfileImage({
 interface IAvatarProps {
   readonly avatarURL: string | null
   readonly onClick?: () => void
+  readonly tabIndex?: number
 }
-export function Avatar({ avatarURL, onClick }: IAvatarProps) {
+export function Avatar({ avatarURL, onClick, tabIndex }: IAvatarProps) {
   if (avatarURL == null) {
-    return <UserProfileImage onClick={onClick} />
+    return <UserProfileImage onClick={onClick} tabIndex={tabIndex} />
   }
   return (
-    <UserProfileImage as="img" onClick={onClick} src={avatarURL} alt="avatar" />
+    <UserProfileImage
+      as="img"
+      onClick={onClick}
+      src={avatarURL}
+      alt="avatar"
+      tabIndex={tabIndex}
+    />
   )
 }
