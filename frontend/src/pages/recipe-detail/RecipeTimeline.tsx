@@ -5,12 +5,7 @@ import { formatHumanDate } from "@/date"
 import { SectionTitle } from "@/pages/recipe-detail/RecipeHelpers"
 import { pathSchedule } from "@/paths"
 import { useTimelineList } from "@/queries/timelineList"
-import { styled } from "@/theme"
 import { useTeamId } from "@/useTeamId"
-
-interface ITimelineItemProps {
-  readonly type: "comment" | "scheduled" | "created"
-}
 
 interface ITimeProps {
   readonly dateTime: Date | string
@@ -26,27 +21,21 @@ function Time({ dateTime }: ITimeProps) {
   )
 }
 
-const TimelineItem = styled.li<ITimelineItemProps>`
-  font-weight: 500;
-  padding: 0.5rem;
-  margin-bottom: 0.5rem;
-  border-radius: 5px;
-  border: 1px solid var(--color-border);
-`
+function TimelineItem({ children }: { children: React.ReactNode }) {
+  return (
+    <li className="mb-2 rounded-[5px] border-[2px] border-solid border-[var(--color-border)] p-2 font-medium">
+      {children}
+    </li>
+  )
+}
 
-const TimelineContainer = styled.div`
-  max-width: 600px;
-`
-
-const TimelineList = styled.ol`
-  list-style: none;
-  margin-left: 0.5rem;
-  padding-left: 0.5rem;
-  border-left: 3px solid;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-`
-
+function TimelineList({ children }: { children: React.ReactNode }) {
+  return (
+    <ol className="ml-2 list-none border-l-[3px] border-solid py-2 pl-2">
+      {children}
+    </ol>
+  )
+}
 interface IRecipeTimelineProps {
   readonly recipeId: number
   readonly createdAt: string
@@ -59,20 +48,20 @@ export function RecipeTimeline({ createdAt, recipeId }: IRecipeTimelineProps) {
     return null
   }
   return (
-    <TimelineContainer>
+    <div className="max-w-[600px]">
       <SectionTitle>Timeline</SectionTitle>
       <TimelineList>
         {res.data.map((e) => {
           switch (e.type) {
             case "comment":
               return (
-                <TimelineItem key={e.id} type={e.type}>
+                <TimelineItem key={e.id}>
                   <p>💬 {e.author} commented</p>
                 </TimelineItem>
               )
             case "scheduled":
               return (
-                <TimelineItem key={e.id} type={e.type}>
+                <TimelineItem key={e.id}>
                   📅 Scheduled for{" "}
                   <Link
                     to={{
@@ -88,10 +77,10 @@ export function RecipeTimeline({ createdAt, recipeId }: IRecipeTimelineProps) {
               return null
           }
         })}
-        <TimelineItem type="created">
+        <TimelineItem>
           🎉 Recipe created on <Time dateTime={new Date(createdAt)} />
         </TimelineItem>
       </TimelineList>
-    </TimelineContainer>
+    </div>
   )
 }

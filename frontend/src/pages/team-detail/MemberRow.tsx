@@ -31,8 +31,8 @@ const MemberRow = ({
   const isUser = useUserId() === userID
   return (
     <tr key={membershipID}>
-      <td className="flex items-center pr-4">
-        <Avatar avatarURL={avatarURL} className="mr-2" />
+      <td className="flex items-center gap-2 pr-4">
+        <Avatar avatarURL={avatarURL} />
         <div className="flex flex-col">
           <b>{email}</b>
         </div>

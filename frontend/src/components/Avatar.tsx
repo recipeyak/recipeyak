@@ -1,44 +1,43 @@
-import { styled } from "@/theme"
-
-const UserProfileImage = styled.div`
-  background-color: rgb(240, 240, 240);
-  height: 30px;
-  width: 30px;
-  min-width: 30px;
-  margin: 5px;
-  border-radius: 100%;
-  max-height: none;
-`
+function UserProfileImage({
+  onClick,
+  tabIndex,
+  ...rest
+}: {
+  onClick: (() => void) | undefined
+  tabIndex?: number
+} & ({ as: "img"; src: string; alt: string } | { as?: undefined })) {
+  const className =
+    "m-[5px] h-[30px] max-h-none w-[30px] min-w-[30px] rounded-full bg-[rgb(240,240,240)] print:!hidden"
+  if (rest.as === "img") {
+    return (
+      <img
+        className={className}
+        onClick={onClick}
+        tabIndex={tabIndex}
+        alt={rest.alt}
+        src={rest.src}
+      />
+    )
+  }
+  return <div className={className} onClick={onClick} tabIndex={tabIndex} />
+}
 
 interface IAvatarProps {
   readonly avatarURL: string | null
-  readonly className?: string
   readonly onClick?: () => void
   readonly tabIndex?: number
 }
-export function Avatar({
-  className,
-  avatarURL,
-  onClick,
-  tabIndex,
-}: IAvatarProps) {
+export function Avatar({ avatarURL, onClick, tabIndex }: IAvatarProps) {
   if (avatarURL == null) {
-    return (
-      <UserProfileImage
-        onClick={onClick}
-        className={className}
-        tabIndex={tabIndex}
-      />
-    )
+    return <UserProfileImage onClick={onClick} tabIndex={tabIndex} />
   }
   return (
     <UserProfileImage
       as="img"
       onClick={onClick}
       src={avatarURL}
-      className={className}
-      tabIndex={tabIndex}
       alt="avatar"
+      tabIndex={tabIndex}
     />
   )
 }

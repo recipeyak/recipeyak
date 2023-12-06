@@ -1,8 +1,8 @@
+import { ForwardedRef, forwardRef } from "react"
 import { useDrag } from "react-dnd"
 import { Link } from "react-router-dom"
 
 import { clx } from "@/classnames"
-import { Card, CardContent } from "@/components/Card"
 import { DragIcon } from "@/components/icons"
 import { Image } from "@/components/Image"
 import { Tag } from "@/components/Tag"
@@ -12,6 +12,49 @@ import { Match } from "@/search"
 import { styled } from "@/theme"
 import { imgixFmt } from "@/url"
 import { recipeURL } from "@/urls"
+
+const Card = forwardRef(
+  (
+    {
+      children,
+      isDragging,
+      tabIndex,
+      ...rest
+    }: { children: React.ReactNode; tabIndex?: number } & (
+      | {
+          as: "Link"
+          to: string
+          isDragging?: undefined
+        }
+      | {
+          as?: undefined
+          isDragging: boolean
+        }
+    ),
+    ref: ForwardedRef<HTMLDivElement>,
+  ) => {
+    const className = clx(
+      "flex flex-col border border-solid border-[var(--color-background-calendar-day)] bg-[var(--color-background-card)]",
+      isDragging != null && "cursor-move",
+      isDragging ? "opacity-50" : "opacity-100",
+    )
+    if (rest.as === "Link") {
+      return (
+        <Link
+          className={className}
+          to={rest.to}
+          children={children}
+          tabIndex={tabIndex}
+        />
+      )
+    }
+    return (
+      <div ref={ref} className={className} tabIndex={tabIndex}>
+        {children}
+      </div>
+    )
+  },
+)
 
 interface IRecipeTitleProps {
   readonly url: string
@@ -30,12 +73,13 @@ function RecipeTitle({ url, name, dragable }: IRecipeTitleProps) {
   )
 }
 
-const Ingredient = styled.small`
-  font-weight: bold;
-  overflow-x: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-`
+function Ingredient({ children }: { children: React.ReactNode }) {
+  return (
+    <small className="overflow-x-hidden text-ellipsis whitespace-nowrap font-bold">
+      {children}
+    </small>
+  )
+}
 
 const CardImgContainer = styled.div`
   @media (max-width: 449px) {
@@ -83,7 +127,9 @@ function RecipeListItem({
       </div>
 
       {ingredientMatch != null ? (
-        <Ingredient>{ingredientMatch.value}</Ingredient>
+        <small className="overflow-x-hidden text-ellipsis whitespace-nowrap font-bold">
+          {ingredientMatch.value}
+        </small>
       ) : null}
       {author !== "" && (
         <small className={clx("block", { "font-bold": authorMatch != null })}>
@@ -96,7 +142,7 @@ function RecipeListItem({
   )
 
   return (
-    <Card as={Link} tabIndex={0} to={url}>
+    <Card as={"Link"} tabIndex={0} to={url}>
       <CardImgContainer>
         <Image
           // lazy load everything after the first 20ish
@@ -187,22 +233,18 @@ export function RecipeItem({
   const authorMatch = matches.find((x) => x.kind === "author")
 
   const recipeContent = (
-    <CardContent className="flex h-full flex-col">
+    <div className="flex h-full flex-col p-2">
       <RecipeTitle name={name} url={url} dragable={!!props.drag} />
       {ingredientMatch != null ? (
         <Ingredient>{ingredientMatch.value}</Ingredient>
       ) : null}
       <div>{tagMatch != null ? <Tag>{tagMatch.value}</Tag> : null}</div>
       <Meta bold={authorMatch != null} author={author ?? ""} />
-    </CardContent>
+    </div>
   )
 
   return (
-    <Card
-      ref={drag}
-      className="cursor-move"
-      style={{ opacity: isDragging ? 0.5 : 1 }}
-    >
+    <Card ref={drag} isDragging={isDragging}>
       {recipeContent}
     </Card>
   )

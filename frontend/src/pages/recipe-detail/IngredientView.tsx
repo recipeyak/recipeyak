@@ -2,7 +2,6 @@ import { DragElementWrapper, DragSourceOptions } from "react-dnd"
 
 import { IIngredient } from "@/queries/recipeFetch"
 import { normalizeUnitsFracs } from "@/text"
-import { styled } from "@/theme"
 
 interface IIngredientVIewProps {
   readonly quantity: IIngredient["quantity"]
@@ -11,12 +10,6 @@ interface IIngredientVIewProps {
   readonly optional: IIngredient["optional"]
   readonly dragRef: DragElementWrapper<DragSourceOptions> | undefined
 }
-
-const IngredientViewInner = styled.p`
-  white-space: pre-wrap;
-  line-height: 1.25rem;
-  padding-bottom: 0.4rem;
-`
 
 export function IngredientViewContent({
   quantity,
@@ -51,8 +44,8 @@ export default function IngredientView({
   dragRef,
 }: IIngredientVIewProps) {
   return (
-    <IngredientViewInner
-      className="cursor-auto select-text justify-between"
+    <p
+      className="cursor-auto select-text justify-between whitespace-pre-wrap pb-[0.4rem] leading-5"
       ref={dragRef}
     >
       <IngredientViewContent
@@ -61,6 +54,6 @@ export default function IngredientView({
         name={name}
         optional={optional}
       />
-    </IngredientViewInner>
+    </p>
   )
 }

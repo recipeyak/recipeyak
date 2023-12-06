@@ -300,12 +300,6 @@ const ImageWrapper = styled.div`
   }
 `
 
-const MyRecipeTitle = styled.div`
-  font-size: 2.5rem;
-  line-height: 1em;
-  font-family: Georgia, serif;
-`
-
 function RecipeMetaItem({
   inline,
   children,
@@ -464,12 +458,6 @@ function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
   )
 }
 
-const RecipeTitleCenter = styled.div`
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-`
-
 const HeaderBgOverlay = styled.div`
   border-radius: 6px;
   background-color: var(--color-modal-background);
@@ -508,12 +496,6 @@ const HeaderImgUploader = styled.div`
   padding: 0.5rem;
   border-radius: 3px;
   font-size: 14px;
-`
-
-const RecipeTitleContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
 `
 
 function useGallery(
@@ -642,7 +624,6 @@ function RecipeInfo(props: {
     <>
       <RecipeDetailsContainer spanColumns={inlineLayout}>
         <Dropdown
-          className="mr-auto print:!hidden"
           recipeIsArchived={props.recipe.archived_at != null}
           recipeId={props.recipe.id}
           recipeName={props.recipe.name}
@@ -660,11 +641,11 @@ function RecipeInfo(props: {
           />
         ) : (
           <>
-            <RecipeTitleCenter>
-              <RecipeTitleContainer>
-                <MyRecipeTitle className="cursor-auto select-text">
+            <div className="flex grow items-center">
+              <div className="flex flex-col gap-2">
+                <div className="cursor-auto select-text font-serif text-[2.5rem] leading-10">
                   {props.recipe.name}
-                </MyRecipeTitle>
+                </div>
                 {notEmpty(props.recipe.author) && (
                   <div className="cursor-auto select-text">
                     By{" "}
@@ -680,8 +661,8 @@ function RecipeInfo(props: {
                     </Link>
                   </div>
                 )}
-              </RecipeTitleContainer>
-            </RecipeTitleCenter>
+              </div>
+            </div>
             <RecipeMetaContainer inline={inlineLayout}>
               {notEmpty(props.recipe.time) && (
                 <RecipeMetaItem inline={inlineLayout} label={"Time"}>

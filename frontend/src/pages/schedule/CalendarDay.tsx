@@ -90,10 +90,6 @@ const CalendarDayContainer = styled.div<ICalendarDayContainerProps>`
   }
 `
 
-const CalendarUl = styled.ul`
-  overflow-y: auto;
-`
-
 interface ICalendarDayProps {
   readonly date: Date
   readonly scheduledRecipes: ICalRecipe[]
@@ -171,7 +167,7 @@ function CalendarDay({ date, scheduledRecipes, teamID }: ICalendarDayProps) {
       isSelectedDay={isSelectedDay}
     >
       <Title date={date} />
-      <CalendarUl>
+      <ul className="overflow-y-auto">
         {scheduled.map((x) => (
           <CalendarItem
             key={x.id}
@@ -190,7 +186,7 @@ function CalendarDay({ date, scheduledRecipes, teamID }: ICalendarDayProps) {
             }}
           />
         ))}
-      </CalendarUl>
+      </ul>
     </CalendarDayContainer>
   )
 }
