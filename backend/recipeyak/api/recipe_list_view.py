@@ -74,7 +74,7 @@ class ListQueryResult(NamedTuple):
     scheduled_count: int
     archived_at: datetime | None
     tags: list[str]
-    ingredients: list[dict[str, Any]]
+    ingredients: list[dict[str, Any]] | None
     primary_image: dict[str, Any]
 
 
@@ -145,7 +145,7 @@ where core_recipe.team_id = %(team_id)s
         recipes = namedtuplefetchall(cursor)
     for recipe in recipes:
         ingredients = list[RecipeListItemIngredient]()
-        for ingre in recipe.ingredients:
+        for ingre in recipe.ingredients or []:
             ingredients.append(
                 RecipeListItemIngredient(
                     id=ingre["id"], quantity=ingre["quantity"], name=ingre["name"]
