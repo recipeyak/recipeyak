@@ -26,3 +26,15 @@ def test_list_view(client: APIClient, user: User, team: Team, recipe: Recipe) ->
     res = client.get("/api/v1/recipes/")
     assert res.status_code == status.HTTP_200_OK
     assert res.json()[0]["scheduledCount"] == 1
+
+
+def test_list_view_no_ingredients_regression(
+    client: APIClient, user: User, team: Team, recipe: Recipe
+) -> None:
+    client.force_authenticate(user)
+    recipe.team = team
+    recipe.save()
+    recipe.ingredient_set.all().delete()
+
+    res = client.get("/api/v1/recipes/")
+    assert res.status_code == status.HTTP_200_OK
