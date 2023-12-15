@@ -8,5 +8,5 @@ test("landing page", async ({ page }, testInfo) => {
   await expect(page.getByText("Recently Created")).toBeVisible();
   await expect(page.getByRole("link", { name: "Schedule" })).toBeVisible();
 
-  await expect(page).toHaveScreenshot();
+  await expect(page).toHaveScreenshot({ fullPage: true });
 });

@@ -13,7 +13,7 @@ const CloseButtonInner = styled(Button)`
 
 export function CloseButton({ onClose }: { onClose?: () => void }) {
   return (
-    <CloseButtonInner size="small" onClick={onClose}>
+    <CloseButtonInner size="small" onClick={onClose} data-testid="close modal">
       <Box
         style={{
           background: "var(--color-background-card)",

@@ -60,62 +60,66 @@ export function PasswordChangePage() {
 
   return (
     <NavPage>
-      <form onSubmit={handleSubmit} className="mx-auto my-0 max-w-[400px]">
-        <Helmet title="Password Change" />
+      <Helmet title="Password Change" />
+      <form onSubmit={handleSubmit} className="mx-auto my-0 max-w-[400px] ">
         <h2 className="text-xl">Password Change</h2>
+        <div className="flex flex-col gap-4">
+          <FormField>
+            <Label htmlFor="oldPassword">Current Password</Label>
+            <FormControl>
+              <PasswordInput
+                autoFocus
+                onChange={(e) => {
+                  setOldPassword(e.target.value)
+                }}
+                aria-label="old password"
+                error={error?.code === "invalid_password"}
+                name="oldPassword"
+                required
+              />
+            </FormControl>
+          </FormField>
 
-        <FormField>
-          <Label>Current Password</Label>
+          <FormField>
+            <Label htmlFor="newPassword">New Password</Label>
+            <FormControl>
+              <PasswordInput
+                onChange={(e) => {
+                  setNewPassword(e.target.value)
+                }}
+                aria-label="new password"
+                name="newPassword"
+                required
+              />
+            </FormControl>
+          </FormField>
+
+          <FormField>
+            <Label htmlFor="newPasswordAgain">New Password Again</Label>
+            <FormControl>
+              <PasswordInput
+                onChange={(e) => {
+                  setNewPasswordAgain(e.target.value)
+                }}
+                aria-label="new password again"
+                name="newPasswordAgain"
+                required
+              />
+            </FormControl>
+          </FormField>
+
           <FormControl>
-            <PasswordInput
-              autoFocus
-              onChange={(e) => {
-                setOldPassword(e.target.value)
-              }}
-              error={error?.code === "invalid_password"}
-              name="oldPassword"
-              required
-            />
+            <Button
+              variant="primary"
+              type="submit"
+              className="w-full"
+              loading={passwordChange.isPending}
+            >
+              Update
+            </Button>
           </FormControl>
-        </FormField>
-
-        <FormField>
-          <Label>New Password</Label>
-          <FormControl>
-            <PasswordInput
-              onChange={(e) => {
-                setNewPassword(e.target.value)
-              }}
-              name="newPassword"
-              required
-            />
-          </FormControl>
-        </FormField>
-
-        <FormField>
-          <Label>New Password Again</Label>
-          <FormControl>
-            <PasswordInput
-              onChange={(e) => {
-                setNewPasswordAgain(e.target.value)
-              }}
-              name="newPasswordAgain"
-              required
-            />
-          </FormControl>
-        </FormField>
-
-        <FormControl>
-          <Button
-            variant="primary"
-            type="submit"
-            className="w-full"
-            loading={passwordChange.isPending}
-          >
-            Update
-          </Button>
-        </FormControl>
-        {error != null && <div>{error.message}</div>}
+          {error != null && <div>{error.message}</div>}
+        </div>
       </form>
     </NavPage>
   )

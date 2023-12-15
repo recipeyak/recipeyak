@@ -162,6 +162,7 @@ function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
         <Button
           size="small"
           className="p-1"
+          data-testid="show calendar settings"
           onClick={() => {
             setShowSettings(true)
           }}
@@ -170,6 +171,7 @@ function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
         </Button>
         <Button
           size="small"
+          data-testid="open shopping list modal"
           onClick={() => {
             setShowShopping(true)
           }}
@@ -178,13 +180,13 @@ function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
         </Button>
       </Box>
       <Box gap={1}>
-        <Button size="small" onClick={onPrev}>
+        <Button size="small" onClick={onPrev} aria-label="previous week">
           {"←"}
         </Button>
-        <Button size="small" onClick={onCurrent}>
+        <Button size="small" onClick={onCurrent} aria-label="current week">
           Today
         </Button>
-        <Button size="small" onClick={onNext}>
+        <Button size="small" onClick={onNext} aria-label="next week">
           {"→"}
         </Button>
       </Box>

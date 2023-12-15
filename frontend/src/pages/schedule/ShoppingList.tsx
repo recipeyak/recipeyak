@@ -132,9 +132,15 @@ const ShoppingListList = React.forwardRef<
       }}
     >
       {props.items.isPending ? (
-        <div className="text-center">loading...</div>
+        <div className="text-center" data-testid="shopping list items loading">
+          loading...
+        </div>
       ) : (
-        <div ref={ref} className="cursor-auto select-text">
+        <div
+          ref={ref}
+          className="cursor-auto select-text"
+          data-testid="shopping-list-items"
+        >
           {groups.map(([groupName, values], groupIndex) => {
             values.sort((x, y) => ingredientByNameAlphabetical(x[0], y[0]))
             return (
