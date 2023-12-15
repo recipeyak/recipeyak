@@ -1,14 +1,18 @@
-import { styled } from "@/theme"
+import { clx } from "@/classnames"
 
-export const FormField = styled.div<{ isGrouped?: boolean }>`
-  &:not(:last-child) {
-    margin-bottom: 0.75rem;
-  }
-  ${(p) =>
-    p.isGrouped &&
-    `
-    display: flex;
-    justify-content: flex-start;
-    gap: 0.5rem;
-  `}
-`
+export function FormField({
+  children,
+  isGrouped,
+  className,
+}: {
+  children: React.ReactNode
+  isGrouped?: boolean
+  className?: string
+}) {
+  return (
+    <div
+      className={clx("", isGrouped && "justify-start gap-2", className)}
+      children={children}
+    />
+  )
+}

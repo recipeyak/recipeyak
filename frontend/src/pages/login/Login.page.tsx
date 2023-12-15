@@ -7,7 +7,6 @@ import { Link, useHistory, useLocation } from "react-router-dom"
 import { login } from "@/auth"
 import { BorderBox } from "@/components/BorderBox"
 import { Button } from "@/components/Buttons"
-import { FormField } from "@/components/FormField"
 import { FormErrorHandler, PasswordInput, TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Label } from "@/components/Label"
@@ -81,9 +80,9 @@ export function LoginPage() {
           </Tab>
         </Tabs>
 
-        <form onSubmit={handleSubmit}>
-          <FormField>
-            <Label>Email</Label>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+          <div>
+            <Label htmlFor="email">Email</Label>
             <TextInput
               onChange={(e) => {
                 setEmail(e.target.value)
@@ -91,13 +90,14 @@ export function LoginPage() {
               value={email}
               error={errors?.email != null}
               autoFocus
+              aria-label="email"
               name="email"
               placeholder="rick.sanchez@me.com"
             />
             <FormErrorHandler error={errors?.email} />
-          </FormField>
+          </div>
 
-          <FormField>
+          <div>
             <Label htmlFor="password">Password</Label>
             <PasswordInput
               onChange={(e) => {
@@ -105,14 +105,15 @@ export function LoginPage() {
               }}
               value={password}
               error={errors?.password != null}
+              aria-label="password"
               name="password"
               placeholder="Super secret password."
             />
             <FormErrorHandler error={errors?.password} />
             <FormErrorHandler error={errors?.nonFieldErrors} />
-          </FormField>
+          </div>
 
-          <FormField className="flex items-center justify-between">
+          <div className="flex items-center justify-between">
             <Button
               variant="primary"
               type="submit"
@@ -121,7 +122,7 @@ export function LoginPage() {
               Submit
             </Button>
             <Link to={pathPasswordReset({})}>Forgot Password?</Link>
-          </FormField>
+          </div>
         </form>
       </BorderBox>
     </AuthPage>

@@ -377,6 +377,7 @@ export function SearchResult({
                 pathname: pathRecipesList({}),
                 search: `search=${encodeURIComponent(searchQuery)}`,
               }}
+              data-testid="search browse"
             >
               Browse
             </Link>

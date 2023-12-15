@@ -5,7 +5,7 @@ test("calendar page", async ({ page }, testInfo) => {
   await login(page);
   await page.getByRole("link", { name: "Calendar" }).click();
 
-  await expect(page).toHaveScreenshot();
+  await expect(page).toHaveScreenshot({ fullPage: true });
 });
 
 test("shopping list", async ({ page }, testInfo) => {
@@ -16,11 +16,11 @@ test("shopping list", async ({ page }, testInfo) => {
 
   await expect(page.getByTestId("shopping-list-items")).toBeVisible();
 
-  await expect(page).toHaveScreenshot();
+  await expect(page).toHaveScreenshot({ fullPage: true });
 
   await page.getByRole("button", { name: "show" }).click();
 
-  await expect(page).toHaveScreenshot();
+  await expect(page).toHaveScreenshot({ fullPage: true });
 
   await page.getByRole("button", { name: "hide" }).click();
   await page.getByTestId("close modal").click();
@@ -38,7 +38,7 @@ test("settings modal", async ({ page }, testInfo) => {
   ).toBeVisible();
   await expect(page.getByRole("button", { name: "Reset" })).toBeVisible();
 
-  await expect(page).toHaveScreenshot();
+  await expect(page).toHaveScreenshot({ fullPage: true });
 
   await page.getByTestId("close modal").click();
 });
@@ -48,9 +48,9 @@ test("calendar nav buttons", async ({ page }) => {
   await page.getByRole("link", { name: "Calendar" }).click();
 
   await page.getByLabel("previous week").click();
-  await expect(page).toHaveScreenshot();
+  await expect(page).toHaveScreenshot({ fullPage: true });
   await page.getByLabel("current week").click();
-  await expect(page).toHaveScreenshot();
+  await expect(page).toHaveScreenshot({ fullPage: true });
   await page.getByLabel("next week").click();
-  await expect(page).toHaveScreenshot();
+  await expect(page).toHaveScreenshot({ fullPage: true });
 });

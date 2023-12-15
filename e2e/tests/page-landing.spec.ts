@@ -6,5 +6,5 @@ test("landing page", async ({ page }, testInfo) => {
     page.getByRole("heading", { name: "A place to store, share, and" })
   ).toBeVisible();
 
-  await expect(page).toHaveScreenshot();
+  await expect(page).toHaveScreenshot({ fullPage: true });
 });

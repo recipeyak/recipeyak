@@ -28,9 +28,13 @@ function TeamsList() {
 
   return (
     <div className="text-left">
-      {teams.data.map(({ id, name }) => (
+      {teams.data.map(({ id, name }, index) => (
         <p key={id}>
-          <NavLink to={teamURL(id, name)} activeClassName="font-medium">
+          <NavLink
+            data-testid={`team-${index}`}
+            to={teamURL(id, name)}
+            activeClassName="font-medium"
+          >
             {name}
           </NavLink>
         </p>

@@ -11,7 +11,7 @@ test("recipe detail page", async ({ page }, testInfo) => {
     timeout: 10000,
   });
 
-  await expect(page).toHaveScreenshot();
+  await expect(page).toHaveScreenshot({ fullPage: true });
 });
 
 test("schedule modal", async ({ page }, testInfo) => {
@@ -22,7 +22,7 @@ test("schedule modal", async ({ page }, testInfo) => {
   await page.getByRole("button", { name: "Actions" }).click();
   await page.getByRole("button", { name: "Schedule" }).click();
 
-  await expect(page).toHaveScreenshot();
+  await expect(page).toHaveScreenshot({ fullPage: true });
 
   await page.getByTestId("close modal").click();
 });
@@ -35,10 +35,10 @@ test("actions > copy ingredients", async ({ page }, testInfo) => {
 
   await page.getByRole("button", { name: "Actions" }).click();
 
-  await expect(page).toHaveScreenshot();
+  await expect(page).toHaveScreenshot({ fullPage: true });
 
   await page.getByRole("button", { name: "Copy Ingredients" }).click();
   await expect(page.getByText("Copied ingredients to")).toBeVisible();
 
-  await expect(page).toHaveScreenshot();
+  await expect(page).toHaveScreenshot({ fullPage: true });
 });
