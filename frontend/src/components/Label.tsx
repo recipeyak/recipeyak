@@ -2,8 +2,20 @@ import { ForwardedRef, forwardRef } from "react"
 
 import { clx } from "@/classnames"
 
-export function Label({ children }: { children: React.ReactNode }) {
-  return <label className="block text-base font-bold" children={children} />
+export function Label({
+  children,
+  htmlFor,
+}: {
+  children: React.ReactNode
+  htmlFor?: string
+}) {
+  return (
+    <label
+      htmlFor={htmlFor}
+      className="block text-base font-bold"
+      children={children}
+    />
+  )
 }
 
 export const BetterLabel = forwardRef(
