@@ -161,12 +161,7 @@ function SharedEntry({
   return (
     <div
       ref={ref}
-      className={clx(
-        {
-          "animate-highlighted-fade": isSharedNote,
-        },
-        className,
-      )}
+      className={clx(isSharedNote && "animate-highlighted-fade", className)}
       id={id}
     >
       {children}

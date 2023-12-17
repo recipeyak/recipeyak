@@ -2,8 +2,6 @@ import React, { useState } from "react"
 import { useDrag, useDrop } from "react-dnd"
 
 import { Button } from "@/components/Buttons"
-import { FormControl } from "@/components/FormControl"
-import { FormField } from "@/components/FormField"
 import { TextInput } from "@/components/Forms"
 import { DragDrop, handleDndHover } from "@/dragDrop"
 import { useSectionDelete } from "@/queries/sectionDelete"
@@ -109,23 +107,21 @@ export function Section({
               name="section title"
             />
           </div>
-          <FormField isGrouped>
-            <FormControl className="grow">
-              <Button
-                size="small"
-                type="button"
-                onClick={() => {
-                  deleteSection.mutate({
-                    recipeId,
-                    sectionId,
-                  })
-                }}
-                loading={deleteSection.isPending}
-              >
-                Delete
-              </Button>
-            </FormControl>
-            <FormControl>
+          <div className="flex justify-between">
+            <Button
+              size="small"
+              type="button"
+              onClick={() => {
+                deleteSection.mutate({
+                  recipeId,
+                  sectionId,
+                })
+              }}
+              loading={deleteSection.isPending}
+            >
+              Delete
+            </Button>
+            <div className="flex gap-2">
               <Button
                 onClick={handleCancel}
                 size="small"
@@ -134,8 +130,6 @@ export function Section({
               >
                 Cancel
               </Button>
-            </FormControl>
-            <FormControl>
               <Button
                 variant="primary"
                 disabled={addDisabled}
@@ -145,8 +139,8 @@ export function Section({
               >
                 Save
               </Button>
-            </FormControl>
-          </FormField>
+            </div>
+          </div>
           {updateSection.isError && <p>error adding ingredient</p>}
         </form>
       </li>

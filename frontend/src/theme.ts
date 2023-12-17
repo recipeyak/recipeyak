@@ -9,6 +9,7 @@ const THEME_CACHE_KEY = "recipeyak-theme-v2"
 export function themeSet(theme: Theme) {
   const themeToClassName = {
     light: "",
+    dark: "theme-dark",
     autumn: "theme-autumn",
     solarized: "theme-solarized",
   } as const

@@ -3,9 +3,7 @@ import { login } from "./authUtils";
 
 test("recipe detail page", async ({ page }, testInfo) => {
   await login(page);
-  await page.goto(
-    "http://localhost:5173/recipes/618-cumin-and-cashew-yogurt-rice"
-  );
+  await page.goto("/recipes/618-cumin-and-cashew-yogurt-rice");
 
   await expect(page.getByRole("heading", { name: "Ingredients" })).toBeVisible({
     timeout: 10000,
@@ -16,9 +14,7 @@ test("recipe detail page", async ({ page }, testInfo) => {
 
 test("schedule modal", async ({ page }, testInfo) => {
   await login(page);
-  await page.goto(
-    "http://localhost:5173/recipes/618-cumin-and-cashew-yogurt-rice"
-  );
+  await page.goto("/recipes/618-cumin-and-cashew-yogurt-rice");
   await page.getByRole("button", { name: "Actions" }).click();
   await page.getByRole("button", { name: "Schedule" }).click();
 
@@ -29,9 +25,7 @@ test("schedule modal", async ({ page }, testInfo) => {
 
 test("actions > copy ingredients", async ({ page }, testInfo) => {
   await login(page);
-  await page.goto(
-    "http://localhost:5173/recipes/618-cumin-and-cashew-yogurt-rice"
-  );
+  await page.goto("/recipes/618-cumin-and-cashew-yogurt-rice");
 
   await page.getByRole("button", { name: "Actions" }).click();
 

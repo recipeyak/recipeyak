@@ -3,8 +3,6 @@ import React, { useState } from "react"
 import { useHistory } from "react-router"
 
 import { Button } from "@/components/Buttons"
-import { FormControl } from "@/components/FormControl"
-import { FormField } from "@/components/FormField"
 import { PasswordInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Label } from "@/components/Label"
@@ -64,60 +62,52 @@ export function PasswordChangePage() {
       <form onSubmit={handleSubmit} className="mx-auto my-0 max-w-[400px] ">
         <h2 className="text-xl">Password Change</h2>
         <div className="flex flex-col gap-4">
-          <FormField>
+          <div>
             <Label htmlFor="oldPassword">Current Password</Label>
-            <FormControl>
-              <PasswordInput
-                autoFocus
-                onChange={(e) => {
-                  setOldPassword(e.target.value)
-                }}
-                aria-label="old password"
-                error={error?.code === "invalid_password"}
-                name="oldPassword"
-                required
-              />
-            </FormControl>
-          </FormField>
+            <PasswordInput
+              autoFocus
+              onChange={(e) => {
+                setOldPassword(e.target.value)
+              }}
+              aria-label="old password"
+              error={error?.code === "invalid_password"}
+              name="oldPassword"
+              required
+            />
+          </div>
 
-          <FormField>
+          <div>
             <Label htmlFor="newPassword">New Password</Label>
-            <FormControl>
-              <PasswordInput
-                onChange={(e) => {
-                  setNewPassword(e.target.value)
-                }}
-                aria-label="new password"
-                name="newPassword"
-                required
-              />
-            </FormControl>
-          </FormField>
+            <PasswordInput
+              onChange={(e) => {
+                setNewPassword(e.target.value)
+              }}
+              aria-label="new password"
+              name="newPassword"
+              required
+            />
+          </div>
 
-          <FormField>
+          <div>
             <Label htmlFor="newPasswordAgain">New Password Again</Label>
-            <FormControl>
-              <PasswordInput
-                onChange={(e) => {
-                  setNewPasswordAgain(e.target.value)
-                }}
-                aria-label="new password again"
-                name="newPasswordAgain"
-                required
-              />
-            </FormControl>
-          </FormField>
+            <PasswordInput
+              onChange={(e) => {
+                setNewPasswordAgain(e.target.value)
+              }}
+              aria-label="new password again"
+              name="newPasswordAgain"
+              required
+            />
+          </div>
 
-          <FormControl>
-            <Button
-              variant="primary"
-              type="submit"
-              className="w-full"
-              loading={passwordChange.isPending}
-            >
-              Update
-            </Button>
-          </FormControl>
+          <Button
+            variant="primary"
+            type="submit"
+            className="w-full"
+            loading={passwordChange.isPending}
+          >
+            Update
+          </Button>
           {error != null && <div>{error.message}</div>}
         </div>
       </form>

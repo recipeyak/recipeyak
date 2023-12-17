@@ -5,7 +5,6 @@ import { Link } from "react-router-dom"
 import { useIsLoggedIn } from "@/auth"
 import { BorderBox } from "@/components/BorderBox"
 import { Button } from "@/components/Buttons"
-import { FormField } from "@/components/FormField"
 import { EmailInput, FormErrorHandler } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Label } from "@/components/Label"
@@ -72,7 +71,7 @@ export function PasswordResetPage() {
 
         <FormErrorHandler error={errors.nonFieldErrors} />
 
-        <FormField>
+        <div>
           <Label>Email</Label>
           <EmailInput
             autoFocus
@@ -85,15 +84,15 @@ export function PasswordResetPage() {
             placeholder="a.person@me.com"
           />
           <FormErrorHandler error={errors.email} />
-        </FormField>
+        </div>
 
-        <FormField className="flex items-center justify-between">
+        <div className="flex items-center justify-between">
           <Button loading={resetPassword.isPending} type="submit">
             Send Reset Email
           </Button>
 
           <Link to={redirect.route}>{redirect.name} →</Link>
-        </FormField>
+        </div>
       </BorderBox>
     </AuthPage>
   )

@@ -6,8 +6,6 @@ import { RouteComponentProps, useHistory } from "react-router-dom"
 import { login } from "@/auth"
 import { BorderBox } from "@/components/BorderBox"
 import { Button } from "@/components/Buttons"
-import { FormControl } from "@/components/FormControl"
-import { FormField } from "@/components/FormField"
 import { FormErrorHandler, PasswordInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Label } from "@/components/Label"
@@ -95,50 +93,44 @@ export function PasswordResetConfirmPage(props: RouteProps) {
 
           <FormErrorHandler error={errors.nonFieldErrors} />
 
-          <FormField>
+          <div>
             <Label>Password</Label>
-            <FormControl>
-              <PasswordInput
-                autoFocus
-                onChange={(e) => {
-                  setNewPassword1(e.target.value)
-                }}
-                name="newPassword1"
-                value={newPassword1}
-              />
-            </FormControl>
+            <PasswordInput
+              autoFocus
+              onChange={(e) => {
+                setNewPassword1(e.target.value)
+              }}
+              name="newPassword1"
+              value={newPassword1}
+            />
             <FormErrorHandler error={errors.newPassword1} />
-          </FormField>
+          </div>
 
-          <FormField>
+          <div>
             <Label>Password Again</Label>
-            <FormControl>
-              <PasswordInput
-                onChange={(e) => {
-                  setNewPassword2(e.target.value)
-                }}
-                name="newPassword2"
-                value={newPassword2}
-              />
-            </FormControl>
+            <PasswordInput
+              onChange={(e) => {
+                setNewPassword2(e.target.value)
+              }}
+              name="newPassword2"
+              value={newPassword2}
+            />
             <FormErrorHandler error={errors.newPassword2} />
-          </FormField>
+          </div>
 
-          <FormField className="flex justify-between">
-            <FormControl>
-              <Button
-                variant="primary"
-                loading={resetPassword.isPending}
-                type="submit"
-              >
-                Change Password
-              </Button>
-            </FormControl>
+          <div className="flex justify-between">
+            <Button
+              variant="primary"
+              loading={resetPassword.isPending}
+              type="submit"
+            >
+              Change Password
+            </Button>
 
             <Button to={pathLogin({})} variant="link">
               To Login
             </Button>
-          </FormField>
+          </div>
         </form>
       </BorderBox>
     </AuthPage>

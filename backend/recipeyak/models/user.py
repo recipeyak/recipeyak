@@ -108,12 +108,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     class Meta:
         db_table = "core_myuser"
-        constraints = [  # noqa: RUF012
-            models.CheckConstraint(
-                check=models.Q(theme__in=("light", "solarized", "autumn")),
-                name="theme_is_valid",
-            )
-        ]
 
     def get_full_name(self) -> str:
         return self.email

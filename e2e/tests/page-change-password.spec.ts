@@ -3,7 +3,7 @@ import { login } from "./authUtils";
 
 test("initial load", async ({ page }, testInfo) => {
   await login(page);
-  await page.goto("http://localhost:5173/password");
+  await page.goto("/password");
 
   await expect(page.getByLabel("old password")).toBeVisible();
   await expect(page.getByLabel("new password", { exact: true })).toBeVisible();

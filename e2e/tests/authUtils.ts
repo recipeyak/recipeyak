@@ -11,7 +11,7 @@ export async function login(page: Page) {
   // resused across tests
   //
   // see: https://playwright.dev/docs/auth
-  await page.goto("http://localhost:5173/login");
+  await page.goto("/login");
   await expect(page.getByRole("link", { name: "Login" })).toBeVisible();
 
   const email = process.env["RECIPEYAK_E2E_AUTH_EMAIL"];

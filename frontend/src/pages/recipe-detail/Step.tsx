@@ -35,8 +35,6 @@ import { useDrag, useDrop } from "react-dnd"
 import { clx } from "@/classnames"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
-import { FormControl } from "@/components/FormControl"
-import { FormField } from "@/components/FormField"
 import { Textarea } from "@/components/Forms"
 import { BetterLabel } from "@/components/Label"
 import { Markdown } from "@/components/Markdown"
@@ -164,60 +162,48 @@ function StepBody({
   }
 
   const inner = isEditing ? (
-    <form>
-      <FormField>
-        <FormControl>
-          <Textarea
-            autoFocus
-            onChange={(e) => {
-              setText(e.target.value)
-            }}
-            onKeyPress={(e) => {
-              if (text === "") {
-                return
-              }
-              if (e.metaKey && e.key === "Enter") {
-                updateStep(e)
-              }
-            }}
-            defaultValue={text}
-            placeholder="Add you text here"
-            name="text"
-          />
-        </FormControl>
-      </FormField>
+    <form className="flex flex-col gap-2">
+      <Textarea
+        autoFocus
+        onChange={(e) => {
+          setText(e.target.value)
+        }}
+        onKeyPress={(e) => {
+          if (text === "") {
+            return
+          }
+          if (e.metaKey && e.key === "Enter") {
+            updateStep(e)
+          }
+        }}
+        defaultValue={text}
+        placeholder="Add you text here"
+        name="text"
+      />
       <Box space="between">
-        <FormField isGrouped>
-          <FormControl>
-            <Button
-              onClick={removeStep}
-              size="small"
-              loading={remove.isPending}
-              type="button"
-              name="delete"
-            >
-              Delete
-            </Button>
-          </FormControl>
-        </FormField>
-        <FormField isGrouped>
-          <FormControl>
-            <Button size="small" name="cancel edit" onClick={handleCancel}>
-              Cancel
-            </Button>
-          </FormControl>
-          <FormControl>
-            <Button
-              variant="primary"
-              size="small"
-              onClick={updateStep}
-              loading={update.isPending}
-              name="save"
-            >
-              Save
-            </Button>
-          </FormControl>
-        </FormField>
+        <Button
+          onClick={removeStep}
+          size="small"
+          loading={remove.isPending}
+          type="button"
+          name="delete"
+        >
+          Delete
+        </Button>
+        <div className="flex gap-2">
+          <Button size="small" name="cancel edit" onClick={handleCancel}>
+            Cancel
+          </Button>
+          <Button
+            variant="primary"
+            size="small"
+            onClick={updateStep}
+            loading={update.isPending}
+            name="save"
+          >
+            Save
+          </Button>
+        </div>
       </Box>
     </form>
   ) : (
@@ -225,20 +211,18 @@ function StepBody({
   )
 
   return (
-    <div>
-      <section
-        className={clx({ "cursor-pointer": editingEnabled })}
-        title={editingEnabled ? "click to edit" : undefined}
-        onClick={() => {
-          if (!editingEnabled) {
-            return
-          }
-          setIsEditing(true)
-        }}
-      >
-        {inner}
-      </section>
-    </div>
+    <section
+      className={clx(editingEnabled && "cursor-pointer")}
+      title={editingEnabled ? "click to edit" : undefined}
+      onClick={() => {
+        if (!editingEnabled) {
+          return
+        }
+        setIsEditing(true)
+      }}
+    >
+      {inner}
+    </section>
   )
 }
 

@@ -5,8 +5,6 @@ import { isMobile } from "@/browser"
 import { clx } from "@/classnames"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
-import { FormControl } from "@/components/FormControl"
-import { FormField } from "@/components/FormField"
 import { CheckBox, TextInput } from "@/components/Forms"
 import { DragDrop, handleDndHover } from "@/dragDrop"
 import IngredientView from "@/pages/recipe-detail/IngredientView"
@@ -126,51 +124,45 @@ export function Ingredient(props: {
 
   const dragAndDropEnabled = !isMobile()
 
-  const style = {
-    opacity: isDragging ? 0 : 1,
-  }
-
   if (dragAndDropEnabled) {
     drop(ref)
   }
 
   const inner = editing ? (
-    <form onSubmit={handleSubmit}>
-      <FormField>
-        <div className="flex flex-col gap-2">
-          <div className="flex flex-row gap-2">
-            <TextInput
-              onChange={(e) => {
-                setQuantity(e.target.value)
-              }}
-              autoFocus
-              value={quantity}
-              className="!w-1/3"
-              placeholder="3 lbs"
-            />
-
-            <TextInput
-              onChange={(e) => {
-                setName(e.target.value)
-              }}
-              value={name}
-              className=" !w-2/3"
-              placeholder="tomato"
-            />
-          </div>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-row gap-2">
+          <TextInput
+            onChange={(e) => {
+              setQuantity(e.target.value)
+            }}
+            autoFocus
+            value={quantity}
+            className="!w-1/3"
+            placeholder="3 lbs"
+          />
 
           <TextInput
             onChange={(e) => {
-              setDescription(e.target.value)
+              setName(e.target.value)
             }}
-            value={description}
-            className="col-span-full"
-            placeholder="diced at 3cm in width"
+            value={name}
+            className=" !w-2/3"
+            placeholder="tomato"
           />
         </div>
-      </FormField>
 
-      <label className="mb-2 flex cursor-pointer items-center">
+        <TextInput
+          onChange={(e) => {
+            setDescription(e.target.value)
+          }}
+          value={description}
+          className="col-span-full"
+          placeholder="diced at 3cm in width"
+        />
+      </div>
+
+      <label className="flex cursor-pointer items-center">
         <CheckBox
           onChange={() => {
             setOptional((prev) => !prev)
@@ -181,42 +173,34 @@ export function Ingredient(props: {
         Optional
       </label>
 
-      <Box space="between">
-        <FormField isGrouped>
-          <FormControl>
-            <Button
-              type="button"
-              onClick={() => {
-                removeIngredient.mutate({
-                  recipeId: props.recipeID,
-                  ingredientId: props.ingredientId,
-                })
-              }}
-              size="small"
-              loading={removeIngredient.isPending}
-            >
-              Delete
-            </Button>
-          </FormControl>
-        </FormField>
-        <FormField isGrouped>
-          <FormControl>
-            <Button type="reset" onClick={handleCancelButton} size="small">
-              Cancel
-            </Button>
-          </FormControl>
-          <FormControl>
-            <Button
-              variant="primary"
-              size="small"
-              type="submit"
-              disabled={emptyField({ quantity, name })}
-              loading={updateIngredient.isPending}
-            >
-              Update
-            </Button>
-          </FormControl>
-        </FormField>
+      <Box space="between" mb={2}>
+        <Button
+          type="button"
+          onClick={() => {
+            removeIngredient.mutate({
+              recipeId: props.recipeID,
+              ingredientId: props.ingredientId,
+            })
+          }}
+          size="small"
+          loading={removeIngredient.isPending}
+        >
+          Delete
+        </Button>
+        <div className="flex gap-2">
+          <Button type="reset" onClick={handleCancelButton} size="small">
+            Cancel
+          </Button>
+          <Button
+            variant="primary"
+            size="small"
+            type="submit"
+            disabled={emptyField({ quantity, name })}
+            loading={updateIngredient.isPending}
+          >
+            Update
+          </Button>
+        </div>
       </Box>
     </form>
   ) : (
@@ -232,19 +216,18 @@ export function Ingredient(props: {
   return (
     <li
       ref={props.isEditing && dragAndDropEnabled ? ref : undefined}
-      style={style}
+      title={props.isEditing ? "click to edit" : undefined}
+      className={clx(
+        props.isEditing && "cursor-pointer",
+        isDragging && "opacity-0",
+      )}
+      onClick={() => {
+        if (props.isEditing && !editing) {
+          enableEditing()
+        }
+      }}
     >
-      <section
-        title={props.isEditing ? "click to edit" : undefined}
-        className={clx({ "cursor-pointer": props.isEditing })}
-        onClick={() => {
-          if (props.isEditing && !editing) {
-            enableEditing()
-          }
-        }}
-      >
-        {inner}
-      </section>
+      {inner}
     </li>
   )
 }

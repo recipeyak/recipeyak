@@ -86,7 +86,7 @@ function ShoppingListItem({
 }: IShoppingListItemProps) {
   // padding serves to prevent the button from appearing in front of text
   // we also use <section>s instead of <p>s to avoid extra new lines in Chrome
-  const cls = clx("text-sm", { "mr-15": isFirst })
+  const cls = clx("text-sm", isFirst && "mr-15")
 
   const units = normalizeUnitsFracs(quantitiesToString(quantities))
 
@@ -121,7 +121,7 @@ const ShoppingListList = React.forwardRef<
       p={2}
       minHeight="74px"
       className={clx(
-        "max-h-[425px] overflow-y-auto border-[1px] border-solid border-[var(--color-border)] bg-[var(--color-background-card)]",
+        "max-h-[425px] overflow-y-auto border-[1px] border-solid border-[var(--color-border)] !bg-[var(--color-background-card)]",
         props.items.isPending || props.items.isRefetching ? "opacity-70" : "",
       )}
     >
