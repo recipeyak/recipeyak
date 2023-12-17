@@ -10,6 +10,7 @@ export function themeSet(theme: Theme) {
   const themeToClassName = {
     light: "",
     dark: "theme-dark",
+    dark_dimmed: "theme-dark-dimmed",
     autumn: "theme-autumn",
     solarized: "theme-solarized",
   } as const
