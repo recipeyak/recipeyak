@@ -247,6 +247,7 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
           {note.created_by.id === userId ? (
             <a
               className="ml-2 cursor-pointer text-[0.825rem] text-[var(--color-text-muted)] print:hidden"
+              data-testid={`edit-note-${note.id}`}
               onClick={onNoteClick}
             >
               edit
@@ -321,7 +322,12 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
 
             {isEditing && (
               <Box space="between" align="center">
-                <Button variant="danger" size="small" onClick={onDelete}>
+                <Button
+                  variant="danger"
+                  size="small"
+                  onClick={onDelete}
+                  aria-label="delete note"
+                >
                   delete
                 </Button>
                 <Box gap={3} space="between" align="center">
@@ -331,12 +337,14 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
                       onCancel()
                       reset()
                     }}
+                    aria-label="cancel note"
                   >
                     cancel
                   </Button>
                   <Button
                     variant="primary"
                     size="small"
+                    aria-label="save note"
                     onClick={onSave}
                     loading={isUpdating}
                     disabled={hasUnsavedImages}

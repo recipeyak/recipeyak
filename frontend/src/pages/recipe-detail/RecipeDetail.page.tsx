@@ -216,7 +216,11 @@ function RecipeDetails({
           />
         ) : (
           editingEnabled && (
-            <Button size="small" onClick={handleShowAddIngredient}>
+            <Button
+              size="small"
+              onClick={handleShowAddIngredient}
+              aria-label="open add ingredient"
+            >
               Add
             </Button>
           )
@@ -245,6 +249,7 @@ function RecipeDetails({
           editingEnabled && (
             <Button
               size="small"
+              aria-label="open add step"
               onClick={() => {
                 setAddStep(true)
               }}
@@ -700,6 +705,7 @@ function RecipeInfo(props: {
                 <Button
                   size="small"
                   type="button"
+                  aria-label="edit metadata"
                   onClick={() => {
                     setShowEditor(true)
                   }}
@@ -845,6 +851,7 @@ export function RecipeDetailPage(props: IRecipeProps) {
             type="button"
             name="toggle add section"
             className="ml-3"
+            aria-label="exit edit mode"
             onClick={toggleEditMode}
           >
             Exit

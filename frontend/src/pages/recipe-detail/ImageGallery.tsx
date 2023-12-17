@@ -25,17 +25,6 @@ const MyGalleryImg = styled.img.attrs({ loading: "eager" })`
   margin: auto;
   object-fit: contain;
 `
-
-const MyGalleryBackground = styled.div`
-  opacity: 0.8;
-  background: #000;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-`
-
 const MyGalleryButton = styled(Button)`
   background: rgba(0, 0, 0, 0.46);
   color: white;
@@ -58,18 +47,6 @@ const MyGalleryLink = styled(Button)`
   border-radius: 6px;
   padding-left: 0.75em;
   padding-right: 0.75em;
-`
-
-const MyGalleryControlOverlay = styled.div`
-  position: absolute;
-
-  top: 0;
-  height: 100%;
-  width: 100%;
-  display: grid;
-  flex-direction: column;
-  padding: 0.5rem;
-  pointer-events: none;
 `
 
 const NavButtonRow = styled.div`
@@ -133,7 +110,7 @@ export const Gallery = (props: {
   const starColor = props.isPrimary ? "#ffbf00" : undefined
   return (
     <MyGalleryContainer>
-      <MyGalleryBackground />
+      <div className="left-0 top-0 h-full w-full bg-[#000] opacity-[0.8]" />
       <div className="absolute left-0 top-0 h-full w-full">
         <div className="flex h-full" onClick={onClick}>
           {props.contentType.startsWith("application/pdf") ? (
@@ -164,7 +141,7 @@ export const Gallery = (props: {
             />
           )}
         </div>
-        <MyGalleryControlOverlay>
+        <div className="pointer-events-none absolute top-0 grid h-full w-full flex-col p-2">
           <TopRow>
             {props.enableStarButton && (
               <MyGalleryButton className="mr-auto" onClick={props.onStar}>
@@ -196,7 +173,7 @@ export const Gallery = (props: {
               </MyGalleryButton>
             )}
           </NavButtonRow>
-        </MyGalleryControlOverlay>
+        </div>
       </div>
     </MyGalleryContainer>
   )

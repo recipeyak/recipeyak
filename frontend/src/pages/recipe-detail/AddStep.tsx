@@ -82,6 +82,7 @@ function AddStep({ recipeId, onCancel, index, position }: IAddStepProps) {
           disabled={step === ""}
           type="submit"
           name="save step"
+          aria-label="add step"
           loading={addStep.isPending}
         >
           Add

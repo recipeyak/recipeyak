@@ -1,13 +1,19 @@
+import { clx } from "@/classnames"
+
 function UserProfileImage({
   onClick,
   tabIndex,
+  className: cls,
   ...rest
 }: {
   onClick: (() => void) | undefined
   tabIndex?: number
+  className?: string
 } & ({ as: "img"; src: string; alt: string } | { as?: undefined })) {
-  const className =
-    "m-[5px] h-[30px] max-h-none w-[30px] min-w-[30px] rounded-full bg-[rgb(240,240,240)] print:!hidden"
+  const className = clx(
+    cls,
+    "m-[5px] h-[30px] max-h-none w-[30px] min-w-[30px] rounded-full bg-[rgb(240,240,240)] print:!hidden",
+  )
   if (rest.as === "img") {
     return (
       <img
@@ -28,8 +34,11 @@ interface IAvatarProps {
   readonly tabIndex?: number
 }
 export function Avatar({ avatarURL, onClick, tabIndex }: IAvatarProps) {
+  const cls = clx(onClick != null && "cursor-pointer")
   if (avatarURL == null) {
-    return <UserProfileImage onClick={onClick} tabIndex={tabIndex} />
+    return (
+      <UserProfileImage onClick={onClick} tabIndex={tabIndex} className={cls} />
+    )
   }
   return (
     <UserProfileImage
@@ -38,6 +47,7 @@ export function Avatar({ avatarURL, onClick, tabIndex }: IAvatarProps) {
       src={avatarURL}
       alt="avatar"
       tabIndex={tabIndex}
+      className={cls}
     />
   )
 }
