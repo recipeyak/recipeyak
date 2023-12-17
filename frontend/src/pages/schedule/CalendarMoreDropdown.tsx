@@ -1,7 +1,7 @@
 import { UseQueryResult } from "@tanstack/react-query"
 
 import { Button } from "@/components/Buttons"
-import { selectTarget, TextInput } from "@/components/Forms"
+import { TextInput } from "@/components/Forms"
 import { Loader } from "@/components/Loader"
 import { useScheduledRecipeSettingsRegenerateLink } from "@/queries/scheduledRecipeSettingsRegenerateLink"
 import { useScheduledRecipeSettingsUpdate } from "@/queries/scheduledRecipeSettingsUpdate"
@@ -34,7 +34,14 @@ export function ICalConfig({
             <TextInput
               value={settings.data.calendarLink}
               readOnly
-              onClick={selectTarget}
+              onClick={(e: {
+                target: EventTarget | { select: () => void }
+              }) => {
+                // hack to get around typescript not knowing about the select property
+                if ("select" in e.target) {
+                  e.target.select()
+                }
+              }}
               className="mr-3 min-w-0 grow"
             />
             <Button

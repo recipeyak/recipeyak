@@ -19,6 +19,7 @@ module.exports = {
     "simple-import-sort",
     "import",
     "@tanstack/query",
+    "react-refresh",
   ],
   extends: [
     "prettier",
@@ -41,6 +42,7 @@ module.exports = {
     "simple-import-sort/exports": "error",
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "error",
+    "react-refresh/only-export-components": "error",
     "no-restricted-syntax": [
       "error",
       {

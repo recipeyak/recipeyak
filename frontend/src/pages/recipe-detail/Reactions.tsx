@@ -6,6 +6,7 @@ import React, { useState } from "react"
 import { Smile } from "react-feather"
 
 import { clx } from "@/classnames"
+import { findReaction } from "@/pages/recipe-detail/reactionUtils"
 import { Reaction } from "@/queries/recipeFetch"
 import { styled } from "@/theme"
 import { useUserId } from "@/useUserId"
@@ -103,16 +104,6 @@ function reactionTitle(reactions: Reaction[]): string {
     ", and " +
     lastReaction.user.name +
     ` reacted with ${reactionTypeToName(lastReaction.type)}`
-  )
-}
-
-export function findReaction(
-  reactions: Reaction[],
-  type: ReactionType,
-  userId: number,
-) {
-  return reactions.find(
-    (reaction) => reaction.type === type && reaction.user.id === userId,
   )
 }
 

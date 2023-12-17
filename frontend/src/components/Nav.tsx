@@ -6,14 +6,11 @@ import useOnClickOutside from "use-onclickoutside"
 import { useIsLoggedIn } from "@/auth"
 import { Avatar } from "@/components/Avatar"
 import { Button } from "@/components/Buttons"
-import {
-  DropdownContainer,
-  DropdownMenu,
-  useDropdown,
-} from "@/components/Dropdown"
+import { DropdownContainer, DropdownMenu } from "@/components/Dropdown"
 import { SearchInput, Select } from "@/components/Forms"
 import Logo from "@/components/Logo"
 import { NavLink } from "@/components/Routing"
+import { useDropdown } from "@/components/useDropdown"
 import { SearchResult } from "@/pages/index/UserHome"
 import {
   pathHome,
@@ -180,25 +177,6 @@ function NavButtons() {
   )
 }
 
-const NavContainer = styled.nav`
-  flex-wrap: 1;
-  margin-bottom: 0.25rem;
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
-  justify-content: space-between;
-  flex-shrink: 0;
-  height: 3rem;
-
-  @media (min-width: 920px) {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  @media (max-width: 919px) {
-    display: flex;
-  }
-`
-
 const BetterNavItem = styled.div`
   align-items: center;
   display: flex;
@@ -227,20 +205,6 @@ const BetterNavItem = styled.div`
 
   &.active {
     text-decoration: underline;
-  }
-`
-
-const SearchResultContainer = styled.div`
-  position: absolute;
-  z-index: 10;
-  top: 60px;
-  max-width: 400px;
-  width: 100%;
-
-  @media (max-width: 475px) {
-    left: 0;
-    right: 0;
-    max-width: initial;
   }
 `
 
@@ -313,7 +277,7 @@ function Search() {
         }}
       />
       {searchQuery && !isClosed && (
-        <SearchResultContainer>
+        <div className="absolute inset-x-0 top-[60px] z-10 w-full sm:inset-x-[unset] sm:max-w-[400px]">
           <SearchResult
             isLoading={recipes.isLoading}
             searchQuery={searchQuery}
@@ -322,7 +286,7 @@ function Search() {
               resetForm()
             }}
           />
-        </SearchResultContainer>
+        </div>
       )}
     </div>
   )
@@ -331,7 +295,7 @@ function Search() {
 export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
   const isLoggedIn = useIsLoggedIn()
   return (
-    <NavContainer className="print:!hidden">
+    <nav className="mb-1 flex h-[3rem] shrink-0 justify-between px-3 print:!hidden md:grid md:grid-cols-3">
       <BetterNavItem
         as={Link}
         to={pathHome({})}
@@ -348,6 +312,6 @@ export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
         {includeSearch && <Search />}
       </div>
       {isLoggedIn ? <NavButtons /> : <AuthButtons />}
-    </NavContainer>
+    </nav>
   )
 }

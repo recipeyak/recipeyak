@@ -2,10 +2,9 @@ import "@/components/scss/main.scss"
 
 import * as Sentry from "@sentry/react"
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister"
-import { QueryClient, useIsRestoring } from "@tanstack/react-query"
+import { useIsRestoring } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client"
-import { AxiosError } from "axios"
 import { createBrowserHistory } from "history"
 import React, { Suspense, useEffect } from "react"
 import { DndProvider } from "react-dnd"
@@ -23,6 +22,7 @@ import {
 import { useIsLoggedIn } from "@/auth"
 import { ErrorBoundary } from "@/components/ErrorBoundary"
 import { Helmet } from "@/components/Helmet"
+import { queryClient } from "@/components/queryClient"
 import { ScrollRestore } from "@/components/ScrollRestore"
 import { NotFoundPage } from "@/pages/404/404.page"
 import { CookDetailPage } from "@/pages/cook-detail/CookDetail.page"
@@ -85,34 +85,6 @@ Sentry.init({
 })
 // eslint-disable-next-line no-console
 console.log("version:", GIT_SHA, "\nsentry:", SENTRY_DSN)
-
-const MAX_RETRIES = 6
-const HTTP_STATUS_TO_NOT_RETRY = [400, 401, 403, 404]
-
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      gcTime: 1000 * 60 * 60 * 24 * 7, // 7 days
-      retry: (failureCount, err) => {
-        if (failureCount > MAX_RETRIES) {
-          return false
-        }
-
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        const error = err as AxiosError | undefined
-        if (HTTP_STATUS_TO_NOT_RETRY.includes(error?.response?.status ?? 0)) {
-          // eslint-disable-next-line no-console
-          console.warn(
-            `Aborting retry due to ${error?.response?.status} status`,
-          )
-          return false
-        }
-
-        return true
-      },
-    },
-  },
-})
 
 const persister = createSyncStoragePersister({
   // eslint-disable-next-line no-restricted-globals
@@ -368,4 +340,6 @@ function App() {
   )
 }
 
-export default Sentry.withProfiler(App)
+const AppWithSentry = Sentry.withProfiler(App)
+
+export default AppWithSentry

@@ -5,27 +5,10 @@ import { Button } from "@/components/Buttons"
 import { RadioButton, TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { NavPage } from "@/components/Page"
+import { ROLES } from "@/pages/team-invite/teamConstants"
 import { useTeam } from "@/queries/teamFetch"
 import { useTeamInviteCreate } from "@/queries/teamInviteCreate"
 import { teamURL } from "@/urls"
-
-export const roles = [
-  {
-    name: "Admin",
-    value: "admin",
-    description: "Add and remove recipes, members.",
-  },
-  {
-    name: "Contributor",
-    value: "contributor",
-    description: "Add and remove recipes and view all members.",
-  },
-  {
-    name: "Viewer",
-    value: "viewer",
-    description: "View all team recipes and members.",
-  },
-]
 
 interface ITeamInviteProps extends RouteComponentProps<{ teamId: string }> {}
 
@@ -86,7 +69,7 @@ export function TeamInvitePage(props: ITeamInviteProps) {
             }}
             placeholder="emails seperated by commas • j@example.com,hey@example.com"
           />
-          {roles.map((role, index) => (
+          {ROLES.map((role, index) => (
             <label key={index} className="flex items-center pb-4">
               <RadioButton
                 className="mr-2"

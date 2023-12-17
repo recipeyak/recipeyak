@@ -59,7 +59,7 @@ interface IShoppingListItemProps {
   readonly isFirst: boolean
 }
 
-export function toQuantity(x: IQuantity): string {
+function toQuantity(x: IQuantity): string {
   if (x.unit === Unit.NONE) {
     return x.quantity
   }
