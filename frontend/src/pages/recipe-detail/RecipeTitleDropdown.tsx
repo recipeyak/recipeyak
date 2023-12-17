@@ -7,9 +7,9 @@ import {
   DropdownItemButton,
   DropdownItemLink,
   DropdownMenu,
-  useDropdown,
 } from "@/components/Dropdown"
 import { Chevron } from "@/components/icons"
+import { useDropdown } from "@/components/useDropdown"
 import { ScheduleModal } from "@/pages/recipe-detail/ScheduleModal"
 import { pathCookDetail } from "@/paths"
 import { useRecipeDelete } from "@/queries/recipeDelete"

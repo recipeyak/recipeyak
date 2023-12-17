@@ -4,7 +4,7 @@ import { Button } from "@/components/Buttons"
 import { RadioButton, TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { NavPage } from "@/components/Page"
-import { roles } from "@/pages/team-invite/TeamInvite.page"
+import { ROLES } from "@/pages/team-invite/teamConstants"
 import { useTeamCreate } from "@/queries/teamCreate"
 
 export function TeamCreatePage() {
@@ -51,7 +51,7 @@ export function TeamCreatePage() {
               }}
               placeholder="emails seperated by commas • j@example.com,hey@example.com"
             />
-            {roles.map(({ name, value, description }, id) => (
+            {ROLES.map(({ name, value, description }, id) => (
               <label key={id} className="flex items-center pb-4">
                 <RadioButton
                   className="mr-2"

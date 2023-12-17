@@ -9,7 +9,7 @@ import { Either, left } from "fp-ts/lib/Either"
 import * as t from "io-ts"
 
 import { logout } from "@/auth"
-import { queryClient } from "@/components/App"
+import { queryClient } from "@/components/queryClient"
 import { Err, Ok, Result } from "@/result"
 import { uuid4 } from "@/uuid"
 

@@ -2,7 +2,6 @@ import React, { ForwardedRef, forwardRef } from "react"
 
 import { Link } from "@/components/Routing"
 import { css, styled } from "@/theme"
-import { useOnClickOutside } from "@/useOnClickOutside"
 
 export const DropdownContainer = forwardRef(
   (
@@ -90,14 +89,3 @@ export const DropdownMenu = styled.div<{
 
   ${(p) => p.isOpen && isOpenStyle}
 `
-export function useDropdown() {
-  const [isOpen, setIsOpen] = React.useState(false)
-  const closeDropdown = React.useCallback(() => {
-    setIsOpen(false)
-  }, [])
-  const toggle = React.useCallback(() => {
-    setIsOpen((p) => !p)
-  }, [])
-  const ref = useOnClickOutside<HTMLDivElement>(closeDropdown)
-  return { ref, toggle, close: closeDropdown, isOpen, setIsOpen }
-}

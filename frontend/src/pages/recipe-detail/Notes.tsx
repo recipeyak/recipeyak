@@ -13,11 +13,11 @@ import { RotatingLoader } from "@/components/RoatingLoader"
 import { Link } from "@/components/Routing"
 import { formatAbsoluteDateTime, formatHumanDateTime } from "@/date"
 import {
-  findReaction,
   ReactionPopover,
   ReactionsFooter,
   ReactionType,
 } from "@/pages/recipe-detail/Reactions"
+import { findReaction } from "@/pages/recipe-detail/reactionUtils"
 import { SectionTitle } from "@/pages/recipe-detail/RecipeHelpers"
 import { pathProfileById } from "@/paths"
 import { useNoteCreate } from "@/queries/noteCreate"
@@ -411,7 +411,7 @@ export function TimelineEvent({
   )
 }
 
-export const blurNoteTextArea = () => {
+const blurNoteTextArea = () => {
   const el = document.getElementById("new_note_textarea")
   if (el) {
     el.blur()

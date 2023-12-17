@@ -3,15 +3,6 @@ import TextareaAutosize from "react-textarea-autosize"
 
 import { styled } from "@/theme"
 
-type Target = { select: () => void }
-
-export const selectTarget = (e: { target: EventTarget | Target }) => {
-  // hack to get around typescript not knowing about the select property
-  if ("select" in e.target) {
-    e.target.select()
-  }
-}
-
 interface IFormErrorHandlerProps {
   readonly error: string[] | null | undefined
 }
