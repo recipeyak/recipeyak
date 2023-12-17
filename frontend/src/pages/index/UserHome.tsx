@@ -31,7 +31,7 @@ import { useTeamId } from "@/useTeamId"
 function Code({ children }: { children: React.ReactNode }) {
   return (
     <code
-      className="mx-[2px] my-0 whitespace-pre rounded-[3px] border border-solid border-[#ddd] bg-[var(--color-background-card)] px-[5px] py-0 font-[var(--color-text)]"
+      className="mx-[2px] my-0 whitespace-pre rounded-[3px] border border-solid border-[var(--color-border)] bg-[var(--color-background-card)] px-[5px] py-0 font-[var(--color-text)]"
       children={children}
     />
   )
