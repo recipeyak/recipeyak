@@ -33,15 +33,14 @@ const SearchInput = styled(forms.SearchInput)`
   font-size: 18px;
 `
 
-const Code = styled.code`
-  margin: 0 2px;
-  padding: 0px 5px;
-  border: 1px solid #ddd;
-  background-color: var(--color-background-card);
-  border-radius: 3px;
-  color: var(--color-text);
-  white-space: pre;
-`
+function Code({ children }: { children: React.ReactNode }) {
+  return (
+    <code
+      className="mx-[2px] my-0 whitespace-pre rounded-[3px] border border-solid border-[#ddd] bg-[var(--color-background-card)] px-[5px] py-0 font-[var(--color-text)]"
+      children={children}
+    />
+  )
+}
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return <div className="pb-1 text-base font-medium">{children}</div>

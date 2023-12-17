@@ -13,7 +13,6 @@ import { useCookChecklistFetch } from "@/queries/cookChecklistFetch"
 import { useCookChecklistUpdate } from "@/queries/cookChecklistUpdate"
 import { IIngredient, INote, IStep } from "@/queries/recipeFetch"
 import { notEmpty } from "@/text"
-import { styled } from "@/theme"
 
 function useIngredients(recipeId: number) {
   const {
@@ -184,15 +183,6 @@ function Notes({
   )
 }
 
-const Container = styled.div`
-  align-items: center;
-  justify-content: center;
-  background-color: var(--color-background);
-  position: fixed;
-  z-index: 20;
-  inset: 0;
-`
-
 export function CookingFullscreen({
   recipeName,
   recipeId,
@@ -218,7 +208,7 @@ export function CookingFullscreen({
     "ingredients",
   )
   return (
-    <Container>
+    <div className="fixed inset-0 z-20 items-center justify-center bg-[var(--color-background)]">
       <div
         style={{
           padding: "0.5rem 1.25rem",
@@ -303,6 +293,6 @@ export function CookingFullscreen({
           )}
         </Box>
       </div>
-    </Container>
+    </div>
   )
 }

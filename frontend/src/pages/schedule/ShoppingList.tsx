@@ -120,16 +120,10 @@ const ShoppingListList = React.forwardRef<
     <BorderBox
       p={2}
       minHeight="74px"
-      style={{
-        backgroundColor: "var(--color-background-card)",
-        border: "1px solid var(--color-border)",
-        overflowY: "auto",
-        maxHeight: 425, // looks good on mobile & desktop
-        color:
-          props.items.isPending || props.items.isRefetching
-            ? "hsl(0, 0%, 71%)"
-            : "",
-      }}
+      className={clx(
+        "max-h-[425px] overflow-y-auto border-[1px] border-solid border-[var(--color-border)] bg-[var(--color-background-card)]",
+        props.items.isPending || props.items.isRefetching ? "opacity-70" : "",
+      )}
     >
       {props.items.isPending ? (
         <div className="text-center" data-testid="shopping list items loading">

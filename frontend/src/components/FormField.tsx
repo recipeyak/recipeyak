@@ -11,7 +11,7 @@ export function FormField({
 }) {
   return (
     <div
-      className={clx("", isGrouped && "justify-start gap-2", className)}
+      className={clx(isGrouped && "justify-start gap-2", className)}
       children={children}
     />
   )

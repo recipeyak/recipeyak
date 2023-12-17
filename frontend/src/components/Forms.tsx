@@ -16,25 +16,18 @@ interface IFormErrorHandlerProps {
   readonly error: string[] | null | undefined
 }
 
-const Help = styled.div`
-  display: block;
-  font-size: 0.75rem;
-  margin-top: 0.25rem;
-  color: var(--color-danger);
-`
-
 export const FormErrorHandler = ({ error }: IFormErrorHandlerProps) => {
   if (!error) {
     return null
   }
   return (
-    <Help>
+    <div className="mt-1 block text-xs text-[var(--color-danger)]">
       <ul>
         {error.map((e) => (
           <li key={e}>{e}</li>
         ))}
       </ul>
-    </Help>
+    </div>
   )
 }
 
