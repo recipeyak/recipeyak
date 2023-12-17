@@ -7,8 +7,10 @@ test("initial load", async ({ page }) => {
   await page.getByRole("img", { name: "avatar" }).click();
   await page.getByRole("link", { name: "Teams" }).click();
 
-  await expect(page.getByText("Teams")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Teams" })).toBeVisible();
   await expect(page.getByText("Invites")).toBeVisible();
+  await expect(page.getByTestId("teams-list")).toBeVisible();
+  await expect(page.getByTestId("invites-list")).toBeVisible();
 
   await expect(page).toHaveScreenshot({ fullPage: true });
 });

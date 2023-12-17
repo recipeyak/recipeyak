@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { useDrag } from "react-dnd"
 import { Link } from "react-router-dom"
 
+import { clx } from "@/classnames"
 import { isInsideChangeWindow } from "@/date"
 import { DragDrop } from "@/dragDrop"
 import { CalendarDayItemModal } from "@/pages/schedule/CalendarDayItemModal"
@@ -35,19 +36,30 @@ function RecipeLink({ name, id, onClick }: IRecipeLink) {
   )
 }
 
-interface ICalendarListItemProps {
-  readonly visibility: React.CSSProperties["visibility"]
-}
-
-const CalendarListItem = styled.li<ICalendarListItemProps>`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  &:not(:last-child) {
-    margin-bottom: var(--margin-calendar-item-bottom);
-  }
-  visibility: ${(props) => props.visibility};
-`
+const CalendarListItem = React.forwardRef(
+  (
+    {
+      visibility,
+      children,
+    }: {
+      visibility: "visible" | "hidden"
+      children: React.ReactNode
+    },
+    ref: React.ForwardedRef<HTMLLIElement>,
+  ) => {
+    return (
+      <li
+        ref={ref}
+        className={clx(
+          "mb-[var(--margin-calendar-item-bottom)] flex items-center justify-between last:mb-0",
+          visibility === "visible" ? "visible" : "invisible",
+        )}
+      >
+        {children}
+      </li>
+    )
+  },
+)
 
 export interface ICalendarItemProps {
   readonly remove: () => void

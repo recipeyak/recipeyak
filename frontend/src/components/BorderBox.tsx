@@ -1,23 +1,76 @@
-import { styled } from "@/theme"
+import { clx } from "@/classnames"
 
-export const BorderBox = styled.div<{
-  display?: "block" | "flex"
-  flexDirection?: "column"
-  h?: 100
+export function BorderBox({
+  p,
+  display,
+  h,
+  flexDirection,
+  children,
+  minHeight,
+  whenSmallRounded0,
+  className,
+  ...rest
+}: {
   p?: 3 | 2
-  minHeight?: string
-}>`
-  background-color: var(--color-background);
-  border-radius: 6px;
-  color: var(--color-text);
-  display: ${(p) => p.display};
-  padding: 1.25rem;
-  ${(p) => p.flexDirection && `flex-direction: ${p.flexDirection};`}
-  ${(p) => (p.h === 100 ? `height: 100%;` : "")}
-  ${(p) =>
-    p.p === 3 ? "padding: 0.75rem;" : p.p === 2 ? "padding: 0.5rem;" : ""}
-    ${(p) => p.minHeight && `min-height: 75px;`}
-  &:not(:last-child) {
-    margin-bottom: 1.5rem;
+  h?: 100
+  display?: "flex"
+  flexDirection?: "column"
+  minHeight?: "74px"
+  children: React.ReactNode
+  whenSmallRounded0?: boolean
+  className?: string
+} & (
+  | {
+      as?: undefined
+    }
+  | {
+      as: "form"
+      onSubmit: (_: React.FormEvent) => void
+    }
+)) {
+  if (rest.as === "form") {
+    return (
+      <form
+        className={clx(
+          "bg-[var(--color-background)] text-[var(--color-text)]",
+          p == null
+            ? "p-[1.2rem]"
+            : p === 2
+              ? "p-2"
+              : p === 3
+                ? "p-3"
+                : undefined,
+          minHeight != null ? "min-h-[74px]" : undefined,
+          whenSmallRounded0 ? "rounded-0 sm:rounded-[6px]" : "rounded-[6px]",
+          display && "flex",
+          flexDirection && "flex-col",
+          h && "h-full",
+          className,
+        )}
+        onSubmit={rest.onSubmit}
+      />
+    )
   }
-`
+  return (
+    <div
+      className={clx(
+        "bg-[var(--color-background)] text-[var(--color-text)]",
+        p == null
+          ? "p-[1.2rem]"
+          : p === 2
+            ? "p-2"
+            : p === 3
+              ? "p-3"
+              : undefined,
+        minHeight != null ? "min-h-[74px]" : undefined,
+        whenSmallRounded0 ? "rounded-0 sm:rounded-[6px]" : "rounded-[6px]",
+        display && "flex",
+        flexDirection && "flex-col",
+        h && "h-full",
+        className,
+      )}
+    >
+      {children}
+    </div>
+  )
+}

@@ -1,9 +1,9 @@
 import React, { useRef } from "react"
 
+import { clx } from "@/classnames"
 import { BorderBox } from "@/components/BorderBox"
 import { Box } from "@/components/Box"
 import { CloseButton } from "@/components/CloseButton"
-import { styled } from "@/theme"
 import { useGlobalEvent } from "@/useGlobalEvent"
 
 interface IModalProps {
@@ -13,44 +13,47 @@ interface IModalProps {
   readonly title: string
 }
 
-const ModalPositioner = styled.div`
-  align-items: center;
-  display: none;
-  justify-content: center;
-  overflow: hidden;
-  position: fixed;
-  z-index: 20;
-  // Modifiers
-  &.is-active {
-    display: flex;
-  }
-  inset: 0;
-`
+const ModalPositioner = React.forwardRef(
+  (
+    {
+      children,
+      show,
+    }: {
+      children: React.ReactNode
+      show: boolean
+    },
+    ref: React.ForwardedRef<HTMLDivElement>,
+  ) => {
+    return (
+      <div
+        ref={ref}
+        className={clx(
+          "fixed inset-0 z-20 items-start justify-center overflow-hidden",
+          show ? "flex" : "hidden",
+        )}
+        children={children}
+      />
+    )
+  },
+)
 
-const ModalContainer = styled.div`
-  position: relative;
-  margin-top: 8vh;
-  width: 400px;
+function ModalContainer({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      className="relative m-0 h-[100dvh] w-full sm:m-[inherit] sm:mt-[8vh] sm:h-[inherit] sm:w-[400px] "
+      children={children}
+    />
+  )
+}
 
-  @media (max-width: 450px) {
-    width: 100%;
-    margin: 0;
-    height: 100dvh;
-  }
-`
-
-const ModalBackground = styled.div`
-  background-color: var(--color-modal-background);
-  position: absolute;
-  inset: 0;
-`
-
-const ModalBorderBox = styled(BorderBox)`
-  // hide border radius when collapsed
-  @media (max-width: 450px) {
-    border-radius: initial;
-  }
-`
+function ModalBackground({ onClick }: { onClick?: () => void }) {
+  return (
+    <div
+      onClick={onClick}
+      className="absolute inset-0 bg-[var(--color-modal-background)]"
+    />
+  )
+}
 
 export function Modal({ show, content, onClose, title }: IModalProps) {
   const ref = useRef<HTMLDivElement>(null)
@@ -65,19 +68,16 @@ export function Modal({ show, content, onClose, title }: IModalProps) {
     return null
   }
   return (
-    <ModalPositioner
-      ref={ref}
-      style={{ display: show ? "flex" : undefined, alignItems: "flex-start" }}
-    >
+    <ModalPositioner ref={ref} show={show}>
       <ModalBackground onClick={onClose} />
       <ModalContainer>
-        <ModalBorderBox display="flex" flexDirection="column" h={100}>
+        <BorderBox display="flex" flexDirection="column" h={100}>
           <Box space="between" mb={2}>
             <h1 className="text-[14px] font-medium">{title}</h1>
             <CloseButton onClose={onClose} />
           </Box>
           {content}
-        </ModalBorderBox>
+        </BorderBox>
       </ModalContainer>
     </ModalPositioner>
   )

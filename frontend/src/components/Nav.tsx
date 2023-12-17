@@ -128,15 +128,8 @@ function UserDropdown() {
   )
 }
 
-const WordMarkContainer = styled.span`
-  font-size: 1.5rem;
-  @media (max-width: ${(p) => p.theme.small}) {
-    display: none;
-  }
-`
-
 function WordMark() {
-  return <WordMarkContainer>Recipe Yak</WordMarkContainer>
+  return <span className="hidden text-2xl sm:block">Recipe Yak</span>
 }
 
 function AuthButtons() {
@@ -237,11 +230,6 @@ const BetterNavItem = styled.div`
   }
 `
 
-const SearchInputContainer = styled.div`
-  display: flex;
-  width: 100%;
-`
-
 const SearchResultContainer = styled.div`
   position: absolute;
   z-index: 10;
@@ -311,7 +299,7 @@ function Search() {
   }
 
   return (
-    <SearchInputContainer ref={ref}>
+    <div ref={ref} className="flex w-full">
       <SearchInput
         ref={searchInputRef}
         value={searchQuery}
@@ -336,7 +324,7 @@ function Search() {
           />
         </SearchResultContainer>
       )}
-    </SearchInputContainer>
+    </div>
   )
 }
 

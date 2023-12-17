@@ -10,8 +10,9 @@ import { Link, useHistory } from "react-router-dom"
 import useOnClickOutside from "use-onclickoutside"
 
 import { isMobile } from "@/browser"
+import { clx } from "@/classnames"
 import { Box } from "@/components/Box"
-import * as forms from "@/components/Forms"
+import { SearchInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Image } from "@/components/Image"
 import { Loader } from "@/components/Loader"
@@ -24,24 +25,17 @@ import { RecipeListItem, useRecipeList } from "@/queries/recipeList"
 import { useSchedulePreviewList } from "@/queries/schedulePreviewList"
 import { removeQueryParams, setQueryParams } from "@/querystring"
 import { Match, searchRecipes } from "@/search"
-import { css, styled } from "@/theme"
 import { imgixFmt } from "@/url"
 import { useTeamId } from "@/useTeamId"
 
-const SearchInput = styled(forms.SearchInput)`
-  margin-bottom: 0.25rem;
-  font-size: 18px;
-`
-
-const Code = styled.code`
-  margin: 0 2px;
-  padding: 0px 5px;
-  border: 1px solid #ddd;
-  background-color: var(--color-background-card);
-  border-radius: 3px;
-  color: var(--color-text);
-  white-space: pre;
-`
+function Code({ children }: { children: React.ReactNode }) {
+  return (
+    <code
+      className="mx-[2px] my-0 whitespace-pre rounded-[3px] border border-solid border-[#ddd] bg-[var(--color-background-card)] px-[5px] py-0 font-[var(--color-text)]"
+      children={children}
+    />
+  )
+}
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return <div className="pb-1 text-base font-medium">{children}</div>
@@ -68,86 +62,37 @@ function ScheduledRecipe(props: {
   )
 }
 
-// TODO: make this take up the full width on mobile
-const ScheduleContainer = styled.div`
-  width: 100%;
-  @media (min-width: 530px) {
-    max-width: 350px;
-    width: 350px;
-  }
-  border-radius: 6px;
-  padding: 0.75rem;
-  border: 1px solid var(--color-border);
-  font-size: 14px;
-`
+function ScheduleContainer({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      className="w-full rounded-[6px] border border-solid border-[var(--color-border)] p-3 text-sm sm:w-[350px] sm:max-w-[350px]"
+      children={children}
+    />
+  )
+}
 
-const SuggestionBox = styled.div`
-  background: var(--color-background-card);
-  width: 100%;
-  border-style: solid;
-  border-width: 1px;
-  border-color: var(--color-border);
-  border-radius: 5px;
-  padding: 0.25rem;
-  display: inline-grid;
-`
+function SuggestionBox({
+  children,
+  onClick,
+}: {
+  children: React.ReactNode
+  onClick?: () => void
+}) {
+  return (
+    <div
+      onClick={onClick}
+      className="inline-grid w-full rounded-[5px] border border-solid border-[var(--color-border)] bg-[var(--color-background-card)] p-1"
+      children={children}
+    />
+  )
+}
 
-const suggestionStyle = css`
-  padding: 0.25rem 0.25rem;
+const stylesSuggestion = "p-1 overflow-x-hidden whitespace-nowrap text-ellipsis"
 
-  overflow-x: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-`
-
-const SuggestionInfo = styled.div`
-  ${suggestionStyle}
-  text-align: center;
-  color: ${(props) => props.theme.color.muted};
-`
-
-const SuggestionItem = styled(Link)<{
-  readonly firstItem?: boolean
-  readonly archived?: boolean
-}>`
-  ${suggestionStyle}
-  // Underline the first item because we navigate to it on "Enter".
-  ${(props) =>
-    props.firstItem &&
-    css`
-      text-decoration: underline;
-    `}
-  ${(props) =>
-    props.archived &&
-    css`
-      color: ${props.theme.color.muted};
-    `}
-`
-const RecipeMatchPiece = styled.div<{ readonly firstItem?: boolean }>`
-  margin-left: 1rem;
-  font-weight: bold;
-`
-
-const SuggestionAuthor = styled.span<{ readonly bold: boolean }>`
-  font-weight: ${(props) => (props.bold ? "bold" : "normal")};
-`
-const RecipeName = styled.span<{ readonly bold: boolean }>`
-  font-weight: ${(props) => (props.bold ? "bold" : "normal")};
-  flex-grow: 0;
-  overflow-x: hidden;
-  text-overflow: ellipsis;
-  white-space: pre;
-`
-
-const BrowseRecipesContainer = styled.div`
-  ${suggestionStyle}
-  border-top-style: solid;
-  border-top-width: 1px;
-  border-color: #f2f2f2;
-  margin-top: 0.5rem;
-  display: flex;
-  justify-content: space-between;
-`
+const styleSuggestionInfo = clx(
+  "text-center text-[var(--color-text-muted)]",
+  stylesSuggestion,
+)
 
 type Recipe = {
   readonly id: number | string
@@ -334,28 +279,38 @@ export function SearchResult({
       const authorMatch = matches.find((x) => x.kind === "author")
 
       return (
-        <SuggestionItem
+        <Link
           key={recipe.id}
-          archived={recipe.archived_at != null}
           to={pathRecipeDetail({ recipeId: recipe.id.toString() })}
-          firstItem={index === 0}
+          className={clx(
+            stylesSuggestion,
+            index === 0 && "underline",
+            recipe.archived_at != null && "text-[var(--color-text-muted)]",
+          )}
         >
           <div className="flex">
-            <RecipeName bold={nameMatch != null}>{recipe.name} </RecipeName>
+            <span
+              className={clx(
+                "grow-0 overflow-x-hidden text-ellipsis whitespace-pre",
+                nameMatch != null && "font-bold",
+              )}
+            >
+              {recipe.name}{" "}
+            </span>
             {recipe.author && (
               <span className="grow">
                 by{" "}
-                <SuggestionAuthor bold={authorMatch != null}>
+                <span className={clx(authorMatch != null && "font-bold")}>
                   {recipe.author}
-                </SuggestionAuthor>
+                </span>
               </span>
             )}
           </div>
           {ingredientMatch != null ? (
-            <RecipeMatchPiece>{ingredientMatch.value}</RecipeMatchPiece>
+            <div className="ml-4 font-bold">{ingredientMatch.value}</div>
           ) : null}
           {tagMatch != null ? <Tag>{tagMatch.value}</Tag> : null}
-        </SuggestionItem>
+        </Link>
       )
     })
     .slice(0, 7)
@@ -364,10 +319,15 @@ export function SearchResult({
       {!isLoading ? (
         <>
           {searchResults.length === 0 && (
-            <SuggestionInfo>No Results Found</SuggestionInfo>
+            <div className={styleSuggestionInfo}>No Results Found</div>
           )}
           {suggestions}
-          <BrowseRecipesContainer>
+          <div
+            className={clx(
+              "mt-2 flex justify-between border-[0] border-t border-solid border-[#f2f2f2]",
+              stylesSuggestion,
+            )}
+          >
             <span className="text-[var(--color-text-muted)]">
               matches: {searchResults.length}
             </span>
@@ -381,10 +341,10 @@ export function SearchResult({
             >
               Browse
             </Link>
-          </BrowseRecipesContainer>
+          </div>
         </>
       ) : (
-        <SuggestionInfo>Loading...</SuggestionInfo>
+        <div className={styleSuggestionInfo}>Loading...</div>
       )}
     </SuggestionBox>
   )
@@ -453,6 +413,7 @@ function Search() {
           onChange={setQuery}
           onKeyDown={handleSearchKeydown}
           placeholder="Search your recipes..."
+          className="mb-1 text-[18px]"
         />
         {searchQuery && (
           <div className="absolute top-[60px] z-10 w-full max-w-[400px]">

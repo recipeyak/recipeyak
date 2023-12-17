@@ -76,7 +76,7 @@ export function Invites() {
   }
 
   return (
-    <div>
+    <div data-testid="invites-list">
       {invites.data.map((invite) => {
         return (
           <div key={invite.id} className="mb-2">

@@ -27,7 +27,7 @@ function TeamsList() {
   }
 
   return (
-    <div className="text-left">
+    <div className="text-left" data-testid="teams-list">
       {teams.data.map(({ id, name }, index) => (
         <p key={id}>
           <NavLink

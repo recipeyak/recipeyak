@@ -96,7 +96,7 @@ function Step({
     <div style={style} ref={isEditing ? ref : undefined} className="mb-2">
       <BetterLabel
         ref={isEditing ? drag : undefined}
-        style={{ cursor: isEditing ? "move" : "" }}
+        cursor={isEditing ? "move" : undefined}
       >
         Step {index + 1}
       </BetterLabel>

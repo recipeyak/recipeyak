@@ -262,17 +262,14 @@ function RecipeDetails({
   )
 }
 
-const ArchiveMessage = styled.div`
-  background: var(--color-background-card);
-  font-weight: bold;
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
-  border-radius: 5px;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
-`
+function ArchiveMessage({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      className="mx-2 rounded-[5px] bg-[var(--color-background-card)] px-3 py-1 font-bold"
+      children={children}
+    />
+  )
+}
 
 function RecipeBanner({ children }: { readonly children: React.ReactNode }) {
   return (
@@ -490,13 +487,14 @@ const HeaderImgOverlay = styled.div`
   z-index: 999;
 `
 
-const HeaderImgUploader = styled.div`
-  background: var(--color-background-card);
-  opacity: 1 !important;
-  padding: 0.5rem;
-  border-radius: 3px;
-  font-size: 14px;
-`
+function HeaderImgUploader({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      className="rounded-[3px] bg-[var(--color-background-card)] p-2 font-[14px] !opacity-100"
+      children={children}
+    />
+  )
+}
 
 function useGallery(
   noteUploads: Upload[],

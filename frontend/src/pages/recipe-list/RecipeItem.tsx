@@ -9,7 +9,6 @@ import { Tag } from "@/components/Tag"
 import { DragDrop } from "@/dragDrop"
 import { RecipeListItem as TRecipeListItem } from "@/queries/recipeList"
 import { Match } from "@/search"
-import { styled } from "@/theme"
 import { imgixFmt } from "@/url"
 import { recipeURL } from "@/urls"
 
@@ -81,16 +80,14 @@ function Ingredient({ children }: { children: React.ReactNode }) {
   )
 }
 
-const CardImgContainer = styled.div`
-  @media (max-width: 449px) {
-    min-height: 128px;
-    max-height: 128px;
-  }
-  @media (min-width: 450px) {
-    min-height: 180px;
-    max-height: 180px;
-  }
-`
+function CardImgContainer({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      className="max-h-[128px] min-h-[128px] sm:max-h-[180px] sm:min-h-[180px]"
+      children={children}
+    />
+  )
+}
 
 type IRecipeItemProps = {
   readonly name: string
