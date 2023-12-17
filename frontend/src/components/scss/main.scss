@@ -153,7 +153,6 @@ table {
 .theme-dark {
   --color-background: #0d1116;
 
-  --color-primary: #e37857;
   --color-primary: #854d0e;
   --color-primary-button-text: white;
   --color-primary-shadow: rgba(255, 114, 71, 0.8);
@@ -174,6 +173,37 @@ table {
   --color-danger-disabled: #{darken(#fb5274, 20%)};
 
   --color-background-card: #161b22;
+  --color-background-calendar-day: var(--color-background-card);
+  --color-background-calendar-item: var(--color-background-card);
+  --color-background-empty-image: #382e27;
+
+  --margin-calendar-item-bottom: 0rem;
+}
+
+
+.theme-dark-dimmed {
+  --color-background: rgb(34, 39, 46);
+
+  --color-primary: #854d0e;
+  --color-primary-button-text: white;
+  --color-primary-shadow: rgba(255, 114, 71, 0.8);
+  --color-primary-active: var(--color-primary);
+  --color-primary-disabled: #b86349;
+
+  --color-text: rgb(173, 186, 199);
+  --color-text-muted: var(--color-text);
+  --color-text-disabled: rgb(118, 131, 144);
+
+  --color-input-placeholder: var(--color-text-muted);
+
+  --color-border: rgb(68, 76, 86);
+  --color-accent: var(--color-text);
+
+  --color-danger: #fb5274;
+  --color-danger-button-text: white;
+  --color-danger-disabled: #{darken(#fb5274, 20%)};
+
+  --color-background-card: rgb(55, 62, 71);
   --color-background-calendar-day: var(--color-background-card);
   --color-background-calendar-item: var(--color-background-card);
   --color-background-empty-image: #382e27;
