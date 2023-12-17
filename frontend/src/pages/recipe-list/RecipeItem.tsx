@@ -9,7 +9,6 @@ import { Tag } from "@/components/Tag"
 import { DragDrop } from "@/dragDrop"
 import { RecipeListItem as TRecipeListItem } from "@/queries/recipeList"
 import { Match } from "@/search"
-import { styled } from "@/theme"
 import { imgixFmt } from "@/url"
 import { recipeURL } from "@/urls"
 
