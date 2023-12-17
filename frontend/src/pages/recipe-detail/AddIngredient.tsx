@@ -123,6 +123,7 @@ function AddIngredientForm({
             disabled={addDisabled}
             size="small"
             type="submit"
+            aria-label="add ingredient"
             loading={createIngredient.isPending}
           >
             Add

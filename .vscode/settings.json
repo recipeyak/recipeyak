@@ -57,5 +57,19 @@
     "${workspaceFolder}/backend/.venv/bin/python3"
   ],
   "mypy-type-checker.args": ["--config-file=pyproject.toml"],
-  "prettier.ignorePath": "frontend/.prettierignore"
+  "prettier.ignorePath": "frontend/.prettierignore",
+  "search.useParentIgnoreFiles": true,
+  "search.useGlobalIgnoreFiles": true,
+  // Until https://github.com/microsoft/vscode/issues/26574 is fixed
+  "search.exclude": {
+    "**/.git": true,
+    "**/node_modules": true,
+    "**/tmp": true,
+    "**/dist": true,
+    "**/lib": true,
+    "**/generated": true,
+    "**/.eslintcache": true,
+    "**/.mypy_cache": true,
+    "**/stats.html": true
+  }
 }

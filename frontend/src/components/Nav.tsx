@@ -4,6 +4,7 @@ import { Link, useHistory } from "react-router-dom"
 import useOnClickOutside from "use-onclickoutside"
 
 import { useIsLoggedIn } from "@/auth"
+import { clx } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
 import { Button } from "@/components/Buttons"
 import { DropdownContainer, DropdownMenu } from "@/components/Dropdown"
@@ -28,7 +29,6 @@ import { useAuthLogout } from "@/queries/authLogout"
 import { useRecipeList } from "@/queries/recipeList"
 import { useTeamList } from "@/queries/teamList"
 import { searchRecipes } from "@/search"
-import { styled } from "@/theme"
 import { useGlobalEvent } from "@/useGlobalEvent"
 import { useTeamId } from "@/useTeamId"
 import { useUser } from "@/useUser"
@@ -38,9 +38,7 @@ interface IUserAvatarProps {
   readonly url: string
 }
 function UserAvatar({ onClick, url }: IUserAvatarProps) {
-  return (
-    <BetterNavItem as={Avatar} onClick={onClick} tabIndex={0} avatarURL={url} />
-  )
+  return <Avatar onClick={onClick} tabIndex={0} avatarURL={url} />
 }
 
 function LogoutButton() {
@@ -132,12 +130,12 @@ function WordMark() {
 function AuthButtons() {
   return (
     <div className="flex justify-self-end">
-      <BetterNavItem as={NavLink} to={pathLogin({})}>
+      <NavLink className={stylesNavItem} to={pathLogin({})}>
         Login
-      </BetterNavItem>
-      <BetterNavItem as={NavLink} to={pathSignup({})}>
+      </NavLink>
+      <NavLink className={stylesNavItem} to={pathSignup({})}>
         Signup
-      </BetterNavItem>
+      </NavLink>
     </div>
   )
 }
@@ -148,27 +146,27 @@ function NavButtons() {
     <div className="relative flex items-center justify-center  justify-self-end">
       <DropdownContainer>
         <div className="flex">
-          <BetterNavItem
-            as={NavLink}
+          <NavLink
             to={pathRecipeAdd({})}
-            activeClassName="active"
+            className={stylesNavItem}
+            activeClassName="!underline"
           >
             Add
-          </BetterNavItem>
-          <BetterNavItem
-            as={NavLink}
+          </NavLink>
+          <NavLink
             to={pathRecipesList({})}
-            activeClassName="active"
+            className={stylesNavItem}
+            activeClassName="!underline"
           >
             Browse
-          </BetterNavItem>
-          <BetterNavItem
-            as={NavLink}
+          </NavLink>
+          <NavLink
             to={pathSchedule({ teamId: teamId.toString() })}
-            activeClassName="active"
+            className={stylesNavItem}
+            activeClassName="!underline"
           >
             Calendar
-          </BetterNavItem>
+          </NavLink>
         </div>
       </DropdownContainer>
 
@@ -177,36 +175,8 @@ function NavButtons() {
   )
 }
 
-const BetterNavItem = styled.div`
-  align-items: center;
-  display: flex;
-  flex-grow: 0;
-  flex-shrink: 0;
-  font-size: 14px;
-  justify-content: center;
-  line-height: 1.5;
-  padding: 0.5rem 0.75rem;
-  font-weight: 500;
-  color: var(--color-text);
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 0.1s;
-
-  @media (hover: hover) {
-    &:hover {
-      color: var(--color-link-hover);
-      text-decoration: underline;
-    }
-  }
-
-  &:active {
-    transform: translateY(1px);
-  }
-
-  &.active {
-    text-decoration: underline;
-  }
-`
+const stylesNavItem =
+  "flex shrink-0 grow-0 cursor-pointer items-center justify-center px-3 py-2 text-[14px] font-medium leading-[1.5] text-[var(--color-text)] transition-all hover:text-[var(--color-link-hover)] hover:underline active:translate-y-[1px]"
 
 /**
  *
@@ -296,10 +266,9 @@ export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
   const isLoggedIn = useIsLoggedIn()
   return (
     <nav className="mb-1 flex h-[3rem] shrink-0 justify-between px-3 print:!hidden md:grid md:grid-cols-3">
-      <BetterNavItem
-        as={Link}
+      <Link
         to={pathHome({})}
-        className="!justify-start !px-0 py-1 font-normal"
+        className={clx(stylesNavItem, "!justify-start !px-0 py-1 font-normal")}
       >
         <Logo width="40px" />
         {isLoggedIn ? (
@@ -307,7 +276,7 @@ export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
         ) : (
           <WordMark />
         )}
-      </BetterNavItem>
+      </Link>
       <div className="ml-3 flex grow items-center">
         {includeSearch && <Search />}
       </div>
