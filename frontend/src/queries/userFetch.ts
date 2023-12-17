@@ -4,7 +4,7 @@ import { login } from "@/auth"
 import { http } from "@/http"
 import { unwrapResult } from "@/query"
 
-export type Theme = "light" | "autumn" | "solarized"
+export type Theme = "light" | "autumn" | "solarized" | "dark"
 
 // User state from API
 export interface IUser {

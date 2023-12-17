@@ -4,7 +4,6 @@ import { RouteComponentProps } from "react-router"
 import { Link } from "react-router-dom"
 
 import { Button } from "@/components/Buttons"
-import { FormField } from "@/components/FormField"
 import { TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Label } from "@/components/Label"
@@ -104,19 +103,17 @@ function TeamSettings({ id, name: initialName }: { id: number; name: string }) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <FormField>
-        <Label>Team Name</Label>
-        <TextInput
-          disabled={false}
-          onChange={(e) => {
-            setName(e.target.value)
-          }}
-          placeholder="The Grand Budapest Staff"
-          value={name}
-          name="name"
-        />
-      </FormField>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+      <Label>Team Name</Label>
+      <TextInput
+        disabled={false}
+        onChange={(e) => {
+          setName(e.target.value)
+        }}
+        placeholder="The Grand Budapest Staff"
+        value={name}
+        name="name"
+      />
       <div className="flex items-center justify-between">
         <Button
           variant="danger"

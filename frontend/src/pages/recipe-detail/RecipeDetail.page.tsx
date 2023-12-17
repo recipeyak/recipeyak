@@ -3,6 +3,7 @@ import React, { useMemo, useState } from "react"
 import { RouteComponentProps, useHistory } from "react-router"
 import { Link } from "react-router-dom"
 
+import { clx } from "@/classnames"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
@@ -167,7 +168,7 @@ function RecipeDetails({
     <>
       <div>
         <SectionTitle>Ingredients</SectionTitle>
-        <ul>
+        <ul className={clx(editingEnabled && "mb-2")}>
           {sectionsAndIngredients.map((item, i) => {
             if (item.kind === "ingredient") {
               const ingre = item.item

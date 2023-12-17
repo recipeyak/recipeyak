@@ -28,49 +28,18 @@ export function BorderBox({
       onSubmit: (_: React.FormEvent) => void
     }
 )) {
-  if (rest.as === "form") {
-    return (
-      <form
-        className={clx(
-          "bg-[var(--color-background)] text-[var(--color-text)]",
-          p == null
-            ? "p-[1.2rem]"
-            : p === 2
-              ? "p-2"
-              : p === 3
-                ? "p-3"
-                : undefined,
-          minHeight != null ? "min-h-[74px]" : undefined,
-          whenSmallRounded0 ? "rounded-0 sm:rounded-[6px]" : "rounded-[6px]",
-          display && "flex",
-          flexDirection && "flex-col",
-          h && "h-full",
-          className,
-        )}
-        onSubmit={rest.onSubmit}
-      />
-    )
-  }
-  return (
-    <div
-      className={clx(
-        "bg-[var(--color-background)] text-[var(--color-text)]",
-        p == null
-          ? "p-[1.2rem]"
-          : p === 2
-            ? "p-2"
-            : p === 3
-              ? "p-3"
-              : undefined,
-        minHeight != null ? "min-h-[74px]" : undefined,
-        whenSmallRounded0 ? "rounded-0 sm:rounded-[6px]" : "rounded-[6px]",
-        display && "flex",
-        flexDirection && "flex-col",
-        h && "h-full",
-        className,
-      )}
-    >
-      {children}
-    </div>
+  const cls = clx(
+    "bg-[var(--color-background)] text-[var(--color-text)]",
+    p == null ? "p-[1.2rem]" : p === 2 ? "p-2" : p === 3 ? "p-3" : undefined,
+    minHeight != null ? "min-h-[74px]" : undefined,
+    whenSmallRounded0 ? "rounded-0 sm:rounded-[6px]" : "rounded-[6px]",
+    display && "flex",
+    flexDirection && "flex-col",
+    h && "h-full",
+    className,
   )
+  if (rest.as === "form") {
+    return <form className={cls} onSubmit={rest.onSubmit} />
+  }
+  return <div className={cls}>{children}</div>
 }

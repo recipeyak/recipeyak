@@ -27,7 +27,7 @@ class UserUpdatePayload(RequestParams):
     email: str | None = None
     name: str | None = None
     schedule_team: int | None = None
-    theme: Literal["light", "autumn", "solarized"] | None = None
+    theme: Literal["light", "autumn", "solarized", "dark"] | None = None
 
 
 def user_detail_patch_view(request: AuthedRequest) -> Response:

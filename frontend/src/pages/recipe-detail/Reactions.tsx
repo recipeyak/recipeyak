@@ -144,7 +144,7 @@ export function ReactionPopover(props: {
                 pressed={
                   findReaction(props.reactions, emoji, userId ?? 0) != null
                 }
-                className={clx({ "ml-1": index > 0 })}
+                className={clx(index > 0 && "ml-1")}
               >
                 {emoji}
               </ReactionButton>

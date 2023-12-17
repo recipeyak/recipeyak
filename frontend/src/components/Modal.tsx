@@ -71,7 +71,12 @@ export function Modal({ show, content, onClose, title }: IModalProps) {
     <ModalPositioner ref={ref} show={show}>
       <ModalBackground onClick={onClose} />
       <ModalContainer>
-        <BorderBox display="flex" flexDirection="column" h={100}>
+        <BorderBox
+          display="flex"
+          flexDirection="column"
+          h={100}
+          className="bg-[var(--color-background-card)]"
+        >
           <Box space="between" mb={2}>
             <h1 className="text-[14px] font-medium">{title}</h1>
             <CloseButton onClose={onClose} />

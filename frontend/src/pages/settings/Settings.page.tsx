@@ -330,6 +330,23 @@ function ThemePicker() {
           <RadioButton
             name="theme"
             className="mr-1"
+            checked={formTheme === "dark"}
+            onClick={() => {
+              setTheme("dark")
+            }}
+          />
+          Dark
+        </label>
+
+        <label
+          className="flex cursor-pointer items-center rounded-md p-2"
+          style={{
+            border: "1px solid var(--color-border)",
+          }}
+        >
+          <RadioButton
+            name="theme"
+            className="mr-1"
             checked={formTheme === "autumn"}
             onClick={() => {
               setTheme("autumn")

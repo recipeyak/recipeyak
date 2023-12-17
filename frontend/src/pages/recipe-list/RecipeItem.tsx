@@ -129,7 +129,7 @@ function RecipeListItem({
         </small>
       ) : null}
       {author !== "" && (
-        <small className={clx("block", { "font-bold": authorMatch != null })}>
+        <small className={clx("block", authorMatch != null && "font-bold")}>
           {author}
         </small>
       )}
@@ -171,11 +171,7 @@ interface IMetaProps {
 
 function Meta({ author, bold }: IMetaProps) {
   return (
-    <div
-      className={clx("flex", "items-center", {
-        "font-bold": bold,
-      })}
-    >
+    <div className={clx("flex", "items-center", bold && "font-bold")}>
       {author !== "" ? <small>{author}</small> : null}
     </div>
   )

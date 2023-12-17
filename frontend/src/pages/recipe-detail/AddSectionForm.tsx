@@ -1,8 +1,6 @@
 import React, { useState } from "react"
 
 import { Button } from "@/components/Buttons"
-import { FormControl } from "@/components/FormControl"
-import { FormField } from "@/components/FormField"
 import { TextInput } from "@/components/Forms"
 import { useSectionCreate } from "@/queries/sectionCreate"
 
@@ -50,18 +48,16 @@ export function AddSectionForm({
           name="section title"
         />
       </div>
-      <FormField isGrouped>
-        <FormControl className="grow">
-          <Button
-            size="small"
-            type="button"
-            name="toggle add section"
-            onClick={toggleShowAddSection}
-          >
-            Add Ingredient
-          </Button>
-        </FormControl>
-        <FormControl>
+      <div className="flex justify-between">
+        <Button
+          size="small"
+          type="button"
+          name="toggle add section"
+          onClick={toggleShowAddSection}
+        >
+          Add Ingredient
+        </Button>
+        <div className="flex gap-2">
           <Button
             onClick={onCancel}
             size="small"
@@ -70,8 +66,6 @@ export function AddSectionForm({
           >
             Cancel
           </Button>
-        </FormControl>
-        <FormControl>
           <Button
             variant="primary"
             disabled={addDisabled}
@@ -81,8 +75,8 @@ export function AddSectionForm({
           >
             Save
           </Button>
-        </FormControl>
-      </FormField>
+        </div>
+      </div>
       {createSection.isError && <p>error adding ingredient</p>}
     </form>
   )
