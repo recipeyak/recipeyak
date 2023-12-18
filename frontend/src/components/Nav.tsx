@@ -11,8 +11,8 @@ import { DropdownContainer, DropdownMenu } from "@/components/Dropdown"
 import { SearchInput, Select } from "@/components/Forms"
 import Logo from "@/components/Logo"
 import { NavLink } from "@/components/Routing"
+import { SearchResult } from "@/components/SearchResult"
 import { useDropdown } from "@/components/useDropdown"
-import { SearchResult } from "@/pages/index/UserHome"
 import {
   pathHome,
   pathLogin,
@@ -201,7 +201,7 @@ function Search() {
 
   useGlobalEvent({
     keyDown(e) {
-      if (e.key === "k" && e.metaKey) {
+      if ((e.key === "k" && e.metaKey) || (e.key === "/" && e.metaKey)) {
         searchInputRef.current?.focus()
       }
     },
