@@ -4,7 +4,7 @@ import { login } from "@/auth"
 import { http } from "@/http"
 import { IUser } from "@/queries/userFetch"
 import { unwrapResult } from "@/query"
-import { Theme } from "@/themeConstants"
+import { Theme, ThemeMode } from "@/themeConstants"
 
 const updateUser = (
   data: Pick<Partial<IUser>, "name" | "email" | "schedule_team">,
@@ -17,7 +17,9 @@ export function useUserUpdate() {
       email?: string
       name?: string
       schedule_team?: number
-      theme?: Theme
+      theme_day?: Theme
+      theme_night?: Theme
+      theme_mode?: ThemeMode
     }) => updateUser(payload).then(unwrapResult),
     onSuccess: (res) => {
       login(res, queryClient)

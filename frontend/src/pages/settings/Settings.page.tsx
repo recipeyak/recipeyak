@@ -6,7 +6,7 @@ import { Link, useHistory } from "react-router-dom"
 import { logout } from "@/auth"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
-import { RadioButton, TextInput } from "@/components/Forms"
+import { RadioButton, Select, TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { BetterLabel } from "@/components/Label"
 import { Loader } from "@/components/Loader"
@@ -17,7 +17,7 @@ import { useUserDelete } from "@/queries/userDelete"
 import { useUserFetch } from "@/queries/userFetch"
 import { useUserUpdate } from "@/queries/userUpdate"
 import { themeSet } from "@/theme"
-import { Theme, THEME_IDS, THEME_META } from "@/themeConstants"
+import { Theme, THEME_IDS, THEME_META, ThemeMode } from "@/themeConstants"
 import { toast } from "@/toast"
 import { useUserTheme } from "@/useUserTheme"
 
@@ -282,20 +282,52 @@ function ChangePassword() {
   )
 }
 
+function ThemeList(props: { value: Theme; onChange: (value: Theme) => void }) {
+  return (
+    <>
+      {THEME_IDS.map((themeId) => {
+        return (
+          <label
+            key={themeId}
+            className="flex cursor-pointer items-center rounded-md p-2"
+            style={{
+              border: "1px solid var(--color-border)",
+            }}
+          >
+            <RadioButton
+              className="mr-1"
+              checked={themeId === props.value}
+              onClick={() => {
+                props.onChange(themeId)
+              }}
+            />
+            {THEME_META[themeId].displayName}
+          </label>
+        )
+      })}
+    </>
+  )
+}
+
 function ThemePicker() {
   const updateUser = useUserUpdate()
   const theme = useUserTheme()
-  const [formTheme, setFormTheme] = useState<Theme>(theme)
-  const setTheme = (newTheme: Theme) => {
-    const oldTheme = formTheme
-    setFormTheme(newTheme)
-    themeSet(newTheme)
+
+  const [formState, setFormState] = useState<{
+    day: Theme
+    night: Theme
+    mode: ThemeMode
+  }>(theme)
+
+  const updateTheme = (args: { day: Theme; night: Theme; mode: ThemeMode }) => {
+    setFormState(args)
+    themeSet(args)
     updateUser.mutate(
-      { theme: newTheme },
+      { theme_day: args.day, theme_night: args.night, theme_mode: args.mode },
       {
         onError: () => {
-          setFormTheme(oldTheme)
-          themeSet(oldTheme)
+          setFormState(args)
+          themeSet(args)
         },
       },
     )
@@ -304,29 +336,70 @@ function ThemePicker() {
   return (
     <Box dir="col" align="start">
       <BetterLabel>Theme</BetterLabel>
-      <Box dir="col" gap={1} style={{ minWidth: 150 }}>
-        {THEME_IDS.map((themeId) => {
-          return (
-            <label
-              key={themeId}
-              className="flex cursor-pointer items-center rounded-md p-2"
-              style={{
-                border: "1px solid var(--color-border)",
+      <div className="flex flex-col gap-2 rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-calendar-day)] p-4">
+        <div className="flex flex-col">
+          <BetterLabel htmlFor="theme_mode">Mode</BetterLabel>
+          <Select
+            id="theme_mode"
+            onChange={(e) => {
+              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+              const mode = e.target.value as ThemeMode
+              updateTheme({ day: formState.day, night: formState.night, mode })
+            }}
+            value={formState.mode}
+          >
+            <option value="single">Single theme</option>
+            <option value="sync_with_system">Sync with system</option>
+          </Select>
+        </div>
+
+        {formState.mode === "single" && (
+          <div className="my-2 grid gap-1">
+            <ThemeList
+              value={formState.day}
+              onChange={(day) => {
+                updateTheme({
+                  day,
+                  night: formState.night,
+                  mode: formState.mode,
+                })
               }}
-            >
-              <RadioButton
-                name="theme"
-                className="mr-1"
-                checked={formTheme === themeId}
-                onClick={() => {
-                  setTheme(themeId)
+            />
+          </div>
+        )}
+        {formState.mode === "sync_with_system" && (
+          <div className="flex space-x-10">
+            <div className="grid gap-1">
+              <BetterLabel>Day Theme</BetterLabel>
+
+              <ThemeList
+                value={formState.day}
+                onChange={(day) => {
+                  updateTheme({
+                    day,
+                    night: formState.night,
+                    mode: formState.mode,
+                  })
                 }}
               />
-              {THEME_META[themeId].displayName}
-            </label>
-          )
-        })}
-      </Box>
+            </div>
+            <div className="grid gap-1">
+              <BetterLabel>Night Theme</BetterLabel>
+
+              <ThemeList
+                value={formState.night}
+                onChange={(night) => {
+                  updateTheme({
+                    day: formState.day,
+                    night,
+                    mode: formState.mode,
+                  })
+                }}
+              />
+            </div>
+          </div>
+        )}
+      </div>
     </Box>
   )
 }

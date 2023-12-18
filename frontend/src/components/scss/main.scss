@@ -114,7 +114,7 @@ table {
 @tailwind components;
 @tailwind utilities;
 
-:root {
+@mixin theme-light {
   // theme-light
   --color-background: white;
 
@@ -150,7 +150,12 @@ table {
   --margin-calendar-item-bottom: 0.5rem;
 }
 
-.theme-dark {
+:root,
+.theme-light {
+  @include theme-light();
+}
+
+@mixin theme-dark {
   --color-background: #0d1116;
 
   --color-primary: #854d0e;
@@ -180,7 +185,11 @@ table {
   --margin-calendar-item-bottom: 0rem;
 }
 
-.theme-dark-dimmed {
+.theme-dark {
+  @include theme-dark();
+}
+
+@mixin theme-dark-dimmed {
   --color-background: rgb(34, 39, 46);
 
   --color-primary: #854d0e;
@@ -210,7 +219,11 @@ table {
   --margin-calendar-item-bottom: 0rem;
 }
 
-.theme-autumn {
+.theme-dark-dimmed {
+  @include theme-dark-dimmed();
+}
+
+@mixin theme-autumn {
   --color-background: rgb(185, 110, 52);
 
   --color-primary: #e37857;
@@ -240,7 +253,11 @@ table {
   --margin-calendar-item-bottom: 0rem;
 }
 
-.theme-solarized {
+.theme-autumn {
+  @include theme-autumn();
+}
+
+@mixin theme-solarized {
   --color-background: #fdf6e3;
 
   --color-primary: #b58900;
@@ -270,6 +287,10 @@ table {
   --margin-calendar-item-bottom: 0.5rem;
 }
 
+.theme-solarized {
+  @include theme-solarized();
+}
+
 // hide native chrome pickers
 input::-webkit-calendar-picker-indicator {
   display: none;
@@ -277,4 +298,33 @@ input::-webkit-calendar-picker-indicator {
 
 input[type="date"]::-webkit-input-placeholder {
   visibility: hidden !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .night\:theme-light {
+    @include theme-light();
+  }
+  .night\:theme-dark-dimmed {
+    @include theme-dark-dimmed();
+  }
+  .night\:theme-autumn {
+    @include theme-autumn();
+  }
+  .night\:theme-solarized {
+    @include theme-solarized();
+  }
+}
+@media (prefers-color-scheme: light) {
+  .day\:theme-light {
+    @include theme-light();
+  }
+  .day\:theme-dark-dimmed {
+    @include theme-dark-dimmed();
+  }
+  .day\:theme-autumn {
+    @include theme-autumn();
+  }
+  .day\:theme-solarized {
+    @include theme-solarized();
+  }
 }
