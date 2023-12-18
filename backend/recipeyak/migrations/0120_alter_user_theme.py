@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('recipeyak', '0119_remove_user_theme_is_valid'),
+        ("recipeyak", "0119_remove_user_theme_is_valid"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='user',
-            name='theme',
-            field=models.TextField(db_column='theme', default='light'),
+            model_name="user",
+            name="theme",
+            field=models.TextField(db_column="theme", default="light"),
         ),
     ]
