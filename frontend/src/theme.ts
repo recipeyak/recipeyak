@@ -36,9 +36,6 @@ export function themeSet(args: ThemeSerialized) {
     if (!newClassDay) {
       return
     }
-    if (!args.night) {
-      return
-    }
     const newClassNight = THEME_META[args.night].cssClass
     if (!newClassNight) {
       return

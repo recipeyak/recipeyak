@@ -150,7 +150,6 @@ table {
   --margin-calendar-item-bottom: 0.5rem;
 }
 
-:root,
 .theme-light {
   @include theme-light();
 }
@@ -304,6 +303,9 @@ input[type="date"]::-webkit-input-placeholder {
   .night\:theme-light {
     @include theme-light();
   }
+  .night\:theme-dark {
+    @include theme-dark();
+  }
   .night\:theme-dark-dimmed {
     @include theme-dark-dimmed();
   }
@@ -317,6 +319,9 @@ input[type="date"]::-webkit-input-placeholder {
 @media (prefers-color-scheme: light) {
   .day\:theme-light {
     @include theme-light();
+  }
+  .day\:theme-dark {
+    @include theme-dark();
   }
   .day\:theme-dark-dimmed {
     @include theme-dark-dimmed();
