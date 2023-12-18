@@ -1,5 +1,6 @@
 // https://prettier.io/docs/en/options.html
-module.exports = {
+/** @type {import("prettier").Config} */
+export default {
   plugins: ["prettier-plugin-tailwindcss"],
   tailwindFunctions: ["clx", "clsx", "classNames", "cls", "className"],
   semi: false,
