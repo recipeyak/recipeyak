@@ -23,7 +23,7 @@ export function TeamCreatePage() {
   return (
     <NavPage>
       <Helmet title="Create a Team" />
-      <div style={{ maxWidth: 800, marginLeft: "auto", marginRight: "auto" }}>
+      <div className="mx-auto max-w-[800px]">
         <h1 className="text-4xl">Create Team</h1>
         <form action="" onSubmit={handleSubmit}>
           <label className="mb-3 flex items-center">

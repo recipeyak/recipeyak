@@ -2,8 +2,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { login } from "@/auth"
 import { http } from "@/http"
-import { IUser, Theme } from "@/queries/userFetch"
+import { IUser } from "@/queries/userFetch"
 import { unwrapResult } from "@/query"
+import { Theme } from "@/themeConstants"
 
 const updateUser = (
   data: Pick<Partial<IUser>, "name" | "email" | "schedule_team">,

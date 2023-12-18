@@ -14,9 +14,10 @@ import { NavPage } from "@/components/Page"
 import Sessions from "@/pages/settings/Sessions"
 import { pathLogin, pathPassword } from "@/paths"
 import { useUserDelete } from "@/queries/userDelete"
-import { Theme, useUserFetch } from "@/queries/userFetch"
+import { useUserFetch } from "@/queries/userFetch"
 import { useUserUpdate } from "@/queries/userUpdate"
 import { themeSet } from "@/theme"
+import { Theme, THEME_IDS, THEME_META } from "@/themeConstants"
 import { toast } from "@/toast"
 import { useUserTheme } from "@/useUserTheme"
 
@@ -304,90 +305,27 @@ function ThemePicker() {
     <Box dir="col" align="start">
       <BetterLabel>Theme</BetterLabel>
       <Box dir="col" gap={1} style={{ minWidth: 150 }}>
-        <label
-          className="flex cursor-pointer items-center rounded-md p-2"
-          style={{
-            border: "1px solid var(--color-border)",
-          }}
-        >
-          <RadioButton
-            name="theme"
-            className="mr-1"
-            checked={formTheme === "light"}
-            onClick={() => {
-              setTheme("light")
-            }}
-          />
-          Light
-        </label>
-
-        <label
-          className="flex cursor-pointer items-center rounded-md p-2"
-          style={{
-            border: "1px solid var(--color-border)",
-          }}
-        >
-          <RadioButton
-            name="theme"
-            className="mr-1"
-            checked={formTheme === "dark"}
-            onClick={() => {
-              setTheme("dark")
-            }}
-          />
-          Dark
-        </label>
-
-        <label
-          className="flex cursor-pointer items-center rounded-md p-2"
-          style={{
-            border: "1px solid var(--color-border)",
-          }}
-        >
-          <RadioButton
-            name="theme"
-            className="mr-1"
-            checked={formTheme === "dark_dimmed"}
-            onClick={() => {
-              setTheme("dark_dimmed")
-            }}
-          />
-          Dark Dimmed
-        </label>
-
-        <label
-          className="flex cursor-pointer items-center rounded-md p-2"
-          style={{
-            border: "1px solid var(--color-border)",
-          }}
-        >
-          <RadioButton
-            name="theme"
-            className="mr-1"
-            checked={formTheme === "autumn"}
-            onClick={() => {
-              setTheme("autumn")
-            }}
-          />
-          Autumn
-        </label>
-
-        <label
-          className="flex cursor-pointer items-center rounded-md p-2"
-          style={{
-            border: "1px solid var(--color-border)",
-          }}
-        >
-          <RadioButton
-            name="theme"
-            className="mr-1"
-            checked={formTheme === "solarized"}
-            onClick={() => {
-              setTheme("solarized")
-            }}
-          />
-          Solarized
-        </label>
+        {THEME_IDS.map((themeId) => {
+          return (
+            <label
+              key={themeId}
+              className="flex cursor-pointer items-center rounded-md p-2"
+              style={{
+                border: "1px solid var(--color-border)",
+              }}
+            >
+              <RadioButton
+                name="theme"
+                className="mr-1"
+                checked={formTheme === themeId}
+                onClick={() => {
+                  setTheme(themeId)
+                }}
+              />
+              {THEME_META[themeId].displayName}
+            </label>
+          )
+        })}
       </Box>
     </Box>
   )

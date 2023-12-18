@@ -112,3 +112,12 @@ test("note > edit", async ({ page }) => {
 
   await expect(page).toHaveScreenshot({ fullPage: true });
 });
+
+test("gallery view", async ({ page }) => {
+  await login(page);
+  await page.goto("/recipes/618-cumin-and-cashew-yogurt-rice");
+
+  await page.getByLabel("open primary image").click();
+
+  await expect(page).toHaveScreenshot({ fullPage: true });
+});

@@ -2,6 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "devDependencies": {
     "@darkobits/vite-plugin-favicons": "^0.3.0",
     "@tanstack/eslint-plugin-query": "^5.8.4",
@@ -14,7 +15,7 @@
     "@types/styled-components": "^5.1.32",
     "@typescript-eslint/eslint-plugin": "^6.12.0",
     "@typescript-eslint/parser": "^6.12.0",
-    "@vitejs/plugin-react": "^2.0.0",
+    "@vitejs/plugin-react-swc": "^3.5.0",
     "autoprefixer": "^10.4.16",
     "eslint": "^8.20.0",
     "eslint-config-prettier": "^8.5.0",
@@ -31,8 +32,8 @@
     "rollup-plugin-visualizer": "^5.7.1",
     "tailwindcss": "^3.3.5",
     "typescript": "5.2.2",
-    "vite": "^3.0.3",
-    "vitest": "^0.19.1"
+    "vite": "^5.0.10",
+    "vitest": "^1.0.4"
   },
   "dependencies": {
     "@ably-labs/react-hooks": "^2.1.1",
@@ -79,5 +80,11 @@
   "volta": {
     "node": "18.7.0",
     "yarn": "1.22.17"
+  },
+  "postcss": {
+    "plugins": {
+      "tailwindcss": {},
+      "autoprefixer": {}
+    }
   }
 }

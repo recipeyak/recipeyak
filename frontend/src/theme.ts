@@ -1,19 +1,12 @@
 // eslint-disable-next-line no-restricted-imports
 import * as styledComponents from "styled-components"
 
-import { Theme } from "@/queries/userFetch"
 import { setItem } from "@/storage"
+import { Theme, THEME_META } from "@/themeConstants"
 
 const THEME_CACHE_KEY = "recipeyak-theme-v2"
 
 export function themeSet(theme: Theme) {
-  const themeToClassName = {
-    light: "",
-    dark: "theme-dark",
-    dark_dimmed: "theme-dark-dimmed",
-    autumn: "theme-autumn",
-    solarized: "theme-solarized",
-  } as const
   setItem(THEME_CACHE_KEY, theme)
   const html = document.documentElement
   // clear out all the existing themes
@@ -22,7 +15,7 @@ export function themeSet(theme: Theme) {
       html.classList.remove(class_)
     }
   })
-  const newClass = themeToClassName[theme]
+  const newClass = THEME_META[theme].cssClass
   if (!newClass) {
     return
   }

@@ -30,7 +30,7 @@ export function TeamInvitePage(props: ITeamInviteProps) {
 
   return (
     <NavPage>
-      <div style={{ maxWidth: 800, marginLeft: "auto", marginRight: "auto" }}>
+      <div className="mx-auto max-w-[800px]">
         <Helmet title="Team Invite" />
         <Link to={teamURL(id, teamInfo.data.name)}>
           <h1 className="p-4 text-center text-4xl font-medium">

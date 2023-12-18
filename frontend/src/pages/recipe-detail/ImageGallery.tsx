@@ -59,15 +59,6 @@ const NavButtonRow = styled.div`
   grid-area: 1/1;
 `
 
-const TopRow = styled.div`
-  display: flex;
-  margin-bottom: auto;
-  justify-content: space-between;
-
-  width: 100%;
-  grid-area: 1/1;
-`
-
 function buildSrcSetUrls(u: string): string {
   const t = new URL(u)
   let srcSet = u
@@ -92,7 +83,6 @@ export const Gallery = (props: {
   onPrevious: () => void
   onStar: () => void
   hasNext: boolean
-  enableStarButton: boolean
   hasPrevious: boolean
 }) => {
   // navigate forward and back depending on horizontal click position.
@@ -112,7 +102,11 @@ export const Gallery = (props: {
     <MyGalleryContainer>
       <div className="left-0 top-0 h-full w-full bg-[#000] opacity-[0.8]" />
       <div className="absolute left-0 top-0 h-full w-full">
-        <div className="flex h-full" onClick={onClick}>
+        <div
+          className="flex h-full"
+          onClick={onClick}
+          aria-label="view other image"
+        >
           {props.contentType.startsWith("application/pdf") ? (
             // tried using <embed /> but it would fail to load the pdf after the
             // dom node was unmounted and remounted
@@ -142,12 +136,10 @@ export const Gallery = (props: {
           )}
         </div>
         <div className="pointer-events-none absolute top-0 grid h-full w-full flex-col p-2">
-          <TopRow>
-            {props.enableStarButton && (
-              <MyGalleryButton className="mr-auto" onClick={props.onStar}>
-                <Star color={starColor} fill={starColor} />
-              </MyGalleryButton>
-            )}
+          <div className="col-span-full row-span-full mb-auto flex w-full justify-between">
+            <MyGalleryButton className="mr-auto" onClick={props.onStar}>
+              <Star color={starColor} fill={starColor} />
+            </MyGalleryButton>
             <MyGalleryLink
               as={"a"}
               target="_blank"
@@ -160,7 +152,7 @@ export const Gallery = (props: {
             <MyGalleryButton className="ml-2" onClick={props.onClose}>
               <X />
             </MyGalleryButton>
-          </TopRow>
+          </div>
           <NavButtonRow>
             {props.hasPrevious && (
               <MyGalleryButton onClick={props.onPrevious} className="mr-auto">
