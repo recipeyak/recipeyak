@@ -11,8 +11,8 @@ import { DropdownContainer, DropdownMenu } from "@/components/Dropdown"
 import { SearchInput, Select } from "@/components/Forms"
 import Logo from "@/components/Logo"
 import { NavLink } from "@/components/Routing"
+import { SearchResult } from "@/components/SearchResult"
 import { useDropdown } from "@/components/useDropdown"
-import { SearchResult } from "@/pages/index/UserHome"
 import {
   pathHome,
   pathLogin,
@@ -178,6 +178,15 @@ function NavButtons() {
 const stylesNavItem =
   "flex shrink-0 grow-0 cursor-pointer items-center justify-center px-3 py-2 text-[14px] font-medium leading-[1.5] text-[var(--color-text)] transition-all hover:text-[var(--color-link-hover)] hover:underline active:translate-y-[1px]"
 
+function isInputFocused() {
+  const activeElement = document.activeElement
+  return (
+    activeElement !== document.body &&
+    activeElement !== null &&
+    (activeElement.tagName === "INPUT" || activeElement.tagName === "TEXTAREA")
+  )
+}
+
 /**
  *
  * Implementation is very similar to "Search" in UserHome.tsx.
@@ -201,8 +210,12 @@ function Search() {
 
   useGlobalEvent({
     keyDown(e) {
-      if (e.key === "k" && e.metaKey) {
+      if (
+        (e.key === "k" && e.metaKey) ||
+        (e.key === "/" && !isInputFocused())
+      ) {
         searchInputRef.current?.focus()
+        e.preventDefault()
       }
     },
   })
@@ -237,7 +250,7 @@ function Search() {
       <SearchInput
         ref={searchInputRef}
         value={searchQuery}
-        placeholder="search your recipes..."
+        placeholder="Press / to search"
         onChange={(e) => {
           setSearchQuery(e.target.value)
         }}
