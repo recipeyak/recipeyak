@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="user",
             name="theme_mode",
-            field=models.TextField(default="single_theme"),
+            field=models.TextField(default="single"),
         ),
         migrations.AddField(
             model_name="user",

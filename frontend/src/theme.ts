@@ -53,7 +53,11 @@ export function themeGet(): ThemeSerialized {
   const storedValue = localStorage.getItem(
     THEME_CACHE_KEY,
   ) as ThemeSerialized | null
-  return storedValue ?? { day: "light", night: "dark", mode: "single" }
+  return {
+    day: storedValue?.day || "light",
+    night: storedValue?.night || "dark",
+    mode: storedValue?.mode || "single",
+  }
 }
 
 export interface ITheme {
