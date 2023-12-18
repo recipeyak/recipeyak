@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { login } from "@/auth"
 import { http } from "@/http"
 import { unwrapResult } from "@/query"
-import { Theme } from "@/themeConstants"
+import { Theme, ThemeMode } from "@/themeConstants"
 
 // User state from API
 export interface IUser {
@@ -11,7 +11,9 @@ export interface IUser {
   readonly email: string
   readonly name: string
   readonly id: number
-  readonly theme: Theme
+  readonly theme_day: Theme
+  readonly theme_night: Theme
+  readonly theme_mode: ThemeMode
   readonly schedule_team: number | null
 }
 

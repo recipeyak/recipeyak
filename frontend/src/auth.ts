@@ -16,7 +16,7 @@ export function useIsLoggedIn(): boolean {
 export function logout(queryClient: QueryClient) {
   queryClient.clear()
   Sentry.setUser(null)
-  themeSet("light")
+  themeSet({ day: "light", night: "dark", mode: "single" })
   removeItem(LOGGED_IN_CACHE_KEY)
 }
 
@@ -25,7 +25,12 @@ export function login(user: IUser, queryClient: QueryClient) {
     email: user.email,
     id: user.id,
   })
-  themeSet(user.theme)
+
+  themeSet({
+    day: user.theme_day,
+    night: user.theme_night,
+    mode: user.theme_mode,
+  })
   queryClient.setQueryData<IUser>(["user-detail"], () => {
     return user
   })

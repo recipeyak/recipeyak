@@ -44,6 +44,9 @@ def test_detail(client: APIClient, user: User) -> None:
         "name",
         "avatar_url",
         "theme",
+        "theme_day",
+        "theme_night",
+        "theme_mode",
     }
     assert expected.issubset(keys), "sanity test to ensure we have what we expect"
     original_data = res.json()
@@ -63,6 +66,21 @@ def test_detail(client: APIClient, user: User) -> None:
     assert res.status_code == status.HTTP_200_OK
     for key in data:
         assert res.json()[key] == data[key], "fields should be updated"
+
+
+def test_detail_theme(client: APIClient, user: User) -> None:
+    user.theme_day = "light"
+    user.save()
+    client.force_authenticate(user)
+
+    res = client.get("/api/v1/user/")
+    assert res.json()["theme"] == res.json()["theme_day"] == "light"
+
+    res = client.patch("/api/v1/user/", {"theme": "autumn"})
+    assert res.json()["theme"] == res.json()["theme_day"] == "autumn"
+
+    res = client.patch("/api/v1/user/", {"theme_day": "solarized"})
+    assert res.json()["theme"] == res.json()["theme_day"] == "solarized"
 
 
 @dataclass

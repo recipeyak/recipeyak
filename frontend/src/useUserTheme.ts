@@ -1,14 +1,17 @@
 import { useUserFetch } from "@/queries/userFetch"
-import { themeGet } from "@/theme"
-import { Theme } from "@/themeConstants"
+import { themeGet, ThemeSerialized } from "@/theme"
 
-export function useUserTheme(): Theme {
+export function useUserTheme(): ThemeSerialized {
   // caching to avoid some theme flashing -- still not perfect since the
   // index.html isn't preloaded with user data
   const user = useUserFetch()
 
-  if (user.data?.theme == null) {
+  if (user.data?.theme_day == null) {
     return themeGet()
   }
-  return user.data.theme
+  return {
+    day: user.data.theme_day,
+    night: user.data.theme_night,
+    mode: user.data.theme_mode,
+  }
 }

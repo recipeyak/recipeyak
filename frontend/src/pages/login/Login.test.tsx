@@ -52,7 +52,9 @@ test("login success", async () => {
               name: "",
               id: 123,
               schedule_team: null,
-              theme: "light",
+              theme_day: "light",
+              theme_night: "dark",
+              theme_mode: "single",
             },
           }
           return res(ctx.status(200), ctx.json(user))

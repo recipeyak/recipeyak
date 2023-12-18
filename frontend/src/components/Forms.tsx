@@ -204,6 +204,7 @@ const SelectInner = styled.select`
 `
 
 export function Select(props: {
+  id?: string
   value: number | string
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
   disabled?: boolean

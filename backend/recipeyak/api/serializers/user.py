@@ -10,6 +10,7 @@ from recipeyak.models import User
 
 class UserSerializer(BaseModelSerializer):
     name = serializers.CharField(allow_blank=True, allow_null=True)
+    theme = serializers.CharField(allow_blank=True, allow_null=True, source="theme_day")
 
     def to_representation(self, instance: User) -> dict[str, Any]:
         data = super().to_representation(instance)
@@ -25,5 +26,8 @@ class UserSerializer(BaseModelSerializer):
             "name",
             "avatar_url",
             "theme",
+            "theme_day",
+            "theme_night",
+            "theme_mode",
             "schedule_team",
         )

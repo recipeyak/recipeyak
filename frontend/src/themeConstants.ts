@@ -1,4 +1,5 @@
 export type Theme = keyof typeof THEME_META
+export type ThemeMode = "single" | "sync_with_system"
 
 export const THEME_META = {
   light: {

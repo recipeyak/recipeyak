@@ -72,7 +72,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     recipes = GenericRelation("Recipe", related_query_name="owner_user")
 
-    theme = models.TextField(default="light")
+    theme_day = models.TextField(db_column="theme", default="light")
+    theme_night = models.TextField(default="dark")
+    theme_mode = models.TextField(default="single")
 
     # deprecated
     _deprecated_dark_mode_enabled = models.BooleanField(

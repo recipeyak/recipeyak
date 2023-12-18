@@ -23,11 +23,19 @@ def user_detail_get_view(request: AuthedRequest) -> Response:
     return Response(serializer.data)
 
 
+THEMES = Literal["light", "autumn", "solarized", "dark", "dark_dimmed"]
+THEME_MODE = Literal["single", "sync_with_system"]
+
+
 class UserUpdatePayload(RequestParams):
     email: str | None = None
     name: str | None = None
     schedule_team: int | None = None
-    theme: Literal["light", "autumn", "solarized", "dark", "dark_dimmed"] | None = None
+    # deprecated field. Delete once theme_day is rolled out.
+    theme: THEMES | None = None
+    theme_day: THEMES | None = None
+    theme_night: THEMES | None = None
+    theme_mode: THEME_MODE | None = None
 
 
 def user_detail_patch_view(request: AuthedRequest) -> Response:
@@ -41,7 +49,13 @@ def user_detail_patch_view(request: AuthedRequest) -> Response:
         if params.name is not None:
             request.user.name = params.name
         if params.theme is not None:
-            request.user.theme = params.theme
+            request.user.theme_day = params.theme
+        if params.theme_day is not None:
+            request.user.theme_day = params.theme_day
+        if params.theme_night is not None:
+            request.user.theme_night = params.theme_night
+        if params.theme_mode is not None:
+            request.user.theme_mode = params.theme_mode
         request.user.save()
 
     serializer = UserDetailsSerializer(request.user)

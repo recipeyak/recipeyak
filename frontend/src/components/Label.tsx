@@ -20,7 +20,11 @@ export function Label({
 
 export const BetterLabel = forwardRef(
   (
-    { children, cursor }: { children: React.ReactNode; cursor?: "move" },
+    {
+      children,
+      cursor,
+      ...props
+    }: { htmlFor?: string; children: React.ReactNode; cursor?: "move" },
     ref: ForwardedRef<HTMLLabelElement>,
   ) => {
     return (
@@ -28,6 +32,7 @@ export const BetterLabel = forwardRef(
         ref={ref}
         className={clx("mr-3 font-bold", cursor && "cursor-move")}
         children={children}
+        {...props}
       />
     )
   },
