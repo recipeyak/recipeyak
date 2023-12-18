@@ -4,7 +4,7 @@ export type ThemeMode = "single" | "sync_with_system"
 export const THEME_META = {
   light: {
     displayName: "Light",
-    cssClass: "",
+    cssClass: "theme-light",
   },
   dark: {
     displayName: "Dark",
