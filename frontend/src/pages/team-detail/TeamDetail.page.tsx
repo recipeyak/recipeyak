@@ -167,7 +167,7 @@ export function TeamDetailPage(props: RouteComponentProps<{ teamId: string }>) {
 
   return (
     <NavPage>
-      <div style={{ maxWidth: 800, marginLeft: "auto", marginRight: "auto" }}>
+      <div className="mx-auto max-w-[800px]">
         <Helmet title="Team" />
         <TeamName name={teamInfo.data.name} />
         <Tabs>

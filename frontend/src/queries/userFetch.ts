@@ -3,8 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { login } from "@/auth"
 import { http } from "@/http"
 import { unwrapResult } from "@/query"
-
-export type Theme = "light" | "autumn" | "solarized" | "dark" | "dark_dimmed"
+import { Theme } from "@/themeConstants"
 
 // User state from API
 export interface IUser {

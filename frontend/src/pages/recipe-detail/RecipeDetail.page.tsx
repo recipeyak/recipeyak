@@ -733,6 +733,7 @@ function RecipeInfo(props: {
                 props.openImage()
               }}
               loading="eager"
+              ariaLabel="open primary image"
             />
             {props.recipe.primaryImage?.author != null && (
               <Caption>{props.recipe.primaryImage.author}</Caption>
@@ -868,7 +869,6 @@ export function RecipeDetailPage(props: IRecipeProps) {
           onPrevious={onPrevious}
           onNext={onNext}
           onStar={onStar}
-          enableStarButton={true}
           onClose={onClose}
         />
       )}
