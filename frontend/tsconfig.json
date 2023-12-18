@@ -19,7 +19,7 @@
     "baseUrl": ".",
     "noEmit": true,
     "jsx": "react-jsx",
-    "types": ["vitest/globals", "vite/client"],
+    "types": ["vitest/globals", "vite/client", "vitest-dom/extend-expect"],
     "paths": {
       "@/*": ["./src/*"],
       "*": ["./node_modules/@types/*"]
