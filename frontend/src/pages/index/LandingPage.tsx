@@ -67,6 +67,8 @@ function FeatureGrid({
 }
 
 function Feature({ text, imageURL, index }: IFeatureProps) {
+  // TODO: Fix this the next time the file is edited.
+  // eslint-disable-next-line react/forbid-elements
   const description = <p className={`self-center md:w-1/2`}>{text}</p>
   const image = (
     <div className="self-center md:w-1/2">
@@ -114,6 +116,8 @@ interface IHowToProps {
 function HowTo({ content, index, imageURL }: IHowToProps) {
   return (
     <FeatureGrid key={imageURL} className={"flex-wrap md:flex-nowrap"}>
+      {/* TODO: Fix this the next time the file is edited. */}
+      {/* eslint-disable-next-line react/forbid-elements */}
       <p className="self-center md:w-1/2">
         <b>
           {index + 1}

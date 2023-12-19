@@ -58,6 +58,7 @@ function LogoutButton() {
 }
 
 function UserEmail({ email }: { email: string }) {
+  // eslint-disable-next-line react/forbid-elements
   return <p className="font-bold">{email}</p>
 }
 

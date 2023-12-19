@@ -39,6 +39,7 @@ function AddRecipeCallToAction() {
 
 function NoMatchingRecipe({ query }: { readonly query: string }) {
   return (
+    // eslint-disable-next-line react/forbid-elements
     <p className="col-span-full justify-self-center [word-break:break-word]">
       No recipes found matching <strong>{query}</strong>
     </p>

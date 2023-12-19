@@ -102,6 +102,8 @@ function SessionList() {
 
   if (sessions.isError) {
     return (
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line react/forbid-elements
       <p className="text-[var(--color-text-muted)]">
         Failure fetching sessions
       </p>

@@ -13,10 +13,14 @@ function InviteButtons({ invite }: { invite: IInvite }) {
   const declineInvite = useInviteDecline()
 
   if (invite.status === "declined") {
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line react/forbid-elements
     return <p className="text-[var(--color-text-muted)]">declined</p>
   }
 
   if (invite.status === "accepted") {
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line react/forbid-elements
     return <p className="text-[var(--color-text-muted)]">accepted</p>
   }
 
@@ -69,6 +73,8 @@ export function Invites() {
 
   if (invites.data.length === 0) {
     return (
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line react/forbid-elements
       <p className="self-center text-sm text-[var(--color-text-muted)]">
         No new notifications.
       </p>
@@ -80,6 +86,8 @@ export function Invites() {
       {invites.data.map((invite) => {
         return (
           <div key={invite.id} className="mb-2">
+            {/* TODO: Fix this the next time the file is edited. */}
+            {/* eslint-disable-next-line react/forbid-elements */}
             <p className="mb-1 text-left [word-break:break-word]">
               Invited to{" "}
               <TeamName

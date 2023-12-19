@@ -20,6 +20,8 @@ function TeamsList() {
 
   if (teams.data.length === 0) {
     return (
+      // TODO: Fix this the next time the file is edited.
+      // eslint-disable-next-line react/forbid-elements
       <p className="self-center text-sm text-[var(--color-text-muted)]">
         No teams.
       </p>
@@ -29,6 +31,8 @@ function TeamsList() {
   return (
     <div className="text-left" data-testid="teams-list">
       {teams.data.map(({ id, name }, index) => (
+        // TODO: Fix this the next time the file is edited.
+        // eslint-disable-next-line react/forbid-elements
         <p key={id}>
           <NavLink
             data-testid={`team-${index}`}
