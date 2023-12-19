@@ -32,7 +32,7 @@ const MarkdownWrapper = styled.div`
 
   blockquote {
     padding-left: 0.25rem;
-    border-left: 5px solid lightgray;
+    border-left: 3px solid var(--color-border);
     & > p {
       margin-bottom: 0rem;
     }
