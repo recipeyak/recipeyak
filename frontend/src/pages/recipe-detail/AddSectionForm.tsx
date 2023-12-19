@@ -77,7 +77,7 @@ export function AddSectionForm({
           </Button>
         </div>
       </div>
-      {createSection.isError && <p>error adding ingredient</p>}
+      {createSection.isError && <div>error adding ingredient</div>}
     </form>
   )
 }

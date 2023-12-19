@@ -87,6 +87,8 @@ interface IDaysProps {
 
 function Days({ start, end, isError, days }: IDaysProps) {
   if (isError) {
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line react/forbid-elements
     return <p className="m-auto">error fetching calendar</p>
   }
 
@@ -196,8 +198,10 @@ function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
 
 function HelpPrompt() {
   return (
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line react/forbid-elements
     <p className="mb-1 mt-2 hidden md:block">
-      press <Kbd>?</Kbd> for help
+      press<Kbd>?</Kbd>for help
     </p>
   )
 }
