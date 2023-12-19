@@ -15,7 +15,7 @@ function TeamsList() {
   }
 
   if (teams.isError) {
-    return <p>failure loading</p>
+    return <div>failure loading</div>
   }
 
   if (teams.data.length === 0) {

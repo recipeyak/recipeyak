@@ -142,7 +142,7 @@ function SessionList() {
 export default function Sessions() {
   return (
     <Box dir="col">
-      <label className="font-bold">Sessions</label>
+      <label className="text-xl font-bold">Sessions</label>
       <SessionList />
     </Box>
   )

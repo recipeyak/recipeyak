@@ -64,7 +64,7 @@ export function Invites() {
   }
 
   if (invites.isError) {
-    return <p>failure loading</p>
+    return <div>failure loading</div>
   }
 
   if (invites.data.length === 0) {

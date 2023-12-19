@@ -56,7 +56,7 @@ export function RecipeTimeline({ createdAt, recipeId }: IRecipeTimelineProps) {
             case "comment":
               return (
                 <TimelineItem key={e.id}>
-                  <p>💬 {e.author} commented</p>
+                  <div>💬 {e.author} commented</div>
                 </TimelineItem>
               )
             case "scheduled":

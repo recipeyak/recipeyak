@@ -116,6 +116,7 @@ module.exports = {
       { prefer: "no-type-imports" },
     ],
     "react/jsx-fragments": "error",
+    "react/forbid-elements": ["error", { forbid: ["p", "style"] }],
     "no-lonely-if": "error",
     "object-shorthand": ["error", "always"],
     "@typescript-eslint/ban-ts-comment": [

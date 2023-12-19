@@ -26,13 +26,13 @@ export function ErrorBoundary({ children }: { children?: React.ReactNode }) {
             <Logo width="150" />
             <div className="flex flex-col justify-center text-center text-xl">
               <h1 className="text-2xl">Something's gone wrong.</h1>
-              <p>
+              <div>
                 Try to navigate{" "}
                 <a className="font-bold" href="/">
                   home
                 </a>
                 .{args.eventId && <ErrorReportButton />}
-              </p>
+              </div>
             </div>
           </section>
         </div>

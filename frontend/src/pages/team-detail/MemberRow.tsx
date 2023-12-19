@@ -63,9 +63,9 @@ const MemberRow = ({
             <option value="read">Read</option>
           </Select>
         ) : (
-          <p>
+          <div>
             <b>{level}</b>
-          </p>
+          </div>
         )}
       </td>
       <td className="text-right align-middle">
