@@ -29,12 +29,11 @@ function CreateFromURLForm() {
   }
   return (
     <form onSubmit={handleImport}>
-      <div className="text-left text-[14px] font-bold">URL</div>
-      <div className="flex">
+      <div className="text-left text-[14px] font-medium">URL</div>
+      <div className="flex gap-2">
         <TextInput
           placeholder="https://cooking.nytimes.com..."
           name="recipe url"
-          className="mr-2"
           value={url}
           onChange={(e) => {
             setUrl(e.target.value)
@@ -86,28 +85,33 @@ function CreateManuallyForm() {
   }
   return (
     <form onSubmit={handleManualAdd}>
-      <div className="text-left text-[14px] font-bold">Title</div>
-      <TextInput
-        placeholder="Butternutt Squash Soup"
-        name="recipe url"
-        className="mb-2"
-        value={title}
-        onChange={(e) => {
-          setTitle(e.target.value)
-        }}
-      />
-      {recipeCreate.isError ? (
-        <div className="mb-1 text-left text-[var(--color-danger)]">
-          Error:
-          {
-            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-            (recipeCreate.error as Error).message ?? "something went wrong."
-          }
-        </div>
-      ) : null}
-      <Button variant="primary" type="submit" loading={recipeCreate.isPending}>
-        Add Manually
-      </Button>
+      <div className="text-left text-[14px] font-medium">Title</div>
+      <div className="flex gap-2">
+        <TextInput
+          placeholder="Butternutt Squash Soup"
+          name="recipe url"
+          value={title}
+          onChange={(e) => {
+            setTitle(e.target.value)
+          }}
+        />
+        {recipeCreate.isError ? (
+          <div className="mb-1 text-left text-[var(--color-danger)]">
+            Error:
+            {
+              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+              (recipeCreate.error as Error).message ?? "something went wrong."
+            }
+          </div>
+        ) : null}
+        <Button
+          variant="primary"
+          type="submit"
+          loading={recipeCreate.isPending}
+        >
+          Add Manually
+        </Button>
+      </div>
     </form>
   )
 }
@@ -115,11 +119,11 @@ function CreateManuallyForm() {
 export function RecipeCreatePage() {
   return (
     <NavPage>
-      <div style={{ maxWidth: 500 }} className="mx-auto text-center">
+      <div style={{ maxWidth: 500 }} className="mx-auto flex-col text-center">
         <Helmet title="Add Recipe" />
-        <h1 className="mb-2 text-[2rem]">Add Recipe</h1>
+        <h1 className="my-2 text-left text-lg font-medium">Add Recipe</h1>
         <CreateFromURLForm />
-        <div className="mt-4 text-center">or</div>
+        <div className="mt-2 text-center">or</div>
         <CreateManuallyForm />
       </div>
     </NavPage>
