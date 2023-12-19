@@ -50,8 +50,20 @@ export function Image({
       onClick={onClick}
       style={{
         // TODO: could use css variables and a tailwind class
-        minWidth: width != null ? width : "100%",
-        minHeight: height != null ? height : "100%",
+        ...(width != null
+          ? {
+              minWidth: width,
+            }
+          : {
+              width: "100%",
+            }),
+        ...(height != null
+          ? {
+              minHeight: height,
+            }
+          : {
+              height: "100%",
+            }),
       }}
       className={clx(
         "relative bg-[var(--color-background-empty-image)]",
@@ -74,19 +86,23 @@ export function Image({
           />
           <div
             style={{
-              // TODO: we could use a css variable and a css class, style injects the variable
-              backgroundImage: sources.backgroundUrl
+              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+              ["--backgroundImage" as string]: sources.backgroundUrl
                 ? `url(${sources.backgroundUrl})`
                 : undefined,
             }}
             className={clx(
-              "w-100 h-100 relative bg-cover bg-center",
+              "relative h-full w-full bg-cover bg-center",
+              // kind of tricky: https://stackoverflow.com/a/70810692/3720597
+              "bg-[image:var(--backgroundImage)]",
               rounded && "rounded-md",
               roundDesktop && "sm:rounded-md",
               grayscale && "grayscale",
-              blur != null &&
+              blur !== "none" &&
                 "after:pointer-events-none after:absolute after:h-full after:w-full after:backdrop-blur-[6px] after:content-['']",
-              blur != null && (rounded || roundDesktop) && "after:rounded-md",
+              blur !== "none" &&
+                (rounded || roundDesktop) &&
+                "after:rounded-md",
             )}
           />
         </>
