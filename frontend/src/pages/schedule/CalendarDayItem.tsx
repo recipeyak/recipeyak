@@ -7,7 +7,6 @@ import { isInsideChangeWindow } from "@/date"
 import { DragDrop } from "@/dragDrop"
 import { CalendarDayItemModal } from "@/pages/schedule/CalendarDayItemModal"
 import { IRecipe } from "@/queries/recipeFetch"
-import { styled } from "@/theme"
 import { recipeURL } from "@/urls"
 import { useGlobalEvent } from "@/useGlobalEvent"
 
@@ -17,22 +16,16 @@ interface IRecipeLink {
   readonly onClick: (e: React.MouseEvent) => void
 }
 
-const StyledLink = styled(Link)`
-  line-height: 1.3;
-  font-size: ${(props) => props.theme.text.small};
-  word-break: break-word;
-  background-color: var(--color-background-calendar-item);
-  border-radius: 5px;
-  padding: 0.35rem;
-  font-weight: 600;
-`
-
 function RecipeLink({ name, id, onClick }: IRecipeLink) {
   const to = recipeURL(id, name)
   return (
-    <StyledLink to={to} onClick={onClick}>
+    <Link
+      className="break-words rounded-md border  border-solid  border-[var(--color-border)] bg-[var(--color-background-calendar-item)] p-1.5 text-sm font-semibold leading-tight"
+      to={to}
+      onClick={onClick}
+    >
       {name}
-    </StyledLink>
+    </Link>
   )
 }
 

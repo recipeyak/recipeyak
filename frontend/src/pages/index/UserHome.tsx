@@ -48,7 +48,7 @@ function ScheduledRecipe(props: {
 function ScheduleContainer({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="w-full rounded-[6px] border border-solid border-[var(--color-border)] bg-[var(--color-background-calendar-day)] p-3 text-sm sm:w-[350px] sm:max-w-[350px]"
+      className="w-full rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-calendar-day)] p-3 text-sm sm:w-[350px] sm:max-w-[350px]"
       children={children}
     />
   )
