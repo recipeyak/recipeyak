@@ -55,13 +55,15 @@ const Card = forwardRef(
   },
 )
 
-interface IRecipeTitleProps {
+function RecipeTitle({
+  url,
+  name,
+  dragable,
+}: {
   readonly url: string
   readonly name: string
   readonly dragable: boolean
-}
-
-function RecipeTitle({ url, name, dragable }: IRecipeTitleProps) {
+}) {
   return (
     <div className="flex grow justify-between">
       <Link tabIndex={0} to={url} className="mb-1 grow self-start leading-5">
@@ -69,23 +71,6 @@ function RecipeTitle({ url, name, dragable }: IRecipeTitleProps) {
       </Link>
       {dragable && <DragIcon />}
     </div>
-  )
-}
-
-function Ingredient({ children }: { children: React.ReactNode }) {
-  return (
-    <small className="overflow-x-hidden text-ellipsis whitespace-nowrap font-bold">
-      {children}
-    </small>
-  )
-}
-
-function CardImgContainer({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      className="max-h-[128px] min-h-[128px] sm:max-h-[180px] sm:min-h-[180px]"
-      children={children}
-    />
   )
 }
 
@@ -140,7 +125,7 @@ function RecipeListItem({
 
   return (
     <Card as={"Link"} tabIndex={0} to={url}>
-      <CardImgContainer>
+      <div className="max-h-[128px] min-h-[128px] sm:max-h-[180px] sm:min-h-[180px]">
         <Image
           // lazy load everything after the first 20ish
           lazyLoad={index > 20}
@@ -159,17 +144,19 @@ function RecipeListItem({
           blur="none"
           rounded={false}
         />
-      </CardImgContainer>
+      </div>
       {recipeContent}
     </Card>
   )
 }
-interface IMetaProps {
+
+function Meta({
+  author,
+  bold,
+}: {
   readonly author: string
   readonly bold: boolean
-}
-
-function Meta({ author, bold }: IMetaProps) {
+}) {
   return (
     <div className={clx("flex", "items-center", bold && "font-bold")}>
       {author !== "" ? <small>{author}</small> : null}
@@ -229,7 +216,9 @@ export function RecipeItem({
     <div className="flex h-full flex-col p-2">
       <RecipeTitle name={name} url={url} dragable={!!props.drag} />
       {ingredientMatch != null ? (
-        <Ingredient>{ingredientMatch.value}</Ingredient>
+        <small className="overflow-x-hidden text-ellipsis whitespace-nowrap font-bold">
+          {ingredientMatch.value}
+        </small>
       ) : null}
       <div>{tagMatch != null ? <Tag>{tagMatch.value}</Tag> : null}</div>
       <Meta bold={authorMatch != null} author={author ?? ""} />
