@@ -6,7 +6,7 @@ import { useIsRestoring } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client"
 import { createBrowserHistory } from "history"
-import React, { Suspense, useEffect } from "react"
+import React, { Suspense, useEffect, useLayoutEffect } from "react"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import { HelmetProvider } from "react-helmet-async"
@@ -176,7 +176,7 @@ const Route = ({
 
 function AppRouter() {
   const theme = useUserTheme()
-  useEffect(() => {
+  useLayoutEffect(() => {
     themeSet(theme)
   }, [theme])
   const isRestoring = useIsRestoring()
