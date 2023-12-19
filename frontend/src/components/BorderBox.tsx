@@ -32,7 +32,7 @@ export function BorderBox({
     "bg-[var(--color-background)] text-[var(--color-text)]",
     p == null ? "p-[1.2rem]" : p === 2 ? "p-2" : p === 3 ? "p-3" : undefined,
     minHeight != null ? "min-h-[74px]" : undefined,
-    whenSmallRounded0 ? "rounded-0 sm:rounded-md" : "rounded-md",
+    whenSmallRounded0 ? "rounded-none sm:rounded-md" : "rounded-md",
     display && "flex",
     flexDirection && "flex-col",
     h && "h-full",

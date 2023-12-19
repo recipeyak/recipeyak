@@ -54,11 +54,6 @@ function formatMonth(date: number | Date | null) {
   return format(date, "yyyy-MM-dd")
 }
 
-interface IShoppingListItemProps {
-  readonly item: [string, IIngredientItem]
-  readonly isFirst: boolean
-}
-
 function toQuantity(x: IQuantity): string {
   if (x.unit === Unit.NONE) {
     return x.quantity
@@ -82,16 +77,13 @@ function quantitiesToString(quantities: ReadonlyArray<IQuantity>): string {
 
 function ShoppingListItem({
   item: [name, { quantities }],
-  isFirst,
-}: IShoppingListItemProps) {
-  // padding serves to prevent the button from appearing in front of text
-  // we also use <section>s instead of <p>s to avoid extra new lines in Chrome
-  const cls = clx("text-sm", isFirst && "mr-15")
-
+}: {
+  item: [string, IIngredientItem]
+}) {
   const units = normalizeUnitsFracs(quantitiesToString(quantities))
 
   return (
-    <section className={cls} key={name + units}>
+    <section className="text-sm" key={name + units}>
       {units} {name}
     </section>
   )
@@ -145,16 +137,12 @@ const ShoppingListList = React.forwardRef<
                     <br />
                   </section>
                 )}
-                {values.map(([name, quantities], i) => {
+                {values.map(([name, quantities]) => {
                   if (quantities == null) {
                     return null
                   }
                   return (
-                    <ShoppingListItem
-                      key={name}
-                      item={[name, quantities]}
-                      isFirst={i === 0}
-                    />
+                    <ShoppingListItem key={name} item={[name, quantities]} />
                   )
                 })}
               </div>

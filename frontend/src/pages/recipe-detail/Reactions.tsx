@@ -101,9 +101,9 @@ export function ReactionPopover(props: {
                   setVisible(false)
                 }}
                 className={clx(
-                  "border-[hsl(0deg, 0%, 86%)] h-[32px] w-[32px] cursor-pointer rounded-[3px] p-[4px] text-center text-[16px]",
+                  "h-[32px] w-[32px] cursor-pointer rounded-[3px] border-[hsl(0deg,0%,86%)] p-[4px] text-center text-[16px]",
                   findReaction(props.reactions, emoji, userId ?? 0) != null
-                    ? "bg-[hsla(0, 0%, 0%, 0.04)]"
+                    ? "bg-[hsla(0,0%,0%,0.04)]"
                     : "bg-[var(--color-background-card)]",
                   index > 0 && "ml-1",
                 )}
