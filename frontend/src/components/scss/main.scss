@@ -244,7 +244,7 @@ table {
 }
 
 @mixin theme-dark-dimmed {
-  --color-background: rgb(34, 39, 46);
+  --color-background: rgb(28, 33, 40);
 
   --color-primary: #854d0e;
   --color-primary-button-text: white;
@@ -266,7 +266,7 @@ table {
   --color-danger-button-text: white;
   --color-danger-disabled: #{darken(#fb5274, 20%)};
 
-  --color-background-card: rgb(55, 62, 71);
+  --color-background-card: rgb(34, 39, 46);
   --color-background-calendar-day: var(--color-background-card);
   --color-background-calendar-item: var(--color-background);
   --color-background-empty-image: #382e27;
