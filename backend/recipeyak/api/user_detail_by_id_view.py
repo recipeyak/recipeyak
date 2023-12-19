@@ -10,7 +10,6 @@ from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.unwrap import unwrap
-from recipeyak.models.membership import Membership
 from recipeyak.models.note import Note
 from recipeyak.models.scheduled_recipe import ScheduledRecipe
 from recipeyak.models.upload import Upload
