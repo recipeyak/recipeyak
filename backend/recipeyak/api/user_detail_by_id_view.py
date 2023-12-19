@@ -4,6 +4,7 @@ import pydantic
 from django.db import connection
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -251,10 +252,27 @@ WHERE
     return out
 
 
+def has_team_connection(user_a: str | int, user_b: str | int) -> bool:
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+select 1
+from core_membership a
+join core_membership b ON b.user_id = %(user_b_id)s
+    AND b.team_id = a.team_id
+where a.user_id = %(user_a_id)s
+""",
+            {"user_b_id": user_b, "user_a_id": user_a},
+        )
+        return cursor.fetchone() is not None
+
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def user_detail_by_id_view(request: AuthedRequest, user_id: str) -> Response:
     user = get_object_or_404(User, id=user_id)
+    if not has_team_connection(user_id, request.user.id):
+        raise NotFound()
     recipes_added_count = get_recipes_added_count(user_id=user_id)
     recipes_archived_count = get_recipes_archived_count(user_id=user_id)
     comments_count = get_comments_count(user_id=user_id)
