@@ -61,6 +61,8 @@ function Members({ teamID, loading, members }: IMembersProps) {
       <h1 className="text-center text-2xl font-bold text-[var(--color-text-muted)]">
         No Team Members
       </h1>
+      {/* TODO: Fix this the next time the file is edited. */}
+      {/* eslint-disable-next-line react/forbid-elements */}
       <p className="text-center">Add one via the Invite button</p>
     </section>
   )

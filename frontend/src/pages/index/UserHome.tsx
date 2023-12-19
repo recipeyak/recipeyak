@@ -202,7 +202,7 @@ function RecentlyCreated() {
         ) : recipes.data == null ? (
           <Loader align="left" />
         ) : recipes.data.length === 0 ? (
-          <p>no recipes viewed</p>
+          <div>no recipes viewed</div>
         ) : (
           recipes.data.map((r) => <RecipeSlide key={r.id} recipe={r} />)
         )}

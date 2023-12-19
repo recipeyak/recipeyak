@@ -40,6 +40,8 @@ const MemberRow = ({
       <td className="pr-4 align-middle">
         {!isActive ? (
           <section className="flex flex-col items-start">
+            {/* TODO: Fix this the next time the file is edited. */}
+            {/* eslint-disable-next-line react/forbid-elements */}
             <p className="font-bold">invite sent</p>
             <Button size="small">Resend Invite</Button>
           </section>
@@ -63,9 +65,9 @@ const MemberRow = ({
             <option value="read">Read</option>
           </Select>
         ) : (
-          <p>
+          <div>
             <b>{level}</b>
-          </p>
+          </div>
         )}
       </td>
       <td className="text-right align-middle">

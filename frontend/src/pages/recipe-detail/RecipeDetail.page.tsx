@@ -811,7 +811,7 @@ export function RecipeDetailPage(props: IRecipeProps) {
   }
 
   if (maybeRecipe.isError) {
-    return <p>recipe not found</p>
+    return <div>recipe not found</div>
   }
 
   const recipe = maybeRecipe.data

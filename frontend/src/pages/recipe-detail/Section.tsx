@@ -141,7 +141,7 @@ export function Section({
               </Button>
             </div>
           </div>
-          {updateSection.isError && <p>error adding ingredient</p>}
+          {updateSection.isError && <div>error adding ingredient</div>}
         </form>
       </li>
     )

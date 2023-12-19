@@ -65,16 +65,18 @@ export function TeamCreatePage() {
                 />
                 <div>
                   <h4 className="text-base font-medium">{name}</h4>
+                  {/* TODO: Fix this the next time the file is edited. */}
+                  {/* eslint-disable-next-line react/forbid-elements */}
                   <p className="text-[var(--color-text-muted)]">
                     {description}
                   </p>
                 </div>
               </label>
             ))}
-            <p className="mb-2">
+            <div className="mb-2">
               <b>Note:</b> Users without an account will be sent an email asking
               to create one.
-            </p>
+            </div>
           </div>
 
           <Button

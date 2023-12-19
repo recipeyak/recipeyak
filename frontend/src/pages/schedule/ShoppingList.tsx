@@ -106,7 +106,7 @@ const ShoppingListList = React.forwardRef<
   IShoppingListContainerProps
 >((props, ref) => {
   if (props.items.isError) {
-    return <p>error fetching shoppinglist</p>
+    return <div>error fetching shoppinglist</div>
   }
 
   const items =
