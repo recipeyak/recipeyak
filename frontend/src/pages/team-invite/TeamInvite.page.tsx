@@ -83,12 +83,16 @@ export function TeamInvitePage(props: ITeamInviteProps) {
               />
               <div>
                 <h4 className="text-base font-medium">{role.name}</h4>
+                {/* TODO: Fix this the next time the file is edited. */}
+                {/* eslint-disable-next-line react/forbid-elements */}
                 <p className="text-[var(--color-text-muted)]">
                   {role.description}
                 </p>
               </div>
             </label>
           ))}
+          {/* TODO: Fix this the next time the file is edited. */}
+          {/* eslint-disable-next-line react/forbid-elements */}
           <p className="mb-2">
             <b>Note:</b> Users without an account will be sent an email asking
             to create one.
