@@ -188,6 +188,7 @@ export function ProfilePage(props: RouteComponentProps<{ userId: string }>) {
           marginRight: "auto",
         }}
         dir="col"
+        className="gap-2"
       >
         <Helmet title="Profile" />
 
@@ -197,31 +198,29 @@ export function ProfilePage(props: RouteComponentProps<{ userId: string }>) {
           <span>Joined {joinedDateStr}</span>
         </Box>
 
-        <span className="text-2xl">Stats</span>
+        <div>
+          <span className="text-2xl">Stats</span>
 
-        <Box dir="row" align="start" wrap gap={2}>
-          {allStats.map(([value, name, Icon]) => {
-            return (
-              <Box
-                key={name}
-                gap={1}
-                align="center"
-                style={{
-                  padding: "0.5rem",
-                  paddingTop: "0.25rem",
-                  paddingBottom: "0.25rem",
-                  border: "1px solid lightgray",
-                  borderRadius: 6,
-                }}
-              >
-                <Icon /> {name} · {formatNumber(value)}
-              </Box>
-            )
-          })}
-        </Box>
+          <Box dir="row" align="start" wrap gap={2}>
+            {allStats.map(([value, name, Icon]) => {
+              return (
+                <Box
+                  key={name}
+                  gap={1}
+                  align="center"
+                  className="rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-calendar-day)] px-2 py-1"
+                >
+                  <Icon /> {name} · {formatNumber(value)}
+                </Box>
+              )
+            })}
+          </Box>
+        </div>
 
-        <div className="text-2xl">Activity</div>
-        <ActivityLog activity={userInfo.data.activity} />
+        <div>
+          <div className="text-2xl">Activity</div>
+          <ActivityLog activity={userInfo.data.activity} />
+        </div>
       </Box>
     </NavPage>
   )
