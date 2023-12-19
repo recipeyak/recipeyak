@@ -26,7 +26,6 @@ import {
   pathTeamList,
 } from "@/paths"
 import { useAuthLogout } from "@/queries/authLogout"
-import { useRecentlyViewedRecipesList } from "@/queries/recentlyViewedRecipesList"
 import { useRecipeList } from "@/queries/recipeList"
 import { useTeamList } from "@/queries/teamList"
 import { searchRecipes } from "@/search"
@@ -196,7 +195,6 @@ function isInputFocused() {
 function Search() {
   const history = useHistory()
   const recipes = useRecipeList()
-  const recentlyViewedRecipes = useRecentlyViewedRecipesList()
   const [searchQuery, setSearchQuery] = React.useState("")
   // If a user clicks outside of the dropdown, we want to hide the dropdown, but
   // keep their search query.
@@ -204,7 +202,6 @@ function Search() {
   // The alternative would be to clear the search query when clicking outside,
   // but I'm not sure that's desirable.
   const [isClosed, setIsClosed] = React.useState(false)
-  const [isFocused, setFocused] = React.useState(false)
   const searchInputRef = React.useRef<HTMLInputElement>(null)
 
   const ref = React.useRef(null)
@@ -249,8 +246,6 @@ function Search() {
     }
   }
 
-  const showDropdown = (searchQuery || isFocused) && !isClosed
-
   return (
     <div ref={ref} className="flex w-full">
       <SearchInput
@@ -262,32 +257,15 @@ function Search() {
         }}
         onKeyDown={handleSearchKeydown}
         onFocus={() => {
-          setFocused(true)
           setIsClosed(false)
         }}
-        onBlur={() => {
-          setFocused(false)
-        }}
       />
-      {showDropdown && (
+      {searchQuery && !isClosed && (
         <div className="absolute inset-x-0 top-[60px] z-10 w-full sm:inset-x-[unset] sm:max-w-[400px]">
           <SearchResult
             isLoading={recipes.isLoading}
             searchQuery={searchQuery}
-            searchResults={
-              searchQuery
-                ? filteredRecipes.recipes
-                : recentlyViewedRecipes.data?.map((recipe) => ({
-                    recipe: {
-                      ...recipe,
-                      tags: [],
-                      ingredients: [],
-                      archived_at: null,
-                      scheduledCount: 0,
-                    },
-                    match: [],
-                  })) ?? []
-            }
+            searchResults={filteredRecipes.recipes}
             onClick={() => {
               resetForm()
             }}
