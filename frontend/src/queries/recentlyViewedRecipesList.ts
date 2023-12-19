@@ -15,6 +15,10 @@ export function recentlyViewedRecipes() {
         name: t.string,
         author: t.union([t.string, t.null]),
         archivedAt: t.union([t.string, t.null]),
+        tags: t.array(t.string),
+        ingredients: t.union([t.array()]),
+        archived_at: t.string,
+        scheduledCount: t.number,
         primaryImage: t.union([
           t.type({
             id: t.number,
