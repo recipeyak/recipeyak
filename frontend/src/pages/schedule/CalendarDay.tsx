@@ -51,7 +51,7 @@ const isTodayStyle = css`
 `
 
 const isSelectedDayStyle = css`
-  border: 2px solid var(--color-accent);
+  border: 2px solid var(--color-border-selected-day);
   border-radius: 6px;
 `
 
@@ -71,7 +71,9 @@ const CalendarDayContainer = styled.div<ICalendarDayContainerProps>`
   flex-direction: column;
   padding: 0.25rem;
   background-color: var(--color-background-calendar-day);
-  transition: background-color 0.2s;
+  transition:
+    background-color,
+    border 0.2s;
   // prevent shifting when we show the highlight border
   border: 2px solid transparent;
 

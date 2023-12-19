@@ -109,6 +109,59 @@ table {
   }
 }
 
+// NOTE:
+// workaround for broken backdrop blur utils in tailwind
+// from: https://github.com/tailwindlabs/tailwindcss/discussions/7044#discussioncomment-4697891
+:root {
+  --empty: ;
+}
+*,
+:after,
+:before {
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x: var(--empty,);
+  --tw-pan-y: var(--empty,);
+  --tw-pinch-zoom: var(--empty,);
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal: var(--empty,);
+  --tw-slashed-zero: var(--empty,);
+  --tw-numeric-figure: var(--empty,);
+  --tw-numeric-spacing: var(--empty,);
+  --tw-numeric-fraction: var(--empty,);
+  --tw-ring-inset: var(--empty,);
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgba(59, 130, 246, 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur: var(--empty,);
+  --tw-brightness: var(--empty,);
+  --tw-contrast: var(--empty,);
+  --tw-grayscale: var(--empty,);
+  --tw-hue-rotate: var(--empty,);
+  --tw-invert: var(--empty,);
+  --tw-saturate: var(--empty,);
+  --tw-sepia: var(--empty,);
+  --tw-drop-shadow: var(--empty,);
+  --tw-backdrop-blur: var(--empty,);
+  --tw-backdrop-brightness: var(--empty,);
+  --tw-backdrop-contrast: var(--empty,);
+  --tw-backdrop-grayscale: var(--empty,);
+  --tw-backdrop-hue-rotate: var(--empty,);
+  --tw-backdrop-invert: var(--empty,);
+  --tw-backdrop-opacity: var(--empty,);
+  --tw-backdrop-saturate: var(--empty,);
+  --tw-backdrop-sepia: var(--empty,);
+}
+
 // actual tailwind css
 // we're not using the tailwind reset, didn't like how it setup ::placeholder color
 @tailwind components;
@@ -134,6 +187,7 @@ table {
   --color-link-hover: var(--color-link);
 
   --color-border: #dbdbdb;
+  --color-border-selected-day: var(--color-border);
 
   --color-accent: rgb(255, 114, 71);
 
@@ -170,6 +224,7 @@ table {
   --color-input-placeholder: var(--color-text-muted);
 
   --color-border: #2f353c;
+  --color-border-selected-day: var(--color-border);
   --color-accent: var(--color-text);
 
   --color-danger: #fb5274;
@@ -204,6 +259,7 @@ table {
   --color-input-placeholder: var(--color-text-muted);
 
   --color-border: rgb(68, 76, 86);
+  --color-border-selected-day: var(--color-accent);
   --color-accent: var(--color-text);
 
   --color-danger: #fb5274;
@@ -238,6 +294,7 @@ table {
   --color-input-placeholder: rgb(208, 197, 180);
 
   --color-border: #dbdbdb;
+  --color-border-selected-day: var(--color-accent);
   --color-accent: hsla(15, 50%, 82%, 0.865);
 
   --color-danger: #fb5274;
@@ -272,6 +329,7 @@ table {
   --color-input-placeholder: #b1b1b1;
 
   --color-border: #93a1a1;
+  --color-border-selected-day: var(--color-border);
   --color-accent: #657b83;
 
   --color-danger: #dc322f;
