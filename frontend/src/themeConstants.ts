@@ -18,7 +18,7 @@ export const THEME_META = {
     displayName: "Dark Dimmed",
     cssClass: "theme-dark-dimmed",
     fgFill: "#ACBAC7",
-    bgFill: "#22272E",
+    bgFill: "rgb(28, 33, 40)",
   },
   autumn: {
     displayName: "Autumn",
