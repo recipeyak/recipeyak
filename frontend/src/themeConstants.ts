@@ -1,8 +1,8 @@
 export type Theme = keyof typeof THEME_META
 export type ThemeMode = "single" | "sync_with_system"
 
-export const THEME_CSS_BAKING_SODA = "font-medium text-red-400 italic"
-export const THEME_CSS_BAKING_POWDER = "font-medium text-pink-400"
+export const THEME_CSS_BAKING_SODA = "font-medium text-red-400"
+export const THEME_CSS_BAKING_POWDER = "font-medium text-blue-400"
 
 export const THEME_META = {
   light: {
