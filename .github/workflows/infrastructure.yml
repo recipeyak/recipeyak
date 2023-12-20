@@ -58,11 +58,12 @@ jobs:
       - name: Build and push
         working-directory: "./backend"
         run: |
+          dependency_hash=${{ hashFiles('backend/poetry.lock') }}-v1
+          echo $dependency_hash
           git_sha=${{ github.event.pull_request.head.sha || github.sha }}
-          docker build -f django.Dockerfile \
+          docker buildx build --push -f django.Dockerfile \
           --tag recipeyak/django:$git_sha \
           --build-arg GIT_SHA=$git_sha .
-          docker push recipeyak/django:$git_sha
           echo "Pushed \`recipeyak/django:$git_sha\`" >> $GITHUB_STEP_SUMMARY
 
   build_ui_container:
