@@ -9,6 +9,7 @@ import { useDrop } from "react-dnd"
 import { useLocation } from "react-router"
 
 import { assertNever } from "@/assert"
+import { clx } from "@/classnames"
 import { isInsideChangeWindow, toISODateString } from "@/date"
 import { DragDrop } from "@/dragDrop"
 import { IRecipeItemDrag } from "@/pages/recipe-list/RecipeItem"
@@ -22,7 +23,6 @@ import {
 } from "@/queries/scheduledRecipeCreate"
 import { useScheduledRecipeDelete } from "@/queries/scheduledRecipeDelete"
 import { useScheduledRecipeUpdate } from "@/queries/scheduledRecipeUpdate"
-import { css, styled } from "@/theme"
 import { useCurrentDay } from "@/useCurrentDay"
 import { useTeamId } from "@/useTeamId"
 
@@ -46,59 +46,13 @@ const Title = ({ date }: { readonly date: Date }) => {
   )
 }
 
-const isTodayStyle = css`
-  border-bottom: 2px solid var(--color-accent);
-`
-
-const isSelectedDayStyle = css`
-  border: 2px solid var(--color-border-selected-day);
-  border-radius: 6px;
-`
-
-const isDroppableStyle = css`
-  opacity: 0.5;
-`
-
-interface ICalendarDayContainerProps {
-  readonly isToday: boolean
-  readonly isSelectedDay: boolean
-  readonly isDroppable: boolean
-}
-
-const CalendarDayContainer = styled.div<ICalendarDayContainerProps>`
-  flex: 1 1 0%;
-  display: flex;
-  flex-direction: column;
-  padding: 0.25rem;
-  background-color: var(--color-background-calendar-day);
-  transition:
-    background-color,
-    border 0.2s;
-  // prevent shifting when we show the highlight border
-  border: 2px solid transparent;
-
-  ${(p) => p.isToday && isTodayStyle}
-  ${(p) => p.isSelectedDay && isSelectedDayStyle}
-  ${(p) => p.isDroppable && isDroppableStyle}
-
-  &:not(:last-child) {
-    margin-right: 0.25rem;
-    @media (max-width: ${(p) => p.theme.medium}) {
-      margin-right: 0;
-      margin-bottom: 0.25rem;
-    }
-  }
-  @media (max-width: ${(p) => p.theme.medium}) {
-    width: 100%;
-  }
-`
-
 interface ICalendarDayProps {
   readonly date: Date
   readonly scheduledRecipes: ICalRecipe[]
+  readonly className?: string
 }
 
-function CalendarDay({ date, scheduledRecipes }: ICalendarDayProps) {
+function CalendarDay({ date, scheduledRecipes, className }: ICalendarDayProps) {
   const today = useCurrentDay()
   const isToday = isSameDay(date, today)
   const teamID = useTeamId()
@@ -163,14 +117,18 @@ function CalendarDay({ date, scheduledRecipes }: ICalendarDayProps) {
   const isSelectedDay = isSelected || isDroppable
 
   return (
-    <CalendarDayContainer
+    <div
       ref={drop}
-      isDroppable={isDroppable}
-      isToday={isToday}
-      isSelectedDay={isSelectedDay}
+      className={clx(
+        className,
+        "flex-col border-2 border-solid border-transparent bg-[var(--color-background-calendar-day)] p-1",
+        isToday && "border-b-[var(--color-accent)]",
+        isSelectedDay && "rounded-md border-[var(--color-border-selected-day)]",
+        isDroppable && "opacity-50",
+      )}
     >
       <Title date={date} />
-      <ul className="overflow-y-auto">
+      <ul className="h-full overflow-y-auto">
         {scheduled.map((x) => (
           <CalendarItem
             key={x.id}
@@ -190,7 +148,7 @@ function CalendarDay({ date, scheduledRecipes }: ICalendarDayProps) {
           />
         ))}
       </ul>
-    </CalendarDayContainer>
+    </div>
   )
 }
 

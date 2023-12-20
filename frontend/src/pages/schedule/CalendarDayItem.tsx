@@ -6,53 +6,8 @@ import { clx } from "@/classnames"
 import { isInsideChangeWindow } from "@/date"
 import { DragDrop } from "@/dragDrop"
 import { CalendarDayItemModal } from "@/pages/schedule/CalendarDayItemModal"
-import { IRecipe } from "@/queries/recipeFetch"
 import { recipeURL } from "@/urls"
 import { useGlobalEvent } from "@/useGlobalEvent"
-
-interface IRecipeLink {
-  readonly id: IRecipe["id"] | string
-  readonly name: IRecipe["name"]
-  readonly onClick: (e: React.MouseEvent) => void
-}
-
-function RecipeLink({ name, id, onClick }: IRecipeLink) {
-  const to = recipeURL(id, name)
-  return (
-    <Link
-      className="break-words rounded-md p-1.5 text-sm font-semibold leading-tight"
-      to={to}
-      onClick={onClick}
-    >
-      {name}
-    </Link>
-  )
-}
-
-const CalendarListItem = React.forwardRef(
-  (
-    {
-      visibility,
-      children,
-    }: {
-      visibility: "visible" | "hidden"
-      children: React.ReactNode
-    },
-    ref: React.ForwardedRef<HTMLLIElement>,
-  ) => {
-    return (
-      <li
-        ref={ref}
-        className={clx(
-          "mb-[var(--margin-calendar-item-bottom)] flex items-center justify-between last:mb-0",
-          visibility === "visible" ? "visible" : "invisible",
-        )}
-      >
-        {children}
-      </li>
-    )
-  },
-)
 
 export interface ICalendarItemProps {
   readonly remove: () => void
@@ -79,7 +34,7 @@ export function CalendarItem({
   createdAt,
   createdBy,
 }: ICalendarItemProps) {
-  const ref = React.useRef<HTMLLIElement>(null)
+  const ref = React.useRef<HTMLDivElement>(null)
   const [show, setShow] = useState(false)
 
   const handleKeyPress = (e: KeyboardEvent) => {
@@ -124,10 +79,16 @@ export function CalendarItem({
 
   return (
     <>
-      <CalendarListItem ref={ref} visibility={visibility}>
-        <RecipeLink
-          name={recipeName}
-          id={recipeID}
+      <div
+        ref={ref}
+        className={clx(
+          "mb-[var(--margin-calendar-item-bottom)] last:mb-0",
+          visibility === "visible" ? "visible" : "invisible",
+        )}
+      >
+        <Link
+          className="block break-words rounded-md p-1.5 text-sm font-semibold leading-tight"
+          to={recipeURL(recipeID, recipeName)}
           onClick={(e) => {
             if (e.shiftKey || e.metaKey) {
               return
@@ -135,8 +96,10 @@ export function CalendarItem({
             e.preventDefault()
             setShow(true)
           }}
-        />
-      </CalendarListItem>
+        >
+          {recipeName}
+        </Link>
+      </div>
       {show ? (
         <CalendarDayItemModal
           scheduledId={scheduledId}
