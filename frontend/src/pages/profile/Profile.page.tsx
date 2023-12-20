@@ -181,15 +181,7 @@ export function ProfilePage(props: RouteComponentProps<{ userId: string }>) {
 
   return (
     <NavPage>
-      <Box
-        style={{
-          maxWidth: 700,
-          marginLeft: "auto",
-          marginRight: "auto",
-        }}
-        dir="col"
-        className="gap-2"
-      >
+      <Box dir="col" className="mx-auto mt-8 max-w-[700px] gap-2">
         <Helmet title="Profile" />
 
         <Box dir="col" align="center">
