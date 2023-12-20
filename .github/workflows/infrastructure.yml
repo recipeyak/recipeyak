@@ -63,6 +63,8 @@ jobs:
           git_sha=${{ github.event.pull_request.head.sha || github.sha }}
           docker buildx build --push -f django.Dockerfile \
           --tag recipeyak/django:$git_sha \
+          --cache-from type=gha,scope=django \
+          --cache-to type=gha,scope=django \
           --build-arg GIT_SHA=$git_sha .
           echo "Pushed \`recipeyak/django:$git_sha\`" >> $GITHUB_STEP_SUMMARY
 
