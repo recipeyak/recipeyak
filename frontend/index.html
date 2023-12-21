@@ -23,7 +23,84 @@
         font-size: 2rem;
       }
     </style>
+    <!-- Hack to ensure background theme color is set before css and JS are loaded. -->
+    <style>
+      .theme-light {
+        --color-background: white;
+      }
+      .theme-dark {
+        --color-background: #0d1116;
+      }
+      .theme-dark_dimmed {
+        --color-background: rgb(28, 33, 40);
+      }
+      .theme-autumn {
+        --color-background: rgb(185, 110, 52);
+      }
+      .theme-solarized {
+        --color-background: #fdf6e3;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .night\:theme-light {
+          --color-background: white;
+        }
+        .night\:theme-dark {
+          --color-background: #0d1116;
+        }
+        .night\:theme-dark_dimmed {
+          --color-background: rgb(28, 33, 40);
+        }
+        .night\:theme-autumn {
+          --color-background: rgb(185, 110, 52);
+        }
+        .night\:theme-solarized {
+          --color-background: #fdf6e3;
+        }
+      }
+
+      @media (prefers-color-scheme: light) {
+        .day\:theme-light {
+          --color-background: white;
+        }
+        .day\:theme-dark {
+          --color-background: #0d1116;
+        }
+        .day\:theme-dark_dimmed {
+          --color-background: rgb(28, 33, 40);
+        }
+        .day\:theme-autumn {
+          --color-background: rgb(185, 110, 52);
+        }
+        .day\:theme-solarized {
+          --color-background: #fdf6e3;
+        }
+      }
+
+      html {
+        background-color: var(--color-background);
+      }
+    </style>
+    <!-- Updating this text requires updating our CSP headers -->
+    <script>
+      // Set theme before rendering page so we don't get a flash of white.
+      const themeConfigSerialized = localStorage["recipeyak-theme-v4"]
+      if (themeConfigSerialized) {
+        const themeConfig = JSON.parse(themeConfigSerialized)
+
+        if (themeConfig.mode === "single") {
+          document.documentElement.classList.add(`theme-${themeConfig.day}`)
+        }
+        if (themeConfig.mode === "sync_with_system") {
+          document.documentElement.classList.add(
+            `day:theme-${themeConfig.day}`,
+            `night:theme-${themeConfig.night}`,
+          )
+        }
+      }
+    </script>
   </head>
+
   <body>
     <noscript class="no-script">
       <section>
