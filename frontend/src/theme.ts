@@ -46,10 +46,13 @@ export function themeSet(args: ThemeSerialized) {
 }
 
 export function themeGet(): ThemeSerialized {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, no-restricted-globals
-  const storedValue = localStorage.getItem(
-    THEME_CACHE_KEY,
-  ) as ThemeSerialized | null
+  // eslint-disable-next-line no-restricted-globals
+  const storedValueRaw = localStorage.getItem(THEME_CACHE_KEY)
+  if (!storedValueRaw) {
+    return { day: "light", night: "dark", mode: "single" }
+  }
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  const storedValue = JSON.parse(storedValueRaw) as ThemeSerialized | null
   return {
     day: storedValue?.day || "light",
     night: storedValue?.night || "dark",
