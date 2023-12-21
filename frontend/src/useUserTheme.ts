@@ -6,9 +6,10 @@ export function useUserTheme(): ThemeSerialized {
   // index.html isn't preloaded with user data
   const user = useUserFetch()
 
-  if (user.data?.theme_day == null) {
+  if (user.data == null) {
     return themeGet()
   }
+
   return {
     day: user.data.theme_day,
     night: user.data.theme_night,
