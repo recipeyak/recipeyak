@@ -64,7 +64,7 @@ jobs:
           docker buildx build --push -f django.Dockerfile \
           --tag recipeyak/django:$git_sha \
           --cache-from type=gha,scope=django \
-          --cache-to type=gha,scope=django \
+          --cache-to type=gha,scope=django,mode=max \
           --build-arg GIT_SHA=$git_sha .
           echo "Pushed \`recipeyak/django:$git_sha\`" >> $GITHUB_STEP_SUMMARY
 
@@ -86,10 +86,11 @@ jobs:
         working-directory: "./frontend"
         run: |
           git_sha=${{ github.event.pull_request.head.sha || github.sha }}
-          docker build -f react.Dockerfile \
+          docker buildx build --push -f react.Dockerfile \
           --tag recipeyak/react:$git_sha \
+          --cache-from type=gha,scope=react \
+          --cache-to type=gha,scope=react,mode=max \
           --build-arg FRONTEND_GIT_SHA=$git_sha .
-          docker push recipeyak/react:$git_sha
           echo "Pushed \`recipeyak/react:$git_sha\`" >> $GITHUB_STEP_SUMMARY
 
   deploy:
