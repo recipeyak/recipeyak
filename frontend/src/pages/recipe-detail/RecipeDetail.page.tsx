@@ -590,20 +590,6 @@ function isNote(x: TimelineItem): x is INote {
   return x.type === "note"
 }
 
-const Caption = styled.div.attrs({
-  className: "text-[var(--color-text-muted)]",
-})`
-  position: absolute;
-  right: 0;
-  text-align: right;
-  font-size: 12px;
-  font-weight: 500;
-
-  @media (max-width: 599px) {
-    margin-right: 0.5rem;
-  }
-`
-
 function RecipeInfo(props: {
   recipe: IRecipe
   editingEnabled: boolean
@@ -730,7 +716,9 @@ function RecipeInfo(props: {
               ariaLabel="open primary image"
             />
             {props.recipe.primaryImage?.author != null && (
-              <Caption>{props.recipe.primaryImage.author}</Caption>
+              <div className="absolute right-0 mr-2 text-right text-xs font-medium text-[var(--color-text-muted)] sm:mr-0">
+                {props.recipe.primaryImage.author}
+              </div>
             )}
           </ImageWrapper>
           {props.editingEnabled && (
@@ -801,11 +789,19 @@ export function RecipeDetailPage(props: IRecipeProps) {
   } = useGallery(uploads, myRecipe?.id ?? null, myRecipe?.primaryImage ?? null)
 
   if (maybeRecipe.isPending) {
-    return <Loader />
+    return (
+      <NavPage>
+        <Loader />
+      </NavPage>
+    )
   }
 
   if (maybeRecipe.isError) {
-    return <div>recipe not found</div>
+    return (
+      <NavPage>
+        <div className="text-center">recipe not found</div>
+      </NavPage>
+    )
   }
 
   const recipe = maybeRecipe.data
