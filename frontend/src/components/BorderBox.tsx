@@ -7,7 +7,6 @@ export function BorderBox({
   flexDirection,
   children,
   minHeight,
-  whenSmallRounded0,
   className,
   ...rest
 }: {
@@ -17,7 +16,6 @@ export function BorderBox({
   flexDirection?: "column"
   minHeight?: "74px"
   children: React.ReactNode
-  whenSmallRounded0?: boolean
   className?: string
 } & (
   | {
@@ -32,7 +30,7 @@ export function BorderBox({
     "bg-[var(--color-background)] text-[var(--color-text)]",
     p == null ? "p-[1.2rem]" : p === 2 ? "p-2" : p === 3 ? "p-3" : undefined,
     minHeight != null ? "min-h-[74px]" : undefined,
-    whenSmallRounded0 ? "rounded-none sm:rounded-md" : "rounded-md",
+    "rounded-none sm:rounded-md",
     display && "flex",
     flexDirection && "flex-col",
     h && "h-full",
