@@ -76,10 +76,6 @@ const ButtonBase = styled.button<{
   }
   ${(p) => p.isActive && activeCss}
 
-  &:focus:not([disabled]) {
-    box-shadow: 0 0 5px 0px var(--color-primary-shadow);
-  }
-
   @media (hover: hover) {
     &:hover:not([disabled]) {
       text-decoration: none;

@@ -7,6 +7,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client"
 import { createBrowserHistory } from "history"
 import React, { Suspense, useLayoutEffect } from "react"
+import { RouterProvider } from "react-aria-components"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import { HelmetProvider } from "react-helmet-async"
@@ -17,6 +18,7 @@ import {
   RouteProps,
   Router,
   Switch,
+  useHistory,
 } from "react-router-dom"
 
 import { useIsLoggedIn } from "@/auth"
@@ -174,21 +176,11 @@ const Route = ({
   />
 )
 
-function AppRouter() {
-  const theme = useUserTheme()
-  useLayoutEffect(() => {
-    themeSet(theme)
-  }, [theme])
-  const isRestoring = useIsRestoring()
-  if (isRestoring) {
-    // NOTE: we don't render the site until react-query finishes hydrating from cache
-    // some sites like linear show a loader, but they must guarentee it shows
-    // for $N milliseconds or something because when it's really quick, < $N
-    // milliseconds it looks like a glitchy flash
-    return null
-  }
+function Routes() {
+  let history = useHistory()
+
   return (
-    <Router history={history}>
+    <RouterProvider navigate={history.push}>
       <Switch>
         <PublicOnlyRoute exact path={pathLogin.pattern} component={LoginPage} />
         <PublicOnlyRoute
@@ -288,6 +280,26 @@ function AppRouter() {
           </Switch>
         </Switch>
       </Switch>
+    </RouterProvider>
+  )
+}
+
+function AppRouter() {
+  const theme = useUserTheme()
+  useLayoutEffect(() => {
+    themeSet(theme)
+  }, [theme])
+  const isRestoring = useIsRestoring()
+  if (isRestoring) {
+    // NOTE: we don't render the site until react-query finishes hydrating from cache
+    // some sites like linear show a loader, but they must guarentee it shows
+    // for $N milliseconds or something because when it's really quick, < $N
+    // milliseconds it looks like a glitchy flash
+    return null
+  }
+  return (
+    <Router history={history}>
+      <Routes />
     </Router>
   )
 }

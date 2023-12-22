@@ -1,18 +1,23 @@
-import { useQueryClient } from "@tanstack/react-query"
 import React from "react"
+import {
+  Button,
+  Menu,
+  MenuItem,
+  MenuItemProps,
+  MenuTrigger,
+  Popover,
+  Separator,
+} from "react-aria-components"
 import { Link, useHistory } from "react-router-dom"
 import useOnClickOutside from "use-onclickoutside"
 
 import { useIsLoggedIn } from "@/auth"
 import { clx } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
-import { Button } from "@/components/Buttons"
-import { DropdownContainer, DropdownMenu } from "@/components/Dropdown"
-import { SearchInput, Select } from "@/components/Forms"
+import { SearchInput } from "@/components/Forms"
 import Logo from "@/components/Logo"
 import { NavLink } from "@/components/Routing"
 import { SearchResult } from "@/components/SearchResult"
-import { useDropdown } from "@/components/useDropdown"
 import {
   pathHome,
   pathLogin,
@@ -27,100 +32,122 @@ import {
 } from "@/paths"
 import { useAuthLogout } from "@/queries/authLogout"
 import { useRecipeList } from "@/queries/recipeList"
-import { useTeamList } from "@/queries/teamList"
+import { useTeam } from "@/queries/teamFetch"
 import { searchRecipes } from "@/search"
 import { useGlobalEvent } from "@/useGlobalEvent"
 import { useTeamId } from "@/useTeamId"
 import { useUser } from "@/useUser"
 
 interface IUserAvatarProps {
-  readonly onClick: () => void
+  readonly onClick?: () => void
   readonly url: string
 }
 function UserAvatar({ onClick, url }: IUserAvatarProps) {
-  return <Avatar onClick={onClick} tabIndex={0} avatarURL={url} />
-}
-
-function LogoutButton() {
-  const logoutUser = useAuthLogout()
-  return (
-    <Button
-      size="small"
-      onClick={() => {
-        logoutUser.mutate()
-      }}
-      loading={logoutUser.isPending}
-      className="w-full"
-    >
-      Logout
-    </Button>
-  )
-}
-
-function UserEmail({ email }: { email: string }) {
-  // eslint-disable-next-line react/forbid-elements
-  return <p className="font-bold">{email}</p>
-}
-
-function TeamSelect() {
-  const queryClient = useQueryClient()
-  const history = useHistory()
-  const value = useTeamId()
-
-  const onChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const teamID = parseInt(e.target.value, 10)
-    // TODO: instead of navigating to the schedule page we should update the
-    // path param of the current route if there is a teamID in it.
-    // Maybe we can get rid of the teamID from the URL entirely?
-    const url = pathSchedule({ teamId: teamID.toString() })
-    // navTo is async so we can't count on the URL to have changed by the time we refetch the data
-    history.push(url)
-    // TODO: we should abstract this -- it's hacky
-    void queryClient.invalidateQueries({
-      queryKey: [teamID],
-    })
-    void queryClient.invalidateQueries({
-      queryKey: ["user-detail"],
-    })
-  }
-  const teams = useTeamList()
-  return (
-    <Select onChange={onChange} value={value} disabled={teams.isPending}>
-      {teams.isSuccess
-        ? teams.data.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.name}
-            </option>
-          ))
-        : null}
-    </Select>
-  )
+  return <Avatar onClick={onClick} avatarURL={url} />
 }
 
 function UserDropdown() {
-  const { ref, toggle, isOpen } = useDropdown()
   const user = useUser()
 
-  const links: Array<[string, string]> = [
-    [pathProfileById({ userId: String(user.id) }), "Profile"],
-    [pathSettings({}), "Settings"],
-    [pathTeamList({}), "Teams"],
+  const logoutUser = useAuthLogout()
+
+  const menuItems: Array<
+    | { type: "menuitem"; label: string; to: string; onClick?: undefined }
+    | { type: "menuitem"; label: string; to?: undefined; onClick: () => void }
+    | { type: "separator"; id: string }
+  > = [
+    {
+      type: "menuitem",
+      label: "Profile",
+      to: pathProfileById({ userId: String(user.id) }),
+    },
+    {
+      type: "menuitem",
+      label: "Settings",
+      to: pathSettings({}),
+    },
+    {
+      type: "menuitem",
+      label: "Teams",
+      to: pathTeamList({}),
+    },
+    {
+      type: "separator",
+      id: "separator-1",
+    },
+    {
+      type: "menuitem",
+      label: "Logout",
+      onClick: () => {
+        logoutUser.mutate()
+      },
+    },
   ]
 
+  const teamId = useTeamId()
+  const team = useTeam({ teamId })
+
   return (
-    <DropdownContainer ref={ref}>
-      <UserAvatar onClick={toggle} url={user.avatarURL} />
-      <DropdownMenu isOpen={isOpen} position="right">
-        <UserEmail email={user.email} />
-        <TeamSelect />
-        {links.map(([to, text]) => (
-          <Link key={text} className="w-full" to={to} onClick={toggle}>
-            {text}
-          </Link>
-        ))}
-        <LogoutButton />
-      </DropdownMenu>
-    </DropdownContainer>
+    <MenuTrigger>
+      <Button className="flex cursor-pointer items-center justify-center rounded-full border-none bg-[unset] p-0 focus-visible:outline focus-visible:outline-[3px] focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)]">
+        <UserAvatar url={user.avatarURL} />
+      </Button>
+      <Popover className="w-56 origin-top-left overflow-auto rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-calendar-day)] p-2 shadow-lg outline-none">
+        <Menu
+          className="outline-none"
+          onAction={(key) => {
+            const metadata = menuItems.find(
+              (x) => x.type === "menuitem" && x.label === key,
+            )
+            if (metadata?.type === "menuitem") {
+              metadata.onClick?.()
+            }
+          }}
+          disabledKeys={["meta-info"]}
+        >
+          <MenuItem id="meta-info" className="pl-2">
+            <div className="pb-1 ">
+              <span className="">{user.name ?? user.email}</span>
+              <span> · </span>
+              <span className="text-sm ">{team.data?.name}</span>
+              <div className="text-sm ">{user.email}</div>
+            </div>
+          </MenuItem>
+          <Separator className="my-1 h-[1px] bg-[var(--color-border)]" />
+          {menuItems.map((menuItem) => {
+            if (menuItem.type === "separator") {
+              return (
+                <Separator
+                  id={menuItem.id}
+                  key={menuItem.id}
+                  className="my-1 h-[1px] bg-[var(--color-border)]"
+                />
+              )
+            }
+            return (
+              <ActionItem
+                id={menuItem.label}
+                key={menuItem.label}
+                href={menuItem.to}
+              >
+                {menuItem.label}
+              </ActionItem>
+            )
+          })}
+        </Menu>
+      </Popover>
+    </MenuTrigger>
+  )
+}
+
+function ActionItem(props: Omit<MenuItemProps, "className">) {
+  return (
+    <MenuItem
+      {...props}
+      className={
+        "flex cursor-pointer rounded px-2 py-1 [transition:background_.12s_ease-out] hover:bg-[var(--color-border)] focus-visible:outline-[3px] focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)] "
+      }
+    />
   )
 }
 
@@ -131,10 +158,10 @@ function WordMark() {
 function AuthButtons() {
   return (
     <div className="flex justify-self-end">
-      <NavLink className={stylesNavItem} to={pathLogin({})}>
+      <NavLink className={navItemCss} to={pathLogin({})}>
         Login
       </NavLink>
-      <NavLink className={stylesNavItem} to={pathSignup({})}>
+      <NavLink className={navItemCss} to={pathSignup({})}>
         Signup
       </NavLink>
     </div>
@@ -144,40 +171,39 @@ function AuthButtons() {
 function NavButtons() {
   const teamId = useTeamId()
   return (
-    <div className="relative flex items-center justify-center  justify-self-end">
-      <DropdownContainer>
-        <div className="flex">
-          <NavLink
-            to={pathRecipeAdd({})}
-            className={stylesNavItem}
-            activeClassName="!underline"
-          >
-            Add
-          </NavLink>
-          <NavLink
-            to={pathRecipesList({})}
-            className={stylesNavItem}
-            activeClassName="!underline"
-          >
-            Browse
-          </NavLink>
-          <NavLink
-            to={pathSchedule({ teamId: teamId.toString() })}
-            className={stylesNavItem}
-            activeClassName="!underline"
-          >
-            Calendar
-          </NavLink>
-        </div>
-      </DropdownContainer>
+    <div className="relative flex items-center justify-center gap-2 justify-self-end">
+      <div className="flex gap-2 print:!hidden">
+        <NavLink
+          to={pathRecipeAdd({})}
+          className={navItemCss}
+          activeClassName={activeNavItemCss}
+        >
+          Add
+        </NavLink>
+        <NavLink
+          to={pathRecipesList({})}
+          className={navItemCss}
+          activeClassName={activeNavItemCss}
+        >
+          Browse
+        </NavLink>
+        <NavLink
+          to={pathSchedule({ teamId: teamId.toString() })}
+          className={navItemCss}
+          activeClassName={activeNavItemCss}
+        >
+          Calendar
+        </NavLink>
+      </div>
 
       <UserDropdown />
     </div>
   )
 }
 
-const stylesNavItem =
-  "flex shrink-0 grow-0 cursor-pointer items-center justify-center px-3 py-2 text-[14px] font-medium leading-[1.5] text-[var(--color-text)] transition-all hover:text-[var(--color-link-hover)] hover:underline active:translate-y-[1px]"
+const navItemCss =
+  "flex shrink-0 grow-0 cursor-pointer items-center justify-center rounded-md px-2 py-1 text-[14px] font-medium leading-[1.5] text-[var(--color-text)] transition-all [transition:background_.12s_ease-out] hover:bg-[var(--color-background-calendar-day)] hover:text-[var(--color-link-hover)] active:bg-[var(--color-border)]"
+const activeNavItemCss = "bg-[var(--color-background-calendar-day)]"
 
 function isInputFocused() {
   const activeElement = document.activeElement
@@ -279,18 +305,24 @@ function Search() {
 export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
   const isLoggedIn = useIsLoggedIn()
   return (
-    <nav className="mb-1 flex h-[3rem] shrink-0 justify-between px-3 print:!hidden md:grid md:grid-cols-3">
-      <Link
-        to={pathHome({})}
-        className={clx(stylesNavItem, "!justify-start !px-0 py-1 font-normal")}
-      >
-        <Logo width="40px" />
-        {isLoggedIn ? (
-          <span className="ml-2 hidden font-medium sm:block">Home</span>
-        ) : (
-          <WordMark />
-        )}
-      </Link>
+    <nav className="flex h-[3.5rem] shrink-0 justify-between px-3 pb-1 print:!hidden md:grid md:grid-cols-3">
+      <div className="flex items-center justify-start gap-2">
+        <Link
+          to={pathHome({})}
+          className={
+            "flex shrink-0 grow-0 cursor-pointer items-center justify-center rounded-md"
+          }
+        >
+          <Logo width="40px" />
+        </Link>
+        <Link to={pathHome({})} className={clx(navItemCss, "")}>
+          {isLoggedIn ? (
+            <span className="hidden font-medium sm:block">Home</span>
+          ) : (
+            <WordMark />
+          )}
+        </Link>
+      </div>
       <div className="ml-3 flex grow items-center">
         {includeSearch && <Search />}
       </div>
