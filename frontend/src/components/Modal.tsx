@@ -77,7 +77,7 @@ export function Modal({ show, content, onClose, title }: IModalProps) {
           h={100}
           className="bg-[var(--color-background-card)]"
         >
-          <Box space="between" mb={2}>
+          <Box space="between" mb={2} className="items-start">
             <h1 className="font-medium">{title}</h1>
             <CloseButton onClose={onClose} />
           </Box>
