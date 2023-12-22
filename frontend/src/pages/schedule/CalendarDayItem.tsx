@@ -20,7 +20,7 @@ function RecipeLink({ name, id, onClick }: IRecipeLink) {
   const to = recipeURL(id, name)
   return (
     <Link
-      className="break-words rounded-md p-1.5 text-sm font-semibold leading-tight"
+      className="break-words rounded-md text-sm font-semibold leading-tight"
       to={to}
       onClick={onClick}
     >
@@ -44,7 +44,7 @@ const CalendarListItem = React.forwardRef(
       <li
         ref={ref}
         className={clx(
-          "mb-[var(--margin-calendar-item-bottom)] flex items-center justify-between last:mb-0",
+          "flex items-center justify-between",
           visibility === "visible" ? "visible" : "invisible",
         )}
       >

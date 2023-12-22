@@ -170,7 +170,7 @@ function CalendarDay({ date, scheduledRecipes }: ICalendarDayProps) {
       isSelectedDay={isSelectedDay}
     >
       <Title date={date} />
-      <ul className="overflow-y-auto">
+      <ul className="flex flex-col gap-3 overflow-y-auto px-1">
         {scheduled.map((x) => (
           <CalendarItem
             key={x.id}
