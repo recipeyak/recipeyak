@@ -200,8 +200,6 @@ table {
   --color-background-calendar-item: var(--color-background);
   --color-background-empty-image: rgb(227, 227, 227);
   --color-modal-background: rgba(10, 10, 10, 0.57);
-
-  --margin-calendar-item-bottom: 0.5rem;
 }
 
 .theme-light {
@@ -236,8 +234,6 @@ table {
   --color-background-calendar-item: var(--color-background-card);
   --color-background-empty-image: #382e27;
   --color-modal-background: rgba(10, 10, 10, 0.57);
-
-  --margin-calendar-item-bottom: 0rem;
 }
 
 .theme-dark {
@@ -272,8 +268,6 @@ table {
   --color-background-calendar-item: var(--color-background);
   --color-background-empty-image: #382e27;
   --color-modal-background: rgba(10, 10, 10, 0.57);
-
-  --margin-calendar-item-bottom: 0rem;
 }
 
 .theme-dark-dimmed {
@@ -308,8 +302,6 @@ table {
   --color-background-calendar-item: rgb(188, 133, 92);
   --color-background-empty-image: var(--color-accent);
   --color-modal-background: rgba(10, 10, 10, 0.57);
-
-  --margin-calendar-item-bottom: 0rem;
 }
 
 .theme-autumn {
@@ -344,8 +336,6 @@ table {
   --color-background-calendar-item: var(--color-background);
   --color-background-empty-image: var(--color-accent);
   --color-modal-background: rgba(10, 10, 10, 0.57);
-
-  --margin-calendar-item-bottom: 0.5rem;
 }
 
 .theme-solarized {
