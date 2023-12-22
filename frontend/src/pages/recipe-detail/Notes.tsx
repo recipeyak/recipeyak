@@ -255,7 +255,7 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
           ) : null}
         </Box>
         {!isEditing ? (
-          <Box dir="col">
+          <Box dir="col" className="gap-2">
             <Markdown>{note.text}</Markdown>
             <Box gap={1} dir="col">
               <Box wrap gap={1}>

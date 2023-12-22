@@ -145,7 +145,7 @@ export function Dropdown({
 
   return (
     <MenuTrigger>
-      <Button className="inline-flex cursor-pointer items-center justify-center rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-card)] p-0 px-3 py-1 text-sm font-medium text-[var(--color-text)] focus-visible:outline focus-visible:outline-[3px] focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)]">
+      <Button className="inline-flex cursor-pointer items-center justify-center rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-card)] p-0 px-3 py-1 text-sm font-medium text-[var(--color-text)] focus-visible:outline focus-visible:outline-[3px] focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)] print:!hidden">
         Actions <Chevron />
       </Button>
       <Popover className="w-56 origin-top-left overflow-auto rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-calendar-day)] p-2 shadow-lg outline-none">

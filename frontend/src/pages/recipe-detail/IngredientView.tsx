@@ -42,7 +42,9 @@ export function IngredientViewContent({
       </span>
       {description}{" "}
       {optional ? (
-        <span className="text-[var(--color-text-muted)]">[optional]</span>
+        <span className="text-[var(--color-text-muted)] print:!text-black">
+          [optional]
+        </span>
       ) : (
         ""
       )}
