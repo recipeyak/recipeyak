@@ -322,17 +322,6 @@ function RecipeMetaItem({
   )
 }
 
-const RecipeDetailsContainer = styled.div<{ spanColumns?: boolean }>`
-  display: flex;
-  gap: 0.5rem;
-  flex-direction: column;
-  justify-content: space-around;
-
-  @media (min-width: 800px) {
-    ${(props) => (props.spanColumns ? "grid-area: 1 / span 2;" : "")}
-  }
-`
-
 const RecipeMetaContainer = styled.div<{ inline?: boolean }>`
   display: flex;
 
@@ -626,7 +615,12 @@ function RecipeInfo(props: {
 
   return (
     <>
-      <RecipeDetailsContainer spanColumns={inlineLayout}>
+      <div
+        className={clx(
+          "flex flex-col items-start justify-around gap-2",
+          inlineLayout && "md:[grid-area:1_/_span_2]",
+        )}
+      >
         <Dropdown
           recipeIsArchived={props.recipe.archived_at != null}
           recipeId={props.recipe.id}
@@ -716,7 +710,7 @@ function RecipeInfo(props: {
             </RecipeMetaContainer>
           </>
         )}
-      </RecipeDetailsContainer>
+      </div>
       {(props.recipe.primaryImage || props.editingEnabled) && (
         <>
           <ImageWrapper

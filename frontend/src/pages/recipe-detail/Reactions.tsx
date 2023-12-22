@@ -101,7 +101,7 @@ export function ReactionPopover(props: {
                   setVisible(false)
                 }}
                 className={clx(
-                  "h-[32px] w-[32px] cursor-pointer rounded-[3px] border-[hsl(0deg,0%,86%)] p-[4px] text-center text-[16px]",
+                  "h-[32px] w-[32px] cursor-pointer rounded-[3px] border-[var(--color-border)] p-[4px] text-center text-[16px]",
                   findReaction(props.reactions, emoji, userId ?? 0) != null
                     ? "bg-[hsla(0,0%,0%,0.04)]"
                     : "bg-[var(--color-background-card)]",
@@ -148,7 +148,7 @@ export function ReactionsFooter(props: {
           onClick={() => {
             props.onClick(emoji)
           }}
-          className="mr-2 inline-flex cursor-pointer rounded-[15px] border border-solid border-[#d2dff0] bg-[var(--color-background-card)] px-[0.3rem] py-0 pr-2 text-center text-[var(--color-text-muted)]"
+          className="mr-2 inline-flex cursor-pointer rounded-[15px] border border-solid border-[var(--color-border)] bg-[var(--color-background-card)] px-[0.3rem] py-0 pr-2 text-center text-[var(--color-text-muted)]"
         >
           <div className="flex h-[24px] w-[24px] items-center justify-center">
             {emoji}
