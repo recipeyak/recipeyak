@@ -17,13 +17,16 @@ import {
   pathPassword,
   pathRecipesExportJson,
   pathRecipesExportYaml,
+  pathSchedule,
 } from "@/paths"
+import { useTeamList } from "@/queries/teamList"
 import { useUserDelete } from "@/queries/userDelete"
 import { useUserFetch } from "@/queries/userFetch"
 import { useUserUpdate } from "@/queries/userUpdate"
 import { themeSet } from "@/theme"
 import { Theme, THEME_IDS, THEME_META, ThemeMode } from "@/themeConstants"
 import { toast } from "@/toast"
+import { useTeamId } from "@/useTeamId"
 import { useUserTheme } from "@/useUserTheme"
 
 function Export() {
@@ -95,6 +98,44 @@ function ProfileImg({ avatarURL }: IProfileImgProps) {
         src={avatarURL + "&s=72"}
       />
     </a>
+  )
+}
+
+function ChangeTeam() {
+  const queryClient = useQueryClient()
+  const history = useHistory()
+  const value = useTeamId()
+
+  const onChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const teamID = parseInt(e.target.value, 10)
+    // TODO: instead of navigating to the schedule page we should update the
+    // path param of the current route if there is a teamID in it.
+    // Maybe we can get rid of the teamID from the URL entirely?
+    const url = pathSchedule({ teamId: teamID.toString() })
+    // navTo is async so we can't count on the URL to have changed by the time we refetch the data
+    history.push(url)
+    // TODO: we should abstract this -- it's hacky
+    void queryClient.invalidateQueries({
+      queryKey: [teamID],
+    })
+    void queryClient.invalidateQueries({
+      queryKey: ["user-detail"],
+    })
+  }
+  const teams = useTeamList()
+  return (
+    <div className="flex flex-col gap-1">
+      <BetterLabel>Team</BetterLabel>
+      <Select onChange={onChange} value={value} disabled={teams.isPending}>
+        {teams.isSuccess
+          ? teams.data.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.name} (current)
+              </option>
+            ))
+          : null}
+      </Select>
+    </div>
   )
 }
 
@@ -289,10 +330,7 @@ function ThemeList(props: { value: Theme; onChange: (value: Theme) => void }) {
         return (
           <label
             key={themeId}
-            className="flex min-w-min cursor-pointer flex-col  items-start rounded-md bg-[var(--color-background-calendar-day)]"
-            style={{
-              border: "1px solid var(--color-border)",
-            }}
+            className="flex max-w-[250px] cursor-pointer flex-col items-start rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-calendar-day)]"
           >
             <RecipeDetailSkeleton fgFill={theme.fgFill} bgFill={theme.bgFill} />
             <div className="flex w-full items-center gap-1 border-[0] border-t border-solid border-[var(--color-border)] p-2 px-3">
@@ -321,10 +359,11 @@ const RecipeDetailSkeleton = ({
 }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width={270}
-    height={168}
+    viewBox="0 0 270 168"
+    // TODO: not sure this is doing anything
+    preserveAspectRatio="slice xMidYMid"
     fill="none"
-    className="rounded-md rounded-b-[0]"
+    className="w-full rounded-md rounded-b-[0]"
   >
     <path fill={bgFill} d="M0 0h270v168H0z" />
     <path
@@ -380,7 +419,7 @@ function ThemePicker() {
         </div>
 
         {formState.mode === "single" && (
-          <div className="my-2 grid grid-cols-[repeat(3,_1fr)] gap-3">
+          <div className="my-2 flex flex-wrap gap-3">
             <ThemeList
               value={formState.day}
               onChange={(day) => {
@@ -458,6 +497,7 @@ export function SettingsPage() {
           <Box dir="col" style={{ maxWidth: 400 }} gap={2}>
             <EmailEditForm email={userInfo.data.email} />
             <NameForm initialValue={userInfo.data.name} />
+            <ChangeTeam />
             <ChangePassword />
           </Box>
         </Box>

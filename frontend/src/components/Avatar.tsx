@@ -12,7 +12,7 @@ function UserProfileImage({
 } & ({ as: "img"; src: string; alt: string } | { as?: undefined })) {
   const className = clx(
     cls,
-    "m-[5px] h-[30px] max-h-none w-[30px] min-w-[30px] rounded-full bg-[rgb(240,240,240)] print:!hidden",
+    "h-[30px] max-h-none w-[30px] min-w-[30px] rounded-full bg-[rgb(240,240,240)] print:!hidden",
   )
   if (rest.as === "img") {
     return (

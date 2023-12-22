@@ -89,5 +89,21 @@
     "**/.mypy_cache": true,
     "**/stats.html": true
   },
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "tailwindCSS.experimental.classRegex": [
+    // clx function calls
+    ["clx\\(([^]*)\\)", "(?:'|\"|`)([^\"'`]*)(?:'|\"|`)"]
+    // js string variables
+    // "(?:const|let|var)\\s+[\\w$_][_\\w\\d]*\\s*=\\s*['\\\"](.*?)['\\\"]",
+    // js object
+    // ":\\s*?[\"'`]([^\"'`]*).*?,"
+  ],
+  "tailwindCSS.classAttributes": [
+    "class",
+    "className",
+    "ngClass",
+    ".*styles.*",
+    ".*css.*",
+    ".*cls.*"
+  ]
 }

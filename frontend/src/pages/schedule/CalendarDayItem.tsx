@@ -20,7 +20,7 @@ function RecipeLink({ name, id, onClick }: IRecipeLink) {
   const to = recipeURL(id, name)
   return (
     <Link
-      className="break-words rounded-md text-sm font-semibold leading-tight"
+      className="break-words rounded-md text-sm font-semibold leading-tight focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)]"
       to={to}
       onClick={onClick}
     >
