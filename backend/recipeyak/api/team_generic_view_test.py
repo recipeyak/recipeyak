@@ -35,8 +35,8 @@ def test_creating_team(client: APIClient, user: User, user2: User) -> None:
     res = client.get(url)
     assert res.status_code == status.HTTP_200_OK, "user can access newly created team"
 
-    assert res.data["id"] == team_id
-    assert res.data["name"] == team_name
+    assert res.json()["id"] == team_id
+    assert res.json()["name"] == team_name
     assert team.is_admin(user), "Team creator should be an admin"
 
     client.force_authenticate(user2)

@@ -55,11 +55,10 @@ GROUP BY
                 {"user_id": request.user.id},
             )
             teams_raw = cursor.fetchall()
-        teams = []
-        for id, name, created, members in teams_raw:
-            teams.append(
-                TeamResponse(id=id, name=name, created=created, members=members)
-            )
+        teams = [
+            TeamResponse(id=id, name=name, created=created, members=members)
+            for id, name, created, members in teams_raw
+        ]
         return Response(teams)
     elif request.method == "POST":
         serializer = TeamSerializer(data=request.data, context={"request": request})
