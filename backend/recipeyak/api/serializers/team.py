@@ -58,27 +58,6 @@ class TeamSerializer(BaseModelSerializer):
         return team
 
 
-class MembershipSerializer(BaseModelSerializer):
-    user = PublicUserSerializer()
-
-    class Meta:
-        model = Membership
-        editable = False
-        fields = ("id", "user", "level", "is_active", "created")
-
-    def validate_level(self, level: str) -> str:
-        team = self.instance.team
-        user = self.instance.user
-        demoting_last_admin = (
-            len(team.admins()) == 1
-            and team.is_admin(user)
-            and level != Membership.ADMIN
-        )
-        if demoting_last_admin:
-            raise serializers.ValidationError("cannot demote last admin")
-        return level
-
-
 class InviteSerializer(BaseModelSerializer):
     user = PublicUserSerializer()
     team = TeamSerializer(fields=["id", "name"], read_only=True)
