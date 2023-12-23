@@ -1,8 +1,18 @@
 import { useState } from "react"
 
+import { assertNever } from "@/assert"
+import { Badge } from "@/components/Badge"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { Loader } from "@/components/Loader"
+import {
+  Cell,
+  Column,
+  Row,
+  Table,
+  TableBody,
+  TableHeader,
+} from "@/components/Table"
 import { formatDistanceToNow } from "@/date"
 import { useSessionDelete } from "@/queries/sessionDelete"
 import { useSessionDeleteAll } from "@/queries/sessionDeleteAll"
@@ -51,48 +61,23 @@ function getDeviceName(device: ISession["device"]): string | null {
   return null
 }
 
-interface IDeviceNameProps {
-  readonly device: ISession["device"]
-}
-
-function DeviceName({ device }: IDeviceNameProps) {
-  return <div>{getDeviceName(device)}</div>
-}
-
-function Session(props: ISession) {
-  const lastActivity = formatDistanceToNow(new Date(props.last_activity))
+function LogoutAction({ sessionId }: { sessionId: string }) {
   const sessionDelete = useSessionDelete()
   return (
-    <Box dir="col" align="start" space="between" wrap>
-      <div>{props.ip}</div>
-      <Box align="center" space="between" grow={1} w={100} gap={4}>
-        <Box dir="col">
-          <DeviceName device={props.device} />
-          <Box gap={2}>
-            <div>Last used: {lastActivity}</div>
-            {props.current ? (
-              <span className="font-medium text-green-500">Current</span>
-            ) : null}
-          </Box>
-        </Box>
-
-        <Button
-          size="small"
-          onClick={() => {
-            sessionDelete.mutate({ sessionId: props.id })
-          }}
-          loading={sessionDelete.isPending}
-        >
-          Logout
-        </Button>
-      </Box>
-    </Box>
+    <Button
+      size="small"
+      onClick={() => {
+        sessionDelete.mutate({ sessionId })
+      }}
+      loading={sessionDelete.isPending}
+    >
+      Logout
+    </Button>
   )
 }
 
 function SessionList() {
   const sessions = useSessionList()
-  const sessonsDeleteAll = useSessionDeleteAll()
   const [showAll, setShowAll] = useState(false)
   const preview = 5
 
@@ -102,49 +87,114 @@ function SessionList() {
 
   if (sessions.isError) {
     return (
-      // TODO: Fix this the next time the file is edited.
-      // eslint-disable-next-line react/forbid-elements
-      <p className="text-[var(--color-text-muted)]">
+      <div className="text-[var(--color-text-muted)]">
         Failure fetching sessions
-      </p>
+      </div>
     )
   }
 
+  const columns = [
+    {
+      id: "ip" as const,
+      name: "IP Address",
+    },
+    {
+      id: "userAgent" as const,
+      name: "User Agent",
+    },
+    {
+      id: "lastUsed" as const,
+      name: "Last Used",
+    },
+    {
+      id: "action" as const,
+      name: "Action",
+    },
+  ]
+
   return (
-    <Box dir="col" align="start" gap={2}>
-      <Box dir="col" gap={3}>
-        {sessions.data.slice(0, showAll ? undefined : preview).map((s) => (
-          <Session key={s.id} {...s} />
-        ))}
-        {!showAll && (
-          <Button
-            size="small"
-            onClick={() => {
-              setShowAll(true)
-            }}
-          >
-            Show All Sessions ({sessions.data.length - preview} hidden)
-          </Button>
-        )}
-      </Box>
-      <Button
-        size="small"
-        className="mb-2"
-        onClick={() => {
-          sessonsDeleteAll.mutate()
-        }}
-        loading={sessonsDeleteAll.isPending}
-      >
-        Logout Other Sessions
-      </Button>
-    </Box>
+    <div className="flex flex-col items-center gap-2">
+      <Table label="sessions">
+        <TableHeader columns={columns}>
+          {(column) => {
+            return <Column isRowHeader>{column.name}</Column>
+          }}
+        </TableHeader>
+        <TableBody
+          items={sessions.data.slice(0, showAll ? undefined : preview)}
+        >
+          {(session) => {
+            return (
+              <Row columns={columns}>
+                {(column) => {
+                  switch (column.id) {
+                    case "ip": {
+                      return <Cell>{session.ip}</Cell>
+                    }
+                    case "action": {
+                      return (
+                        <Cell>
+                          <LogoutAction sessionId={session.id} />
+                        </Cell>
+                      )
+                    }
+                    case "lastUsed": {
+                      return (
+                        <Cell className="gap-2">
+                          <div>
+                            {formatDistanceToNow(
+                              new Date(session.last_activity),
+                            )}
+                          </div>
+                          {session.current ? (
+                            <Badge status="success">Current</Badge>
+                          ) : null}
+                        </Cell>
+                      )
+                    }
+                    case "userAgent": {
+                      return <Cell>{getDeviceName(session.device)}</Cell>
+                    }
+                    default:
+                      assertNever(column)
+                  }
+                }}
+              </Row>
+            )
+          }}
+        </TableBody>
+      </Table>
+      {!showAll && sessions.data.length > preview && (
+        <Button
+          size="small"
+          onClick={() => {
+            setShowAll(true)
+          }}
+        >
+          Show All Sessions ({sessions.data.length - preview} hidden)
+        </Button>
+      )}
+    </div>
   )
 }
 
 export default function Sessions() {
+  const sessonsDeleteAll = useSessionDeleteAll()
   return (
     <Box dir="col">
-      <label className="text-xl font-bold">Sessions</label>
+      <div className="flex items-center justify-between">
+        <label className="text-xl font-bold">Sessions</label>
+        <Button
+          size="small"
+          className="mb-2"
+          onClick={() => {
+            sessonsDeleteAll.mutate()
+          }}
+          loading={sessonsDeleteAll.isPending}
+        >
+          Logout Other Sessions
+        </Button>
+      </div>
       <SessionList />
     </Box>
   )

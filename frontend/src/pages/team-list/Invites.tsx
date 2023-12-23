@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom"
 
 import { assertNever } from "@/assert"
-import { clx } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
+import { Badge } from "@/components/Badge"
 import { Button } from "@/components/Buttons"
 import { Loader } from "@/components/Loader"
 import {
@@ -17,24 +17,22 @@ import { formatHumanDateTime } from "@/date"
 import { pathProfileById, pathTeamDetail } from "@/paths"
 import { useInviteAccept } from "@/queries/inviteAccept"
 import { useInviteDecline } from "@/queries/inviteDecline"
-import { IInvite, useInviteList } from "@/queries/inviteList"
+import { useInviteList } from "@/queries/inviteList"
 
-function InviteButtons({ invite }: { invite: IInvite }) {
+function InviteButtons({
+  invite,
+}: {
+  invite: { id: number; status: "declined" | "accepted" | "open" }
+}) {
   const acceptInvite = useInviteAccept()
   const declineInvite = useInviteDecline()
 
   if (invite.status === "declined" || invite.status === "accepted") {
     return (
-      <div
-        className={clx(
-          "rounded-3xl border border-solid  px-2 py-0 text-center text-sm font-medium",
-          invite.status === "declined" && "border-red-600 text-red-500",
-          invite.status === "accepted" && "border-green-600 text-green-500",
-        )}
-      >
+      <Badge status={invite.status === "accepted" ? "success" : "error"}>
         {invite.status === "declined" && "Declined"}
         {invite.status === "accepted" && "Accepted"}
-      </div>
+      </Badge>
     )
   }
   if (invite.status === "open") {

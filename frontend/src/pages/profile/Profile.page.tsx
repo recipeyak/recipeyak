@@ -157,11 +157,19 @@ export function ProfilePage(props: RouteComponentProps<{ userId: string }>) {
   const userInfo = useUserById({ id: props.match.params.userId })
 
   if (userInfo.isPending) {
-    return <Loader />
+    return (
+      <NavPage>
+        <Loader />
+      </NavPage>
+    )
   }
 
   if (userInfo.isError) {
-    return <div>error loading profile, 404 maybe?</div>
+    return (
+      <NavPage>
+        <div>error loading profile, 404 maybe?</div>
+      </NavPage>
+    )
   }
 
   const allStats = [

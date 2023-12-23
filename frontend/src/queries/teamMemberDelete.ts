@@ -3,6 +3,7 @@ import { AxiosError } from "axios"
 
 import { http } from "@/http"
 import { IMember, ITeam } from "@/queries/teamFetch"
+import { setQueryDataTeamMemberList } from "@/queries/teamMembersList"
 import { unwrapResult } from "@/query"
 import { toast } from "@/toast"
 
@@ -15,12 +16,12 @@ export function useTeamMemberDelete() {
     mutationFn: ({ teamId, memberId }: { teamId: number; memberId: number }) =>
       deleteTeamMember(teamId, memberId).then(unwrapResult),
     onSuccess: (_res, vars) => {
-      queryClient.setQueryData<IMember[]>(
-        [vars.teamId, "team-members-list"],
-        (prev) => {
+      setQueryDataTeamMemberList(queryClient, {
+        teamId: vars.teamId,
+        updater: (prev) => {
           return prev?.filter((x) => x.id !== vars.memberId)
         },
-      )
+      })
     },
     onError: (error) => {
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unsafe-assignment
