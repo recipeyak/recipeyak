@@ -305,7 +305,7 @@ function Search() {
 export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
   const isLoggedIn = useIsLoggedIn()
   return (
-    <nav className="flex h-[3.5rem] shrink-0 justify-between px-3 pb-1 print:!hidden md:grid md:grid-cols-3">
+    <nav className="flex h-[3.5rem] shrink-0 justify-between gap-1 px-3 pb-1 print:!hidden md:grid md:grid-cols-3">
       <div className="flex items-center justify-start gap-2">
         <Link
           to={pathHome({})}
@@ -323,7 +323,7 @@ export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
           )}
         </Link>
       </div>
-      <div className="ml-3 flex grow items-center">
+      <div className="flex grow items-center">
         {includeSearch && <Search />}
       </div>
       {isLoggedIn ? <NavButtons /> : <AuthButtons />}
