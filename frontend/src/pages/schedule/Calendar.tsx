@@ -53,6 +53,8 @@ function Weekdays() {
   return (
     <WeekdaysContainer>
       {weekDays.map((x) => (
+        // TODO: Fix this the next time the file is edited.
+        // eslint-disable-next-line react/forbid-elements
         <b key={x}>{x}</b>
       ))}
     </WeekdaysContainer>

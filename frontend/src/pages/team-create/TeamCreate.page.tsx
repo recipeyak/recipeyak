@@ -74,6 +74,8 @@ export function TeamCreatePage() {
               </label>
             ))}
             <div className="mb-2">
+              {/* TODO: Fix this the next time the file is edited. */}
+              {/* eslint-disable-next-line react/forbid-elements */}
               <b>Note:</b> Users without an account will be sent an email asking
               to create one.
             </div>

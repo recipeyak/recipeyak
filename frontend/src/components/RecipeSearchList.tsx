@@ -153,6 +153,8 @@ function RecipeList(props: IRecipeList) {
         <>
           <div className="flex items-center">
             <hr className="grow" />
+            {/* TODO: Fix this the next time the file is edited. */}
+            {/* eslint-disable-next-line react/forbid-elements */}
             <b className="m-4">Archived Recipes</b>
             <hr className="grow" />
           </div>

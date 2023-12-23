@@ -8,19 +8,13 @@ export interface IMember {
   readonly id: number
   readonly user: IUser
   readonly level: "admin" | "contributor" | "read"
-  readonly deleting?: boolean
   readonly is_active: boolean
+  readonly created: string
 }
 
 export interface ITeam {
   readonly id: number
   readonly name: string
-  readonly updating?: boolean
-  readonly sendingTeamInvites?: boolean
-  readonly loadingTeam?: boolean
-  readonly loadingMembers?: boolean
-  readonly error404?: boolean
-  readonly recipes?: number[]
   readonly members: {
     readonly [key: number]: IMember | undefined
   }

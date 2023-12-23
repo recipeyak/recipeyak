@@ -369,6 +369,8 @@ function MaybeLink({
   children: React.ReactNode
 }) {
   if (to == null) {
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line react/forbid-elements
     return <b>{children}</b>
   }
   return (
