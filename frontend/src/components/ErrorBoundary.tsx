@@ -8,7 +8,6 @@ const ErrorReportButton = () => (
   <Button
     size="small"
     variant="primary"
-    className="ml-1"
     onClick={() => {
       Sentry.showReportDialog()
     }}
@@ -21,20 +20,23 @@ export function ErrorBoundary({ children }: { children?: React.ReactNode }) {
   return (
     <Sentry.ErrorBoundary
       fallback={(args) => (
-        <div className="">
-          <section className="flex flex-col items-center justify-self-center">
+        <div>
+          <div className="flex flex-col items-center justify-self-center">
             <Logo width="150" />
-            <div className="flex flex-col justify-center text-center text-xl">
-              <h1 className="text-2xl">Something's gone wrong.</h1>
-              <div>
-                Try to navigate{" "}
-                <a className="font-bold" href="/">
-                  home
-                </a>
-                .{args.eventId && <ErrorReportButton />}
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-col justify-center gap-0 text-center text-xl">
+                <h1 className="text-2xl">Something's gone wrong.</h1>
+                <span>
+                  Try to navigate{" "}
+                  <a className="font-bold" href="/">
+                    home
+                  </a>
+                  .
+                </span>
               </div>
+              {args.eventId && <ErrorReportButton />}
             </div>
-          </section>
+          </div>
         </div>
       )}
     >

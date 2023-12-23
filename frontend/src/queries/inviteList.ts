@@ -5,8 +5,7 @@ import { unwrapResult } from "@/query"
 
 export interface IInvite {
   readonly id: number
-  readonly accepting?: boolean
-  readonly declining?: boolean
+  readonly created: string
   readonly status: "accepted" | "declined" | "open"
   readonly active: boolean
   readonly team: {

@@ -22,8 +22,6 @@ export interface IIngredient {
   readonly description: string
   readonly position: string
   readonly optional: boolean
-  readonly updating?: boolean
-  readonly removing?: boolean
 }
 
 export interface IStep {

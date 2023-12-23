@@ -30,7 +30,7 @@ export function useTeamMemberUpdate() {
     onMutate: (vars) => {
       let prevLevel: Level | undefined
       queryClient.setQueryData<IMember[]>(
-        ["team-members-list", vars.teamId],
+        [vars.teamId, "team-members-list"],
         (prev) => {
           return prev?.map((x) => {
             if (x.id === vars.memberId) {
@@ -45,7 +45,7 @@ export function useTeamMemberUpdate() {
     },
     onSuccess: (res, vars) => {
       queryClient.setQueryData<IMember[]>(
-        ["team-members-list", vars.teamId],
+        [vars.teamId, "team-members-list"],
         (prev) => {
           return prev?.map((x) => {
             if (x.id === vars.memberId) {
@@ -58,7 +58,7 @@ export function useTeamMemberUpdate() {
     },
     onError: (error, vars, context) => {
       queryClient.setQueryData<IMember[]>(
-        ["team-members-list", vars.teamId],
+        [vars.teamId, "team-members-list"],
         (prev) => {
           return prev?.map((x) => {
             if (x.id === vars.memberId && context?.prevLevel != null) {

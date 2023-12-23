@@ -16,7 +16,7 @@ export function useTeamMemberDelete() {
       deleteTeamMember(teamId, memberId).then(unwrapResult),
     onSuccess: (_res, vars) => {
       queryClient.setQueryData<IMember[]>(
-        ["team-members-list", vars.teamId],
+        [vars.teamId, "team-members-list"],
         (prev) => {
           return prev?.filter((x) => x.id !== vars.memberId)
         },

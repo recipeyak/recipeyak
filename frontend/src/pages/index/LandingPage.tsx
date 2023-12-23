@@ -36,6 +36,8 @@ function HomeContainer({
 
 function FeaturesContainer({ children }: { children: JSX.Element[] }) {
   return (
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line react/forbid-elements
     <section className="bg-[var(--color-primary)] p-4 text-white">
       <HomeContainer>
         <h2 className={styles.subtitle}>Features</h2>
@@ -99,6 +101,8 @@ interface IHowItWorksContainerProps {
 }
 function HowItWorksContainer({ children }: IHowItWorksContainerProps) {
   return (
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line react/forbid-elements
     <section className="px-4 pt-4">
       <HomeContainer className="grid">
         <h2 className={styles.subtitle}>How it works</h2>
@@ -119,6 +123,8 @@ function HowTo({ content, index, imageURL }: IHowToProps) {
       {/* TODO: Fix this the next time the file is edited. */}
       {/* eslint-disable-next-line react/forbid-elements */}
       <p className="self-center md:w-1/2">
+        {/* TODO: Fix this the next time the file is edited. */}
+        {/* eslint-disable-next-line react/forbid-elements */}
         <b>
           {index + 1}
           {". "}
@@ -190,12 +196,13 @@ const LandingPage = () => {
   return (
     <NavPage includeSearch={false} noContainer>
       <HomeContainer className="grid gap-4 px-4 pb-4">
+        {/* TODO: Fix this the next time the file is edited. */}
+        {/* eslint-disable-next-line react/forbid-elements */}
         <section className="mb-2 flex justify-center">
           <h1 className="max-w-[900px] text-center text-[4rem] leading-[4rem]">
             A place to store, share, and create recipes
           </h1>
         </section>
-
         <Button
           to={pathSignup({})}
           variant="primary"
@@ -205,18 +212,18 @@ const LandingPage = () => {
           Create Account
         </Button>
       </HomeContainer>
+      {/* TODO: Fix this the next time the file is edited. */}
+      {/* eslint-disable-next-line react/forbid-elements */}
       <section className="bg-gradient-to-b from-[var(--color-background)] from-50% to-[var(--color-primary)] to-50% px-4 pt-4">
         <HomeContainer>
           <img className="shadow" src={landingImg} alt="" />
         </HomeContainer>
       </section>
-
       <FeaturesContainer>
         {features.map(({ text, imgURL }, i) => (
           <Feature key={imgURL} text={text} imageURL={imgURL} index={i} />
         ))}
       </FeaturesContainer>
-
       <HowItWorksContainer>
         {howToSteps.map(({ text, imgURL }, i) => (
           <HowTo key={imgURL} content={text} imageURL={imgURL} index={i} />
@@ -231,7 +238,6 @@ const LandingPage = () => {
           Create Account
         </Button>
       </HowItWorksContainer>
-
       <Footer />
     </NavPage>
   )
