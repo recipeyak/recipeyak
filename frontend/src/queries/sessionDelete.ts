@@ -4,8 +4,7 @@ import { http } from "@/http"
 import { ISession } from "@/queries/sessionList"
 import { unwrapResult } from "@/query"
 
-const deleteSessionById = (id: ISession["id"]) =>
-  http.delete(`/api/v1/sessions/${id}/`)
+const deleteSessionById = (id: string) => http.delete(`/api/v1/sessions/${id}/`)
 
 function deleteByIdV2({ sessionId }: { sessionId: string }): Promise<void> {
   return deleteSessionById(sessionId).then(unwrapResult)

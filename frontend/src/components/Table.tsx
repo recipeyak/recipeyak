@@ -9,16 +9,22 @@ import {
   TableHeader as AriaTableHeader,
 } from "react-aria-components"
 
+import { clx } from "@/classnames"
+
 export function Cell({
   children,
+  className,
   ...rest
-}: Omit<CellProps, "className" | "children"> & { children: React.ReactNode }) {
+}: Omit<CellProps, "children" | "className"> & {
+  children: React.ReactNode
+  className?: string
+}) {
   return (
     <AriaCell
       className="group-selected:focus-visible:outline-white truncate px-4 py-2 align-middle focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-slate-600"
       {...rest}
     >
-      <div className="flex items-center">{children}</div>
+      <div className={clx("flex items-center", className)}>{children}</div>
     </AriaCell>
   )
 }
