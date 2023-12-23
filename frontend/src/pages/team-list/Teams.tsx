@@ -1,7 +1,6 @@
 import { assertNever } from "@/assert"
 import { Loader } from "@/components/Loader"
 import { Link } from "@/components/Routing"
-import { formatHumanDateTime } from "@/date"
 import {
   Cell,
   Column,
@@ -9,7 +8,8 @@ import {
   Table,
   TableBody,
   TableHeader,
-} from "@/pages/team-list/Table"
+} from "@/components/Table"
+import { formatHumanDateTime } from "@/date"
 import { pathTeamDetail } from "@/paths"
 import { useTeamList } from "@/queries/teamList"
 

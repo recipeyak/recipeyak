@@ -31,7 +31,7 @@ class TeamSerializer(BaseModelSerializer):
 
     class Meta:
         model = Team
-        fields = ("id", "name", "emails", "level")
+        fields = ("id", "name", "emails", "level", "created")
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         # Don't pass the 'fields' arg up to the superclass
@@ -64,7 +64,7 @@ class MembershipSerializer(BaseModelSerializer):
     class Meta:
         model = Membership
         editable = False
-        fields = ("id", "user", "level", "is_active")
+        fields = ("id", "user", "level", "is_active", "created")
 
     def validate_level(self, level: str) -> str:
         team = self.instance.team
@@ -87,7 +87,7 @@ class InviteSerializer(BaseModelSerializer):
     class Meta:
         model = Invite
         editable = False
-        fields = ("id", "user", "team", "active", "creator", "status")
+        fields = ("id", "user", "team", "active", "creator", "status", "created")
 
 
 class CreateInviteSerializer(BaseSerializer):

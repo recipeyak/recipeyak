@@ -11,8 +11,6 @@ import { Helmet } from "@/components/Helmet"
 import { Label } from "@/components/Label"
 import { Loader } from "@/components/Loader"
 import { NavPage } from "@/components/Page"
-import { Tab, Tabs } from "@/components/Tabs"
-import { formatHumanDateTime } from "@/date"
 import {
   Cell,
   Column,
@@ -20,7 +18,9 @@ import {
   Table,
   TableBody,
   TableHeader,
-} from "@/pages/team-list/Table"
+} from "@/components/Table"
+import { Tab, Tabs } from "@/components/Tabs"
+import { formatHumanDateTime } from "@/date"
 import { pathProfileById } from "@/paths"
 import { useTeamDelete } from "@/queries/teamDelete"
 import { IMember, useTeam } from "@/queries/teamFetch"

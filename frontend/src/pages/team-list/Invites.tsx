@@ -5,7 +5,6 @@ import { clx } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
 import { Button } from "@/components/Buttons"
 import { Loader } from "@/components/Loader"
-import { formatHumanDateTime } from "@/date"
 import {
   Cell,
   Column,
@@ -13,7 +12,8 @@ import {
   Table,
   TableBody,
   TableHeader,
-} from "@/pages/team-list/Table"
+} from "@/components/Table"
+import { formatHumanDateTime } from "@/date"
 import { pathProfileById, pathTeamDetail } from "@/paths"
 import { useInviteAccept } from "@/queries/inviteAccept"
 import { useInviteDecline } from "@/queries/inviteDecline"
