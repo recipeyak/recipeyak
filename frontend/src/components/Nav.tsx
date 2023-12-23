@@ -172,7 +172,7 @@ function NavButtons() {
   const teamId = useTeamId()
   return (
     <div className="relative flex items-center justify-center gap-2 justify-self-end">
-      <div className="flex gap-2 print:!hidden">
+      <div className="flex print:!hidden sm:gap-2">
         <NavLink
           to={pathRecipeAdd({})}
           className={navItemCss}
@@ -305,7 +305,7 @@ function Search() {
 export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
   const isLoggedIn = useIsLoggedIn()
   return (
-    <nav className="flex h-[3.5rem] shrink-0 justify-between px-3 pb-1 print:!hidden md:grid md:grid-cols-3">
+    <nav className="flex h-[3.5rem] shrink-0 justify-between gap-1 px-3 pb-1 print:!hidden md:grid md:grid-cols-3">
       <div className="flex items-center justify-start gap-2">
         <Link
           to={pathHome({})}
@@ -315,15 +315,15 @@ export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
         >
           <Logo width="40px" />
         </Link>
-        <Link to={pathHome({})} className={clx(navItemCss, "")}>
+        <Link to={pathHome({})} className={clx(navItemCss, "hidden sm:block")}>
           {isLoggedIn ? (
-            <span className="hidden font-medium sm:block">Home</span>
+            <span className="font-medium ">Home</span>
           ) : (
             <WordMark />
           )}
         </Link>
       </div>
-      <div className="ml-3 flex grow items-center">
+      <div className="flex grow items-center">
         {includeSearch && <Search />}
       </div>
       {isLoggedIn ? <NavButtons /> : <AuthButtons />}
