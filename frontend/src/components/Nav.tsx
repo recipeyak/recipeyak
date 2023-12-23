@@ -315,9 +315,9 @@ export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
         >
           <Logo width="40px" />
         </Link>
-        <Link to={pathHome({})} className={clx(navItemCss, "")}>
+        <Link to={pathHome({})} className={clx(navItemCss, "hidden sm:block")}>
           {isLoggedIn ? (
-            <span className="hidden font-medium sm:block">Home</span>
+            <span className="font-medium ">Home</span>
           ) : (
             <WordMark />
           )}
