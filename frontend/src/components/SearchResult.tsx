@@ -1,4 +1,3 @@
-import React from "react"
 import { Link } from "react-router-dom"
 
 import { clx } from "@/classnames"
@@ -7,28 +6,13 @@ import { pathRecipeDetail, pathRecipesList } from "@/paths"
 import { RecipeListItem } from "@/queries/recipeList"
 import { Match } from "@/search"
 
-function SuggestionBox({
-  children,
-  onClick,
-}: {
-  children: React.ReactNode
-  onClick?: () => void
-}) {
-  return (
-    <div
-      onClick={onClick}
-      className="inline-grid w-full rounded-[5px] border border-solid border-[var(--color-border)] bg-[var(--color-background-card)] p-1"
-      children={children}
-    />
-  )
-}
-
 const stylesSuggestion = "p-1 overflow-x-hidden whitespace-nowrap text-ellipsis"
 
 const styleSuggestionInfo = clx(
   "text-center text-[var(--color-text-muted)]",
   stylesSuggestion,
 )
+
 export function SearchResult({
   isLoading,
   searchResults,
@@ -89,7 +73,10 @@ export function SearchResult({
     })
     .slice(0, 7)
   return (
-    <SuggestionBox onClick={onClick}>
+    <div
+      onClick={onClick}
+      className="inline-grid w-full rounded-[5px] border border-solid border-[var(--color-border)] bg-[var(--color-background-card)] p-1"
+    >
       {!isLoading ? (
         <>
           {searchResults.length === 0 && (
@@ -98,7 +85,7 @@ export function SearchResult({
           {suggestions}
           <div
             className={clx(
-              "mt-2 flex justify-between border-[0] border-t border-solid border-[#f2f2f2]",
+              "mt-2 flex justify-between border-[0] border-t border-solid border-[var(--color-border)]",
               stylesSuggestion,
             )}
           >
@@ -120,6 +107,6 @@ export function SearchResult({
       ) : (
         <div className={styleSuggestionInfo}>Loading...</div>
       )}
-    </SuggestionBox>
+    </div>
   )
 }

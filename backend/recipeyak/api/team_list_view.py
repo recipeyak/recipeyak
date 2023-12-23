@@ -12,7 +12,6 @@ from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.serializers.team import TeamSerializer
-from recipeyak.api.team_detail_view import get_teams
 from recipeyak.models.team import Team
 
 
@@ -27,8 +26,6 @@ class TeamResponse(BaseModel):
 @permission_classes([IsAuthenticated])
 def team_list_view(request: AuthedRequest) -> Response:
     if request.method == "GET":
-        teams = get_teams(request.user)
-
         with connection.cursor() as cursor:
             cursor.execute(
                 """
