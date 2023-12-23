@@ -172,7 +172,7 @@ function NavButtons() {
   const teamId = useTeamId()
   return (
     <div className="relative flex items-center justify-center gap-2 justify-self-end">
-      <div className="flex gap-2 print:!hidden">
+      <div className="flex print:!hidden sm:gap-2">
         <NavLink
           to={pathRecipeAdd({})}
           className={navItemCss}
