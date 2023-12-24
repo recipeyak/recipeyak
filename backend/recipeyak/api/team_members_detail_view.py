@@ -17,6 +17,7 @@ from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.team_detail_view import is_team_admin
 from recipeyak.models import Membership, Team
+from recipeyak.models.membership import DemoteLastAdminError
 from recipeyak.models.user import get_avatar_url
 
 
@@ -52,7 +53,7 @@ def team_members_detail_view(request: AuthedRequest, team_pk: int, pk: str) -> R
             return Response(status=403)
         try:
             membership.delete()
-        except ValueError as e:
+        except DemoteLastAdminError as e:
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_204_NO_CONTENT)
     elif request.method == "PATCH":
@@ -61,7 +62,11 @@ def team_members_detail_view(request: AuthedRequest, team_pk: int, pk: str) -> R
         params = UpdateMembershipParams.parse_obj(request.data)
         membership = get_object_or_404(get_team_members(team), pk=pk)
         membership.level = params.level
-        membership.save()
+        try:
+            membership.save()
+        except DemoteLastAdminError as e:
+            return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
+
         return Response(
             TeamMemberResponse(
                 id=membership.id,
