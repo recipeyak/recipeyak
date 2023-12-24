@@ -74,14 +74,6 @@ class Team(CommonInfo):
             email=user.email, team=self, level=level, creator=creator
         )
 
-    def kick_user(self, user: User) -> None:
-        """
-        Remove user from team. If they have an invite, remove it as well.
-        """
-        membership = Membership.objects.filter(user=user).get(team=self)
-        # delete membership. By deleting, associated invites will be deleted.
-        membership.delete()
-
     def admins(self) -> QuerySet[Membership]:
         return Membership.objects.filter(team=self).filter(
             is_active=True, level=Membership.ADMIN

@@ -9,7 +9,7 @@ from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import RequestParams
-from recipeyak.api.serializers.user import UserSerializer as UserDetailsSerializer
+from recipeyak.api.serializers.user import UserSerializer
 
 
 def user_detail_delete_view(request: AuthedRequest) -> Response:
@@ -19,7 +19,7 @@ def user_detail_delete_view(request: AuthedRequest) -> Response:
 
 
 def user_detail_get_view(request: AuthedRequest) -> Response:
-    serializer = UserDetailsSerializer(request.user)
+    serializer = UserSerializer(request.user)
     return Response(serializer.data)
 
 
@@ -58,7 +58,7 @@ def user_detail_patch_view(request: AuthedRequest) -> Response:
             request.user.theme_mode = params.theme_mode
         request.user.save()
 
-    serializer = UserDetailsSerializer(request.user)
+    serializer = UserSerializer(request.user)
     return Response(serializer.data)
 
 

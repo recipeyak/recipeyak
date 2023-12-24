@@ -31,16 +31,6 @@ def test_team_force_join(
     assert not user3.has_invite(empty_team), "Invite should be removed"
 
 
-def test_team_kick_user(client: APIClient, team: Team, user: User, user2: User) -> None:
-    """
-    Remove member from team. If they have an invite to team, cancel it.
-    """
-    assert team.is_member(user)
-    team.force_join(user2)
-    team.kick_user(user)
-    assert not team.is_member(user)
-
-
 def test_team_is_member(client: APIClient, team: Team, user: User, user2: User) -> None:
     assert not team.is_member(user2), "User2 should not not be a default team member"
     assert team.is_member(user), "User should be a default team member"

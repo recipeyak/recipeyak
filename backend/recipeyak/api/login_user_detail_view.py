@@ -11,7 +11,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from recipeyak.api.base.serialization import RequestParams
-from recipeyak.api.serializers.user import UserSerializer as UserDetailsSerializer
+from recipeyak.api.serializers.user import UserSerializer
 
 
 class LoginUserParams(RequestParams):
@@ -38,6 +38,4 @@ def login_user_detail_view(request: Request, *args: Any, **kwargs: Any) -> Respo
 
     login(request, user)
 
-    return Response(
-        {"user": UserDetailsSerializer(user).data}, status=status.HTTP_200_OK
-    )
+    return Response({"user": UserSerializer(user).data}, status=status.HTTP_200_OK)

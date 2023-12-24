@@ -5,12 +5,14 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
-from recipeyak.api.user_invites_list_view import get_invites
+from recipeyak.models.invite import Invite
 
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def user_invites_decline_view(request: AuthedRequest, pk: int) -> Response:
-    invite = get_object_or_404(get_invites(request.user), id=pk)
+    invite = get_object_or_404(
+        Invite.objects.filter(membership__user=request.user), id=pk
+    )
     invite.decline()
     return Response({"detail": "declined invite"}, status=status.HTTP_200_OK)

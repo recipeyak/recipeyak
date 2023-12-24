@@ -4,6 +4,7 @@ import React from "react"
 import { RouteComponentProps } from "react-router"
 
 import { assertNever } from "@/assert"
+import { Avatar } from "@/components/Avatar"
 import { Box } from "@/components/Box"
 import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
@@ -11,24 +12,6 @@ import { NavPage } from "@/components/Page"
 import { Link } from "@/components/Routing"
 import { pathRecipeDetail } from "@/paths"
 import { useUserById } from "@/queries/userById"
-
-interface IProfileImgProps {
-  readonly avatarURL: string
-}
-function ProfileImg({ avatarURL }: IProfileImgProps) {
-  const size = 96
-  return (
-    <a href="https://secure.gravatar.com" className="justify-self-center ">
-      <img
-        width={size}
-        height={size}
-        alt="user profile"
-        className="rounded-md"
-        src={avatarURL + `&s=${size}`}
-      />
-    </a>
-  )
-}
 
 // icons from: https://lucide.dev
 
@@ -193,7 +176,7 @@ export function ProfilePage(props: RouteComponentProps<{ userId: string }>) {
         <Helmet title="Profile" />
 
         <Box dir="col" align="center">
-          <ProfileImg avatarURL={userInfo.data.avatar_url} />
+          <Avatar avatarURL={userInfo.data.avatar_url} size={96} />
           <span className="text-2xl">{userInfo.data.name}</span>
           <span>Joined {joinedDateStr}</span>
         </Box>

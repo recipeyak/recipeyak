@@ -1,37 +1,31 @@
 from __future__ import annotations
 
-import dataclasses
-from typing import Any, cast
+from datetime import datetime
+from typing import Literal
 
+import pydantic
 from django.utils import timezone
-from rest_framework import serializers, status
+from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from user_sessions.models import Session
 
 from recipeyak import user_agent
 from recipeyak.api.base.request import AuthedRequest
-from recipeyak.api.base.serialization import BaseModelSerializer
 
 
-class SessionSerializer(BaseModelSerializer):
-    id = serializers.CharField(source="pk")
-    device = serializers.SerializerMethodField()
-    current = serializers.SerializerMethodField()
+class DeviceResponse(pydantic.BaseModel):
+    kind: Literal["mobile", "desktop"] | None
+    os: str | None
+    browser: str | None
 
-    class Meta:
-        model = Session
-        editable = False
-        fields = ("id", "device", "current", "last_activity", "ip")
 
-    def get_device(self, obj: Session) -> dict[str, Any]:
-        ua = obj.user_agent
-        assert ua is not None
-        return dataclasses.asdict(user_agent.parse(ua))
-
-    def get_current(self, obj: Session) -> bool:
-        return cast(bool, obj.pk == self.context["request"].session.session_key)
+class SessionResponse(pydantic.BaseModel):
+    id: str
+    device: DeviceResponse
+    last_activity: datetime
+    ip: str | None
+    current: bool
 
 
 @api_view(["GET", "DELETE"])
@@ -45,8 +39,18 @@ def sessions_list_view(request: AuthedRequest) -> Response:
 
     qs = query_set.filter(expire_date__gt=timezone.now()).order_by("-last_activity")
 
-    return Response(
-        SessionSerializer(
-            qs, many=True, context={"request": request}, dangerously_allow_db=True
-        ).data
-    )
+    sessions = list[SessionResponse]()
+    for s in qs:
+        assert s.user_agent is not None
+        ua = user_agent.parse(s.user_agent)
+        sessions.append(
+            SessionResponse(
+                id=s.session_key,
+                device=DeviceResponse(kind=ua.kind, os=ua.os, browser=ua.browser),
+                last_activity=s.last_activity,
+                ip=s.ip,
+                current=s.session_key == request.session.session_key,
+            )
+        )
+
+    return Response(sessions)
