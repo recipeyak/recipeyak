@@ -7,9 +7,10 @@ const avatarCss =
 function UserProfileImage({
   onClick,
   tabIndex,
-  className: cls,
+  className,
   size,
-  ...rest
+  alt,
+  src,
 }: {
   onClick: (() => void) | undefined
   tabIndex?: number
@@ -18,16 +19,15 @@ function UserProfileImage({
   src: string
   alt: string
 }) {
-  const className = clx(cls, avatarCss)
   return (
     <img
-      className={className}
+      className={clx(className, getAvatarCss(size))}
       onClick={onClick}
       tabIndex={tabIndex}
       width={size}
       height={size}
-      alt={rest.alt}
-      src={rest.src}
+      alt={alt}
+      src={src}
     />
   )
 }
@@ -35,7 +35,7 @@ function UserProfileImage({
 function UserProfileImagePlaceholder({
   onClick,
   tabIndex,
-  className: cls,
+  className,
   size,
 }: {
   onClick: (() => void) | undefined
@@ -43,8 +43,17 @@ function UserProfileImagePlaceholder({
   className?: string
   size: 30 | 72 | 96
 }) {
-  const className = clx(
-    cls,
+  return (
+    <div
+      className={clx(className, getAvatarCss(size))}
+      onClick={onClick}
+      tabIndex={tabIndex}
+    />
+  )
+}
+
+function getAvatarCss(size: 30 | 72 | 96) {
+  return clx(
     avatarCss,
     size === 30
       ? "h-[30px] w-[30px] min-w-[30px]"
@@ -54,8 +63,6 @@ function UserProfileImagePlaceholder({
           ? "h-[96px] w-[96px] min-w-[96px]"
           : assertNever(size),
   )
-
-  return <div className={className} onClick={onClick} tabIndex={tabIndex} />
 }
 
 export function Avatar({
