@@ -19,7 +19,7 @@ from recipeyak.models.user import get_avatar_url
 
 class UserResponse(pydantic.BaseModel):
     id: int
-    name: str
+    name: str | None
     avatar_url: str
     email: str
 
@@ -57,20 +57,30 @@ where
                 },
             )
             rows = cursor.fetchall()
-        members = [
-            TeamMemberResponse(
-                id=membership_id,
-                created=membership_created,
-                level=membership_level,
-                user=UserResponse(
-                    id=user_id,
-                    name=user_name,
-                    avatar_url=get_avatar_url(user_email),
-                    email=user_email,
-                ),
+        members = list[TeamMemberResponse]()
+        for (
+            membership_id,
+            membership_created,
+            membership_level,
+            user_id,
+            user_name,
+            user_email,
+        ) in rows:
+            avatar_url = get_avatar_url(user_email)
+            user = UserResponse(
+                id=user_id,
+                name=user_name,
+                avatar_url=avatar_url,
+                email=user_email,
             )
-            for membership_id, membership_created, membership_level, user_id, user_name, user_email in rows
-        ]
+            members.append(
+                TeamMemberResponse(
+                    id=membership_id,
+                    created=membership_created,
+                    level=membership_level,
+                    user=user,
+                )
+            )
         return Response(members)
     else:
         raise MethodNotAllowed(request.method or "")

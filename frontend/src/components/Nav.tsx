@@ -38,14 +38,6 @@ import { useGlobalEvent } from "@/useGlobalEvent"
 import { useTeamId } from "@/useTeamId"
 import { useUser } from "@/useUser"
 
-interface IUserAvatarProps {
-  readonly onClick?: () => void
-  readonly url: string
-}
-function UserAvatar({ onClick, url }: IUserAvatarProps) {
-  return <Avatar onClick={onClick} avatarURL={url} />
-}
-
 function UserDropdown() {
   const user = useUser()
 
@@ -90,7 +82,7 @@ function UserDropdown() {
   return (
     <MenuTrigger>
       <Button className="flex cursor-pointer items-center justify-center rounded-full border-none bg-[unset] p-0 focus-visible:outline focus-visible:outline-[3px] focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)]">
-        <UserAvatar url={user.avatarURL} />
+        <Avatar avatarURL={user.avatarURL} />
       </Button>
       <Popover className="w-56 origin-top-left overflow-auto rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-calendar-day)] p-2 shadow-lg outline-none">
         <Menu
