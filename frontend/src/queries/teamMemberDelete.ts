@@ -2,12 +2,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 
 import { http } from "@/http"
-import { IMember, ITeam } from "@/queries/teamFetch"
 import { setQueryDataTeamMemberList } from "@/queries/teamMembersList"
 import { unwrapResult } from "@/query"
 import { toast } from "@/toast"
 
-const deleteTeamMember = (teamID: ITeam["id"], memberID: IMember["id"]) =>
+const deleteTeamMember = (teamID: number, memberID: number) =>
   http.delete(`/api/v1/t/${teamID}/members/${memberID}/`)
 
 export function useTeamMemberDelete() {

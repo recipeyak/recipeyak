@@ -11,8 +11,13 @@ import { StepView } from "@/pages/recipe-detail/Step"
 import { pathRecipeDetail } from "@/paths"
 import { useCookChecklistFetch } from "@/queries/cookChecklistFetch"
 import { useCookChecklistUpdate } from "@/queries/cookChecklistUpdate"
-import { IIngredient, INote, IStep } from "@/queries/recipeFetch"
+import { PickVariant } from "@/queries/queryUtilTypes"
+import { RecipeFetchResponse as Recipe } from "@/queries/recipeFetch"
 import { notEmpty } from "@/text"
+
+type Ingredient = Recipe["ingredients"][number]
+type Step = Recipe["steps"][number]
+type Note = PickVariant<Recipe["timelineItems"][number], "note">
 
 function useIngredients(recipeId: number) {
   const {
@@ -38,7 +43,7 @@ function Ingredients({
   recipeId,
   sections,
 }: {
-  ingredients: readonly IIngredient[]
+  ingredients: readonly Ingredient[]
   recipeId: number
   readonly sections: readonly {
     readonly id: number
@@ -115,7 +120,7 @@ function Ingredients({
     </div>
   )
 }
-function Steps({ steps }: { steps: readonly IStep[] }) {
+function Steps({ steps }: { steps: readonly Step[] }) {
   const [selectedStep, setSelectedStep] = useState<number | undefined>()
   return (
     <div
@@ -163,7 +168,7 @@ function Notes({
   notes,
   recipeId,
 }: {
-  notes: readonly INote[]
+  notes: readonly Note[]
   recipeId: number
 }) {
   if (notes.length === 0) {
@@ -195,14 +200,14 @@ export function CookingFullscreen({
   readonly recipeId: number
   readonly recipeName: string
   readonly recipeSource: string | null
-  readonly ingredients: readonly IIngredient[]
+  readonly ingredients: readonly Ingredient[]
   readonly sections: readonly {
     readonly id: number
     readonly title: string
     readonly position: string
   }[]
-  readonly steps: readonly IStep[]
-  readonly notes: readonly INote[]
+  readonly steps: readonly Step[]
+  readonly notes: readonly Note[]
 }) {
   const [tab, setTab] = useState<"ingredients" | "steps" | "notes">(
     "ingredients",

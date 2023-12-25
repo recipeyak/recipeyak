@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query"
 
 import { http } from "@/http"
-import { IUser } from "@/queries/userFetch"
 import { unwrapResult } from "@/query"
+import { Theme, ThemeMode } from "@/themeConstants"
 
 const resetPasswordConfirm = (
   uid: string,
@@ -10,7 +10,16 @@ const resetPasswordConfirm = (
   newPassword1: string,
   newPassword2: string,
 ) =>
-  http.post<IUser>("/api/v1/auth/password/reset/confirm/", {
+  http.post<{
+    readonly id: number
+    readonly name: string
+    readonly avatar_url: string
+    readonly email: string
+    readonly theme_day: Theme
+    readonly theme_night: Theme
+    readonly theme_mode: ThemeMode
+    readonly schedule_team: number | null
+  }>("/api/v1/auth/password/reset/confirm/", {
     uid,
     token,
     new_password1: newPassword1,

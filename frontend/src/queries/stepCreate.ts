@@ -2,16 +2,16 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
 
 import { http } from "@/http"
-import { IRecipe, IStep } from "@/queries/recipeFetch"
+import { setQueryDataRecipe } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
 import { useTeamId } from "@/useTeamId"
 
-const addStepToRecipe = (
-  recipeID: IRecipe["id"],
-  step: string,
-  position: string,
-) =>
-  http.post<IStep>(`/api/v1/recipes/${recipeID}/steps/`, {
+const addStepToRecipe = (recipeID: number, step: string, position: string) =>
+  http.post<{
+    readonly id: number
+    readonly text: string
+    readonly position: string
+  }>(`/api/v1/recipes/${recipeID}/steps/`, {
     text: step,
     position,
   })
@@ -30,9 +30,10 @@ export function useStepCreate() {
       position: string
     }) => addStepToRecipe(recipeId, step, position).then(unwrapResult),
     onSuccess: (res, vars) => {
-      queryClient.setQueryData<IRecipe>(
-        [teamId, "recipes", vars.recipeId],
-        (prev) => {
+      setQueryDataRecipe(queryClient, {
+        teamId,
+        recipeId: vars.recipeId,
+        updater: (prev) => {
           if (prev == null) {
             return prev
           }
@@ -40,7 +41,7 @@ export function useStepCreate() {
             recipe.steps.push(res)
           })
         },
-      )
+      })
     },
   })
 }

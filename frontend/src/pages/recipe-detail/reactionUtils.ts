@@ -1,8 +1,14 @@
 import { ReactionType } from "@/pages/recipe-detail/Reactions"
-import { Reaction } from "@/queries/recipeFetch"
+import { PickVariant } from "@/queries/queryUtilTypes"
+import { RecipeFetchResponse as Recipe } from "@/queries/recipeFetch"
+
+type Reaction = PickVariant<
+  Recipe["timelineItems"][number],
+  "note"
+>["reactions"][number]
 
 export function findReaction(
-  reactions: Reaction[],
+  reactions: readonly Reaction[],
   type: ReactionType,
   userId: number,
 ) {

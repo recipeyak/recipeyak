@@ -1,4 +1,3 @@
-import { IIngredient } from "@/queries/recipeFetch"
 import { RecipeListItem } from "@/queries/recipeList"
 import { queryMatchesRecipe, searchRecipes } from "@/search"
 
@@ -26,7 +25,7 @@ function createRecipe(properties: {
   }
 }
 
-function createIngredient(properties?: Partial<IIngredient>): IIngredient {
+function createIngredient(properties?: { name: string }) {
   return {
     id: 50394,
     quantity: "1 pound",

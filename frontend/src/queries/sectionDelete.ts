@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
 
 import { http } from "@/http"
-import { IRecipe } from "@/queries/recipeFetch"
+import { setQueryDataRecipe } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
 import { useTeamId } from "@/useTeamId"
 
@@ -17,9 +17,10 @@ export function useSectionDelete() {
     mutationFn: ({ sectionId }: { recipeId: number; sectionId: number }) =>
       deleteSection({ sectionId }).then(unwrapResult),
     onSuccess: (_res, vars) => {
-      queryClient.setQueryData<IRecipe>(
-        [teamId, "recipes", vars.recipeId],
-        (prev) => {
+      setQueryDataRecipe(queryClient, {
+        teamId,
+        recipeId: vars.recipeId,
+        updater: (prev) => {
           if (prev == null) {
             return prev
           }
@@ -27,7 +28,7 @@ export function useSectionDelete() {
             r.sections = r.sections.filter((x) => x.id !== vars.sectionId)
           })
         },
-      )
+      })
     },
   })
 }

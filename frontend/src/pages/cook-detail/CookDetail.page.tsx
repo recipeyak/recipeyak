@@ -6,11 +6,18 @@ import { Meta } from "@/components/Meta"
 import { NavPage } from "@/components/Page"
 import { CookingFullscreen } from "@/pages/cook-detail/CookingFullscreen"
 import { pathCookDetail } from "@/paths"
-import { INote, TimelineItem, useRecipeFetch } from "@/queries/recipeFetch"
+import { PickVariant } from "@/queries/queryUtilTypes"
+import {
+  RecipeFetchResponse as Recipe,
+  useRecipeFetch,
+} from "@/queries/recipeFetch"
 import { formatImgOpenGraph } from "@/url"
 import { useAddSlugToUrl } from "@/useAddSlugToUrl"
 
-function isNote(x: TimelineItem): x is INote {
+type TimelineItem = Recipe["timelineItems"][number]
+type Note = PickVariant<TimelineItem, "note">
+
+function isNote(x: TimelineItem): x is Note {
   return x.type === "note"
 }
 

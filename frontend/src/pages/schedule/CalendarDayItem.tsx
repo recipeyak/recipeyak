@@ -6,17 +6,18 @@ import { clx } from "@/classnames"
 import { isInsideChangeWindow } from "@/date"
 import { DragDrop } from "@/dragDrop"
 import { CalendarDayItemModal } from "@/pages/schedule/CalendarDayItemModal"
-import { IRecipe } from "@/queries/recipeFetch"
 import { recipeURL } from "@/urls"
 import { useGlobalEvent } from "@/useGlobalEvent"
 
-interface IRecipeLink {
-  readonly id: IRecipe["id"] | string
-  readonly name: IRecipe["name"]
+function RecipeLink({
+  name,
+  id,
+  onClick,
+}: {
+  readonly id: number | string
+  readonly name: string
   readonly onClick: (e: React.MouseEvent) => void
-}
-
-function RecipeLink({ name, id, onClick }: IRecipeLink) {
+}) {
   const to = recipeURL(id, name)
   return (
     <Link

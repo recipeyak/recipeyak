@@ -23,14 +23,10 @@ import { pathProfileById } from "@/paths"
 import { useNoteCreate } from "@/queries/noteCreate"
 import { useNoteDelete } from "@/queries/noteDelete"
 import { useNoteUpdate } from "@/queries/noteUpdate"
+import { PickVariant } from "@/queries/queryUtilTypes"
 import { useReactionCreate } from "@/queries/reactionCreate"
 import { useReactionDelete } from "@/queries/reactionDelete"
-import {
-  INote,
-  IRecipe,
-  RecipeTimelineItem,
-  Upload,
-} from "@/queries/recipeFetch"
+import { RecipeFetchResponse as Recipe } from "@/queries/recipeFetch"
 import * as api from "@/queries/uploadCreate"
 import { isOk } from "@/result"
 import { styled } from "@/theme"
@@ -40,9 +36,14 @@ import { imgixFmt } from "@/url"
 import { useUserId } from "@/useUserId"
 import { uuid4 } from "@/uuid"
 
+type RecipeTimelineItem = Recipe["timelineItems"][number]
+
+type Note = PickVariant<RecipeTimelineItem, "note">
+type Upload = Note["attachments"][number]
+
 interface IUseNoteEditHandlers {
-  readonly note: INote
-  readonly recipeId: IRecipe["id"]
+  readonly note: Note
+  readonly recipeId: number
 }
 function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
   const [draftText, setNewText] = useState(note.text)
@@ -50,7 +51,7 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
     setNewText(note.text)
   }, [note.text])
   const [isEditing, setIsEditing] = React.useState(false)
-  const [uploads, setUploads] = React.useState<UploadSuccess[]>(
+  const [uploads, setUploads] = React.useState<readonly UploadSuccess[]>(
     note.attachments.map((x) => ({ ...x, localId: x.id })),
   )
 
@@ -116,7 +117,9 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
     },
     removeUploads: (localIds: string[]) => {
       setUploads((s) => {
-        return s.filter((u) => !localIds.includes(u.localId))
+        return s.filter(
+          (u) => u.localId == null || !localIds.includes(u.localId),
+        )
       })
     },
     resetUploads: () => {
@@ -170,8 +173,8 @@ function SharedEntry({
 }
 
 interface INoteProps {
-  readonly note: INote
-  readonly recipeId: IRecipe["id"]
+  readonly note: Note
+  readonly recipeId: number
   readonly className?: string
   readonly openImage: (id: string) => void
 }
@@ -386,9 +389,16 @@ export function TimelineEvent({
   className,
 }: {
   readonly event: Pick<
-    RecipeTimelineItem,
-    "id" | "created_by" | "action" | "created" | "is_scraped"
-  >
+    PickVariant<RecipeTimelineItem, "recipe">,
+    "created" | "action" | "is_scraped"
+  > & {
+    id: string | number
+    created_by: {
+      id: string | number
+      name: string
+      avatar_url: string
+    } | null
+  }
   readonly enableLinking?: boolean
   readonly className?: string
 }) {
@@ -429,7 +439,7 @@ const blurNoteTextArea = () => {
 }
 
 interface IUseNoteCreatorHandlers {
-  readonly recipeId: IRecipe["id"]
+  readonly recipeId: number
 }
 
 // TODO: inline this function instead of having a hook
@@ -505,7 +515,9 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
     },
     removeUploads: (localIds: string[]) => {
       setUploads((s) => {
-        return s.filter((u) => !localIds.includes(u.localId))
+        return s.filter(
+          (u) => u.localId == null || !localIds.includes(u.localId),
+        )
       })
     },
     uploadedImages,
@@ -516,7 +528,7 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
 }
 
 interface INoteCreatorProps {
-  readonly recipeId: IRecipe["id"]
+  readonly recipeId: number
   readonly className?: string
 }
 
@@ -622,7 +634,7 @@ function FilePreview({
 function useFileUpload(
   addUploads: (upload: UploadSuccess) => void,
   removeUploads: (uploadIds: string[]) => void,
-  remoteFiles: Upload[],
+  remoteFiles: readonly UploadSuccess[],
   resetUploads: () => void,
   recipeId: number,
 ) {
@@ -692,8 +704,11 @@ function useFileUpload(
     }
   }
 
-  const removeFile = (localId: string) => {
+  const removeFile = (localId: string | undefined) => {
     setLocalImages((s) => s.filter((x) => x.localId !== localId))
+    if (localId == null) {
+      return
+    }
     removeUploads([localId])
   }
 
@@ -702,6 +717,7 @@ function useFileUpload(
     ...remoteFiles
       .filter(
         (i) =>
+          i.localId != null &&
           !localImages
             .map((x) => x.localId)
             .filter(notUndefined)
@@ -811,10 +827,10 @@ type InProgressUpload = {
   readonly state: FileUpload["state"]
 }
 
-type UploadSuccess = Upload
+type UploadSuccess = Upload & { localId?: string }
 
 type FileUpload = {
-  localId: string
+  localId: string | undefined
   url: string
   progress?: number
   contentType: string
@@ -827,7 +843,7 @@ function FileUploader({
   files,
 }: {
   addFiles: (files: FileList) => void
-  removeFile: (fileId: string) => void
+  removeFile: (fileId: string | undefined) => void
   files: FileUpload[]
 }) {
   return (
@@ -990,8 +1006,8 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
 }
 
 interface INoteContainerProps {
-  readonly recipeId: IRecipe["id"]
-  readonly timelineItems: IRecipe["timelineItems"]
+  readonly recipeId: number
+  readonly timelineItems: Recipe["timelineItems"]
   readonly openImage: (_: string) => void
 }
 export function NoteContainer(props: INoteContainerProps) {

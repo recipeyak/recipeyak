@@ -9,10 +9,12 @@ import Clock from "@/components/icons"
 import { Modal } from "@/components/Modal"
 import { formatDistanceToNow, formatHumanDate, toISODateString } from "@/date"
 import { pathSchedule } from "@/paths"
-import { RecentSchedule } from "@/queries/recipeFetch"
+import { RecipeFetchResponse as Recipe } from "@/queries/recipeFetch"
 import { useScheduleRecipeCreate } from "@/queries/scheduledRecipeCreate"
 import { addQueryParams } from "@/querystring"
 import { useTeamId } from "@/useTeamId"
+
+type RecentSchedule = Recipe["recentSchedules"][number]
 
 export function ScheduleModal({
   recipeName,

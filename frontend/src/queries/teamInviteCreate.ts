@@ -1,14 +1,13 @@
 import { useMutation } from "@tanstack/react-query"
 
 import { http } from "@/http"
-import { IMember, ITeam } from "@/queries/teamFetch"
 import { unwrapResult } from "@/query"
 import { toast } from "@/toast"
 
 const sendTeamInvites = (
-  teamID: ITeam["id"],
+  teamID: number,
   emails: string[],
-  level: IMember["level"],
+  level: "admin" | "contributor" | "read",
 ) => http.post<void>(`/api/v1/t/${teamID}/invites/`, { emails, level })
 
 export function useTeamInviteCreate() {

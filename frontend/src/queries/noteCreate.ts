@@ -1,21 +1,58 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { http } from "@/http"
-import { INote, IRecipe } from "@/queries/recipeFetch"
+import { setQueryDataRecipe } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
 import { useTeamId } from "@/useTeamId"
 
-interface IAddNoteToRecipe {
-  readonly recipeId: IRecipe["id"]
-  readonly note: string
-  readonly attachmentUploadIds: string[]
-}
 const addNoteToRecipe = ({
   recipeId,
   note,
   attachmentUploadIds,
-}: IAddNoteToRecipe) =>
-  http.post<INote>(`/api/v1/recipes/${recipeId}/notes/`, {
+}: {
+  readonly recipeId: number
+  readonly note: string
+  readonly attachmentUploadIds: string[]
+}) =>
+  http.post<{
+    readonly id: string
+    readonly type: "note"
+    readonly text: string
+    readonly created_by: {
+      readonly id: number
+      readonly name: string
+      readonly email: string
+      readonly avatar_url: string
+    }
+    readonly last_modified_by: {
+      readonly id: number
+      readonly name: string
+      readonly email: string
+      readonly avatar_url: string
+    } | null
+    readonly created: string
+    readonly reactions: ReadonlyArray<{
+      readonly id: string
+      readonly type: "❤️" | "😆" | "🤮"
+      readonly note_id: number
+      readonly user: {
+        readonly id: number
+        readonly name: string
+        readonly email: string
+        readonly avatar_url: string
+      }
+      readonly created: string
+    }>
+    readonly attachments: ReadonlyArray<{
+      readonly id: string
+      readonly url: string
+      readonly backgroundUrl: string
+      readonly isPrimary: boolean
+      readonly contentType: string
+      readonly type: "upload"
+    }>
+    readonly modified: string
+  }>(`/api/v1/recipes/${recipeId}/notes/`, {
     text: note,
     attachment_upload_ids: attachmentUploadIds,
   })
@@ -37,9 +74,10 @@ export function useNoteCreate() {
         unwrapResult,
       ),
     onSuccess: (res, vars) => {
-      queryClient.setQueryData<IRecipe>(
-        [teamId, "recipes", vars.recipeId],
-        (prev) => {
+      setQueryDataRecipe(queryClient, {
+        teamId,
+        recipeId: vars.recipeId,
+        updater: (prev) => {
           if (prev == null) {
             return prev
           }
@@ -48,7 +86,7 @@ export function useNoteCreate() {
             timelineItems: [...prev.timelineItems, res],
           }
         },
-      )
+      })
     },
   })
 }
