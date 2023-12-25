@@ -1,7 +1,7 @@
 import { QueryClient, useQuery } from "@tanstack/react-query"
 
 import { http } from "@/http"
-import { ResponseFromUse, ResponseFromUseQuery } from "@/queries/queryUtilTypes"
+import { ResponseFromUse } from "@/queries/queryUtilTypes"
 import { unwrapResult } from "@/query"
 
 const getTeam = (id: number) => http.get<{ name: string }>(`/api/v1/t/${id}/`)

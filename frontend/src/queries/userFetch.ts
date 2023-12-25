@@ -2,7 +2,7 @@ import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { login } from "@/auth"
 import { http } from "@/http"
-import { ResponseFromUse, ResponseFromUseQuery } from "@/queries/queryUtilTypes"
+import { ResponseFromUse } from "@/queries/queryUtilTypes"
 import { unwrapResult } from "@/query"
 import { Theme, ThemeMode } from "@/themeConstants"
 
