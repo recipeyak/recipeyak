@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 
 import { http } from "@/http"
-import { IRecipe } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
 import { useTeamId } from "@/useTeamId"
 
@@ -18,7 +17,7 @@ interface IScheduledRecipeEvent {
   readonly date: string
 }
 
-function toTimelineEvent(event: IRecipeTimelineEvent): ITimelineEvent {
+function toTimelineEvent(event: { id: number; on: string }): ITimelineEvent {
   return {
     type: "scheduled",
     id: event.id,
@@ -26,13 +25,8 @@ function toTimelineEvent(event: IRecipeTimelineEvent): ITimelineEvent {
   }
 }
 
-export interface IRecipeTimelineEvent {
-  readonly id: number
-  readonly on: string
-}
-
-const getRecipeTimeline = (id: IRecipe["id"]) =>
-  http.get<ReadonlyArray<IRecipeTimelineEvent>>(
+const getRecipeTimeline = (id: number) =>
+  http.get<ReadonlyArray<{ id: number; on: string }>>(
     `/api/v1/recipes/${id}/timeline`,
   )
 

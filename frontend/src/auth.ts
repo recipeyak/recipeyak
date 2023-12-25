@@ -1,9 +1,10 @@
 import * as Sentry from "@sentry/react"
 import { QueryClient } from "@tanstack/react-query"
 
-import { IUser } from "@/queries/userFetch"
+import { setQueryDataUser } from "@/queries/userFetch"
 import { removeItem, setItem } from "@/storage"
 import { themeSet } from "@/theme"
+import { Theme, ThemeMode } from "@/themeConstants"
 import { useLocalStorage } from "@/useLocalStorage"
 
 const LOGGED_IN_CACHE_KEY = "loggedIn"
@@ -20,19 +21,32 @@ export function logout(queryClient: QueryClient) {
   removeItem(LOGGED_IN_CACHE_KEY)
 }
 
-export function login(user: IUser, queryClient: QueryClient) {
+export function login(
+  user: {
+    readonly id: number
+    readonly name: string
+    readonly avatar_url: string
+    readonly email: string
+    readonly theme_day: Theme
+    readonly theme_night: Theme
+    readonly theme_mode: ThemeMode
+    readonly schedule_team: number | null
+  },
+  queryClient: QueryClient,
+) {
   Sentry.setUser({
     email: user.email,
     id: user.id,
   })
-
   themeSet({
     day: user.theme_day,
     night: user.theme_night,
     mode: user.theme_mode,
   })
-  queryClient.setQueryData<IUser>(["user-detail"], () => {
-    return user
+  setQueryDataUser(queryClient, {
+    updater: () => {
+      return user
+    },
   })
   setItem(LOGGED_IN_CACHE_KEY, "1")
 }

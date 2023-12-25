@@ -14,11 +14,14 @@ import { Chevron } from "@/components/icons"
 import { ScheduleModal } from "@/pages/recipe-detail/ScheduleModal"
 import { pathCookDetail, pathRecipeDetail } from "@/paths"
 import { useRecipeDelete } from "@/queries/recipeDelete"
-import { IIngredient, RecentSchedule } from "@/queries/recipeFetch"
+import { RecipeFetchResponse as Recipe } from "@/queries/recipeFetch"
 import { useRecipeUpdate } from "@/queries/recipeUpdate"
 import { toast } from "@/toast"
 
-function ingredientToString(ingre: IIngredient) {
+type RecentSchedule = Recipe["recentSchedules"][number]
+type Ingredient = Recipe["ingredients"][number]
+
+function ingredientToString(ingre: Ingredient) {
   const s = ingre.quantity.trim() + " " + ingre.name.trim()
   if (ingre.description) {
     return s + ", " + ingre.description.trim()
@@ -49,7 +52,7 @@ export function Dropdown({
   recipeId: number
   recipeName: string
   recipeIsArchived: boolean
-  recipeIngredients: readonly IIngredient[]
+  recipeIngredients: readonly Ingredient[]
   recipeRecentScheduleHistory: readonly RecentSchedule[]
   toggleEditing: () => void
   editingEnabled: boolean

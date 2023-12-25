@@ -39,14 +39,13 @@ import { Textarea } from "@/components/Forms"
 import { BetterLabel } from "@/components/Label"
 import { Markdown } from "@/components/Markdown"
 import { DragDrop, handleDndHover } from "@/dragDrop"
-import { IRecipe } from "@/queries/recipeFetch"
 import { useStepDelete } from "@/queries/stepDelete"
 import { useStepUpdate } from "@/queries/stepUpdate"
 
 interface IStepProps {
   readonly index: number
   readonly stepId: number
-  readonly recipeID: IRecipe["id"]
+  readonly recipeID: number
   readonly text: string
   readonly move: (_: { from: number; to: number }) => void
   readonly completeMove: (_: { id: number; to: number }) => void
@@ -120,7 +119,7 @@ function StepBody({
 }: {
   readonly stepId: number
   readonly text: string
-  readonly recipeID: IRecipe["id"]
+  readonly recipeID: number
   readonly isEditing: boolean
 }) {
   const [text, setText] = useState(propText)

@@ -9,7 +9,7 @@ export function TagEditor({
   tags,
   onChange,
 }: {
-  readonly tags: string[]
+  readonly tags: readonly string[]
   readonly onChange: (_: string[]) => void
 }) {
   const [newTag, setNewTag] = React.useState("")

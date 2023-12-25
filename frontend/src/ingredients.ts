@@ -1,11 +1,13 @@
 import { sortBy } from "lodash-es"
 
-import { IIngredient, IRecipe } from "@/queries/recipeFetch"
+import { RecipeFetchResponse as Recipe } from "@/queries/recipeFetch"
+
+type Ingredient = Recipe["ingredients"][number]
 
 export type SectionsAndIngredients = ReadonlyArray<
   | {
       readonly kind: "ingredient"
-      readonly item: IIngredient
+      readonly item: Ingredient
     }
   | {
       readonly kind: "section"
@@ -22,7 +24,7 @@ export type Mutable<T> = { -readonly [P in keyof T]-?: T[P] }
 export function getInitialIngredients({
   sections,
   ingredients,
-}: Pick<IRecipe, "sections" | "ingredients">): SectionsAndIngredients {
+}: Pick<Recipe, "sections" | "ingredients">): SectionsAndIngredients {
   const out: Mutable<SectionsAndIngredients> = []
   for (const s of sections) {
     out.push({

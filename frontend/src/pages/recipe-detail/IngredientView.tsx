@@ -1,18 +1,19 @@
 import { DragElementWrapper, DragSourceOptions } from "react-dnd"
 
 import { clx } from "@/classnames"
-import { IIngredient } from "@/queries/recipeFetch"
+import { RecipeFetchResponse as Recipe } from "@/queries/recipeFetch"
 import { normalizeUnitsFracs } from "@/text"
 import {
   THEME_CSS_BAKING_POWDER,
   THEME_CSS_BAKING_SODA,
 } from "@/themeConstants"
 
+type Ingredient = Recipe["ingredients"][number]
 interface IIngredientVIewProps {
-  readonly quantity: IIngredient["quantity"]
-  readonly name: IIngredient["name"]
-  readonly description: IIngredient["description"]
-  readonly optional: IIngredient["optional"]
+  readonly quantity: Ingredient["quantity"]
+  readonly name: Ingredient["name"]
+  readonly description: Ingredient["description"]
+  readonly optional: Ingredient["optional"]
   readonly dragRef: DragElementWrapper<DragSourceOptions> | undefined
 }
 
