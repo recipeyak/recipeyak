@@ -45,8 +45,8 @@ class ExportRecipe(pydantic.BaseModel):
     id: int
     name: str
     author: str | None
-    source: str | None
     time: str | None
+    source: str | None
     # # TODO: make sure we order these right
     ingredients: list[ExportIngredient | ExportSection]
     # # TODO: make sure we order these right
@@ -94,7 +94,7 @@ def serialize_export_recipe(recipe: Recipe) -> ExportRecipe:
     )
 
 
-def remove_empty_values(obj: dict[object, object]) -> dict[object, object]:
+def fmt_dict(obj: dict[object, object]) -> dict[object, object]:
     out = {}
     for k, v in obj.items():
         if v == []:
@@ -104,7 +104,8 @@ def remove_empty_values(obj: dict[object, object]) -> dict[object, object]:
         if v is False:
             continue
         out[k] = v
-    return out
+    # avoid pyyaml sorting non-sense
+    return OrderedDict(out)
 
 
 def pydantic_to_dict(obj: object) -> object:
@@ -117,11 +118,11 @@ def pydantic_to_dict(obj: object) -> object:
                 obj_dict[attr_name] = pydantic_to_dict(attr_value)
             if isinstance(attr_value, str) and attr_value == "":
                 obj_dict[attr_name] = None
-        return remove_empty_values(obj_dict)
+        return fmt_dict(obj_dict)
     if isinstance(obj, list):
         return [pydantic_to_dict(item) for item in obj]
     if isinstance(obj, dict):
-        return remove_empty_values(obj)
+        return fmt_dict(obj)
     return obj
 
 

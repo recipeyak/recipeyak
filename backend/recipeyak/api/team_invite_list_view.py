@@ -1,5 +1,6 @@
 from typing import Literal
 
+import pydantic
 from django.db import transaction
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -18,6 +19,10 @@ class CreateInviteSerializer(RequestParams):
     level: Literal["admin", "contributor", "read"]
 
 
+class CreateInviteResponse(pydantic.BaseModel):
+    invite_ids: list[int]
+
+
 @api_view(["POST"])
 @permission_classes([IsAuthenticated, IsTeamMember])
 def team_invite_list_view(request: AuthedRequest, team_pk: int) -> Response:
@@ -30,9 +35,13 @@ def team_invite_list_view(request: AuthedRequest, team_pk: int) -> Response:
     team = Team.objects.get(pk=team_pk)
     params = CreateInviteSerializer.parse_obj(request.data)
     with transaction.atomic():
+        invite_ids = list[int]()
         for email in params.emails:
-            if not team.invite_exists(email):
-                Invite.objects.create_invite(
+            if email and not team.invite_exists(email):
+                invite = Invite.objects.create_invite(
                     email=email, team=team, level=params.level, creator=request.user
                 )
-    return Response(status=status.HTTP_201_CREATED)
+                invite_ids.append(invite.id)
+    return Response(
+        CreateInviteResponse(invite_ids=invite_ids), status=status.HTTP_201_CREATED
+    )
