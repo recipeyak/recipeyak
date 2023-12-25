@@ -55,7 +55,7 @@ class ExportRecipe(pydantic.BaseModel):
 
 
 def serialize_export_recipe(recipe: Recipe) -> ExportRecipe:
-    sections_and_ingredients = list[tuple[str, str]]()
+    sections_and_ingredients = list[tuple[str, ExportSection | ExportIngredient]]()
     for ingredient in recipe.ingredient_set.all():
         sections_and_ingredients.append(
             (
@@ -94,7 +94,7 @@ def serialize_export_recipe(recipe: Recipe) -> ExportRecipe:
     )
 
 
-def fmt_dict(obj: dict[object, object]) -> dict[object, object]:
+def fmt_dict(obj: dict[str, object]) -> dict[str, object]:
     out = {}
     for k, v in obj.items():
         if v == []:

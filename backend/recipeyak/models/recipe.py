@@ -110,6 +110,7 @@ class Recipe(CommonInfo):
     scheduledrecipe_set: QuerySet[ScheduledRecipe]
     timelineevent_set: QuerySet[TimelineEvent]
     section_set: QuerySet[Section]
+    step_set: QuerySet[Step]
 
     def __str__(self) -> str:
         return f"{self.name} by {self.author}"
