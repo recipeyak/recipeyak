@@ -87,13 +87,20 @@ export function Section({
         <form
           onSubmit={(e) => {
             e.preventDefault()
-            updateSection.mutate({
-              recipeId,
-              sectionId,
-              update: {
-                title: localTitle,
+            updateSection.mutate(
+              {
+                recipeId,
+                sectionId,
+                update: {
+                  title: localTitle,
+                },
               },
-            })
+              {
+                onSuccess: () => {
+                  setIsEditing(false)
+                },
+              },
+            )
           }}
         >
           <div className="my-2">

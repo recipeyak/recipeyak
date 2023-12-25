@@ -11,7 +11,7 @@ from recipeyak import ordering
 from recipeyak.api.base.permissions import has_recipe_access
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import RequestParams
-from recipeyak.api.serializers.recipe import SectionSerializer
+from recipeyak.api.serializers.recipe import serialize_section
 from recipeyak.models import ChangeType, Recipe, RecipeChange, Section
 
 
@@ -51,7 +51,7 @@ def create_section_view(request: AuthedRequest, recipe_pk: int) -> Response:
 
     section.save()
 
-    return Response(SectionSerializer(section).data, status=status.HTTP_201_CREATED)
+    return Response(serialize_section(section), status=status.HTTP_201_CREATED)
 
 
 def delete_section_view(request: AuthedRequest, section_pk: int) -> Response:
@@ -98,7 +98,7 @@ def update_section_view(request: AuthedRequest, section_pk: int) -> Response:
     )
     section.save()
 
-    return Response(SectionSerializer(section).data)
+    return Response(serialize_section(section))
 
 
 @api_view(["PATCH", "DELETE"])

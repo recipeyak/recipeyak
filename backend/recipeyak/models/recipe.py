@@ -20,6 +20,7 @@ if TYPE_CHECKING:
     from recipeyak.models.note import Note
     from recipeyak.models.scrape import Scrape  # noqa: F401
     from recipeyak.models.team import Team
+    from recipeyak.models.timeline_event import TimelineEvent
     from recipeyak.models.upload import Upload  # noqa: F401
     from recipeyak.models.user import User
 
@@ -107,6 +108,7 @@ class Recipe(CommonInfo):
         return Step.objects.filter(recipe=self).order_by("position", "created")
 
     scheduledrecipe_set: QuerySet[ScheduledRecipe]
+    timelineevent_set: QuerySet[TimelineEvent]
 
     @property
     def step_set(self) -> BaseManager[Step]:

@@ -4,7 +4,9 @@ import { http } from "@/http"
 import { unwrapResult } from "@/query"
 
 const getTeamList = () =>
-  http.get<{ id: number; name: string; created: string }[]>("/api/v1/t/")
+  http.get<{ id: number; name: string; created: string; members: number }[]>(
+    "/api/v1/t/",
+  )
 
 export function useTeamList() {
   return useQuery({
