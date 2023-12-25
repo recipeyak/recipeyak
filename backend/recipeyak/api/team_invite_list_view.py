@@ -1,6 +1,5 @@
 from typing import Literal
 
-import pydantic
 from django.db import transaction
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -9,11 +8,12 @@ from rest_framework.response import Response
 
 from recipeyak.api.base.permissions import IsTeamMember
 from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.serialization import RequestParams
 from recipeyak.models import Team
 from recipeyak.models.invite import Invite
 
 
-class CreateInviteSerializer(pydantic.BaseModel):
+class CreateInviteSerializer(RequestParams):
     emails: list[str]
     level: Literal["admin", "contributor", "read"]
 

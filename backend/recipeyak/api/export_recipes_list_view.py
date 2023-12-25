@@ -56,10 +56,7 @@ class ExportRecipe(pydantic.BaseModel):
 
 def serialize_export_recipe(recipe: Recipe) -> ExportRecipe:
     sections_and_ingredients = list[tuple[str, str]]()
-    print("exporting...")
-
     for ingredient in recipe.ingredient_set.all():
-        print("exporting... ingredient")
         sections_and_ingredients.append(
             (
                 ingredient.position,
@@ -72,7 +69,6 @@ def serialize_export_recipe(recipe: Recipe) -> ExportRecipe:
             )
         )
     for section in recipe.section_set.all():
-        print("exporting... section")
         sections_and_ingredients.append(
             (
                 section.position,
