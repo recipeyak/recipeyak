@@ -50,6 +50,12 @@ test("searchRecipes recipeId PascalCase", () => {
     searchRecipes({ recipes: [recipe], query: "RecipeId:5432" }).recipes,
   ).toHaveLength(1)
 })
+test("searchRecipes Æ", () => {
+  const recipe = createRecipe({ id: 5432, name: "Æbleskivers" })
+  expect(
+    searchRecipes({ recipes: [recipe], query: "aeble" }).recipes,
+  ).toHaveLength(1)
+})
 
 test("searchRecipes ingredient", () => {
   const recipe = createRecipe({

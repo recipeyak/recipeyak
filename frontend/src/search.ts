@@ -1,3 +1,5 @@
+import ASCIIFolder from "fold-to-ascii"
+
 import { assertNever } from "@/assert"
 import { RecipeListItem } from "@/queries/recipeList"
 import { parseQuery, QueryNode } from "@/query-parser"
@@ -8,7 +10,7 @@ const removeAccents = (x: string) =>
   x.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
 
 const normalize = (x: string = "") =>
-  removeAccents(x).replace(/\W/g, "").toLowerCase()
+  ASCIIFolder.foldMaintaining(removeAccents(x)).replace(/\W/g, "").toLowerCase()
 
 function normalizedIncludes(a: string, b: string): boolean {
   return normalize(a).includes(normalize(b))

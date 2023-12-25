@@ -2071,6 +2071,11 @@
   dependencies:
     error-stack-parser "*"
 
+"@types/fold-to-ascii@^5.0.2":
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/@types/fold-to-ascii/-/fold-to-ascii-5.0.2.tgz#c0e2abfda64157c8b1b3f26f3424abba7a590821"
+  integrity sha512-5aD3uXARTpE87W75ZWQLGjiWoT65sFA28JCb3VEXB5O1w6mh2/ceVt6/mCV0vI36STPsCiXM4ZnRtQXvBOIa/A==
+
 "@types/hast@^2.0.0":
   version "2.3.4"
   resolved "https://registry.yarnpkg.com/@types/hast/-/hast-2.3.4.tgz#8aa5ef92c117d20d974a82bdfb6a648b08c0bafc"
@@ -4015,6 +4020,11 @@ flatted@^3.1.0:
   version "3.2.6"
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.2.6.tgz#022e9218c637f9f3fc9c35ab9c9193f05add60b2"
   integrity sha512-0sQoMh9s0BYsm+12Huy/rkKxVu4R1+r96YX5cG44rHV0pQ6iC3Q+mkoMFaGWObMFYQxCVT+ssG1ksneA2MI9KQ==
+
+fold-to-ascii@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/fold-to-ascii/-/fold-to-ascii-5.0.1.tgz#d0b4f06e7b511e959bd502fa49e8e3678b9fc6cc"
+  integrity sha512-VdMFm+u7pSzUWj0IDOniuHekp4lbMOtwKi6EsVx03DGVQaNI+77kxotj8hYaMmNkpym7wwv6c1woY4OZXYdqfg==
 
 follow-redirects@1.5.10:
   version "1.5.10"
