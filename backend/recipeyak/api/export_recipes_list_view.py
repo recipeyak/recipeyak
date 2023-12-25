@@ -2,27 +2,23 @@ from __future__ import annotations
 
 from collections import OrderedDict
 from logging import getLogger
-from typing import Any, NoReturn, cast
+from typing import Any
 
+import pydantic
 import yaml
-from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.db import connection
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_http_methods
-from rest_framework import serializers
 
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.models import Recipe, filter_recipes, get_team
-from recipeyak.models.ingredient import Ingredient
 from recipeyak.models.team import Team
-from recipeyak.models.user import User
 
 log = getLogger(__name__)
 
 
-def represent_ordereddict(dumper: yaml.Dumper, data: dict[str, Any]) -> yaml.Node:
+def represent_ordereddict(dumper: yaml.Dumper, data: dict[str, object]) -> yaml.Node:
     value = []
     for item_key, item_value in data.items():
         node_key = dumper.represent_data(item_key)
@@ -34,65 +30,117 @@ def represent_ordereddict(dumper: yaml.Dumper, data: dict[str, Any]) -> yaml.Nod
 yaml.add_representer(OrderedDict, represent_ordereddict)
 
 
-class UnexpectedDatabaseAccess(Exception):  # noqa: N818
-    pass
+class ExportIngredient(pydantic.BaseModel):
+    quantity: str
+    name: str
+    description: str
+    optional: bool
 
 
-def blocker(*args: object) -> NoReturn:
-    raise UnexpectedDatabaseAccess
+class ExportSection(pydantic.BaseModel):
+    section: str
 
 
-def warning_blocker(
-    execute: Any, sql: Any, params: Any, many: Any, context: Any
-) -> Any:
-    """
-    expected to call `execute` and return the call's result:
-    https://docs.djangoproject.com/en/dev/topics/db/instrumentation/#connection-execute-wrapper
-    """
-    log.warning("Database access in serializer.")
-    return execute(sql, params, many, context)
+class ExportRecipe(pydantic.BaseModel):
+    id: int
+    name: str
+    author: str | None
+    source: str | None
+    time: str | None
+    # # TODO: make sure we order these right
+    ingredients: list[ExportIngredient | ExportSection]
+    # # TODO: make sure we order these right
+    steps: list[str]
+    tags: list[str] | None
 
 
-class DBBlockerSerializerMixin:
-    """
-    Block database access within serializer
+def serialize_export_recipe(recipe: Recipe) -> ExportRecipe:
+    sections_and_ingredients = list[tuple[str, str]]()
+    print("exporting...")
 
-    An escape hatch is available through the `dangerously_allow_db` kwarg.
+    for ingredient in recipe.ingredient_set.all():
+        print("exporting... ingredient")
+        sections_and_ingredients.append(
+            (
+                ingredient.position,
+                ExportIngredient(
+                    quantity=ingredient.quantity,
+                    name=ingredient.name,
+                    description=ingredient.description,
+                    optional=ingredient.optional,
+                ),
+            )
+        )
+    for section in recipe.section_set.all():
+        print("exporting... section")
+        sections_and_ingredients.append(
+            (
+                section.position,
+                ExportSection(section=section.title),
+            )
+        )
 
-    NOTE: This mixin should come _before_ the parent serializer. This is
-    required for the constructor to remove `dangerously_allow_db` from `kwargs`
-    before calling the parent.
-    """
+    sections_and_ingredients.sort(key=lambda x: x[0])
 
-    def to_representation(self, instance: Any) -> Any:
-        if self.dangerously_allow_db:
-            return super().to_representation(instance)  # type: ignore [misc]
+    steps = [(s.position, s.text) for s in recipe.step_set.all()]
 
-        if settings.ERROR_ON_SERIALIZER_DB_ACCESS:
-            # only raise error when we are in DEBUG mode. We don't want to cause
-            # errors in production when we don't need to do so.
-            with connection.execute_wrapper(blocker):
-                return super().to_representation(instance)  # type: ignore [misc]
+    steps.sort(key=lambda x: x[0])
 
-        # use a warning blocker elsewhere
-        with connection.execute_wrapper(warning_blocker):
-            return super().to_representation(instance)  # type: ignore [misc]
-
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        self.dangerously_allow_db = kwargs.pop("dangerously_allow_db", None)
-        cast(Any, super()).__init__(*args, **kwargs)
+    return ExportRecipe(
+        id=recipe.id,
+        name=recipe.name,
+        author=recipe.author,
+        source=recipe.source,
+        time=recipe.time,
+        ingredients=[x for (_, x) in sections_and_ingredients],
+        steps=[text for (_, text) in steps],
+        tags=recipe.tags,
+    )
 
 
-class BaseModelSerializer(DBBlockerSerializerMixin, serializers.ModelSerializer):
-    """
-    Serializer with `DBBlockerSerializerMixin` to disable DB access.
-    """
+def remove_empty_values(obj: dict[object, object]) -> dict[object, object]:
+    out = {}
+    for k, v in obj.items():
+        if v == []:
+            continue
+        if v == "":
+            continue
+        if v is False:
+            continue
+        out[k] = v
+    return out
 
 
-class BaseRelatedField(DBBlockerSerializerMixin, serializers.RelatedField):
-    """
-    Serializer with `DBBlockerSerializerMixin` to disable DB access.
-    """
+def pydantic_to_dict(obj: object) -> object:
+    if isinstance(obj, pydantic.BaseModel):
+        obj_dict = obj.dict()
+        for attr_name, attr_value in obj_dict.items():
+            if isinstance(attr_value, list):
+                obj_dict[attr_name] = [pydantic_to_dict(item) for item in attr_value]
+            elif isinstance(attr_value, pydantic.BaseModel):
+                obj_dict[attr_name] = pydantic_to_dict(attr_value)
+            if isinstance(attr_value, str) and attr_value == "":
+                obj_dict[attr_name] = None
+        return remove_empty_values(obj_dict)
+    if isinstance(obj, list):
+        return [pydantic_to_dict(item) for item in obj]
+    if isinstance(obj, dict):
+        return remove_empty_values(obj)
+    return obj
+
+
+def export_recipes(team: Team, pk: str | None) -> list[ExportRecipe] | ExportRecipe:
+    queryset = filter_recipes(team=team).prefetch_related("step_set", "ingredient_set")
+
+    if pk is not None:
+        r = get_object_or_404(queryset, pk=pk)
+        return serialize_export_recipe(r)
+
+    recipes_out = list[ExportRecipe]()
+    for recipe in queryset:
+        recipes_out.append(serialize_export_recipe(recipe))
+
+    return recipes_out
 
 
 class YamlResponse(HttpResponse):
@@ -102,6 +150,9 @@ class YamlResponse(HttpResponse):
     """
 
     def __init__(self, data: Any, **kwargs: Any) -> None:
+        # TODO: this doesn't handle unicode correctly:
+        #   - name: salt
+        #     quantity: Â½ teaspoon
         kwargs.setdefault("content_type", "text/x-yaml")
         if isinstance(data, list):
             data = yaml.dump_all(data, default_flow_style=False, allow_unicode=True)
@@ -114,79 +165,6 @@ class YamlResponse(HttpResponse):
         super().__init__(content=data, **kwargs)
 
 
-class OwnerRelatedField(BaseRelatedField):
-    """
-    A custom field to use for the `owner` generic relationship.
-    """
-
-    def to_representation(self, value: Any) -> dict[str, Any]:
-        if isinstance(value, Team):
-            if self.export:
-                return {"team": value.name}
-            return {"id": value.id, "type": "team", "name": value.name}
-        if isinstance(value, User):
-            if self.export:
-                return {"user": value.email}
-            return {"id": value.id, "type": "user"}
-        raise Exception("Unexpected type of owner object")
-
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        export = kwargs.pop("export", None)
-        super().__init__(*args, **kwargs)
-        self.export = export
-
-
-class IngredientSerializer(BaseModelSerializer):
-    """
-    serializer the ingredient of a recipe
-    """
-
-    class Meta:
-        model = Ingredient
-        fields = ("id", "quantity", "name", "description", "position", "optional")
-
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        # Don't pass the 'fields' arg up to the superclass
-        fields = kwargs.pop("fields", None)
-
-        super().__init__(*args, **kwargs)
-
-        if fields is not None:
-            # Drop any fields that are not specified in the `fields` argument.
-            allowed = set(fields)
-            existing = set(self.fields)
-            for field_name in existing - allowed:
-                self.fields.pop(field_name)
-
-
-class RecipeExportSerializer(BaseModelSerializer):
-    steps = serializers.ListField(child=serializers.CharField(), source="step_set.all")
-
-    ingredients = IngredientSerializer(
-        many=True,
-        read_only=True,
-        fields=("quantity", "name", "description", "optional"),
-        source="ingredient_set",
-    )
-    owner = OwnerRelatedField(read_only=True, export=True)
-
-    class Meta:
-        model = Recipe
-        read_only = True
-        fields = (
-            "id",
-            "name",
-            "author",
-            "time",
-            "source",
-            "servings",
-            "ingredients",
-            "steps",
-            "owner",
-            "tags",
-        )
-
-
 @require_http_methods(["GET"])
 @login_required(login_url="/login/")
 def export_recipes_list_view(
@@ -194,16 +172,7 @@ def export_recipes_list_view(
 ) -> HttpResponse:
     team = get_team(request)
 
-    queryset = filter_recipes(team=team).prefetch_related(
-        "owner", "step_set", "ingredient_set", "scheduledrecipe_set"
-    )
-
-    if pk is not None:
-        queryset = get_object_or_404(queryset, pk=pk)  # type: ignore[assignment]
-
-    many = pk is None
-
-    recipes = RecipeExportSerializer(queryset, many=many).data
+    recipes = pydantic_to_dict(export_recipes(team, pk))
 
     if filetype in ("yaml", "yml"):
         return YamlResponse(recipes)

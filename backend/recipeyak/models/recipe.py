@@ -109,14 +109,7 @@ class Recipe(CommonInfo):
 
     scheduledrecipe_set: QuerySet[ScheduledRecipe]
     timelineevent_set: QuerySet[TimelineEvent]
-
-    @property
-    def step_set(self) -> BaseManager[Step]:
-        return self.steps
-
-    @property
-    def section_set(self) -> BaseManager[Section]:
-        return Section.objects.filter(recipe=self)
+    section_set: QuerySet[Section]
 
     def __str__(self) -> str:
         return f"{self.name} by {self.author}"

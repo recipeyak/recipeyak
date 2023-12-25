@@ -200,12 +200,12 @@ class RecipeResponse(pydantic.BaseModel):
     author: str | None
     source: str | None
     time: str | None
+    servings: str | None
     ingredients: list[IngredientResponse]
     steps: list[StepResponse]
     recentSchedules: list[RecentScheduleResponse]
     timelineItems: list[NoteResponse | TimelineEventResponse]
     sections: list[SectionResponse]
-    servings: str | None
     modified: datetime
     created: datetime
     # TODO: why dupe?
