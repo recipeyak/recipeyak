@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import pydantic
 from django.db import transaction
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
@@ -10,7 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
-from recipeyak.api.serializers.team import TeamSerializer
+from recipeyak.api.base.serialization import RequestParams
 from recipeyak.models import Team
 from recipeyak.models.membership import Membership
 from recipeyak.models.user import User
@@ -24,6 +25,20 @@ def is_team_admin(team: Team, user: User) -> bool:
     return team.membership_set.filter(level=Membership.ADMIN).filter(user=user).exists()
 
 
+class UpdateTeamResponse(pydantic.BaseModel):
+    id: int
+    name: str
+
+
+class UpdateTeamParams(RequestParams):
+    name: str
+
+
+class RetrieveTeamResponse(pydantic.BaseModel):
+    id: int
+    name: str
+
+
 @api_view(["DELETE", "PATCH", "GET"])
 @permission_classes([IsAuthenticated])
 def team_detail_view(request: AuthedRequest, team_pk: int) -> Response:
@@ -31,17 +46,18 @@ def team_detail_view(request: AuthedRequest, team_pk: int) -> Response:
         team = get_object_or_404(get_teams(request.user), pk=team_pk)
         if not is_team_admin(team, request.user):
             return Response(status=403)
-        serializer = TeamSerializer(
-            team, data=request.data, context={"request": request}, partial=True
-        )
-        serializer.is_valid(raise_exception=True)
-        team = serializer.save()
-        team.force_join_admin(request.user)
-        return Response(serializer.data)
+
+        params = UpdateTeamParams.parse_obj(request.data)
+
+        with transaction.atomic():
+            team.name = params.name
+            team.save()
+            team.force_join_admin(request.user)
+
+        return Response(UpdateTeamResponse(id=team.id, name=team.name))
     elif request.method == "GET":
         team = get_object_or_404(get_teams(request.user), pk=team_pk)
-        serializer = TeamSerializer(team)
-        return Response(serializer.data)
+        return Response(RetrieveTeamResponse(id=team.id, name=team.name))
     elif request.method == "DELETE":
         with transaction.atomic():
             team = get_object_or_404(get_teams(request.user), pk=team_pk)

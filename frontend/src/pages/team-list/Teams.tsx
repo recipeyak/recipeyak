@@ -59,7 +59,9 @@ export function TeamsList() {
             <Row columns={columns}>
               {(column) => {
                 if (column.id === "members") {
-                  return <Cell>5</Cell>
+                  return (
+                    <Cell>{new Intl.NumberFormat().format(team.members)}</Cell>
+                  )
                 } else if (column.id === "teamName") {
                   return (
                     <Cell>

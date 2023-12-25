@@ -29,7 +29,7 @@ def steps_list_view(request: AuthedRequest, recipe_pk: int) -> Response:
     if params.position is not None:
         step.position = params.position
     else:
-        last_step = recipe.step_set.last()
+        last_step = recipe.steps.last()
         if last_step is not None:
             step.position = ordering.position_after(last_step.position)
         else:

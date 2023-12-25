@@ -62,7 +62,13 @@ export function Dropdown({
   const deleteRecipe = useRecipeDelete()
 
   const menuItems: Array<
-    | { type: "menuitem"; label: string; to: string; onClick?: undefined }
+    | {
+        type: "menuitem"
+        label: string
+        to: string
+        onClick?: undefined
+        hardNavigate?: boolean
+      }
     | { type: "menuitem"; label: string; to?: undefined; onClick: () => void }
     | { type: "separator"; id: string }
   > = [
@@ -137,6 +143,13 @@ export function Dropdown({
     },
     {
       type: "menuitem",
+      label: "Export",
+      // TODO: pop up a modal and ask for what file export type
+      to: pathRecipeDetail({ recipeId: recipeId.toString() }) + ".yaml",
+      hardNavigate: true,
+    },
+    {
+      type: "menuitem",
       label: !deleteRecipe.isPending ? "Delete" : "Deleting...",
       onClick: () => {
         if (confirm("Are you sure you want to delete this recipe?")) {
@@ -159,7 +172,12 @@ export function Dropdown({
               (x) => "label" in x && x.label === key,
             )
             if (metadata && "label" in metadata) {
-              metadata.onClick?.()
+              if (metadata.to && metadata.hardNavigate) {
+                // hacky way to get hard navigation for a given link
+                location.pathname = metadata.to
+              } else {
+                metadata.onClick?.()
+              }
             }
           }}
         >

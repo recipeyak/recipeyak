@@ -1,218 +1,25 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
-from datetime import UTC, datetime, timedelta
-from typing import Any, Literal, cast
+from datetime import UTC, date, datetime, timedelta
+from typing import Literal, cast
 
 import pydantic
 import tldextract
-from rest_framework import serializers
 
-from recipeyak.api.base.serialization import BaseModelSerializer, BaseRelatedField
-from recipeyak.api.serializers.team import PublicUserSerializer
 from recipeyak.models import (
     Ingredient,
     Note,
     Recipe,
-    ScheduledRecipe,
     Section,
     Step,
-    Team,
     User,
 )
 from recipeyak.models.reaction import Reaction
+from recipeyak.models.timeline_event import TimelineEvent
 from recipeyak.models.upload import Upload
 
-
-class OwnerRelatedField(BaseRelatedField):
-    """
-    A custom field to use for the `owner` generic relationship.
-    """
-
-    def to_representation(self, value: Any) -> dict[str, Any]:
-        if isinstance(value, Team):
-            if self.export:
-                return {"team": value.name}
-            return {"id": value.id, "type": "team", "name": value.name}
-        if isinstance(value, User):
-            if self.export:
-                return {"user": value.email}
-            return {"id": value.id, "type": "user"}
-        raise Exception("Unexpected type of owner object")
-
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        export = kwargs.pop("export", None)
-        super().__init__(*args, **kwargs)
-        self.export = export
-
-
-class IngredientSerializer(BaseModelSerializer):
-    """
-    serializer the ingredient of a recipe
-    """
-
-    class Meta:
-        model = Ingredient
-        fields = ("id", "quantity", "name", "description", "position", "optional")
-
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        # Don't pass the 'fields' arg up to the superclass
-        fields = kwargs.pop("fields", None)
-
-        super().__init__(*args, **kwargs)
-
-        if fields is not None:
-            # Drop any fields that are not specified in the `fields` argument.
-            allowed = set(fields)
-            existing = set(self.fields)
-            for field_name in existing - allowed:
-                self.fields.pop(field_name)
-
-
-class StepSerializer(BaseModelSerializer):
-    """
-    serializer the step of a recipe
-    """
-
-    class Meta:
-        model = Step
-        fields = ("id", "text", "position")
-
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        # Don't pass the 'fields' arg up to the superclass
-        fields = kwargs.pop("fields", None)
-
-        super().__init__(*args, **kwargs)
-
-        if fields is not None:
-            # Drop any fields that are not specified in the `fields` argument.
-            allowed = set(fields)
-            existing = set(self.fields)
-            for field_name in existing - allowed:
-                self.fields.pop(field_name)
-
-
-class SectionSerializer(BaseModelSerializer):
-    position = serializers.CharField(required=False)
-
-    class Meta:
-        model = Section
-        read_only_fields = ("id",)
-        fields = (*read_only_fields, "position", "title")
-
-
-class UploadSerializer(BaseModelSerializer):
-    id = serializers.CharField()
-    url = serializers.CharField(source="public_url")
-    backgroundUrl = serializers.CharField(source="background_url")
-    contentType = serializers.CharField(source="content_type")
-    author = serializers.SerializerMethodField(read_only=True)
-
-    class Meta:
-        model = Upload
-        read_only_fields = ("id", "url", "backgroundUrl", "author", "contentType")
-        fields = read_only_fields
-
-    def get_author(self, obj: Upload) -> str | None:
-        # added by scraper
-        if (
-            obj.created_by is None
-            and obj.recipe is not None
-            and obj.recipe.source is not None
-            and obj.recipe.source.startswith("http")
-        ):
-            return tldextract.extract(obj.recipe.source).domain
-        # added by user
-        if obj.created_by is not None:
-            return obj.created_by.name
-        return None
-
-
 IGNORED_TIMELINE_EVENTS = {"set_primary_image", "remove_primary_image"}
-
-
-class RecipeSerializer(BaseModelSerializer):
-    steps = StepSerializer(many=True, source="step_set")
-    ingredients = IngredientSerializer(many=True, source="ingredient_set")
-    recentSchedules = serializers.SerializerMethodField(read_only=True)
-    timelineItems = serializers.SerializerMethodField(read_only=True)
-    archivedAt = serializers.DateTimeField(read_only=True, source="archived_at")
-    sections = SectionSerializer(many=True, source="section_set", read_only=True)
-    primaryImage = UploadSerializer(read_only=True, source="primary_image")
-
-    def get_timelineItems(self, obj: Recipe) -> list[dict[str, Any]]:
-        items: list[dict[str, Any]] = [
-            serialize_note(x, primary_image_id=obj.primary_image_id).dict()
-            for x in cast(Any, obj).notes.all()
-        ]
-
-        items += [
-            {
-                "type": "recipe",
-                "id": x.id,
-                "action": x.action,
-                "created_by": PublicUserSerializer(x.created_by).data
-                if x.created_by
-                else None,
-                "is_scraped": obj.scrape_id is not None,
-                "created": x.created,
-            }
-            for x in cast(Any, obj).timelineevent_set.all()
-            if x.action not in IGNORED_TIMELINE_EVENTS
-        ]
-
-        return items
-
-    def get_recentSchedules(self, obj: Recipe) -> list[dict[str, Any]]:
-        now = datetime.now(UTC).date()
-        return [
-            {"id": s.id, "on": s.on}
-            for s in obj.scheduledrecipe_set.all()
-            # HACK: we do the filtering in application land so we can use the `prefetch_related` query we already have.
-            if now - timedelta(weeks=3) <= s.on <= now + timedelta(weeks=3)
-        ]
-
-    class Meta:
-        model = Recipe
-        fields = (
-            "id",
-            "name",
-            "author",
-            "source",
-            "time",
-            "ingredients",
-            "steps",
-            "recentSchedules",
-            "timelineItems",
-            "sections",
-            "servings",
-            "modified",
-            "created",
-            "archived_at",
-            "tags",
-            "primaryImage",
-            "archivedAt",
-        )
-        read_only_fields = ("primaryImage", "archivedAt")
-
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        # Don't pass the 'fields' arg up to the superclass
-        fields = kwargs.pop("fields", None)
-
-        super().__init__(*args, **kwargs)
-
-        if fields is not None:
-            # Drop any fields that are not specified in the `fields` argument.
-            allowed = set(fields)
-            existing = set(self.fields)
-            for field_name in existing - allowed:
-                self.fields.pop(field_name)
-
-
-class RecipeTimelineSerializer(BaseModelSerializer):
-    class Meta:
-        model = ScheduledRecipe
-        fields = ("id", "on")
 
 
 class PublicUser(pydantic.BaseModel):
@@ -255,7 +62,7 @@ class ReactionResponse(pydantic.BaseModel):
 
 
 class NoteResponse(pydantic.BaseModel):
-    id: int
+    id: str
     text: str
     created_by: PublicUser
     last_modified_by: PublicUser | None
@@ -290,7 +97,7 @@ def serialize_reactions(reactions: Iterable[Reaction]) -> list[ReactionResponse]
 
 def serialize_note(note: Note, primary_image_id: int) -> NoteResponse:
     return NoteResponse(
-        id=note.id,
+        id=str(note.id),
         text=note.text,
         created_by=serialize_public_user(note.created_by),
         last_modified_by=serialize_public_user(note.last_modified_by)
@@ -348,4 +155,176 @@ def serialize_step(step: Step) -> StepResponse:
         id=step.pk,
         text=step.text,
         position=step.position,
+    )
+
+
+class TimelineEventResponse(pydantic.BaseModel):
+    id: int
+    type: Literal["recipe"]
+    action: Literal[
+        "created",
+        "archived",
+        "unarchived",
+        "deleted",
+        "scheduled",
+        "remove_primary_image",
+        "set_primary_image",
+    ]
+    created_by: PublicUser | None
+    is_scraped: bool
+    created: datetime
+
+
+class UploadResponse(pydantic.BaseModel):
+    id: str
+    url: str
+    backgroundUrl: str | None
+    contentType: str
+    author: str | None
+
+
+class RecentScheduleResponse(pydantic.BaseModel):
+    id: int
+    on: date
+
+
+class SectionResponse(pydantic.BaseModel):
+    id: int
+    title: str
+    position: str
+
+
+class RecipeResponse(pydantic.BaseModel):
+    id: int
+    name: str
+    author: str | None
+    source: str | None
+    time: str | None
+    servings: str | None
+    ingredients: list[IngredientResponse]
+    steps: list[StepResponse]
+    recentSchedules: list[RecentScheduleResponse]
+    timelineItems: list[NoteResponse | TimelineEventResponse]
+    sections: list[SectionResponse]
+    modified: datetime
+    created: datetime
+    # TODO: why dupe?
+    archived_at: datetime | None
+    tags: list[str] | None
+    primaryImage: UploadResponse | None
+    archivedAt: datetime | None
+
+
+def serialize_timeline_event(
+    timeline_event: TimelineEvent, recipe: Recipe
+) -> TimelineEventResponse:
+    created_by = (
+        serialize_public_user(timeline_event.created_by)
+        if timeline_event.created_by
+        else None
+    )
+    return TimelineEventResponse(
+        type="recipe",
+        id=timeline_event.id,
+        action=cast(
+            Literal[
+                "created",
+                "archived",
+                "unarchived",
+                "deleted",
+                "scheduled",
+                "remove_primary_image",
+                "set_primary_image",
+            ],
+            timeline_event.action,
+        ),
+        created_by=created_by,
+        is_scraped=recipe.scrape_id is not None,
+        created=timeline_event.created,
+    )
+
+
+def serialize_timeline_items(
+    recipe: Recipe
+) -> list[NoteResponse | TimelineEventResponse]:
+    items: list[NoteResponse | TimelineEventResponse] = [
+        serialize_note(x, primary_image_id=recipe.primary_image_id)
+        for x in recipe.notes.all()
+    ]
+
+    items += [
+        serialize_timeline_event(x, recipe)
+        for x in recipe.timelineevent_set.all()
+        if x.action not in IGNORED_TIMELINE_EVENTS
+    ]
+
+    return items
+
+
+def serialize_recent_schedules(recipe: Recipe) -> list[RecentScheduleResponse]:
+    now = datetime.now(UTC).date()
+    return [
+        RecentScheduleResponse(id=s.id, on=s.on)
+        for s in recipe.scheduledrecipe_set.all()
+        # HACK: we do the filtering in application land so we can use the `prefetch_related` query we already have.
+        if now - timedelta(weeks=3) <= s.on <= now + timedelta(weeks=3)
+    ]
+
+
+def serialize_upload(upload: Upload) -> UploadResponse:
+    author: str | None = None
+    if (
+        upload.created_by is None
+        and upload.recipe is not None
+        and upload.recipe.source is not None
+        and upload.recipe.source.startswith("http")
+    ):
+        # added by scraper
+        author = tldextract.extract(upload.recipe.source).domain
+    elif upload.created_by is not None:
+        # added by user
+        author = upload.created_by.name
+    return UploadResponse(
+        id=str(upload.id),
+        url=upload.public_url(),
+        backgroundUrl=upload.background_url,
+        contentType=upload.content_type,
+        author=author,
+    )
+
+
+def serialize_section(section: Section) -> SectionResponse:
+    return SectionResponse(
+        id=section.id, title=section.title, position=section.position
+    )
+
+
+def serialize_recipe(recipe: Recipe) -> RecipeResponse:
+    ingredients = [serialize_ingredient(x) for x in recipe.ingredient_set.all()]
+    steps = [serialize_step(x) for x in recipe.step_set.all()]
+    recent_schedules = serialize_recent_schedules(recipe)
+    sections = [serialize_section(x) for x in recipe.section_set.all()]
+    timeline_items = serialize_timeline_items(recipe)
+    primary_image = (
+        serialize_upload(recipe.primary_image)
+        if recipe.primary_image is not None
+        else None
+    )
+    return RecipeResponse(
+        id=recipe.id,
+        name=recipe.name,
+        author=recipe.author,
+        source=recipe.source,
+        time=recipe.time,
+        ingredients=ingredients,
+        steps=steps,
+        recentSchedules=recent_schedules,
+        timelineItems=timeline_items,
+        sections=sections,
+        servings=recipe.servings,
+        modified=recipe.modified,
+        created=recipe.created,
+        archived_at=recipe.archived_at,
+        tags=recipe.tags,
+        primaryImage=primary_image,
     )

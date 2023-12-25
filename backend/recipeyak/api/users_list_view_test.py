@@ -43,7 +43,6 @@ def test_detail(client: APIClient, user: User) -> None:
         "email",
         "name",
         "avatar_url",
-        "theme",
         "theme_day",
         "theme_night",
         "theme_mode",
@@ -74,13 +73,10 @@ def test_detail_theme(client: APIClient, user: User) -> None:
     client.force_authenticate(user)
 
     res = client.get("/api/v1/user/")
-    assert res.json()["theme"] == res.json()["theme_day"] == "light"
-
-    res = client.patch("/api/v1/user/", {"theme": "autumn"})
-    assert res.json()["theme"] == res.json()["theme_day"] == "autumn"
+    assert res.json()["theme_day"] == "light"
 
     res = client.patch("/api/v1/user/", {"theme_day": "solarized"})
-    assert res.json()["theme"] == res.json()["theme_day"] == "solarized"
+    assert res.json()["theme_day"] == "solarized"
 
 
 @dataclass
