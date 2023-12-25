@@ -35,11 +35,9 @@ import { TagEditor } from "@/pages/recipe-detail/TagEditor"
 import { pathRecipeDetail, pathRecipesList } from "@/paths"
 import { getNewPosIngredients } from "@/position"
 import { useIngredientUpdate } from "@/queries/ingredientUpdate"
+import { PickVariant } from "@/queries/queryUtilTypes"
 import {
-  INote,
-  IRecipe,
-  TimelineItem,
-  Upload,
+  RecipeFetchResponse as Recipe,
   useRecipeFetch,
 } from "@/queries/recipeFetch"
 import { useRecipeUpdate } from "@/queries/recipeUpdate"
@@ -50,12 +48,18 @@ import { formatImgOpenGraph, imgixFmt } from "@/url"
 import { useAddSlugToUrl } from "@/useAddSlugToUrl"
 import { useGlobalEvent } from "@/useGlobalEvent"
 
+type Ingredient = Recipe["ingredients"]
+
+type TimelineItem = Recipe["timelineItems"][number]
+type Note = PickVariant<TimelineItem, "note">
+type Upload = Note["attachments"][number]
+
 function RecipeDetails({
   recipe,
   editingEnabled,
   openImage,
 }: {
-  readonly recipe: IRecipe
+  readonly recipe: Recipe
   editingEnabled: boolean
   openImage: (_: string) => void
 }) {
@@ -334,8 +338,8 @@ const RecipeMetaContainer = styled.div<{ inline?: boolean }>`
   justify-content: end;`}
 `
 
-function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
-  const [formState, setFormState] = useState<Partial<IRecipe>>(props.recipe)
+function RecipeEditor(props: { recipe: Recipe; onClose: () => void }) {
+  const [formState, setFormState] = useState<Partial<Recipe>>(props.recipe)
   const updateRecipe = useRecipeUpdate()
   const onSave = () => {
     updateRecipe.mutate(
@@ -358,15 +362,15 @@ function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
     )
   }
 
-  const setAttr = <T extends keyof Partial<IRecipe>>(
+  const setAttr = <T extends keyof Partial<Recipe>>(
     attr: T,
-    val: IRecipe[T],
+    val: Recipe[T],
   ) => {
     setFormState((s) => ({ ...s, [attr]: val }))
   }
 
   const handleChange =
-    (attr: keyof Partial<IRecipe>) =>
+    (attr: keyof Partial<Recipe>) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const val = e.target.value
       setAttr(attr, val)
@@ -492,13 +496,13 @@ function HeaderImgUploader({ children }: { children: React.ReactNode }) {
 }
 
 function useGallery(
-  noteUploads: Upload[],
+  noteUploads: readonly Upload[],
   recipeId: number | null,
   primaryImage: { id: string; url: string; contentType: string } | null,
 ) {
   const isPrimaryImageInUploads =
     noteUploads.find((x) => x.id === primaryImage?.id) != null
-  const uploads: Upload[] = useMemo(() => {
+  const uploads: readonly Upload[] = useMemo(() => {
     return isPrimaryImageInUploads || primaryImage == null
       ? noteUploads
       : [
@@ -586,12 +590,12 @@ function useGallery(
     image,
   }
 }
-function isNote(x: TimelineItem): x is INote {
+function isNote(x: TimelineItem): x is Note {
   return x.type === "note"
 }
 
 function RecipeInfo(props: {
-  recipe: IRecipe
+  recipe: Recipe
   editingEnabled: boolean
   openImage: () => void
   toggleEditMode: () => void

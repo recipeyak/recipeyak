@@ -2,21 +2,24 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
 
 import { http } from "@/http"
-import { IRecipe, IStep } from "@/queries/recipeFetch"
+import { setQueryDataRecipe } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
 import { useTeamId } from "@/useTeamId"
 
-interface IUpdateStepPayload {
-  readonly text?: string
-  readonly position?: string
-}
-
 // TODO(sbdchd): this shouldn't require recipeID
 const updateStep = (
-  recipeID: IRecipe["id"],
-  stepID: IStep["id"],
-  data: IUpdateStepPayload,
-) => http.patch<IStep>(`/api/v1/recipes/${recipeID}/steps/${stepID}/`, data)
+  recipeID: number,
+  stepID: number,
+  data: {
+    readonly text?: string
+    readonly position?: string
+  },
+) =>
+  http.patch<{
+    readonly id: number
+    readonly text: string
+    readonly position: string
+  }>(`/api/v1/recipes/${recipeID}/steps/${stepID}/`, data)
 
 export function useStepUpdate() {
   const queryClient = useQueryClient()
@@ -38,10 +41,10 @@ export function useStepUpdate() {
       let oldPosition: string | undefined
       if (vars.update.position !== undefined) {
         const newPosition = vars.update.position
-
-        queryClient.setQueryData<IRecipe>(
-          [teamId, "recipes", vars.recipeId],
-          (prev) => {
+        setQueryDataRecipe(queryClient, {
+          teamId,
+          recipeId: vars.recipeId,
+          updater: (prev) => {
             if (prev == null) {
               return prev
             }
@@ -54,14 +57,15 @@ export function useStepUpdate() {
               })
             })
           },
-        )
+        })
       }
       return { oldPosition }
     },
     onSuccess: (res, vars) => {
-      queryClient.setQueryData<IRecipe>(
-        [teamId, "recipes", vars.recipeId],
-        (prev) => {
+      setQueryDataRecipe(queryClient, {
+        teamId,
+        recipeId: vars.recipeId,
+        updater: (prev) => {
           if (prev == null) {
             return prev
           }
@@ -74,15 +78,15 @@ export function useStepUpdate() {
             })
           })
         },
-      )
+      })
     },
     onError: (_error, vars, context) => {
       if (vars.update.position !== undefined && context?.oldPosition != null) {
         const oldPos = context?.oldPosition
-
-        queryClient.setQueryData<IRecipe>(
-          [teamId, "recipes", vars.recipeId],
-          (prev) => {
+        setQueryDataRecipe(queryClient, {
+          teamId,
+          recipeId: vars.recipeId,
+          updater: (prev) => {
             if (prev == null) {
               return prev
             }
@@ -94,7 +98,7 @@ export function useStepUpdate() {
               })
             })
           },
-        )
+        })
       }
     },
   })

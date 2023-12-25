@@ -3,7 +3,6 @@ import { addWeeks, startOfWeek, subWeeks } from "date-fns"
 
 import { toISODateString } from "@/date"
 import { http } from "@/http"
-import { IRecipe } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
 import { toast } from "@/toast"
 import { useTeamId } from "@/useTeamId"
@@ -64,7 +63,7 @@ function toCalRecipe(
 }
 
 const scheduleRecipe = (
-  recipeID: IRecipe["id"],
+  recipeID: number,
   teamID: number | "personal",
   on: Date | string,
 ) => {
@@ -137,6 +136,7 @@ export function useScheduleRecipeCreate() {
         return
       }
       context.weekIds.forEach((weekId) => {
+        // TODO: replace with type safe wrapper function
         queryClient.setQueryData<CalendarResponse>(
           [teamID, "calendar", weekId.getTime()],
           (data) => {
@@ -164,6 +164,7 @@ export function useScheduleRecipeCreate() {
         return
       }
       context.weekIds.forEach((weekId) => {
+        // TODO: replace with type safe wrapper function
         queryClient.setQueryData<CalendarResponse>(
           [teamID, "calendar", weekId.getTime()],
           (data) => {

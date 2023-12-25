@@ -7,7 +7,8 @@ import { HelmetProvider } from "react-helmet-async"
 import { BrowserRouter, useLocation } from "react-router-dom"
 
 import { LoginPage as Login } from "@/pages/login/Login.page"
-import { IUserResponse } from "@/queries/authLogin"
+import { useAuthLogin } from "@/queries/authLogin"
+import { ResponseFromUse } from "@/queries/queryUtilTypes"
 import { rest, server } from "@/testUtils"
 
 const queryClientPersistent = new QueryClient({
@@ -45,7 +46,7 @@ test("login success", async () => {
           typeof requestJson["email"] === "string" &&
           typeof requestJson["password"] === "string"
         ) {
-          const user: IUserResponse = {
+          const user: ResponseFromUse<typeof useAuthLogin> = {
             user: {
               avatar_url: "",
               email: "foo@example.com",

@@ -1,7 +1,7 @@
 import { QueryClient, useQuery } from "@tanstack/react-query"
 
 import { http } from "@/http"
-import { ResponseFromUseQuery } from "@/queries/queryUtilTypes"
+import { ResponseFromUse } from "@/queries/queryUtilTypes"
 import { unwrapResult } from "@/query"
 
 const getTeamMembers = (id: number) =>
@@ -30,7 +30,7 @@ function getQueryKey({ teamId }: { teamId: number }) {
   return [teamId, "team-members-list"] as const
 }
 
-type Response = ResponseFromUseQuery<ReturnType<typeof useTeamMembersList>>
+type TeamMemberListResponse = ResponseFromUse<typeof useTeamMembersList>
 
 export function setQueryDataTeamMemberList(
   client: QueryClient,
@@ -39,8 +39,10 @@ export function setQueryDataTeamMemberList(
     updater,
   }: {
     teamId: number
-    updater: (prev: Response | undefined) => Response | undefined
+    updater: (
+      prev: TeamMemberListResponse | undefined,
+    ) => TeamMemberListResponse | undefined
   },
 ) {
-  client.setQueryData<Response>(getQueryKey({ teamId }), updater)
+  client.setQueryData<TeamMemberListResponse>(getQueryKey({ teamId }), updater)
 }

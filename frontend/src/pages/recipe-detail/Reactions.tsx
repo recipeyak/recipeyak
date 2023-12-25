@@ -7,8 +7,14 @@ import { Smile } from "react-feather"
 
 import { clx } from "@/classnames"
 import { findReaction } from "@/pages/recipe-detail/reactionUtils"
-import { Reaction } from "@/queries/recipeFetch"
+import { PickVariant } from "@/queries/queryUtilTypes"
+import { RecipeFetchResponse as Recipe } from "@/queries/recipeFetch"
 import { useUserId } from "@/useUserId"
+
+type Reaction = PickVariant<
+  Recipe["timelineItems"][number],
+  "note"
+>["reactions"][number]
 
 const OpenReactions = React.forwardRef(
   (
@@ -77,7 +83,7 @@ function reactionTitle(reactions: Reaction[]): string {
 
 export function ReactionPopover(props: {
   onPick: (_: ReactionType) => void
-  reactions: Reaction[]
+  reactions: readonly Reaction[]
   className?: string
 }) {
   const [visible, setVisible] = useState(false)
@@ -126,7 +132,7 @@ export function ReactionPopover(props: {
 }
 
 export function ReactionsFooter(props: {
-  reactions: Reaction[]
+  reactions: readonly Reaction[]
   onClick: (_: ReactionType) => void
   onPick: (_: ReactionType) => void
 }) {

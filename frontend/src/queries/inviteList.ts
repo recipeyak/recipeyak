@@ -1,7 +1,7 @@
 import { QueryClient, useQuery } from "@tanstack/react-query"
 
 import { http } from "@/http"
-import { ResponseFromUseQuery } from "@/queries/queryUtilTypes"
+import { ResponseFromUse } from "@/queries/queryUtilTypes"
 import { unwrapResult } from "@/query"
 
 const getInviteList = () =>
@@ -33,15 +33,17 @@ function getQueryKey() {
   return ["invites"] as const
 }
 
-type Response = ResponseFromUseQuery<ReturnType<typeof useInviteList>>
+type InviteListResponse = ResponseFromUse<typeof useInviteList>
 
 export function setQueryDataInviteList(
   client: QueryClient,
   {
     updater,
   }: {
-    updater: (prev: Response | undefined) => Response | undefined
+    updater: (
+      prev: InviteListResponse | undefined,
+    ) => InviteListResponse | undefined
   },
 ) {
-  client.setQueryData<Response>(getQueryKey(), updater)
+  client.setQueryData<InviteListResponse>(getQueryKey(), updater)
 }
