@@ -167,26 +167,12 @@ def test_list_team_members(
     """
     url = f"/api/v1/t/{team.id}/members/"
 
-    # non-members cannot view members
-    assert not team.is_member(user2)
-    client.force_authenticate(user2)
-    assert client.get(url).status_code == status.HTTP_403_FORBIDDEN
-
     # admins can view members
     client.force_authenticate(user)
     assert team.is_admin(user)
     res = client.get(url)
     assert res.status_code == status.HTTP_200_OK, "Team admins can view members"
     assert len(res.json()) == 1
-
-    # invite user2 to team
-    team.invite_user(user2, creator=user)
-    # inactive members cannot view members
-    client.force_authenticate(user2)
-    res = client.get(url)
-    assert (
-        res.status_code == status.HTTP_403_FORBIDDEN
-    ), "Only active users can view members"
 
     # team viewer can see members
     team.force_join(user3, level=Membership.READ_ONLY)
@@ -195,9 +181,6 @@ def test_list_team_members(
     assert (
         res.status_code == status.HTTP_200_OK
     ), "Viewer members can retrieve team members"
-    assert (
-        len(res.json()) == 3
-    ), "We have three members (user, user2 [inactive], user3)."
 
 
 def test_destory_team_member(

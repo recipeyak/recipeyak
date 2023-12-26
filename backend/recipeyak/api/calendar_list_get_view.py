@@ -9,7 +9,7 @@ from typing_extensions import TypedDict
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.calendar_serialization import serialize_scheduled_recipe
-from recipeyak.models import Membership, ScheduledRecipe, Team, get_team
+from recipeyak.models import Membership, ScheduledRecipe, get_team
 
 
 class CalSettings(TypedDict):

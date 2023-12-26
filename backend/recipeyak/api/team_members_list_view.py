@@ -5,14 +5,13 @@ from typing import Literal
 
 import pydantic
 from django.db import connection
-from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
-from recipeyak.models import Team, get_team_by_id
+from recipeyak.models import get_team_by_id
 from recipeyak.models.user import get_avatar_url
 
 
