@@ -49,6 +49,9 @@ types-dj-database-url = "^1.0.0"
 mypy = "^1.7.0"
 ruff = "^0.1.6"
 
+[tool.poetry.group.dev.dependencies]
+bpython = "^0.24"
+
 [tool.ruff]
 select = [
     "E",

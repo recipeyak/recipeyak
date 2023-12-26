@@ -178,3 +178,21 @@ export const http = {
     }
   },
 }
+
+export async function httpx<T>({
+  method,
+  url,
+  data,
+}: {
+  method: "get" | "post" | "patch" | "delete"
+  url: string
+  data: unknown
+}): Promise<T> {
+  return baseHttp
+    .request<T>({
+      url,
+      method,
+      data,
+    })
+    .then((r) => r.data)
+}
