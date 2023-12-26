@@ -105,5 +105,6 @@
     ".*styles.*",
     ".*css.*",
     ".*cls.*"
-  ]
+  ],
+  "mypy.dmypyExecutable": "${workspaceFolder}/backend/.venv/bin/dmypy"
 }

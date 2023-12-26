@@ -4,7 +4,6 @@ from collections import namedtuple
 from datetime import datetime
 from typing import Any, NamedTuple, cast
 
-import structlog
 from django.db import connection
 from django.db.backends.utils import CursorWrapper
 from pydantic import BaseModel, Field
@@ -15,8 +14,6 @@ from recipeyak.models import (
     get_team,
 )
 from recipeyak.models.upload import public_url
-
-logger = structlog.stdlib.get_logger()
 
 
 class RecipeListItemIngredient(BaseModel):

@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import logging
-
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import IsAuthenticated
@@ -11,8 +9,6 @@ from recipeyak.api.base.permissions import IsTeamMember
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.calendar_delete_view import calendar_delete_view
 from recipeyak.api.calendar_update_view import calendar_update_view
-
-logger = logging.getLogger(__name__)
 
 
 @api_view(["PATCH", "DELETE"])

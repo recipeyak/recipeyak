@@ -1,14 +1,11 @@
 from __future__ import annotations
 
-import logging
 from datetime import date, datetime
 
 import pydantic
 
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.models.scheduled_recipe import ScheduledRecipe
-
-logger = logging.getLogger(__name__)
 
 
 class ScheduledRecipeUpdateParams(RequestParams):

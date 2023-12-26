@@ -1,15 +1,11 @@
 from __future__ import annotations
 
-import logging
-
 from rest_framework import status
 from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.calendar_list_get_view import get_scheduled_recipes
 from recipeyak.realtime import publish_calendar_event_deleted
-
-logger = logging.getLogger(__name__)
 
 
 def calendar_delete_view(
