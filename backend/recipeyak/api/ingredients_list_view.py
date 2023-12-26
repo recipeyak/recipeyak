@@ -28,6 +28,7 @@ class IngredientCreateParams(RequestParams):
     optional: bool | None = None
 
 
+# TODO: rename to ingredient_create_view
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def ingredients_list_view(request: AuthedRequest, recipe_pk: int) -> Response:

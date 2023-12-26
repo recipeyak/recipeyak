@@ -94,14 +94,13 @@ def serialize_export_recipe(recipe: Recipe) -> ExportRecipe:
     )
 
 
+IGNORED_VALUES: tuple[object, ...] = ([], "", False, None)
+
+
 def fmt_dict(obj: dict[str, object]) -> dict[str, object]:
     out = {}
     for k, v in obj.items():
-        if v == []:
-            continue
-        if v == "":
-            continue
-        if v is False:
+        if v in IGNORED_VALUES:
             continue
         out[k] = v
     # avoid pyyaml sorting non-sense

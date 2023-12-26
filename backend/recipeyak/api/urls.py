@@ -14,7 +14,8 @@ from recipeyak.api.ingredients_detail_view import ingredients_detail_view
 from recipeyak.api.ingredients_list_view import ingredients_list_view
 from recipeyak.api.login_user_detail_view import login_user_detail_view
 from recipeyak.api.logout_user_detail_view import logout_user_detail_view
-from recipeyak.api.notes_view import note_create_view, note_detail_view
+from recipeyak.api.note_create_view import note_create_view
+from recipeyak.api.notes_view import note_detail_view
 from recipeyak.api.password_change_detail_view import password_change_detail_view
 from recipeyak.api.password_reset_confirm_view import password_reset_confirm_view
 from recipeyak.api.password_reset_view import password_reset_view
@@ -30,8 +31,8 @@ from recipeyak.api.recipe_bot_detail_view import (
 from recipeyak.api.recipe_detail_view import receipe_detail_view
 from recipeyak.api.recipe_list_view import recipe_list_view
 from recipeyak.api.register_user_detail_view import register_user_detail_view
+from recipeyak.api.section_create_view import create_section_view
 from recipeyak.api.sections_view import (
-    create_section_view,
     delete_or_update_section_view,
 )
 from recipeyak.api.sessions_detail_view import sessions_detail_view
