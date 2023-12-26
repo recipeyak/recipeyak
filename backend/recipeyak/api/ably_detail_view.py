@@ -9,7 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
-from recipeyak.api.team_detail_view import get_teams
+from recipeyak.api.team_update_view import get_teams
 from recipeyak.config import ABLY_API_KEY
 
 

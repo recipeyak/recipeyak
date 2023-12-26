@@ -1,56 +1,21 @@
 from __future__ import annotations
 
-from datetime import datetime
-from typing import Literal
-
-import pydantic
-from django.utils import timezone
-from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from recipeyak import user_agent
 from recipeyak.api.base.request import AuthedRequest
-
-
-class DeviceResponse(pydantic.BaseModel):
-    kind: Literal["mobile", "desktop"] | None
-    os: str | None
-    browser: str | None
-
-
-class SessionResponse(pydantic.BaseModel):
-    id: str
-    device: DeviceResponse
-    last_activity: datetime
-    ip: str | None
-    current: bool
+from recipeyak.api.session_delete_all_view import session_delete_all_view
+from recipeyak.api.session_list_view import session_list_view
 
 
 @api_view(["GET", "DELETE"])
 @permission_classes([IsAuthenticated])
 def sessions_list_view(request: AuthedRequest) -> Response:
-    query_set = request.user.session_set
-
     if request.method == "DELETE":
-        query_set.exclude(pk=request.session.session_key).delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-    qs = query_set.filter(expire_date__gt=timezone.now()).order_by("-last_activity")
-
-    sessions = list[SessionResponse]()
-    for s in qs:
-        assert s.user_agent is not None
-        ua = user_agent.parse(s.user_agent)
-        sessions.append(
-            SessionResponse(
-                id=s.session_key,
-                device=DeviceResponse(kind=ua.kind, os=ua.os, browser=ua.browser),
-                last_activity=s.last_activity,
-                ip=s.ip,
-                current=s.session_key == request.session.session_key,
-            )
-        )
-
-    return Response(sessions)
+        return session_delete_all_view(request)
+    elif request.method == "GET":
+        return session_list_view(request)
+    else:
+        raise MethodNotAllowed(request.method or "")

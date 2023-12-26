@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import logging
 from typing import Literal
 
 from django.db import IntegrityError
@@ -16,8 +15,6 @@ from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.recipe import serialize_reactions
 from recipeyak.models import filter_notes, get_team, user_reactions
 from recipeyak.models.reaction import Reaction
-
-logger = logging.getLogger(__name__)
 
 EMOJIS = Literal["❤️", "😆", "🤮"]
 
