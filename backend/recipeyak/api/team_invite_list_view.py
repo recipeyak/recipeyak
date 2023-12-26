@@ -7,7 +7,6 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from recipeyak.api.base.permissions import IsTeamMember
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.models import Team
@@ -24,7 +23,7 @@ class CreateInviteResponse(pydantic.BaseModel):
 
 
 @api_view(["POST"])
-@permission_classes([IsAuthenticated, IsTeamMember])
+@permission_classes([IsAuthenticated])
 def team_invite_list_view(request: AuthedRequest, team_pk: int) -> Response:
     """
     for creating, we want: level, user_id

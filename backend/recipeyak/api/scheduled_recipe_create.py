@@ -19,7 +19,7 @@ class ScheduledRecipeCreateParams(RequestParams):
     on: date
 
 
-def scheduled_recipe_create_view(request: AuthedRequest, team_pk: int) -> Response:
+def scheduled_recipe_create_view(request: AuthedRequest) -> Response:
     params = ScheduledRecipeCreateParams.parse_obj(request.data)
 
     team = get_team(request)
@@ -29,13 +29,13 @@ def scheduled_recipe_create_view(request: AuthedRequest, team_pk: int) -> Respon
     scheduled_recipe = recipe.schedule(
         on=params.on,
         user=request.user,
-        team=get_object_or_404(get_teams(request.user), pk=team_pk),
+        team=get_object_or_404(get_teams(request.user), pk=team.id),
     )
     res = serialize_scheduled_recipe(
-        scheduled_recipe, user_id=request.user.id, team_id=team_pk
+        scheduled_recipe, user_id=request.user.id, team_id=team.id
     )
 
-    publish_calendar_event(res, team_id=team_pk)
+    publish_calendar_event(res, team_id=team.id)
     return Response(
         res,
         status=status.HTTP_201_CREATED,

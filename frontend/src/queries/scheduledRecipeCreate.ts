@@ -62,12 +62,8 @@ function toCalRecipe(
   }
 }
 
-const scheduleRecipe = (
-  recipeID: number,
-  teamID: number | "personal",
-  on: Date | string,
-) => {
-  return http.post<ICalRecipe>(`/api/v1/t/${teamID}/calendar/`, {
+const scheduleRecipe = (recipeID: number, on: Date | string) => {
+  return http.post<ICalRecipe>(`/api/v1/calendar/`, {
     recipe: recipeID,
     on: toISODateString(on),
   })
@@ -75,15 +71,13 @@ const scheduleRecipe = (
 
 function scheduleRecipeV2({
   recipeID,
-  teamID,
   on,
 }: {
   recipeID: number
   recipeName: string
-  teamID: number
   on: Date
 }): Promise<ICalRecipe> {
-  return scheduleRecipe(recipeID, teamID, on).then(unwrapResult)
+  return scheduleRecipe(recipeID, on).then(unwrapResult)
 }
 
 export function useScheduleRecipeCreate() {

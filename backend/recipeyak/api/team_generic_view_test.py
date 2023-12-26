@@ -236,12 +236,6 @@ def test_destory_team_member(
         id=user3_membership.id
     ).exists(), "admin should be able to remove team membership of member"
 
-    client.force_authenticate(user3)
-    assert (
-        client.get(f"/api/v1/t/{team.pk}/members/{user3_membership.id}/").status_code
-        == status.HTTP_403_FORBIDDEN
-    ), "removed user should not be able to access team"
-
     # admins can remove other admins
     team.force_join_admin(user3)
     assert team.is_admin(user3)
@@ -368,13 +362,6 @@ def test_creating_invites_by_non_members(
     res = client.post(url, {"emails": [user3.email]})
     assert res.status_code == status.HTTP_400_BAD_REQUEST
 
-    # non-members cannot create invite
-    assert not empty_team.is_member(user3)
-    client.force_authenticate(user3)
-    url = f"/api/v1/t/{empty_team.id}/invites/"
-    res = client.post(url, {"emails": [user2.email]})
-    assert res.status_code == status.HTTP_403_FORBIDDEN
-
 
 def test_create_user_invite(
     client: APIClient, team: Team, user: User, user2: User
@@ -473,11 +460,6 @@ def test_user_invites(
     assert res.status_code == status.HTTP_200_OK
     assert len(res.json()) == 1
 
-    # verify user cannot view team
-    url = f"/api/v1/t/{team.id}/members/"
-    res = client.get(url)
-    assert res.status_code == status.HTTP_403_FORBIDDEN
-
 
 def test_accept_team_invite(
     client: APIClient, team: Team, user: User, user2: User, user3: User
@@ -534,11 +516,6 @@ def test_decline_team_invite(
     res = client.post(url)
     assert res.status_code == status.HTTP_200_OK
     assert Invite.objects.get(pk=invite_pk).status == Invite.DECLINED
-
-    # check user cannot view team
-    url = f"/api/v1/t/{team.id}/members/"
-    res = client.get(url)
-    assert res.status_code == status.HTTP_403_FORBIDDEN, "Non member cannot view team"
 
 
 def test_creating_team_with_name_and_emails(

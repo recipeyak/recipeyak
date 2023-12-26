@@ -61,7 +61,6 @@ export interface ICalendarItemProps {
   readonly recipeID: number | string
   readonly recipeName: string
   readonly scheduledId: number
-  readonly teamID: number
   readonly createdAt: string
   readonly createdBy: {
     readonly id: number | string
@@ -75,7 +74,6 @@ export function CalendarItem({
   remove,
   recipeName,
   recipeID,
-  teamID,
   scheduledId,
   createdAt,
   createdBy,
@@ -143,7 +141,6 @@ export function CalendarItem({
           scheduledId={scheduledId}
           createdAt={createdAt}
           createdBy={createdBy}
-          teamID={teamID}
           recipeName={recipeName}
           recipeId={recipeID}
           date={date}

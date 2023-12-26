@@ -14,7 +14,6 @@ export function useSchedulePreviewList({
   const teamId = useTeamId()
   return useQuery({
     queryKey: [teamId, "schedule", start, end],
-    queryFn: () =>
-      getCalendarRecipeList({ teamID: teamId, start, end }).then(unwrapEither),
+    queryFn: () => getCalendarRecipeList({ start, end }).then(unwrapEither),
   })
 }

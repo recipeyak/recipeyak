@@ -20,6 +20,5 @@ class RetrieveTeamResponse(pydantic.BaseModel):
 
 
 def team_get_view(request: AuthedRequest, team_pk: int) -> Response:
-    # BEFOREMERGE: move to own file
     team = get_object_or_404(get_teams(request.user), pk=team_pk)
     return Response(RetrieveTeamResponse(id=team.id, name=team.name))
