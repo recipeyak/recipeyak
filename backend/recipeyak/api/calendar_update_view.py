@@ -6,7 +6,7 @@ from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.calendar_list_get_view import get_scheduled_recipes
 from recipeyak.api.calendar_serialization import serialize_scheduled_recipe
-from recipeyak.models import ScheduleEvent
+from recipeyak.models import ScheduleEvent, get_team
 from recipeyak.realtime import publish_calendar_event
 
 
@@ -14,10 +14,9 @@ class ScheduledRecipeUpdateParams(RequestParams):
     on: date | None
 
 
-def calendar_update_view(
-    request: AuthedRequest, team_pk: int, scheduled_recipe_id: int
-) -> Response:
+def calendar_update_view(request: AuthedRequest, scheduled_recipe_id: int) -> Response:
     params = ScheduledRecipeUpdateParams.parse_obj(request.data)
+    team_pk = get_team(request).id
     scheduled_recipe = get_scheduled_recipes(team_pk).get(id=scheduled_recipe_id)
     if params.on is not None:
         scheduled_recipe.on = params.on

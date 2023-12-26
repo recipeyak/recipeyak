@@ -3,34 +3,23 @@ import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query"
 import { http } from "@/http"
 import { CalendarResponse, ICalRecipe } from "@/queries/scheduledRecipeCreate"
 import { unwrapResult } from "@/query"
+import { useTeamId } from "@/useTeamId"
 
-// TODO(sbdchd): we shouldn't need teamID here
-const updateScheduleRecipe = (
-  calId: ICalRecipe["id"],
-  teamID: number,
-  recipe: Partial<ICalRecipe>,
-) => {
-  return http.patch<ICalRecipe>(
-    `/api/v1/t/${teamID}/calendar/${calId}/`,
-    recipe,
-  )
+const updateScheduleRecipe = (calId: number, recipe: Partial<ICalRecipe>) => {
+  return http.patch<ICalRecipe>(`/api/v1/calendar/${calId}/`, recipe)
 }
 
 function scheduledRecipeUpdate({
   scheduledRecipeId,
-  teamID,
   update,
 }: {
   scheduledRecipeId: number
-  teamID: number
   update: {
     // ISO date string
     on: string
   }
 }): Promise<ICalRecipe> {
-  return updateScheduleRecipe(scheduledRecipeId, teamID, update).then(
-    unwrapResult,
-  )
+  return updateScheduleRecipe(scheduledRecipeId, update).then(unwrapResult)
 }
 
 export function onScheduledRecipeUpdateSuccess(params: {
@@ -62,12 +51,13 @@ export function onScheduledRecipeUpdateSuccess(params: {
 
 export function useScheduledRecipeUpdate() {
   const queryClient = useQueryClient()
+  const teamId = useTeamId()
   return useMutation({
     mutationFn: scheduledRecipeUpdate,
     onMutate: (vars) => {
       let previousOn: string | undefined
       queryClient.setQueriesData(
-        { queryKey: [vars.teamID, "calendar"] },
+        { queryKey: [teamId, "calendar"] },
         (data: unknown) => {
           // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
           const oldData = data as CalendarResponse | undefined
@@ -100,7 +90,7 @@ export function useScheduledRecipeUpdate() {
     onSuccess: (response, vars) => {
       onScheduledRecipeUpdateSuccess({
         queryClient,
-        teamID: vars.teamID,
+        teamID: teamId,
         scheduledRecipeId: vars.scheduledRecipeId,
         updatedCalRecipe: response,
       })
@@ -110,7 +100,7 @@ export function useScheduledRecipeUpdate() {
         return
       }
       queryClient.setQueriesData(
-        { queryKey: [vars.teamID, "calendar"] },
+        { queryKey: [teamId, "calendar"] },
         (data: unknown) => {
           // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
           const oldData = data as CalendarResponse | undefined

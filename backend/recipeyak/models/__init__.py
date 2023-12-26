@@ -40,9 +40,19 @@ def get_team(request: AuthedRequest) -> Team:
     # should only be used to populate the default team value on login.
     # If we send it with the request, then a user can have multiple tabs work
     # properly.
-    team = request.user.schedule_team
-    assert team is not None, "should always have a team selected"
-    return team
+    team_id = request.user.schedule_team_id
+    assert team_id is not None, "should always have a team selected"
+    return get_team_by_id(request=request, team_id=team_id)
+
+
+def get_team_by_id(*, request: AuthedRequest, team_id: int) -> Team:
+    return get_object_or_404(
+        Team.objects.filter(
+            membership__user_id=request.user.id,
+            membership__is_active=True,
+        ),
+        id=team_id,
+    )
 
 
 def filter_recipes(*, team: Team) -> QuerySet[Recipe]:

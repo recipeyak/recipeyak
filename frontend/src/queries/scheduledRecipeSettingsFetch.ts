@@ -12,9 +12,7 @@ export function useScheduledRecipeSettingsFetch() {
       // TODO: we could move this to a different endpoint or maybe stuff it in
       // the preload when we get there
       const start = new Date()
-      return getCalendarRecipeList({ teamID, start, end: start }).then(
-        unwrapEither,
-      )
+      return getCalendarRecipeList({ start, end: start }).then(unwrapEither)
     },
     select: (data) => data.settings,
     // Schedule recipes plop in due the way we overlap/prefetch without this

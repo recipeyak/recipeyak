@@ -10,7 +10,6 @@ from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from recipeyak.api.base.permissions import IsTeamMember
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.team_member_delete_view import team_member_delete_view
@@ -41,7 +40,7 @@ class UpdateMembershipParams(RequestParams):
 
 
 @api_view(["PATCH", "DELETE"])
-@permission_classes([IsAuthenticated, IsTeamMember])
+@permission_classes([IsAuthenticated])
 def team_members_detail_view(request: AuthedRequest, team_pk: int, pk: str) -> Response:
     if request.method == "DELETE":
         return team_member_delete_view(request, team_pk, pk)

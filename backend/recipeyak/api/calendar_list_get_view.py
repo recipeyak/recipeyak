@@ -3,14 +3,13 @@ from __future__ import annotations
 from datetime import date
 
 from django.db.models import QuerySet
-from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from typing_extensions import TypedDict
 
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.calendar_serialization import serialize_scheduled_recipe
-from recipeyak.models import Membership, ScheduledRecipe, Team
+from recipeyak.models import Membership, ScheduledRecipe, get_team
 
 
 class CalSettings(TypedDict):
@@ -35,8 +34,7 @@ def get_cal_settings(*, team_pk: int, request: AuthedRequest) -> CalSettings:
 
 
 def get_scheduled_recipes(team_pk: int) -> QuerySet[ScheduledRecipe]:
-    team = get_object_or_404(Team, pk=team_pk)
-    return ScheduledRecipe.objects.filter(team=team).select_related(
+    return ScheduledRecipe.objects.filter(team_id=team_pk).select_related(
         "recipe",
         "created_by",
         "recipe__primary_image",
@@ -50,10 +48,11 @@ class StartEndDateSerializer(RequestParams):
     end: date
 
 
-def calendar_list_get_view(request: AuthedRequest, team_pk: int) -> Response:
+def calendar_list_get_view(request: AuthedRequest) -> Response:
     params = StartEndDateSerializer.parse_obj(request.query_params.dict())
     start = params.start
     end = params.end
+    team_pk = get_team(request).id
 
     queryset = get_scheduled_recipes(team_pk).filter(on__gte=start).filter(on__lte=end)
 

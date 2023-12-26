@@ -7,11 +7,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from recipeyak.api.base.drf_json_renderer import JSONRenderer
-from recipeyak.api.base.permissions import IsTeamMember
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.cumin.cat import category
 from recipeyak.cumin.combine import Ingredient, combine_ingredients
-from recipeyak.models import ScheduledRecipe, ShoppingList, Team
+from recipeyak.models import ScheduledRecipe, ShoppingList, Team, get_team
 
 
 def get_scheduled_recipes(
@@ -38,8 +37,9 @@ class ShoppingListRecipe(pydantic.BaseModel):
 
 
 @api_view(["GET"])
-@permission_classes([IsAuthenticated, IsTeamMember])
-def get_shopping_list_view(request: AuthedRequest, team_pk: int) -> Response:
+@permission_classes([IsAuthenticated])
+def get_shopping_list_view(request: AuthedRequest, team_pk: int = -1) -> Response:
+    team_pk = get_team(request).id
     scheduled_recipes = get_scheduled_recipes(request=request, team_pk=team_pk)
     if scheduled_recipes is None:
         return Response(status=status.HTTP_400_BAD_REQUEST)

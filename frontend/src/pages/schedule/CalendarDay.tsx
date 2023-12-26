@@ -24,7 +24,6 @@ import { useScheduledRecipeDelete } from "@/queries/scheduledRecipeDelete"
 import { useScheduledRecipeUpdate } from "@/queries/scheduledRecipeUpdate"
 import { css, styled } from "@/theme"
 import { useCurrentDay } from "@/useCurrentDay"
-import { useTeamId } from "@/useTeamId"
 
 function DayOfWeek({ date }: { date: Date }) {
   const dayOfWeek = format(date, "E")
@@ -101,7 +100,6 @@ interface ICalendarDayProps {
 function CalendarDay({ date, scheduledRecipes }: ICalendarDayProps) {
   const today = useCurrentDay()
   const isToday = isSameDay(date, today)
-  const teamID = useTeamId()
 
   const location = useLocation()
   const params = new URLSearchParams(location.search)
@@ -132,7 +130,6 @@ function CalendarDay({ date, scheduledRecipes }: ICalendarDayProps) {
       if (item.type === DragDrop.CAL_RECIPE) {
         scheduledRecipeUpdate.mutate({
           scheduledRecipeId: item.scheduledId,
-          teamID,
           update: {
             on: toISODateString(date),
           },
@@ -141,7 +138,6 @@ function CalendarDay({ date, scheduledRecipes }: ICalendarDayProps) {
         scheduledRecipeCreate.mutate({
           recipeID: item.recipeID,
           recipeName: item.recipeName,
-          teamID,
           on: date,
         })
       } else {
@@ -180,11 +176,9 @@ function CalendarDay({ date, scheduledRecipes }: ICalendarDayProps) {
             date={date}
             recipeName={x.recipe.name}
             recipeID={x.recipe.id}
-            teamID={teamID}
             remove={() => {
               scheduledRecipeDelete.mutate({
                 scheduledRecipeId: x.id,
-                teamId: teamID,
               })
             }}
           />

@@ -5,18 +5,15 @@ import { http } from "@/http"
 import { CalendarResponse, ICalRecipe } from "@/queries/scheduledRecipeCreate"
 import { unwrapResult } from "@/query"
 import { useTeamId } from "@/useTeamId"
-// TODO(sbdchd): we shouldn't need teamID here
-const deleteScheduledRecipe = (calId: ICalRecipe["id"], teamID: number) => {
-  return http.delete(`/api/v1/t/${teamID}/calendar/${calId}/`)
+
+const deleteScheduledRecipe = (calId: number) => {
+  return http.delete(`/api/v1/calendar/${calId}/`)
 }
 
 function deleteScheduledRecipeV2(params: {
   scheduledRecipeId: number
-  teamId: number
 }): Promise<void> {
-  return deleteScheduledRecipe(params.scheduledRecipeId, params.teamId).then(
-    unwrapResult,
-  )
+  return deleteScheduledRecipe(params.scheduledRecipeId).then(unwrapResult)
 }
 
 export function onRecipeDeletion(
@@ -51,12 +48,15 @@ export function onRecipeDeletion(
 }
 
 export function useScheduledRecipeDelete() {
-  const teamID = useTeamId()
+  const teamId = useTeamId()
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: deleteScheduledRecipeV2,
     onMutate: (vars) => {
-      return onRecipeDeletion(queryClient, vars)
+      return onRecipeDeletion(queryClient, {
+        scheduledRecipeId: vars.scheduledRecipeId,
+        teamId,
+      })
     },
     onError: (_err, _vars, context) => {
       const deletedCalRecipe = context?.deletedCalRecipe
@@ -74,7 +74,7 @@ export function useScheduledRecipeDelete() {
       ]
       weekIds.forEach((weekId) => {
         queryClient.setQueryData<CalendarResponse>(
-          [teamID, "calendar", weekId.getTime()],
+          [teamId, "calendar", weekId.getTime()],
           (data) => {
             if (data == null) {
               return data

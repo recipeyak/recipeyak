@@ -43,7 +43,6 @@ export function CalendarDayItemModal({
   scheduledId,
   recipeName,
   recipeId,
-  teamID,
   date,
   onClose,
   createdAt,
@@ -51,7 +50,6 @@ export function CalendarDayItemModal({
 }: {
   readonly scheduledId: number
   readonly recipeId: number | string
-  readonly teamID: number
   readonly recipeName: string
   readonly date: Date
   readonly onClose: () => void
@@ -81,7 +79,6 @@ export function CalendarDayItemModal({
             <RescheduleSection
               onClose={onClose}
               date={date}
-              teamID={teamID}
               scheduledId={scheduledId}
               recipeName={recipeName}
             />
@@ -123,13 +120,11 @@ export function CalendarDayItemModal({
 function RescheduleSection({
   onClose,
   date,
-  teamID,
   scheduledId,
   recipeName,
 }: {
   onClose: () => void
   date: Date
-  teamID: number
   scheduledId: number
   recipeName: string
 }) {
@@ -145,7 +140,6 @@ function RescheduleSection({
   const handleFindNextOpen = () => {
     findNextOpen.mutate(
       {
-        teamID,
         day,
         now: localDate,
       },
@@ -164,7 +158,6 @@ function RescheduleSection({
       scheduledRecipeDelete.mutate(
         {
           scheduledRecipeId: scheduledId,
-          teamId: teamID,
         },
         {
           onSuccess: () => {
@@ -177,7 +170,6 @@ function RescheduleSection({
   const handleSave = ({ on }: { on: string | number | Date }) => {
     scheduledRecipeUpdate.mutate({
       scheduledRecipeId: scheduledId,
-      teamID,
       update: {
         on: toISODateString(on),
       },

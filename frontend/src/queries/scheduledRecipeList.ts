@@ -31,18 +31,16 @@ type ScheduledRecipeUpdated = {
 }
 
 export function getCalendarRecipeList({
-  teamID,
   start,
   end,
 }: {
-  readonly teamID: number
   readonly start: Date
   readonly end: Date
 }) {
   return http
     .obj({
       method: "GET",
-      url: `/api/v1/t/${teamID}/calendar/`,
+      url: `/api/v1/calendar/`,
       shape: t.type({
         scheduledRecipes: t.array(
           t.type({
@@ -134,7 +132,7 @@ export function useScheduledRecipeList({
       // We want to avoid dupes with our fetches
       const start = startOfWeek(subWeeks(startOfWeekMs, 3))
       const end = endOfWeek(addWeeks(startOfWeekMs, 3))
-      const response = await getCalendarRecipeList({ teamID, start, end }).then(
+      const response = await getCalendarRecipeList({ start, end }).then(
         unwrapEither,
       )
 

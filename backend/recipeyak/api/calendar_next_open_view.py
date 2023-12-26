@@ -5,14 +5,15 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from recipeyak.api.base.permissions import IsTeamMember
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.unwrap import unwrap
+from recipeyak.models import get_team
 
 
 @api_view(["GET"])
-@permission_classes([IsAuthenticated, IsTeamMember])
-def next_open(request: AuthedRequest, team_pk: int) -> Response:
+@permission_classes([IsAuthenticated])
+def next_open(request: AuthedRequest, team_pk: int = -1) -> Response:
+    team_pk = get_team(request).id
     with connection.cursor() as cursor:
         weekday = request.query_params["day"]
         now = request.query_params["now"]

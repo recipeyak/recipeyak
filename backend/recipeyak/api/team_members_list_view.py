@@ -5,15 +5,13 @@ from typing import Literal
 
 import pydantic
 from django.db import connection
-from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from recipeyak.api.base.permissions import IsTeamMember
 from recipeyak.api.base.request import AuthedRequest
-from recipeyak.models import Team
+from recipeyak.models import get_team_by_id
 from recipeyak.models.user import get_avatar_url
 
 
@@ -32,10 +30,10 @@ class TeamMemberResponse(pydantic.BaseModel):
 
 
 @api_view(["GET"])
-@permission_classes([IsAuthenticated, IsTeamMember])
+@permission_classes([IsAuthenticated])
 def team_members_list_view(request: AuthedRequest, team_pk: int) -> Response:
     if request.method == "GET":
-        team = get_object_or_404(Team, pk=team_pk)
+        team = get_team_by_id(request=request, team_id=team_pk)
         with connection.cursor() as cursor:
             cursor.execute(
                 """

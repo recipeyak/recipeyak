@@ -5,7 +5,6 @@ import { TextInput } from "@/components/Forms"
 import { Loader } from "@/components/Loader"
 import { useScheduledRecipeSettingsRegenerateLink } from "@/queries/scheduledRecipeSettingsRegenerateLink"
 import { useScheduledRecipeSettingsUpdate } from "@/queries/scheduledRecipeSettingsUpdate"
-import { useTeamId } from "@/useTeamId"
 
 export function ICalConfig({
   settings,
@@ -18,7 +17,6 @@ export function ICalConfig({
     unknown
   >
 }) {
-  const teamID = useTeamId()
   const regenLink = useScheduledRecipeSettingsRegenerateLink()
   const scheduleSettingsUpdate = useScheduledRecipeSettingsUpdate()
   if (!settings.isSuccess) {
@@ -63,7 +61,6 @@ export function ICalConfig({
         onClick={() => {
           const syncEnabled = !settings.data.syncEnabled
           scheduleSettingsUpdate.mutate({
-            teamID,
             update: { syncEnabled },
           })
         }}
