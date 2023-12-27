@@ -1,7 +1,6 @@
 from collections import defaultdict
-from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Any, Literal
+from typing import Any, Literal, Protocol
 
 from django.http import HttpRequest, HttpResponse, HttpResponseNotAllowed
 from django.urls import URLPattern, path, re_path
@@ -9,18 +8,23 @@ from django.urls import URLPattern, path, re_path
 Method = Literal["get", "post", "patch", "delete", "head"]
 
 
+class View(Protocol):
+    def __call__(self, request: Any, *args: Any, **kwargs: Any) -> HttpResponse:
+        ...
+
+
 @dataclass
 class Route:
     path: str
     method: Method
-    view: Callable[..., Any]
+    view: View
     regex: bool
 
 
 def _method_router(
     request: HttpRequest,
     *args: Any,
-    method_to_view: dict[str, Callable[..., Any]],
+    method_to_view: dict[str, View],
     **kwargs: dict[str, Any],
 ) -> HttpResponse:
     view = (
@@ -40,7 +44,7 @@ def routes(*routes: Route) -> list[URLPattern]:
 
     urlpatterns = list[URLPattern]()
     for p, views in path_to_routes.items():
-        method_to_view = dict[str, Callable[..., Any]]()
+        method_to_view = dict[str, View]()
         is_regex = False
         for view in views:
             method_to_view[view.method] = view.view
@@ -65,7 +69,7 @@ def route(
     path: str,
     *,
     method: Method,
-    view: Callable[..., Any],
+    view: View,
     regex: bool = False,
 ) -> Route:
     return Route(path, method, view, regex)
