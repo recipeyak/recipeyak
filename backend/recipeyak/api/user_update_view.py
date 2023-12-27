@@ -1,6 +1,8 @@
 from typing import Literal
 
 from django.db import transaction
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
@@ -20,6 +22,8 @@ class UserUpdatePayload(RequestParams):
     theme_mode: THEME_MODE | None = None
 
 
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated])
 def user_patch_view(request: AuthedRequest) -> Response:
     params = UserUpdatePayload.parse_obj(request.data)
 

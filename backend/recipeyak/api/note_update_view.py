@@ -3,6 +3,8 @@ from __future__ import annotations
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
@@ -16,10 +18,12 @@ class EditNoteParams(RequestParams):
     attachment_upload_ids: list[str] | None = None
 
 
-def note_update_view(request: AuthedRequest, note_pk: str) -> Response:
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated])
+def note_update_view(request: AuthedRequest, note_id: str) -> Response:
     params = EditNoteParams.parse_obj(request.data)
     team = get_team(request)
-    note = get_object_or_404(filter_notes(team=team), pk=note_pk)
+    note = get_object_or_404(filter_notes(team=team), pk=note_id)
     # only allow the note's author to update the note
     if note.created_by.id != request.user.id:
         return Response(status=status.HTTP_403_FORBIDDEN)

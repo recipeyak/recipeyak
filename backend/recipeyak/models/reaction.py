@@ -9,6 +9,7 @@ if TYPE_CHECKING:
 
 
 class Reaction(CommonInfo):
+    id: int
     emoji = models.TextField()
     created_by = models.ForeignKey["User"]("User", on_delete=models.CASCADE)
     note = models.ForeignKey["Note"](

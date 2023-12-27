@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from django.shortcuts import get_object_or_404
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
@@ -14,10 +16,14 @@ class StepPatchParams(RequestParams):
     position: str | None = None
 
 
-def step_update_view(request: AuthedRequest, step_pk: int) -> Response:
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated])
+def step_update_view(
+    request: AuthedRequest, step_id: int, recipe_id: object = ()
+) -> Response:
     team = get_team(request)
     params = StepPatchParams.parse_obj(request.data)
-    step = get_object_or_404(filter_steps(team=team), pk=step_pk)
+    step = get_object_or_404(filter_steps(team=team), pk=step_id)
     before_text = step.text
 
     if params.text is not None:

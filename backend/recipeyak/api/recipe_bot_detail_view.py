@@ -20,13 +20,13 @@ template = Template(
 <meta property="og:image" content="{{ recipe_image_url | safe }}" />
 {% endif %}
 <link rel="apple-touch-icon" href="https://recipeyak.imgix.net/recipeyak-logo-3x-white.png">
-<meta http-equiv="refresh" content="0; url=https://recipeyak.com/recipes/{{ recipe_pk }}/">
+<meta http-equiv="refresh" content="0; url=https://recipeyak.com/recipes/{{ recipe_id }}/">
 </head>
 </html>"""
 )
 
 
-def format_img_open_graph(x: str) -> str:
+def _format_img_open_graph(x: str) -> str:
     """
     Open graph images are recommended to be 1200x630, so we use Imgix to crop.
     """
@@ -42,8 +42,8 @@ def format_img_open_graph(x: str) -> str:
     )
 
 
-def recipe_get_view(request: AuthedRequest, recipe_pk: str) -> Response:
-    recipe = get_object_or_404(Recipe, pk=recipe_pk)
+def _recipe_get_view(request: AuthedRequest, recipe_id: str) -> Response:
+    recipe = get_object_or_404(Recipe, pk=recipe_id)
 
     recipe_title = recipe.name
     if recipe.author:
@@ -53,8 +53,8 @@ def recipe_get_view(request: AuthedRequest, recipe_pk: str) -> Response:
             Context(
                 {
                     "recipe_title": recipe_title,
-                    "recipe_pk": recipe.pk,
-                    "recipe_image_url": format_img_open_graph(
+                    "recipe_id": recipe.pk,
+                    "recipe_image_url": _format_img_open_graph(
                         recipe.primary_image.public_url()
                     )
                     if recipe.primary_image
@@ -68,5 +68,5 @@ def recipe_get_view(request: AuthedRequest, recipe_pk: str) -> Response:
 @api_view(["GET"])
 @permission_classes([AllowAny])
 @renderer_classes([StaticHTMLRenderer])
-def receipe_detail_view(request: AuthedRequest, recipe_pk: str) -> Response:
-    return recipe_get_view(request, recipe_pk)
+def recipe_bot_detail_view(request: AuthedRequest, recipe_id: str) -> Response:
+    return _recipe_get_view(request, recipe_id)

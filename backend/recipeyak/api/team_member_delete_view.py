@@ -3,6 +3,8 @@ from __future__ import annotations
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
@@ -15,9 +17,13 @@ def get_team_members(team: Team) -> QuerySet[Membership]:
     return team.membership_set.select_related("user").all()
 
 
-def team_member_delete_view(request: AuthedRequest, team_pk: int, pk: str) -> Response:
-    team = get_object_or_404(Team, pk=team_pk)
-    membership = get_object_or_404(get_team_members(team), pk=pk)
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def team_member_delete_view(
+    request: AuthedRequest, team_id: int, member_id: int
+) -> Response:
+    team = get_object_or_404(Team, pk=team_id)
+    membership = get_object_or_404(get_team_members(team), pk=member_id)
     if not is_team_admin(team, request.user) and membership.user != request.user:
         return Response(status=403)
     try:

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from django.shortcuts import get_object_or_404
 from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from recipeyak.api.base.permissions import has_recipe_access
@@ -9,8 +11,10 @@ from recipeyak.api.base.request import AuthedRequest
 from recipeyak.models import ChangeType, RecipeChange, Section
 
 
-def section_delete_view(request: AuthedRequest, section_pk: int) -> Response:
-    section = get_object_or_404(Section, pk=section_pk)
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def section_delete_view(request: AuthedRequest, section_id: int) -> Response:
+    section = get_object_or_404(Section, pk=section_id)
     recipe = section.recipe
     if not has_recipe_access(recipe=recipe, user=request.user):
         return Response(status=status.HTTP_403_FORBIDDEN)

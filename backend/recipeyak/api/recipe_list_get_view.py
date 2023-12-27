@@ -7,6 +7,8 @@ from typing import Any, NamedTuple, cast
 from django.db import connection
 from django.db.backends.utils import CursorWrapper
 from pydantic import BaseModel, Field
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
@@ -68,6 +70,11 @@ def namedtuplefetchall(cursor: CursorWrapper) -> list[ListQueryResult]:
     return cast(list[ListQueryResult], [nt_result(*row) for row in cursor.fetchall()])
 
 
+# TODO: rename module and func recipe_list_view
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def recipe_list_get_view(request: AuthedRequest) -> Response:
     team = get_team(request)
     list_items = list[RecipeListItem]()

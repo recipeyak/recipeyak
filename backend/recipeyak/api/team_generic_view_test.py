@@ -458,15 +458,15 @@ def test_accept_team_invite(
     url = f"/api/v1/t/{team.id}/invites/"
     res = client.post(url, {"emails": [user2.email], "level": Membership.ADMIN})
     assert res.status_code == status.HTTP_201_CREATED
-    invite_pk = res.json()["invite_ids"][0]
-    assert Invite.objects.get(pk=invite_pk).status == Invite.OPEN
+    invite_id = res.json()["invite_ids"][0]
+    assert Invite.objects.get(pk=invite_id).status == Invite.OPEN
 
     # accept invite
     client.force_authenticate(user2)
-    url = f"/api/v1/invites/{invite_pk}/accept/"
+    url = f"/api/v1/invites/{invite_id}/accept/"
     res = client.post(url)
     assert res.status_code == status.HTTP_200_OK
-    assert Invite.objects.get(pk=invite_pk).status == Invite.ACCEPTED
+    assert Invite.objects.get(pk=invite_id).status == Invite.ACCEPTED
 
     # check user can view team
     url = f"/api/v1/t/{team.id}/members/"
@@ -490,15 +490,15 @@ def test_decline_team_invite(
     url = f"/api/v1/t/{team.id}/invites/"
     res = client.post(url, {"emails": [user2.email], "level": Membership.ADMIN})
     assert res.status_code == status.HTTP_201_CREATED
-    invite_pk = res.json()["invite_ids"][0]
-    assert Invite.objects.get(pk=invite_pk).status == Invite.OPEN
+    invite_id = res.json()["invite_ids"][0]
+    assert Invite.objects.get(pk=invite_id).status == Invite.OPEN
 
     # decline invite
     client.force_authenticate(user2)
-    url = f"/api/v1/invites/{invite_pk}/decline/"
+    url = f"/api/v1/invites/{invite_id}/decline/"
     res = client.post(url)
     assert res.status_code == status.HTTP_200_OK
-    assert Invite.objects.get(pk=invite_pk).status == Invite.DECLINED
+    assert Invite.objects.get(pk=invite_id).status == Invite.DECLINED
 
 
 def test_creating_team_with_name_and_emails(

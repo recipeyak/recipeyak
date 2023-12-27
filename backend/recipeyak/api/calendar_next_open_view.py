@@ -12,8 +12,8 @@ from recipeyak.models import get_team
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def next_open(request: AuthedRequest, team_pk: int = -1) -> Response:
-    team_pk = get_team(request).id
+def next_open(request: AuthedRequest, team_id: int = -1) -> Response:
+    team_id = get_team(request).id
     with connection.cursor() as cursor:
         weekday = request.query_params["day"]
         now = request.query_params["now"]
@@ -44,7 +44,7 @@ ORDER BY
 gen_date ASC
 LIMIT 1;
 """,
-            {"day_number": day_number, "team_id": team_pk, "now": now},
+            {"day_number": day_number, "team_id": team_id, "now": now},
         )
         (date,) = unwrap(cursor.fetchone())
         return Response({"date": date})

@@ -4,6 +4,8 @@ from datetime import date
 
 from django.shortcuts import get_object_or_404
 from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
@@ -19,7 +21,11 @@ class ScheduledRecipeCreateParams(RequestParams):
     on: date
 
 
-def scheduled_recipe_create_view(request: AuthedRequest) -> Response:
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def scheduled_recipe_create_view(
+    request: AuthedRequest, team_id: object = ()
+) -> Response:
     params = ScheduledRecipeCreateParams.parse_obj(request.data)
 
     team = get_team(request)

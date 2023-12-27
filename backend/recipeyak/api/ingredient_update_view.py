@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from django.shortcuts import get_object_or_404
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
@@ -17,10 +19,14 @@ class IngredientsPatchParams(RequestParams):
     optional: bool | None = None
 
 
-def ingredient_update_view(request: AuthedRequest, ingredient_pk: int) -> Response:
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated])
+def ingredient_update_view(
+    request: AuthedRequest, ingredient_id: int, recipe_id: object = ()
+) -> Response:
     team = get_team(request)
     params = IngredientsPatchParams.parse_obj(request.data)
-    ingredient = get_object_or_404(filter_ingredients(team=team), pk=ingredient_pk)
+    ingredient = get_object_or_404(filter_ingredients(team=team), pk=ingredient_id)
 
     before = ingredient_to_text(ingredient)
 
