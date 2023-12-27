@@ -21,8 +21,8 @@ class SectionCreateParams(RequestParams):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def create_section_view(request: AuthedRequest, recipe_pk: int) -> Response:
-    recipe = get_object_or_404(Recipe, pk=recipe_pk)
+def create_section_view(request: AuthedRequest, recipe_id: int) -> Response:
+    recipe = get_object_or_404(Recipe, pk=recipe_id)
     if not has_recipe_access(recipe=recipe, user=request.user):
         return Response(status=status.HTTP_403_FORBIDDEN)
 

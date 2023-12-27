@@ -14,12 +14,12 @@ from recipeyak.models import ScheduledRecipe, ShoppingList, Team, get_team
 
 
 def get_scheduled_recipes(
-    *, request: AuthedRequest, team_pk: int
+    *, request: AuthedRequest, team_id: int
 ) -> QuerySet[ScheduledRecipe] | None:
     start = request.query_params.get("start")
     end = request.query_params.get("end")
 
-    team = Team.objects.filter(pk=team_pk).first()
+    team = Team.objects.filter(pk=team_id).first()
     if team is None:
         return None
     scheduled_recipes = team.scheduled_recipes
@@ -38,9 +38,9 @@ class ShoppingListRecipe(pydantic.BaseModel):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def get_shopping_list_view(request: AuthedRequest, team_pk: int = -1) -> Response:
-    team_pk = get_team(request).id
-    scheduled_recipes = get_scheduled_recipes(request=request, team_pk=team_pk)
+def get_shopping_list_view(request: AuthedRequest, team_id: int = -1) -> Response:
+    team_id = get_team(request).id
+    scheduled_recipes = get_scheduled_recipes(request=request, team_id=team_id)
     if scheduled_recipes is None:
         return Response(status=status.HTTP_400_BAD_REQUEST)
 

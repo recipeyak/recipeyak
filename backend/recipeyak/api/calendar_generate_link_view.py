@@ -10,10 +10,10 @@ from recipeyak.models import Membership, get_random_ical_id, get_team
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def generate_link(request: AuthedRequest, team_pk: int = -1) -> Response:
-    team_pk = get_team(request).id
-    membership = get_object_or_404(Membership, team=team_pk, user=request.user)
+def generate_link(request: AuthedRequest, team_id: int = -1) -> Response:
+    team_id = get_team(request).id
+    membership = get_object_or_404(Membership, team=team_id, user=request.user)
     membership.calendar_secret_key = get_random_ical_id()
     membership.save()
 
-    return Response(get_cal_settings(request=request, team_pk=team_pk))
+    return Response(get_cal_settings(request=request, team_id=team_id))

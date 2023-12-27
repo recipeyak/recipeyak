@@ -10,9 +10,9 @@ from recipeyak.models.invite import Invite
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def user_invites_accept_view(request: AuthedRequest, pk: int) -> Response:
+def user_invites_accept_view(request: AuthedRequest, invite_id: int) -> Response:
     invite = get_object_or_404(
-        Invite.objects.filter(membership__user=request.user), id=pk
+        Invite.objects.filter(membership__user=request.user), id=invite_id
     )
     invite.accept()
     return Response({"detail": "accepted invite"}, status=status.HTTP_200_OK)
