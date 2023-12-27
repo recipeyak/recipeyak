@@ -1,11 +1,10 @@
 from collections import defaultdict
-from collections.abc import Callable, Sequence
+from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any, Literal
 
 from django.http import HttpRequest, HttpResponse, HttpResponseNotAllowed
-from django.urls import URLPattern, re_path
-from django.urls import path as django_path
+from django.urls import URLPattern, path, re_path
 
 Method = Literal["get", "post", "patch", "delete", "head"]
 
@@ -47,7 +46,7 @@ def routes(*routes: Route) -> list[URLPattern]:
             method_to_view[view.method] = view.view
             is_regex = is_regex or view.regex
 
-        create_path = django_path if not is_regex else re_path
+        create_path = path if not is_regex else re_path
         urlpatterns.append(
             create_path(
                 p,
