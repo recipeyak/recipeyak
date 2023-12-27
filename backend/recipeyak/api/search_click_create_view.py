@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
@@ -34,9 +36,11 @@ class SearchClickCreateParams(RequestParams):
     matches: list[SearchClickMatch]
 
 
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
 def search_click_create_view(request: AuthedRequest) -> Response:
     params = SearchClickCreateParams.parse_obj(request.data)
 
-    search_click = SearchClick.objects.create(**params.dict())
+    search_click = SearchClick.objects.create(content=params.dict())
 
     return Response({"id": search_click.id})
