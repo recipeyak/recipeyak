@@ -1,4 +1,5 @@
 from collections import defaultdict
+from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Any, Literal, Protocol
 
@@ -16,7 +17,7 @@ class View(Protocol):
 @dataclass(frozen=True, slots=True)
 class Route:
     path: str
-    method: Method
+    method: Method | Sequence[Method]
     view: View
     regex: bool
 
@@ -47,7 +48,11 @@ def routes(*routes: Route) -> list[URLPattern]:
         method_to_view = dict[str, View]()
         is_regex = False
         for view in views:
-            method_to_view[view.method] = view.view
+            if isinstance(view.method, str):
+                method_to_view[view.method] = view.view
+            else:
+                for method in view.method:
+                    method_to_view[method] = view.view
             is_regex = is_regex or view.regex
 
         create_path = path if not is_regex else re_path
@@ -68,7 +73,7 @@ def routes(*routes: Route) -> list[URLPattern]:
 def route(
     path: str,
     *,
-    method: Method,
+    method: Method | Sequence[Method],
     view: View,
     regex: bool = False,
 ) -> Route:

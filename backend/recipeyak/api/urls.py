@@ -417,12 +417,7 @@ urlpatterns = routes(
     # TODO: figure out how to have multiple methods for a path
     route(
         "t/<int:team_id>/ical/<str:ical_id>/schedule.ics",
-        method="get",
-        view=get_ical_view,
-    ),
-    route(
-        "t/<int:team_id>/ical/<str:ical_id>/schedule.ics",
-        method="head",
+        method=("get", "head"),
         view=get_ical_view,
     ),
     route(
