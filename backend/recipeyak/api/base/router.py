@@ -13,7 +13,7 @@ class View(Protocol):
         ...
 
 
-@dataclass
+@dataclass(frozen=True, slots=True)
 class Route:
     path: str
     method: Method
