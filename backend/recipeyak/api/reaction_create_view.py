@@ -5,7 +5,6 @@ from typing import Literal
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from psycopg2.errors import UniqueViolation
-from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
