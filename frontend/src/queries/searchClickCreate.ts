@@ -1,5 +1,3 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-
 import { http } from "@/http"
 
 export const searchClickCreate = (params: {

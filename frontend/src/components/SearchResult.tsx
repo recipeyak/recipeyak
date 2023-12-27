@@ -41,7 +41,7 @@ export function SearchResult({
         <Link
           key={recipe.id}
           onClick={() => {
-            searchClickCreate({ matches, query: searchQuery, recipe })
+            void searchClickCreate({ matches, query: searchQuery, recipe })
           }}
           to={pathRecipeDetail({ recipeId: recipe.id.toString() })}
           className={clx(
