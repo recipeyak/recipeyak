@@ -12,7 +12,7 @@ Method = Literal["get", "post", "patch", "delete", "head"]
 
 @dataclass
 class Route:
-    route: str
+    path: str
     method: Method
     view: Callable[..., Any]
     regex: bool
@@ -34,10 +34,10 @@ def _method_router(
     return view(request, *args, **kwargs)
 
 
-def routes(routes: Sequence[Route]) -> list[URLPattern]:
+def routes(*routes: Route) -> list[URLPattern]:
     path_to_routes = defaultdict[str, list[Route]](list)
     for route in routes:
-        path_to_routes[route.route].append(route)
+        path_to_routes[route.path].append(route)
 
     urlpatterns = list[URLPattern]()
     for p, views in path_to_routes.items():
@@ -62,11 +62,11 @@ def routes(routes: Sequence[Route]) -> list[URLPattern]:
     return urlpatterns
 
 
-def path(
-    route: str,
+def route(
+    path: str,
     *,
     method: Method,
     view: Callable[..., Any],
     regex: bool = False,
 ) -> Route:
-    return Route(route, method, view, regex)
+    return Route(path, method, view, regex)
