@@ -27,6 +27,12 @@ from recipeyak.scraper.fetch import fetch_bytes, fetch_content_length
 
 
 @dataclass
+class IngredientGroup:
+    name: str | None
+    ingredients: list[str]
+
+
+@dataclass
 class ScrapeResult:
     title: str | None
     total_time: str | None
@@ -35,6 +41,8 @@ class ScrapeResult:
     upload_id: int | None
     ingredients: list[str]
     instructions: list[str]
+    # the first param of the tuple will be None in the case of a
+    ingredient_groups: list[IngredientGroup]
     author: str | None
     canonical_url: str | None
     # db id
@@ -98,10 +106,7 @@ def get_largest_image(urls: list[str | None]) -> str | None:
         content_length = fetch_content_length(url=url)
         if content_length is None:
             continue
-        if max_size is None:
-            max_size = content_length
-            max_url = url
-        elif content_length > max_size:
+        if max_size is None or content_length > max_size:
             max_size = content_length
             max_url = url
     return max_url
@@ -123,7 +128,6 @@ def scrape_recipe(*, url: str, user: User) -> ScrapeResult:
 
     parsed = scrape_html(html=html, org_url=url)  # type: ignore[arg-type]
     og_image_url = get_open_graph_image(html)
-
     image_url = get_largest_image([og_image_url, parsed.image()])
 
     upload: Upload | None = None
@@ -153,15 +157,33 @@ def scrape_recipe(*, url: str, user: User) -> ScrapeResult:
     except SchemaOrgException:
         total_time = None
 
-    try:
-        yields = parsed.yields()
-    except SchemaOrgException:
+    # We don't want to use the library's yields method as it's buggy
+    # see: https://github.com/hhursev/recipe-scrapers/issues/960
+    if yield_data := parsed.schema.data.get("recipeYield") or parsed.schema.data.get(
+        "yield"
+    ):
+        if isinstance(yield_data, list):
+            yield_data = yield_data[0]
+        yields = str(yield_data)
+    else:
         yields = None
 
     try:
         author = parsed.author()
     except AttributeError:
         author = None
+
+    ingredient_groups = list[IngredientGroup]()
+    try:
+        for group in parsed.ingredient_groups():
+            ingredient_groups.append(
+                IngredientGroup(name=group.purpose, ingredients=group.ingredients)
+            )
+    except ValueError:
+        # There's a chance the library will throw an error
+        ingredient_groups = [
+            IngredientGroup(name=None, ingredients=parsed.ingredients())
+        ]
 
     scrape_result = ScrapeResult(
         canonical_url=parsed.canonical_url(),
@@ -170,6 +192,7 @@ def scrape_recipe(*, url: str, user: User) -> ScrapeResult:
         yields=yields,
         image=image_url,
         ingredients=parsed.ingredients(),
+        ingredient_groups=ingredient_groups,
         instructions=parsed.instructions_list(),
         author=author,
         upload_id=upload.id if upload is not None else None,

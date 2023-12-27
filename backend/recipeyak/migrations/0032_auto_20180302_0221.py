@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("recipeyak", "0031_auto_20180301_2300")]
 
     operations = [

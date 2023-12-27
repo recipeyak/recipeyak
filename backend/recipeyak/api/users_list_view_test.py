@@ -43,7 +43,9 @@ def test_detail(client: APIClient, user: User) -> None:
         "email",
         "name",
         "avatar_url",
-        "theme",
+        "theme_day",
+        "theme_night",
+        "theme_mode",
     }
     assert expected.issubset(keys), "sanity test to ensure we have what we expect"
     original_data = res.json()
@@ -65,6 +67,18 @@ def test_detail(client: APIClient, user: User) -> None:
         assert res.json()[key] == data[key], "fields should be updated"
 
 
+def test_detail_theme(client: APIClient, user: User) -> None:
+    user.theme_day = "light"
+    user.save()
+    client.force_authenticate(user)
+
+    res = client.get("/api/v1/user/")
+    assert res.json()["theme_day"] == "light"
+
+    res = client.patch("/api/v1/user/", {"theme_day": "solarized"})
+    assert res.json()["theme_day"] == "solarized"
+
+
 @dataclass
 class Key:
     name: str
@@ -78,7 +92,6 @@ class Shape:
 
 
 def matches_shape(res: Response, shape: Shape) -> bool:
-
     assert res.request.get("PATH_INFO") == shape.url
 
     obj = res.json()[0] if isinstance(res.json(), list) else res.json()
@@ -89,7 +102,7 @@ def matches_shape(res: Response, shape: Shape) -> bool:
         if k not in obj:
             return False
 
-        if obj[k] is None and v is not None:
+        if obj[k] is None and v is not None:  # noqa: SIM114
             return False
         elif not isinstance(obj[k], v):
             return False

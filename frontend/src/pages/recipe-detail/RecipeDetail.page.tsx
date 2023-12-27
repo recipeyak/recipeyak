@@ -3,6 +3,7 @@ import React, { useMemo, useState } from "react"
 import { RouteComponentProps, useHistory } from "react-router"
 import { Link } from "react-router-dom"
 
+import { clx } from "@/classnames"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
@@ -10,9 +11,14 @@ import { Helmet } from "@/components/Helmet"
 import { Image } from "@/components/Image"
 import { Loader } from "@/components/Loader"
 import { Meta } from "@/components/Meta"
+import { NavPage } from "@/components/Page"
 import { Tag } from "@/components/Tag"
 import { formatHumanDate } from "@/date"
-import { useGlobalEvent } from "@/hooks"
+import {
+  getInitialIngredients,
+  Mutable,
+  SectionsAndIngredients,
+} from "@/ingredients"
 import * as ordering from "@/ordering"
 import AddIngredientOrSection from "@/pages/recipe-detail/AddIngredient"
 import AddStep from "@/pages/recipe-detail/AddStep"
@@ -29,31 +35,31 @@ import { TagEditor } from "@/pages/recipe-detail/TagEditor"
 import { pathRecipeDetail, pathRecipesList } from "@/paths"
 import { getNewPosIngredients } from "@/position"
 import { useIngredientUpdate } from "@/queries/ingredientUpdate"
+import { PickVariant } from "@/queries/queryUtilTypes"
 import {
-  INote,
-  IRecipe,
-  TimelineItem,
-  Upload,
+  RecipeFetchResponse as Recipe,
   useRecipeFetch,
 } from "@/queries/recipeFetch"
 import { useRecipeUpdate } from "@/queries/recipeUpdate"
 import { useSectionUpdate } from "@/queries/sectionUpdate"
 import { notEmpty } from "@/text"
 import { styled } from "@/theme"
-import {
-  getInitialIngredients,
-  Mutable,
-  SectionsAndIngredients,
-} from "@/utils/ingredients"
-import { formatImgOpenGraph, imgixFmt } from "@/utils/url"
-import { useAddSlugToUrl } from "@/utils/useAddSlugToUrl"
+import { formatImgOpenGraph, imgixFmt } from "@/url"
+import { useAddSlugToUrl } from "@/useAddSlugToUrl"
+import { useGlobalEvent } from "@/useGlobalEvent"
+
+type Ingredient = Recipe["ingredients"]
+
+type TimelineItem = Recipe["timelineItems"][number]
+type Note = PickVariant<TimelineItem, "note">
+type Upload = Note["attachments"][number]
 
 function RecipeDetails({
   recipe,
   editingEnabled,
   openImage,
 }: {
-  readonly recipe: IRecipe
+  readonly recipe: Recipe
   editingEnabled: boolean
   openImage: (_: string) => void
 }) {
@@ -166,7 +172,7 @@ function RecipeDetails({
     <>
       <div>
         <SectionTitle>Ingredients</SectionTitle>
-        <ul>
+        <ul className={clx(editingEnabled && "mb-2")}>
           {sectionsAndIngredients.map((item, i) => {
             if (item.kind === "ingredient") {
               const ingre = item.item
@@ -214,7 +220,11 @@ function RecipeDetails({
           />
         ) : (
           editingEnabled && (
-            <Button size="small" onClick={handleShowAddIngredient}>
+            <Button
+              size="small"
+              onClick={handleShowAddIngredient}
+              aria-label="open add ingredient"
+            >
               Add
             </Button>
           )
@@ -243,6 +253,7 @@ function RecipeDetails({
           editingEnabled && (
             <Button
               size="small"
+              aria-label="open add step"
               onClick={() => {
                 setAddStep(true)
               }}
@@ -261,24 +272,21 @@ function RecipeDetails({
   )
 }
 
-const ArchiveMessage = styled.div`
-  background: var(--color-background-card);
-  font-weight: bold;
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
-  border-radius: 5px;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
-`
+function ArchiveMessage({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      className="mx-2 rounded-[5px] bg-[var(--color-background-card)] px-3 py-1 font-bold"
+      children={children}
+    />
+  )
+}
 
 function RecipeBanner({ children }: { readonly children: React.ReactNode }) {
   return (
-    <div className="d-flex align-items-center">
-      <hr className="flex-grow mb-0 mt-0" />
+    <div className="flex items-center">
+      <hr className="my-0 grow" />
       <ArchiveMessage>{children}</ArchiveMessage>
-      <hr className="flex-grow mb-0 mt-0" />
+      <hr className="my-0 grow" />
     </div>
   )
 }
@@ -299,12 +307,6 @@ const ImageWrapper = styled.div`
   }
 `
 
-const MyRecipeTitle = styled.div`
-  font-size: 2.5rem;
-  line-height: 1em;
-  font-family: Georgia, serif;
-`
-
 function RecipeMetaItem({
   inline,
   children,
@@ -316,24 +318,13 @@ function RecipeMetaItem({
 }) {
   return (
     <div style={{ display: "flex", gap: inline ? "0.25rem" : undefined }}>
-      <div className="bold" style={!inline ? { width: 90 } : undefined}>
+      <div className="font-bold" style={!inline ? { width: 90 } : undefined}>
         {label}
       </div>
-      <div className="selectable">{children}</div>
+      <div className="cursor-auto select-text">{children}</div>
     </div>
   )
 }
-
-const RecipeDetailsContainer = styled.div<{ spanColumns?: boolean }>`
-  display: flex;
-  gap: 0.5rem;
-  flex-direction: column;
-  justify-content: space-around;
-
-  @media (min-width: 800px) {
-    ${(props) => (props.spanColumns ? "grid-area: 1 / span 2;" : "")}
-  }
-`
 
 const RecipeMetaContainer = styled.div<{ inline?: boolean }>`
   display: flex;
@@ -347,8 +338,8 @@ const RecipeMetaContainer = styled.div<{ inline?: boolean }>`
   justify-content: end;`}
 `
 
-function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
-  const [formState, setFormState] = useState<Partial<IRecipe>>(props.recipe)
+function RecipeEditor(props: { recipe: Recipe; onClose: () => void }) {
+  const [formState, setFormState] = useState<Partial<Recipe>>(props.recipe)
   const updateRecipe = useRecipeUpdate()
   const onSave = () => {
     updateRecipe.mutate(
@@ -371,22 +362,22 @@ function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
     )
   }
 
-  const setAttr = <T extends keyof Partial<IRecipe>>(
+  const setAttr = <T extends keyof Partial<Recipe>>(
     attr: T,
-    val: IRecipe[T],
+    val: Recipe[T],
   ) => {
     setFormState((s) => ({ ...s, [attr]: val }))
   }
 
   const handleChange =
-    (attr: keyof Partial<IRecipe>) =>
+    (attr: keyof Partial<Recipe>) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const val = e.target.value
       setAttr(attr, val)
     }
   return (
     <div>
-      <label className="bold">
+      <label className="font-bold">
         Title
         <TextInput
           autoFocus
@@ -395,7 +386,7 @@ function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
           defaultValue={formState.name}
         />
       </label>
-      <label className="bold">
+      <label className="font-bold">
         Author
         <TextInput
           placeholder="Author"
@@ -403,7 +394,7 @@ function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
           onChange={handleChange("author")}
         />
       </label>
-      <label className="bold">
+      <label className="font-bold">
         Time
         <TextInput
           placeholder="1 hour"
@@ -411,7 +402,7 @@ function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
           onChange={handleChange("time")}
         />
       </label>
-      <label className="bold">
+      <label className="font-bold">
         Servings
         <TextInput
           placeholder="4 to 6 servings"
@@ -420,7 +411,7 @@ function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
           name="servings"
         />
       </label>
-      <label className="bold">
+      <label className="font-bold">
         From
         <TextInput
           placeholder="http://example.com/dumpling-soup"
@@ -429,7 +420,7 @@ function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
           name="source"
         />
       </label>
-      <div className="bold">
+      <div className="font-bold">
         Tags
         <TagEditor
           tags={formState.tags ?? []}
@@ -438,7 +429,7 @@ function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
           }}
         />
       </div>
-      <div className="d-flex grid-entire-row align-items-end justify-content-end mt-4">
+      <div className="col-span-full mt-4 flex items-end justify-end">
         <Button
           size="small"
           className="mr-3"
@@ -452,7 +443,7 @@ function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
           size="small"
           type="submit"
           variant="primary"
-          loading={updateRecipe.isLoading}
+          loading={updateRecipe.isPending}
           onClick={onSave}
           name="save recipe"
         >
@@ -462,12 +453,6 @@ function RecipeEditor(props: { recipe: IRecipe; onClose: () => void }) {
     </div>
   )
 }
-
-const RecipeTitleCenter = styled.div`
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-`
 
 const HeaderBgOverlay = styled.div`
   border-radius: 6px;
@@ -501,28 +486,23 @@ const HeaderImgOverlay = styled.div`
   z-index: 999;
 `
 
-const HeaderImgUploader = styled.div`
-  background: var(--color-background-card);
-  opacity: 1 !important;
-  padding: 0.5rem;
-  border-radius: 3px;
-  font-size: 14px;
-`
-
-const RecipeTitleContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-`
+function HeaderImgUploader({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      className="rounded-[3px] bg-[var(--color-background-card)] p-2 font-[14px] !opacity-100"
+      children={children}
+    />
+  )
+}
 
 function useGallery(
-  noteUploads: Upload[],
+  noteUploads: readonly Upload[],
   recipeId: number | null,
   primaryImage: { id: string; url: string; contentType: string } | null,
 ) {
   const isPrimaryImageInUploads =
     noteUploads.find((x) => x.id === primaryImage?.id) != null
-  const uploads: Upload[] = useMemo(() => {
+  const uploads: readonly Upload[] = useMemo(() => {
     return isPrimaryImageInUploads || primaryImage == null
       ? noteUploads
       : [
@@ -610,24 +590,12 @@ function useGallery(
     image,
   }
 }
-function isNote(x: TimelineItem): x is INote {
+function isNote(x: TimelineItem): x is Note {
   return x.type === "note"
 }
 
-const Caption = styled.div.attrs({ className: "text-muted" })`
-  position: absolute;
-  right: 0;
-  text-align: right;
-  font-size: 12px;
-  font-weight: 500;
-
-  @media (max-width: 599px) {
-    margin-right: 0.5rem;
-  }
-`
-
 function RecipeInfo(props: {
-  recipe: IRecipe
+  recipe: Recipe
   editingEnabled: boolean
   openImage: () => void
   toggleEditMode: () => void
@@ -637,9 +605,13 @@ function RecipeInfo(props: {
 
   return (
     <>
-      <RecipeDetailsContainer spanColumns={inlineLayout}>
+      <div
+        className={clx(
+          "flex flex-col items-start justify-around gap-2",
+          inlineLayout && "md:[grid-area:1_/_span_2]",
+        )}
+      >
         <Dropdown
-          className="mr-auto"
           recipeIsArchived={props.recipe.archived_at != null}
           recipeId={props.recipe.id}
           recipeName={props.recipe.name}
@@ -657,13 +629,13 @@ function RecipeInfo(props: {
           />
         ) : (
           <>
-            <RecipeTitleCenter>
-              <RecipeTitleContainer>
-                <MyRecipeTitle className="selectable">
+            <div className="flex grow items-center">
+              <div className="flex flex-col gap-2">
+                <div className="cursor-auto select-text font-serif text-[2.5rem] leading-10">
                   {props.recipe.name}
-                </MyRecipeTitle>
+                </div>
                 {notEmpty(props.recipe.author) && (
-                  <div className="selectable">
+                  <div className="cursor-auto select-text">
                     By{" "}
                     <Link
                       to={{
@@ -677,8 +649,8 @@ function RecipeInfo(props: {
                     </Link>
                   </div>
                 )}
-              </RecipeTitleContainer>
-            </RecipeTitleCenter>
+              </div>
+            </div>
             <RecipeMetaContainer inline={inlineLayout}>
               {notEmpty(props.recipe.time) && (
                 <RecipeMetaItem inline={inlineLayout} label={"Time"}>
@@ -717,6 +689,7 @@ function RecipeInfo(props: {
                 <Button
                   size="small"
                   type="button"
+                  aria-label="edit metadata"
                   onClick={() => {
                     setShowEditor(true)
                   }}
@@ -727,10 +700,13 @@ function RecipeInfo(props: {
             </RecipeMetaContainer>
           </>
         )}
-      </RecipeDetailsContainer>
+      </div>
       {(props.recipe.primaryImage || props.editingEnabled) && (
         <>
-          <ImageWrapper style={{ position: "relative" }}>
+          <ImageWrapper
+            style={{ position: "relative" }}
+            className="print:!hidden"
+          >
             <Image
               sources={{
                 url: imgixFmt(props.recipe.primaryImage?.url ?? ""),
@@ -741,9 +717,12 @@ function RecipeInfo(props: {
                 props.openImage()
               }}
               loading="eager"
+              ariaLabel="open primary image"
             />
             {props.recipe.primaryImage?.author != null && (
-              <Caption>{props.recipe.primaryImage.author}</Caption>
+              <div className="absolute right-0 mr-2 text-right text-xs font-medium text-[var(--color-text-muted)] sm:mr-0">
+                {props.recipe.primaryImage.author}
+              </div>
             )}
           </ImageWrapper>
           {props.editingEnabled && (
@@ -784,7 +763,7 @@ const RecipeDetailGrid = styled.div<{ enableLargeImageRow: boolean }>`
   }
 `
 
-export function Recipe(props: IRecipeProps) {
+export function RecipeDetailPage(props: IRecipeProps) {
   const recipeId = parseInt(props.match.params.recipeId, 10)
 
   const maybeRecipe = useRecipeFetch({ recipeId })
@@ -813,12 +792,20 @@ export function Recipe(props: IRecipeProps) {
     openPrimaryImage,
   } = useGallery(uploads, myRecipe?.id ?? null, myRecipe?.primaryImage ?? null)
 
-  if (maybeRecipe.isLoading) {
-    return <Loader />
+  if (maybeRecipe.isPending) {
+    return (
+      <NavPage>
+        <Loader />
+      </NavPage>
+    )
   }
 
   if (maybeRecipe.isError) {
-    return <p>recipe not found</p>
+    return (
+      <NavPage>
+        <div className="text-center">recipe not found</div>
+      </NavPage>
+    )
   }
 
   const recipe = maybeRecipe.data
@@ -844,7 +831,7 @@ export function Recipe(props: IRecipeProps) {
   }
 
   return (
-    <div>
+    <NavPage>
       <Helmet title={recipe.name} />
       <Meta
         title={recipeTitle}
@@ -859,6 +846,7 @@ export function Recipe(props: IRecipeProps) {
             type="button"
             name="toggle add section"
             className="ml-3"
+            aria-label="exit edit mode"
             onClick={toggleEditMode}
           >
             Exit
@@ -875,13 +863,13 @@ export function Recipe(props: IRecipeProps) {
           onPrevious={onPrevious}
           onNext={onNext}
           onStar={onStar}
-          enableStarButton={true}
           onClose={onClose}
         />
       )}
 
       <RecipeDetailGrid
         enableLargeImageRow={!!recipe.primaryImage?.url || editingEnabled}
+        className="print:!flex print:!flex-col"
       >
         <RecipeInfo
           recipe={recipe}
@@ -900,8 +888,6 @@ export function Recipe(props: IRecipeProps) {
           />
         )}
       </RecipeDetailGrid>
-    </div>
+    </NavPage>
   )
 }
-
-export default Recipe

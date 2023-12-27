@@ -1,56 +1,78 @@
+import { ForwardedRef, forwardRef } from "react"
 import { useDrag } from "react-dnd"
 import { Link } from "react-router-dom"
 
-import { classNames } from "@/classnames"
-import { Card, CardContent } from "@/components/Card"
+import { clx } from "@/classnames"
 import { DragIcon } from "@/components/icons"
 import { Image } from "@/components/Image"
 import { Tag } from "@/components/Tag"
 import { DragDrop } from "@/dragDrop"
 import { RecipeListItem as TRecipeListItem } from "@/queries/recipeList"
 import { Match } from "@/search"
-import { styled } from "@/theme"
+import { imgixFmt } from "@/url"
 import { recipeURL } from "@/urls"
-import { imgixFmt } from "@/utils/url"
 
-interface IRecipeTitleProps {
+const Card = forwardRef(
+  (
+    {
+      children,
+      isDragging,
+      tabIndex,
+      ...rest
+    }: { children: React.ReactNode; tabIndex?: number } & (
+      | {
+          as: "Link"
+          to: string
+          isDragging?: undefined
+        }
+      | {
+          as?: undefined
+          isDragging: boolean
+        }
+    ),
+    ref: ForwardedRef<HTMLDivElement>,
+  ) => {
+    const className = clx(
+      "flex flex-col rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-card)]",
+      isDragging != null && "cursor-move",
+      isDragging ? "opacity-50" : "opacity-100",
+    )
+    if (rest.as === "Link") {
+      return (
+        <Link
+          className={className}
+          to={rest.to}
+          children={children}
+          tabIndex={tabIndex}
+        />
+      )
+    }
+    return (
+      <div ref={ref} className={className} tabIndex={tabIndex}>
+        {children}
+      </div>
+    )
+  },
+)
+
+function RecipeTitle({
+  url,
+  name,
+  dragable,
+}: {
   readonly url: string
   readonly name: string
   readonly dragable: boolean
-}
-
-function RecipeTitle({ url, name, dragable }: IRecipeTitleProps) {
+}) {
   return (
-    <div className="flex-grow d-flex justify-between">
-      <Link
-        tabIndex={0}
-        to={url}
-        className="align-self-start mb-1 flex-grow-1 line-height-tight"
-      >
+    <div className="flex grow justify-between">
+      <Link tabIndex={0} to={url} className="mb-1 grow self-start leading-5">
         {name}
       </Link>
       {dragable && <DragIcon />}
     </div>
   )
 }
-
-const Ingredient = styled.small`
-  font-weight: bold;
-  overflow-x: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-`
-
-const CardImgContainer = styled.div`
-  @media (max-width: 449px) {
-    min-height: 128px;
-    max-height: 128px;
-  }
-  @media (min-width: 450px) {
-    min-height: 180px;
-    max-height: 180px;
-  }
-`
 
 type IRecipeItemProps = {
   readonly name: string
@@ -81,18 +103,18 @@ function RecipeListItem({
   const authorMatch = matches.find((x) => x.kind === "author")
 
   const recipeContent = (
-    <div className="h-100 p-2 pt-0 line-height-tight">
+    <div className="h-full p-2 leading-5">
       <div tabIndex={0} className="mb-1">
         {name}
       </div>
 
       {ingredientMatch != null ? (
-        <Ingredient>{ingredientMatch.value}</Ingredient>
+        <small className="overflow-x-hidden text-ellipsis whitespace-nowrap font-bold">
+          {ingredientMatch.value}
+        </small>
       ) : null}
       {author !== "" && (
-        <small
-          className={classNames("d-block", { "fw-bold": authorMatch != null })}
-        >
+        <small className={clx("block", authorMatch != null && "font-bold")}>
           {author}
         </small>
       )}
@@ -102,8 +124,8 @@ function RecipeListItem({
   )
 
   return (
-    <Card as={Link} tabIndex={0} to={url}>
-      <CardImgContainer>
+    <Card as={"Link"} tabIndex={0} to={url}>
+      <div className="max-h-[128px] min-h-[128px] sm:max-h-[180px] sm:min-h-[180px]">
         <Image
           // lazy load everything after the first 20ish
           lazyLoad={index > 20}
@@ -122,23 +144,21 @@ function RecipeListItem({
           blur="none"
           rounded={false}
         />
-      </CardImgContainer>
+      </div>
       {recipeContent}
     </Card>
   )
 }
-interface IMetaProps {
+
+function Meta({
+  author,
+  bold,
+}: {
   readonly author: string
   readonly bold: boolean
-}
-
-function Meta({ author, bold }: IMetaProps) {
+}) {
   return (
-    <div
-      className={classNames("d-flex", "align-items-center", {
-        "fw-bold": bold,
-      })}
-    >
+    <div className={clx("flex", "items-center", bold && "font-bold")}>
       {author !== "" ? <small>{author}</small> : null}
     </div>
   )
@@ -193,22 +213,20 @@ export function RecipeItem({
   const authorMatch = matches.find((x) => x.kind === "author")
 
   const recipeContent = (
-    <CardContent className="h-100 d-flex flex-column">
+    <div className="flex h-full flex-col p-2">
       <RecipeTitle name={name} url={url} dragable={!!props.drag} />
       {ingredientMatch != null ? (
-        <Ingredient>{ingredientMatch.value}</Ingredient>
+        <small className="overflow-x-hidden text-ellipsis whitespace-nowrap font-bold">
+          {ingredientMatch.value}
+        </small>
       ) : null}
       <div>{tagMatch != null ? <Tag>{tagMatch.value}</Tag> : null}</div>
       <Meta bold={authorMatch != null} author={author ?? ""} />
-    </CardContent>
+    </div>
   )
 
   return (
-    <Card
-      ref={drag}
-      className="cursor-move"
-      style={{ opacity: isDragging ? 0.5 : 1 }}
-    >
+    <Card ref={drag} isDragging={isDragging}>
       {recipeContent}
     </Card>
   )

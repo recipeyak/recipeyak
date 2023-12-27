@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import Any, Mapping
+from collections.abc import Mapping
+from typing import Any
 
 from recipeyak.cumin.inflect import singularize
 
@@ -89,7 +90,6 @@ DEPARTMENT_MAPPING = {
         "lime",
         "thyme",
         "radish",
-        "mushroom",
         "lemon",
         "tomato",
         "lettuce",
@@ -113,7 +113,6 @@ DEPARTMENT_MAPPING = {
         "garlic",
         "cloves garlic",
         "ginger",
-        "lemon",
         "clementine",
         "celery",
         "oregano",
@@ -217,7 +216,6 @@ DEPARTMENT_MAPPING = {
         "challah",
         "brioche",
         "rolls",
-        "brioche",
         "baguette",
         "tortillas",
         "sub roll",
@@ -278,7 +276,6 @@ DEPARTMENT_MAPPING = {
         "honey",
         "dulce de leche",
         "hot sauce",
-        "fish sauce",
         "capers",
         "vinegar",
         "soy sauce",

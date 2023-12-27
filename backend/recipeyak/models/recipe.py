@@ -20,6 +20,7 @@ if TYPE_CHECKING:
     from recipeyak.models.note import Note
     from recipeyak.models.scrape import Scrape  # noqa: F401
     from recipeyak.models.team import Team
+    from recipeyak.models.timeline_event import TimelineEvent
     from recipeyak.models.upload import Upload  # noqa: F401
     from recipeyak.models.user import User
 
@@ -80,12 +81,12 @@ class Recipe(CommonInfo):
     primary_image_id: int
     objects = Manager["Recipe"]()
 
-    notes: QuerySet["Note"]
+    notes: QuerySet[Note]
 
     class Meta:
         db_table = "core_recipe"
 
-    def schedule(self, *, on: date, user: "User", team: "Team") -> ScheduledRecipe:
+    def schedule(self, *, on: date, user: User, team: Team) -> ScheduledRecipe:
         return ScheduledRecipe.objects.create_scheduled(
             recipe=self, on=on, user=user, team=team
         )
@@ -101,20 +102,15 @@ class Recipe(CommonInfo):
         return self.ingredients
 
     @property
-    def steps(self) -> BaseManager["Step"]:
+    def steps(self) -> BaseManager[Step]:
         """Return recipe steps ordered by creation date"""
         # TODO(sbdchd): can use reverse relation instead
         return Step.objects.filter(recipe=self).order_by("position", "created")
 
     scheduledrecipe_set: QuerySet[ScheduledRecipe]
-
-    @property
-    def step_set(self) -> BaseManager[Step]:
-        return self.steps
-
-    @property
-    def section_set(self) -> BaseManager[Section]:
-        return Section.objects.filter(recipe=self)
+    timelineevent_set: QuerySet[TimelineEvent]
+    section_set: QuerySet[Section]
+    step_set: QuerySet[Step]
 
     def __str__(self) -> str:
         return f"{self.name} by {self.author}"

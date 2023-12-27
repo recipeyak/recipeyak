@@ -1,28 +1,183 @@
-@import "./variables.scss";
+@import "./reset.css";
 
-$primary-color: adjust-hue(tomato, 5deg);
-$primary-color-shadow: transparentize($primary-color, 0.2);
-$primary: $primary-color;
-$border-color: #dbdbdb;
+html {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  min-width: 300px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  text-rendering: optimizeLegibility;
 
-$text-color: #4a4a4a;
+  height: 100%;
+  font-size: 16px;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+  color: var(--color-text);
+  background-color: var(--color-background);
+}
 
-@import "./reset.scss";
-@import "../../bulma.sass";
-@import "./helpers.scss";
-@import "./home.scss";
+article,
+aside,
+figure,
+footer,
+header,
+hgroup,
+section {
+  display: block;
+}
 
+body,
+button,
+input,
+select,
+textarea {
+  font-family:
+    BlinkMacSystemFont,
+    -apple-system,
+    "Segoe UI",
+    "Roboto",
+    "Oxygen",
+    "Ubuntu",
+    "Cantarell",
+    "Fira Sans",
+    "Droid Sans",
+    "Helvetica Neue",
+    "Helvetica",
+    "Arial",
+    sans-serif;
+}
+
+code,
+pre {
+  -moz-osx-font-smoothing: auto;
+  -webkit-font-smoothing: auto;
+  font-family: monospace;
+}
+
+body {
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  height: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+hr {
+  background-color: var(--color-border);
+  border: none;
+  display: block;
+  height: 1px;
+  margin: 1.5rem 0;
+}
+
+img {
+  height: auto;
+  max-width: 100%;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  vertical-align: baseline;
+}
+
+small {
+  font-size: 0.875em;
+}
+
+span {
+  font-style: inherit;
+  font-weight: inherit;
+}
+
+strong {
+  font-weight: 700;
+}
+
+// Block
+table {
+  width: 100%;
+  td,
+  th {
+    text-align: left;
+    vertical-align: top;
+  }
+}
+
+// NOTE:
+// workaround for broken backdrop blur utils in tailwind
+// from: https://github.com/tailwindlabs/tailwindcss/discussions/7044#discussioncomment-4697891
 :root {
+  --empty: ;
+}
+*,
+:after,
+:before {
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x: var(--empty,);
+  --tw-pan-y: var(--empty,);
+  --tw-pinch-zoom: var(--empty,);
+  --tw-scroll-snap-strictness: proximity;
+  --tw-ordinal: var(--empty,);
+  --tw-slashed-zero: var(--empty,);
+  --tw-numeric-figure: var(--empty,);
+  --tw-numeric-spacing: var(--empty,);
+  --tw-numeric-fraction: var(--empty,);
+  --tw-ring-inset: var(--empty,);
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgba(59, 130, 246, 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur: var(--empty,);
+  --tw-brightness: var(--empty,);
+  --tw-contrast: var(--empty,);
+  --tw-grayscale: var(--empty,);
+  --tw-hue-rotate: var(--empty,);
+  --tw-invert: var(--empty,);
+  --tw-saturate: var(--empty,);
+  --tw-sepia: var(--empty,);
+  --tw-drop-shadow: var(--empty,);
+  --tw-backdrop-blur: var(--empty,);
+  --tw-backdrop-brightness: var(--empty,);
+  --tw-backdrop-contrast: var(--empty,);
+  --tw-backdrop-grayscale: var(--empty,);
+  --tw-backdrop-hue-rotate: var(--empty,);
+  --tw-backdrop-invert: var(--empty,);
+  --tw-backdrop-opacity: var(--empty,);
+  --tw-backdrop-saturate: var(--empty,);
+  --tw-backdrop-sepia: var(--empty,);
+}
+
+// actual tailwind css
+// we're not using the tailwind reset, didn't like how it setup ::placeholder color
+@tailwind components;
+@tailwind utilities;
+
+@mixin theme-light {
   // theme-light
   --color-background: white;
 
-  --color-primary: #{$primary-color};
+  --color-primary: #e37857;
   --color-primary-button-text: var(--color-background);
-  --color-primary-shadow: #{$primary-color-shadow};
+  --color-primary-shadow: rgba(255, 114, 71, 0.8);
   --color-primary-active: #ff5f2e;
   --color-primary-disabled: #e03500;
 
-  --color-text: #{$text-color};
+  --color-text: #4a4a4a;
   --color-text-muted: rgba(115, 115, 115, 1);
   --color-text-disabled: var(--color-text);
 
@@ -31,7 +186,8 @@ $text-color: #4a4a4a;
   --color-link: var(--color-text);
   --color-link-hover: var(--color-link);
 
-  --color-border: #{$border-color};
+  --color-border: #dbdbdb;
+  --color-border-selected-day: var(--color-border);
 
   --color-accent: rgb(255, 114, 71);
 
@@ -44,16 +200,86 @@ $text-color: #4a4a4a;
   --color-background-calendar-item: var(--color-background);
   --color-background-empty-image: rgb(227, 227, 227);
   --color-modal-background: rgba(10, 10, 10, 0.57);
-
-  --margin-calendar-item-bottom: 0.5rem;
 }
 
-.theme-autumn {
+.theme-light {
+  @include theme-light();
+}
+
+@mixin theme-dark {
+  --color-background: #0d1116;
+
+  --color-primary: #854d0e;
+  --color-primary-button-text: white;
+  --color-primary-shadow: rgba(255, 114, 71, 0.8);
+  --color-primary-active: var(--color-primary);
+  --color-primary-disabled: #b86349;
+
+  --color-text: rgb(230, 237, 243);
+  --color-text-muted: var(--color-text);
+  --color-text-disabled: rgb(185, 185, 185);
+
+  --color-input-placeholder: var(--color-text-muted);
+
+  --color-border: #2f353c;
+  --color-border-selected-day: var(--color-border);
+  --color-accent: var(--color-text);
+
+  --color-danger: #fb5274;
+  --color-danger-button-text: white;
+  --color-danger-disabled: #{darken(#fb5274, 20%)};
+
+  --color-background-card: #161b22;
+  --color-background-calendar-day: var(--color-background-card);
+  --color-background-calendar-item: var(--color-background-card);
+  --color-background-empty-image: #382e27;
+  --color-modal-background: rgba(10, 10, 10, 0.57);
+}
+
+.theme-dark {
+  @include theme-dark();
+}
+
+@mixin theme-dark-dimmed {
+  --color-background: rgb(28, 33, 40);
+
+  --color-primary: #854d0e;
+  --color-primary-button-text: white;
+  --color-primary-shadow: rgba(255, 114, 71, 0.8);
+  --color-primary-active: var(--color-primary);
+  --color-primary-disabled: #b86349;
+
+  --color-text: rgb(173, 186, 199);
+  --color-text-muted: var(--color-text);
+  --color-text-disabled: rgb(118, 131, 144);
+
+  --color-input-placeholder: var(--color-text-muted);
+
+  --color-border: rgb(68, 76, 86);
+  --color-border-selected-day: var(--color-accent);
+  --color-accent: var(--color-text);
+
+  --color-danger: #fb5274;
+  --color-danger-button-text: white;
+  --color-danger-disabled: #{darken(#fb5274, 20%)};
+
+  --color-background-card: rgb(34, 39, 46);
+  --color-background-calendar-day: var(--color-background-card);
+  --color-background-calendar-item: var(--color-background);
+  --color-background-empty-image: #382e27;
+  --color-modal-background: rgba(10, 10, 10, 0.57);
+}
+
+.theme-dark-dimmed {
+  @include theme-dark-dimmed();
+}
+
+@mixin theme-autumn {
   --color-background: rgb(185, 110, 52);
 
   --color-primary: #e37857;
   --color-primary-button-text: white;
-  --color-primary-shadow: #{$primary-color-shadow};
+  --color-primary-shadow: rgba(255, 114, 71, 0.8);
   --color-primary-active: var(--color-primary);
   --color-primary-disabled: #b86349;
 
@@ -63,9 +289,8 @@ $text-color: #4a4a4a;
 
   --color-input-placeholder: rgb(208, 197, 180);
 
-  --color-link: var(--color-text);
-
-  --color-border: #{$border-color};
+  --color-border: #dbdbdb;
+  --color-border-selected-day: var(--color-accent);
   --color-accent: hsla(15, 50%, 82%, 0.865);
 
   --color-danger: #fb5274;
@@ -75,12 +300,15 @@ $text-color: #4a4a4a;
   --color-background-card: rgb(188, 133, 92);
   --color-background-calendar-day: var(--color-background-card);
   --color-background-calendar-item: rgb(188, 133, 92);
-  --color-background-empty-image: var(--color-background-card);
-
-  --margin-calendar-item-bottom: 0rem;
+  --color-background-empty-image: var(--color-accent);
+  --color-modal-background: rgba(10, 10, 10, 0.57);
 }
 
-.theme-solarized {
+.theme-autumn {
+  @include theme-autumn();
+}
+
+@mixin theme-solarized {
   --color-background: #fdf6e3;
 
   --color-primary: #b58900;
@@ -89,15 +317,14 @@ $text-color: #4a4a4a;
   --color-primary-active: var(--color-primary);
   --color-primary-disabled: var(--color-primary);
 
-  --color-text: #{$text-color};
+  --color-text: #4a4a4a;
   --color-text-muted: rgba(115, 115, 115, 1);
   --color-text-disabled: var(--color-text);
 
   --color-input-placeholder: #b1b1b1;
 
-  --color-link: var(--color-text);
-
   --color-border: #93a1a1;
+  --color-border-selected-day: var(--color-border);
   --color-accent: #657b83;
 
   --color-danger: #dc322f;
@@ -107,94 +334,12 @@ $text-color: #4a4a4a;
   --color-background-card: var(--color-background);
   --color-background-calendar-day: #eee8d5;
   --color-background-calendar-item: var(--color-background);
-  --color-background-empty-image: var(--color-background-calendar-day);
-
-  --margin-calendar-item-bottom: 0.5rem;
+  --color-background-empty-image: var(--color-accent);
+  --color-modal-background: rgba(10, 10, 10, 0.57);
 }
 
-html {
-  height: 100%;
-  font-size: 16px;
-  user-select: none;
-  -webkit-user-select: none;
-  cursor: default;
-
-  color: var(--color-text);
-
-  background-color: var(--color-background);
-}
-
-body {
-  color: var(--color-text);
-  height: 100%;
-}
-
-::placeholder {
-  color: var(--color-input-placeholder);
-}
-
-#root {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-kbd {
-  color: var(--color-text);
-  padding: 0.1rem 0.2rem;
-  background-color: var(--color-background);
-  border-radius: 4px;
-  border: 1px solid var(--color-border);
-  border-bottom-width: 2px;
-}
-
-nav.nav,
-section.section {
-  background-color: transparent;
-}
-
-// override bulma
-section.section {
-  padding: 1.5rem;
-}
-
-// bulma override since small buttons are hard to read with the font weight
-.is-small {
-  font-weight: 600;
-  select {
-    font-weight: 600;
-  }
-}
-
-a {
-  color: var(--color-link);
-  // transition: color 0.2s;
-
-  @media (hover: hover) {
-    &:hover {
-      color: var(--color-link-hover);
-      text-decoration: underline;
-    }
-  }
-}
-
-.add-ingredient-grid {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 0.5rem;
-}
-
-.recipe-grid {
-  display: grid;
-  gap: 0.5rem;
-  // support two columns on iOS.
-
-  @media (max-width: 449px) {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  }
-  @media (min-width: 450px) {
-    grid-template-columns: repeat(auto-fill, minmax(225px, 1fr));
-  }
+.theme-solarized {
+  @include theme-solarized();
 }
 
 // hide native chrome pickers
@@ -206,39 +351,37 @@ input[type="date"]::-webkit-input-placeholder {
   visibility: hidden !important;
 }
 
-@media print {
-  .no-print,
-  img,
-  nav {
-    display: none !important;
+@media (prefers-color-scheme: dark) {
+  .night\:theme-light {
+    @include theme-light();
   }
-
-  .text-muted {
-    color: black !important;
+  .night\:theme-dark {
+    @include theme-dark();
   }
-
-  body {
-    border-top: none !important;
-    color: black !important;
+  .night\:theme-dark-dimmed {
+    @include theme-dark-dimmed();
   }
-
-  html {
-    font-size: 14px;
+  .night\:theme-autumn {
+    @include theme-autumn();
   }
-
-  a,
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  label,
-  p {
-    color: black !important;
+  .night\:theme-solarized {
+    @include theme-solarized();
   }
-
-  @page {
-    margin-bottom: 1rem;
+}
+@media (prefers-color-scheme: light) {
+  .day\:theme-light {
+    @include theme-light();
+  }
+  .day\:theme-dark {
+    @include theme-dark();
+  }
+  .day\:theme-dark-dimmed {
+    @include theme-dark-dimmed();
+  }
+  .day\:theme-autumn {
+    @include theme-autumn();
+  }
+  .day\:theme-solarized {
+    @include theme-solarized();
   }
 }

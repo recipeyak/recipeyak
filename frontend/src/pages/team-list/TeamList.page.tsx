@@ -1,53 +1,27 @@
-import { NavLink } from "react-router-dom"
-
 import { Button } from "@/components/Buttons"
-import { Loader } from "@/components/Loader"
+import { NavPage } from "@/components/Page"
 import { Invites } from "@/pages/team-list/Invites"
+import { TeamsList } from "@/pages/team-list/Teams"
 import { pathTeamCreate } from "@/paths"
-import { useTeamList } from "@/queries/teamList"
-import { teamURL } from "@/urls"
 
-function TeamsList() {
-  const teams = useTeamList()
-  if (teams.isLoading) {
-    return <Loader />
-  }
-
-  if (teams.isError) {
-    return <p>failure loading</p>
-  }
-
-  if (teams.data.length === 0) {
-    return <p className="text-muted text-small align-self-center">No teams.</p>
-  }
-
+export function TeamListPage() {
   return (
-    <div className="text-left">
-      {teams.data.map(({ id, name }) => (
-        <p key={id}>
-          <NavLink to={teamURL(id, name)} activeClassName="fw-500">
-            {name}
-          </NavLink>
-        </p>
-      ))}
-    </div>
-  )
-}
+    <NavPage>
+      <div className="mx-auto flex max-w-[800px] flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl">Teams</h2>
+            <Button to={pathTeamCreate({})}>Create a Team</Button>
+          </div>
 
-export default function TeamsPage() {
-  return (
-    <div style={{ maxWidth: 800 }} className="mx-auto mw-800">
-      <section className="d-flex justify-space-between align-items-center">
-        <h2 className="fs-6">Teams</h2>
-        <Button to={pathTeamCreate({})}>Create a Team</Button>
-      </section>
+          <TeamsList />
+        </div>
 
-      <TeamsList />
-
-      <div>
-        <h2 className="fs-6">Invites</h2>
-        <Invites />
+        <div className="flex flex-col gap-2">
+          <h2 className="text-2xl">Invites</h2>
+          <Invites />
+        </div>
       </div>
-    </div>
+    </NavPage>
   )
 }

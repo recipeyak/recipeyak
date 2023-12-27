@@ -42,8 +42,8 @@ def main() -> None:
     logger.info("initiate")
     sentry_sdk.init(
         send_default_pii=True,
-        debug=True,
         traces_sample_rate=1.0,
+        profiles_sample_rate=1.0,
     )
     config = Config()
     start = time.monotonic()

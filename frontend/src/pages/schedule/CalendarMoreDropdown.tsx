@@ -1,9 +1,8 @@
 import { UseQueryResult } from "@tanstack/react-query"
 
 import { Button } from "@/components/Buttons"
-import { selectTarget, TextInput } from "@/components/Forms"
+import { TextInput } from "@/components/Forms"
 import { Loader } from "@/components/Loader"
-import { useTeamId } from "@/hooks"
 import { useScheduledRecipeSettingsRegenerateLink } from "@/queries/scheduledRecipeSettingsRegenerateLink"
 import { useScheduledRecipeSettingsUpdate } from "@/queries/scheduledRecipeSettingsUpdate"
 
@@ -18,7 +17,6 @@ export function ICalConfig({
     unknown
   >
 }) {
-  const teamID = useTeamId()
   const regenLink = useScheduledRecipeSettingsRegenerateLink()
   const scheduleSettingsUpdate = useScheduledRecipeSettingsUpdate()
   if (!settings.isSuccess) {
@@ -26,20 +24,27 @@ export function ICalConfig({
   }
   return (
     <div>
-      <div className="fw-500">iCalendar Feed</div>
+      <div className="font-medium">iCalendar Feed</div>
       <div>Sync this RecipeYak schedule with your personal calendar.</div>
       {settings.data.syncEnabled ? (
         <>
-          <div className="d-flex justify-space-between align-items-center mt-1">
+          <div className="mt-1 flex items-center justify-between">
             <TextInput
               value={settings.data.calendarLink}
               readOnly
-              onClick={selectTarget}
-              className="mr-3 min-width-0 flex-grow-1"
+              onClick={(e: {
+                target: EventTarget | { select: () => void }
+              }) => {
+                // hack to get around typescript not knowing about the select property
+                if ("select" in e.target) {
+                  e.target.select()
+                }
+              }}
+              className="mr-3 min-w-0 grow"
             />
             <Button
               size="small"
-              loading={regenLink.isLoading}
+              loading={regenLink.isPending}
               onClick={() => {
                 regenLink.mutate()
               }}
@@ -51,12 +56,11 @@ export function ICalConfig({
       ) : null}
       <Button
         variant="link"
-        className="d-block mx-auto text-underline box-shadow-none "
+        className="mx-auto block underline shadow-none "
         size="small"
         onClick={() => {
           const syncEnabled = !settings.data.syncEnabled
           scheduleSettingsUpdate.mutate({
-            teamID,
             update: { syncEnabled },
           })
         }}

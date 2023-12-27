@@ -4,7 +4,7 @@ on:
   pull_request:
   push:
     branches:
-      - master
+      - main
   workflow_dispatch:
     inputs:
       commit_sha:
@@ -14,7 +14,7 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 # TODO: Skip if no changes in directory
 jobs:
@@ -56,14 +56,14 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build and push
-        working-directory: "./backend"
-        run: |
-          git_sha=${{ github.event.pull_request.head.sha || github.sha }}
-          docker build -f django.Dockerfile \
-          --tag recipeyak/django:$git_sha \
-          --build-arg GIT_SHA=$git_sha .
-          docker push recipeyak/django:$git_sha
-          echo "Pushed \`recipeyak/django:$git_sha\`" >> $GITHUB_STEP_SUMMARY
+        uses: docker/build-push-action@v5
+        with:
+          context: "{{defaultContext}}:backend"
+          push: true
+          file: "django.Dockerfile"
+          tags: recipeyak/django:${{ github.event.pull_request.head.sha || github.sha }}
+          cache-from: type=gha,scope=django
+          cache-to: type=gha,scope=django,mode=max
 
   build_ui_container:
     runs-on: ubuntu-latest
@@ -79,19 +79,30 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: "frontend/package.json"
+          cache-dependency-path: "frontend/yarn.lock"
+          cache: "yarn"
+      - name: Install dependencies
+        working-directory: "frontend"
+        run: yarn install --frozen-lockfile
+      - name: Build
+        env:
+          FRONTEND_GIT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        working-directory: "frontend"
+        run: s/build
       - name: Build and push
         working-directory: "./frontend"
         run: |
           git_sha=${{ github.event.pull_request.head.sha || github.sha }}
-          docker build -f react.Dockerfile \
-          --tag recipeyak/react:$git_sha \
-          --build-arg FRONTEND_GIT_SHA=$git_sha .
-          docker push recipeyak/react:$git_sha
+          docker buildx build --push -f react.Dockerfile \
+          --tag recipeyak/react:$git_sha .
           echo "Pushed \`recipeyak/react:$git_sha\`" >> $GITHUB_STEP_SUMMARY
 
   deploy:
     needs: [build_api_container, build_ui_container]
-    if: github.ref == 'refs/heads/master' || github.event_name == 'workflow_dispatch'
+    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}

@@ -13,7 +13,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from recipeyak.api.base.serialization import RequestParams
-from recipeyak.api.serializers.user import UserSerializer as UserDetailsSerializer
+from recipeyak.api.user_get_view import serialize_user
 from recipeyak.models.team import Team
 from recipeyak.models.user import User
 
@@ -59,6 +59,4 @@ def register_user_detail_view(request: Request) -> Response:
 
     login(request._request, user)
 
-    return Response(
-        {"user": UserDetailsSerializer(user).data}, status=status.HTTP_201_CREATED
-    )
+    return Response({"user": serialize_user(user)}, status=status.HTTP_201_CREATED)

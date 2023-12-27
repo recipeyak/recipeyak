@@ -1,88 +1,8 @@
 import { useRef } from "react"
 
-import { styled } from "@/theme"
+import { clx } from "@/classnames"
+import { imgixFmt } from "@/url"
 import { useIntersectionObserver } from "@/useIntersectionObserver"
-import { imgixFmt } from "@/utils/url"
-
-const CardImgContainer = styled.div<{
-  height: number | undefined
-  width: number | undefined
-  roundDesktop: boolean | undefined
-  rounded: boolean | undefined
-}>`
-  ${(p) => (p.width != null ? `min-width: ${p.width}px;` : `width: 100%;`)}
-
-  ${(p) => (p.height != null ? `min-height: ${p.height}px;` : `height: 100%`)}
-
-  ${(p) => p.rounded && `border-radius: 6px;`}
-  ${(p) =>
-    p.roundDesktop &&
-    `@media (min-width: 600px) {
-      border-radius: 6px;
-    }`}
-
-  background-color: var(--color-background-empty-image);
-  position: relative;
-`
-
-const CardImg = styled.img<{
-  roundDesktop: boolean | undefined
-  rounded: boolean | undefined
-  grayscale: boolean | undefined
-}>`
-  height: 100%;
-  width: 100%;
-  ${(p) => p.rounded && `border-radius: 6px;`}
-  ${(p) =>
-    p.roundDesktop &&
-    `@media (min-width: 600px) {
-      border-radius: 6px;
-    }`}
-  object-fit: cover;
-  position: absolute;
-  ${(p) => p.grayscale && `filter: grayscale(100%);`}
-  z-index: 1;
-`
-
-const CardImgBg = styled.div<{
-  backgroundImage: string
-  blur: "none" | undefined
-  roundDesktop: boolean | undefined
-  rounded: boolean | undefined
-  grayscale: boolean | undefined
-}>`
-  height: 100%;
-  width: 100%;
-
-  position: relative;
-  ${(p) => p.backgroundImage && `background-image: url(${p.backgroundImage});`}
-
-  background-position: center;
-  background-size: cover;
-
-  ${(p) => p.rounded && `border-radius: 6px;`}
-  ${(p) =>
-    p.roundDesktop &&
-    `@media (min-width: 600px) {
-      border-radius: 6px;
-    }`}
-  ${(p) => p.grayscale && `filter: grayscale(100%);`}
-
-  ${(p) =>
-    p.blur !== "none" &&
-    `&:after {
-      position: absolute;
-      content: "";
-      height: 100%;
-      width: 100%;
-      ${p.rounded || p.roundDesktop ? `border-radius: 6px;` : ""}
-      -webkit-backdrop-filter: blur(6px);
-      // seems to work on dev without -webkit prefix but fails on prod for some
-      // reason so we prefix above
-      backdrop-filter: blur(6px);
-      pointer-events: none;
-    }`}
-`
 
 export function Image({
   sources,
@@ -95,6 +15,7 @@ export function Image({
   loading,
   onClick,
   lazyLoad,
+  ...rest
 }: {
   readonly sources:
     | {
@@ -112,6 +33,7 @@ export function Image({
   readonly roundDesktop?: boolean
   readonly onClick?: () => void
   readonly lazyLoad?: boolean
+  ariaLabel?: string
 }) {
   const ref = useRef<HTMLDivElement | null>(null)
   const entry = useIntersectionObserver(ref, sources?.url, {
@@ -123,32 +45,68 @@ export function Image({
   })
   const isVisible = !lazyLoad || entry?.isIntersecting
   return (
-    <CardImgContainer
+    <div
       ref={ref}
-      roundDesktop={roundDesktop}
-      height={height}
-      width={width}
-      rounded={rounded}
       onClick={onClick}
+      style={{
+        // TODO: could use css variables and a tailwind class
+        ...(width != null
+          ? {
+              minWidth: width,
+            }
+          : {
+              width: "100%",
+            }),
+        ...(height != null
+          ? {
+              minHeight: height,
+            }
+          : {
+              height: "100%",
+            }),
+      }}
+      className={clx(
+        "relative bg-[var(--color-background-empty-image)]",
+        rounded && "rounded-md",
+        roundDesktop && "sm:rounded-md",
+      )}
+      aria-label={rest.ariaLabel}
     >
       {sources != null && isVisible && (
         <>
-          <CardImg
+          <img
             src={imgixFmt(sources.url ?? "")}
-            roundDesktop={roundDesktop}
-            rounded={rounded}
-            grayscale={grayscale}
             loading={loading}
+            className={clx(
+              "absolute z-[1] h-full w-full object-cover",
+              rounded && "rounded-md",
+              roundDesktop && "sm:rounded-md",
+              grayscale && "grayscale",
+            )}
           />
-          <CardImgBg
-            backgroundImage={sources.backgroundUrl ?? ""}
-            blur={blur}
-            grayscale={grayscale}
-            roundDesktop={roundDesktop}
-            rounded={rounded}
+          <div
+            style={{
+              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+              ["--backgroundImage" as string]: sources.backgroundUrl
+                ? `url(${sources.backgroundUrl})`
+                : undefined,
+            }}
+            className={clx(
+              "relative h-full w-full bg-cover bg-center",
+              // kind of tricky: https://stackoverflow.com/a/70810692/3720597
+              "bg-[image:var(--backgroundImage)]",
+              rounded && "rounded-md",
+              roundDesktop && "sm:rounded-md",
+              grayscale && "grayscale",
+              blur !== "none" &&
+                "after:pointer-events-none after:absolute after:h-full after:w-full after:backdrop-blur-[6px] after:content-['']",
+              blur !== "none" &&
+                (rounded || roundDesktop) &&
+                "after:rounded-md",
+            )}
           />
         </>
       )}
-    </CardImgContainer>
+    </div>
   )
 }

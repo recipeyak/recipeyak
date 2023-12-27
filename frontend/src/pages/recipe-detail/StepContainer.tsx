@@ -34,12 +34,12 @@ import React, { useEffect } from "react"
 
 import Step from "@/pages/recipe-detail/Step"
 import { getNewPos } from "@/position"
-import { IRecipe, IStep } from "@/queries/recipeFetch"
+import { RecipeFetchResponse } from "@/queries/recipeFetch"
 import { useStepUpdate } from "@/queries/stepUpdate"
 
 interface IStepContainerProps {
-  readonly steps: ReadonlyArray<IStep>
-  readonly recipeID: IRecipe["id"]
+  readonly steps: RecipeFetchResponse["steps"]
+  readonly recipeID: number
   readonly isEditing: boolean
 }
 

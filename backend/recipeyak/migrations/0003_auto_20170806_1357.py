@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("auth", "0008_alter_user_username_max_length"),
         ("recipeyak", "0002_remove_myuser_is_superuser"),

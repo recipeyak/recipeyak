@@ -1,10 +1,10 @@
 import React, { useRef } from "react"
 
+import { clx } from "@/classnames"
 import { BorderBox } from "@/components/BorderBox"
 import { Box } from "@/components/Box"
 import { CloseButton } from "@/components/CloseButton"
-import { useGlobalEvent } from "@/hooks"
-import { styled } from "@/theme"
+import { useGlobalEvent } from "@/useGlobalEvent"
 
 interface IModalProps {
   readonly onClose: () => void
@@ -13,38 +13,47 @@ interface IModalProps {
   readonly title: string
 }
 
-const ModalContainer = styled.div`
-  align-items: center;
-  display: none;
-  justify-content: center;
-  overflow: hidden;
-  position: fixed;
-  z-index: 20;
-  // Modifiers
-  &.is-active {
-    display: flex;
-  }
-  inset: 0;
-`
+const ModalPositioner = React.forwardRef(
+  (
+    {
+      children,
+      show,
+    }: {
+      children: React.ReactNode
+      show: boolean
+    },
+    ref: React.ForwardedRef<HTMLDivElement>,
+  ) => {
+    return (
+      <div
+        ref={ref}
+        className={clx(
+          "fixed inset-0 z-20 items-start justify-center overflow-hidden",
+          show ? "flex" : "hidden",
+        )}
+        children={children}
+      />
+    )
+  },
+)
 
-const ModalContent = styled.div`
-  margin: 0 20px;
-  max-height: calc(100vh - 160px);
-  overflow: auto;
-  position: relative;
-  width: 100%;
-  @media screen and (min-width: 769px), print {
-    margin: 0 auto;
-    max-height: calc(100vh - 40px);
-    width: 640px;
-  }
-`
+function ModalContainer({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      className="relative m-0 h-[100dvh] w-full sm:m-[inherit] sm:mt-[8vh] sm:h-[inherit] sm:w-[400px] "
+      children={children}
+    />
+  )
+}
 
-const ModalBackground = styled.div`
-  background-color: var(--color-modal-background);
-  position: absolute;
-  inset: 0;
-`
+function ModalBackground({ onClick }: { onClick?: () => void }) {
+  return (
+    <div
+      onClick={onClick}
+      className="absolute inset-0 bg-[var(--color-modal-background)]"
+    />
+  )
+}
 
 export function Modal({ show, content, onClose, title }: IModalProps) {
   const ref = useRef<HTMLDivElement>(null)
@@ -59,29 +68,22 @@ export function Modal({ show, content, onClose, title }: IModalProps) {
     return null
   }
   return (
-    <ModalContainer
-      ref={ref}
-      style={{ display: show ? "flex" : undefined, alignItems: "flex-start" }}
-    >
+    <ModalPositioner ref={ref} show={show}>
       <ModalBackground onClick={onClose} />
-      <ModalContent
-        style={{
-          maxWidth: 400,
-          width: 400,
-          overflowY: "hidden",
-          margin: 20,
-          marginTop: "8vh",
-          fontSize: 14,
-        }}
-      >
-        <BorderBox display="flex" flexDirection="column" h={100}>
-          <Box space="between" mb={2}>
-            <h1 className="fs-14px fw-500">{title}</h1>
+      <ModalContainer>
+        <BorderBox
+          display="flex"
+          flexDirection="column"
+          h={100}
+          className="bg-[var(--color-background-card)]"
+        >
+          <Box space="between" mb={2} className="items-start">
+            <h1 className="font-medium">{title}</h1>
             <CloseButton onClose={onClose} />
           </Box>
           {content}
         </BorderBox>
-      </ModalContent>
-    </ModalContainer>
+      </ModalContainer>
+    </ModalPositioner>
   )
 }

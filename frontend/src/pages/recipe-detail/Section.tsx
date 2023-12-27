@@ -2,8 +2,6 @@ import React, { useState } from "react"
 import { useDrag, useDrop } from "react-dnd"
 
 import { Button } from "@/components/Buttons"
-import { FormControl } from "@/components/FormControl"
-import { FormField } from "@/components/FormField"
 import { TextInput } from "@/components/Forms"
 import { DragDrop, handleDndHover } from "@/dragDrop"
 import { useSectionDelete } from "@/queries/sectionDelete"
@@ -89,16 +87,23 @@ export function Section({
         <form
           onSubmit={(e) => {
             e.preventDefault()
-            updateSection.mutate({
-              recipeId,
-              sectionId,
-              update: {
-                title: localTitle,
+            updateSection.mutate(
+              {
+                recipeId,
+                sectionId,
+                update: {
+                  title: localTitle,
+                },
               },
-            })
+              {
+                onSuccess: () => {
+                  setIsEditing(false)
+                },
+              },
+            )
           }}
         >
-          <div className="mb-2 mt-2">
+          <div className="my-2">
             <TextInput
               onChange={(e) => {
                 setLocalTitle(e.target.value)
@@ -109,23 +114,21 @@ export function Section({
               name="section title"
             />
           </div>
-          <FormField isGrouped>
-            <FormControl className="flex-grow">
-              <Button
-                size="small"
-                type="button"
-                onClick={() => {
-                  deleteSection.mutate({
-                    recipeId,
-                    sectionId,
-                  })
-                }}
-                loading={deleteSection.isLoading}
-              >
-                Delete
-              </Button>
-            </FormControl>
-            <FormControl>
+          <div className="flex justify-between">
+            <Button
+              size="small"
+              type="button"
+              onClick={() => {
+                deleteSection.mutate({
+                  recipeId,
+                  sectionId,
+                })
+              }}
+              loading={deleteSection.isPending}
+            >
+              Delete
+            </Button>
+            <div className="flex gap-2">
               <Button
                 onClick={handleCancel}
                 size="small"
@@ -134,20 +137,18 @@ export function Section({
               >
                 Cancel
               </Button>
-            </FormControl>
-            <FormControl>
               <Button
                 variant="primary"
                 disabled={addDisabled}
                 size="small"
                 type="submit"
-                loading={updateSection.isLoading}
+                loading={updateSection.isPending}
               >
                 Save
               </Button>
-            </FormControl>
-          </FormField>
-          {updateSection.isError && <p>error adding ingredient</p>}
+            </div>
+          </div>
+          {updateSection.isError && <div>error adding ingredient</div>}
         </form>
       </li>
     )
@@ -157,7 +158,7 @@ export function Section({
     <li
       ref={editingEnabled ? ref : undefined}
       style={style}
-      className="mt-1 bold text-small selectable"
+      className="mt-1 cursor-auto select-text text-sm font-bold"
       title={editingEnabled ? "click to edit" : undefined}
       onClick={() => {
         if (editingEnabled) {

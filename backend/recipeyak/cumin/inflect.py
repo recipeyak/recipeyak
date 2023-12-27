@@ -594,13 +594,13 @@ def pluralize(
     for i in n:
         for suffix, inflection, category, classic in plural_rules_compiled[i]:
             # A general rule, or a classic rule in classical mode.
-            if category is None:
-                if not classic or (classic and classical):
+            if category is None:  # noqa: SIM102
+                if not classic or (classic and classical):  # noqa: SIM102
                     if suffix.search(word) is not None:
                         return suffix.sub(inflection, word)
             # A rule pertaining to a specific category of words.
-            if category is not None:
-                if word in plural_categories[category] and (
+            if category is not None:  # noqa: SIM102
+                if word in plural_categories[category] and (  # noqa: SIM102
                     not classic or (classic and classical)
                 ):
                     if suffix.search(word) is not None:

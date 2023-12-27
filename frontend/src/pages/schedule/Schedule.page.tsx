@@ -1,59 +1,26 @@
-import { useEffect } from "react"
-import { RouteComponentProps } from "react-router-dom"
-
 import { Helmet } from "@/components/Helmet"
-import Recipes from "@/pages/recipe-list/RecipeList.page"
+import { NavPage } from "@/components/Page"
+import { RecipeSearchList } from "@/components/RecipeSearchList"
 import Calendar from "@/pages/schedule/Calendar"
 import HelpMenuModal from "@/pages/schedule/HelpMenuModal"
-import { useUserUpdate } from "@/queries/userUpdate"
-import { styled } from "@/theme"
 
-interface ISidebarProps {
-  readonly teamID: number
-}
-
-function Sidebar({ teamID }: ISidebarProps) {
+function Sidebar() {
   return (
-    <div className="d-grid gap-2 grid-auto-rows-min-content w-250px flex-shrink-0 hide-sm mr-2">
-      <Recipes teamID={teamID} scroll drag noPadding />
+    <div className="mr-2 hidden w-[250px] min-w-[250px] shrink-0 auto-rows-min gap-2 sm:grid">
+      <RecipeSearchList scroll drag noPadding />
     </div>
   )
 }
 
-interface IScheduleProps
-  extends RouteComponentProps<{
-    teamId: string
-  }> {}
-
-const ScheduleContainer = styled.div`
-  height: calc(100vh - 3rem);
-`
-
-function Schedule(props: IScheduleProps) {
-  const teamID = getTeamID(props.match.params)
-
-  const updateUser = useUserUpdate()
-  const updateUserMutate = updateUser.mutate
-
-  // TODO: this is sketchy and resulted in a infinite loop before
-  useEffect(() => {
-    updateUserMutate({
-      schedule_team: teamID,
-    })
-  }, [updateUserMutate, teamID])
-
+export function SchedulePage() {
   return (
-    <ScheduleContainer className="d-flex pl-2 pr-2 flex-grow h-100vh">
-      <Helmet title="Schedule" />
-      <Sidebar teamID={teamID} />
-      <Calendar teamID={teamID} />
-      <HelpMenuModal />
-    </ScheduleContainer>
+    <NavPage includeSearch={false} noContainer>
+      <div className="flex h-[calc(100vh-3rem)] grow px-2">
+        <Helmet title="Schedule" />
+        <Sidebar />
+        <Calendar />
+        <HelpMenuModal />
+      </div>
+    </NavPage>
   )
 }
-
-const getTeamID = (params: IScheduleProps["match"]["params"]) => {
-  return parseInt(params.teamId, 10)
-}
-
-export default Schedule

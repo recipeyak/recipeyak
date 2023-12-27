@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query"
 
-import { useTeamId } from "@/hooks"
 import { http } from "@/http"
 import { unwrapResult } from "@/query"
+import { useTeamId } from "@/useTeamId"
 
 export type RecipeListItem = {
   readonly id: number
@@ -20,6 +20,7 @@ export type RecipeListItem = {
     url: string
     backgroundUrl: string | null
   } | null
+  readonly scheduledCount: number
 }
 
 const getRecipeList = () => {
@@ -31,10 +32,5 @@ export function useRecipeList() {
   return useQuery({
     queryKey: [teamID, "recipes-list"],
     queryFn: () => getRecipeList().then(unwrapResult),
-    onSuccess: () => {
-      // NOTE: we don't save all these recipes as it exceeds the localStorage
-      // limit of 5MB (we try to save 3MB of data but that ends up being too
-      // much for safari.)
-    },
   })
 }

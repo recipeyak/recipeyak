@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
 
-import { useTeamId } from "@/hooks"
 import { http } from "@/http"
-import { IRecipe } from "@/queries/recipeFetch"
+import { setQueryDataRecipe } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
+import { useTeamId } from "@/useTeamId"
 
 const addSectionToRecipe = ({
   recipeId,
@@ -40,9 +40,10 @@ export function useSectionCreate() {
         position: payload.position,
       }).then(unwrapResult),
     onSuccess: (res, vars) => {
-      queryClient.setQueryData<IRecipe>(
-        [teamId, "recipes", vars.recipeId],
-        (prev) => {
+      setQueryDataRecipe(queryClient, {
+        teamId,
+        recipeId: vars.recipeId,
+        updater: (prev) => {
           if (prev == null) {
             return prev
           }
@@ -50,7 +51,7 @@ export function useSectionCreate() {
             recipe.sections.push(res)
           })
         },
-      )
+      })
     },
   })
 }

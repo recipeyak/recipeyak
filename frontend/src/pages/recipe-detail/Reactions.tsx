@@ -5,36 +5,16 @@ import slice from "lodash-es/slice"
 import React, { useState } from "react"
 import { Smile } from "react-feather"
 
-import { classNames as cls } from "@/classnames"
-import { useUserId } from "@/hooks"
-import { Reaction } from "@/queries/recipeFetch"
-import { styled } from "@/theme"
+import { clx } from "@/classnames"
+import { findReaction } from "@/pages/recipe-detail/reactionUtils"
+import { PickVariant } from "@/queries/queryUtilTypes"
+import { RecipeFetchResponse as Recipe } from "@/queries/recipeFetch"
+import { useUserId } from "@/useUserId"
 
-const NoteActionsContainer = styled.div`
-  font-size: 0.85rem;
-  display: flex;
-  align-items: center;
-`
-
-const ReactionContainer = styled.div`
-  display: flex;
-  background: var(--color-background-card);
-  padding: 0.25rem 0.5rem;
-  border-radius: 3px;
-  border: 1px solid var(--color-border);
-`
-
-const StyledSmile = styled(Smile)`
-  color: var(--color-text);
-`
-
-const ReactionButtonContainer = styled.div`
-  background-color: var(--color-background-card);
-  color: var(--color-text);
-  border-radius: 12px;
-  line-height: 0;
-  display: inline-block;
-`
+type Reaction = PickVariant<
+  Recipe["timelineItems"][number],
+  "note"
+>["reactions"][number]
 
 const OpenReactions = React.forwardRef(
   (
@@ -47,47 +27,28 @@ const OpenReactions = React.forwardRef(
     ref: React.ForwardedRef<HTMLDivElement>,
   ) => {
     return (
-      <ReactionButtonContainer
+      <div
         ref={ref}
-        className={props.className}
+        className={clx(
+          "inline-block rounded-[12px] bg-[var(--color-background-card)] leading-[0] text-[var(--color-text)]",
+          props.className,
+        )}
+        aria-label="open reactions"
         onClick={props.onClick}
       >
-        {props.children ? props.children : <StyledSmile size={14} />}
-      </ReactionButtonContainer>
+        {props.children ? (
+          props.children
+        ) : (
+          <Smile className="text-[var(--color-text)]" size={14} />
+        )}
+      </div>
     )
   },
 )
 
-const UpvoteReaction = styled.div`
-  padding: 0 0.3rem;
-  padding-right: 0.5rem;
-  border-style: solid;
-  background-color: var(--color-background-card);
-  display: inline-flex;
-  border-radius: 15px;
-  border-width: 1px;
-  border-color: #d2dff0;
-  margin-right: 0.5rem;
-  text-align: center;
-`
-
-const ReactionButton = styled.div<{ pressed: boolean }>`
-  padding: 4px;
-  height: 32px;
-  width: 32px;
-  font-size: 16px;
-  text-align: center;
-  border-radius: 3px;
-  border-color: hsl(0deg, 0%, 86%);
-  cursor: pointer;
-  background-color: ${(props) =>
-    props.pressed ? "hsla(0, 0%, 0%, 0.04)" : "initial"};
-  background-color: var(--color-background-card);
-`
-
 const REACTION_EMOJIS = ["❤️", "😆", "🤮"] as const
 
-export type ReactionType = typeof REACTION_EMOJIS[number]
+export type ReactionType = (typeof REACTION_EMOJIS)[number]
 
 function reactionTypeToName(x: ReactionType): string {
   return {
@@ -96,13 +57,6 @@ function reactionTypeToName(x: ReactionType): string {
     "🤮": "vomit",
   }[x]
 }
-
-const ReactionCount = styled.div`
-  margin-left: 0.2rem;
-  height: 24px;
-  display: flex;
-  align-items: center;
-`
 
 function reactionTitle(reactions: Reaction[]): string {
   if (reactions.length === 0) {
@@ -127,27 +81,9 @@ function reactionTitle(reactions: Reaction[]): string {
   )
 }
 
-const EmojiContainer = styled.div`
-  height: 24px;
-  width: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`
-
-export function findReaction(
-  reactions: Reaction[],
-  type: ReactionType,
-  userId: number,
-) {
-  return reactions.find(
-    (reaction) => reaction.type === type && reaction.user.id === userId,
-  )
-}
-
 export function ReactionPopover(props: {
   onPick: (_: ReactionType) => void
-  reactions: Reaction[]
+  reactions: readonly Reaction[]
   className?: string
 }) {
   const [visible, setVisible] = useState(false)
@@ -161,29 +97,32 @@ export function ReactionPopover(props: {
       animation={false}
       interactive
       content={
-        <ReactionContainer className="box-shadow-normal">
+        <div className="flex rounded-[3px] border border-solid  border-[var(--color-border)] bg-[var(--color-background-card)] px-2 py-1 shadow">
           {REACTION_EMOJIS.map((emoji, index) => {
             return (
-              <ReactionButton
+              <div
                 key={emoji}
                 onClick={() => {
                   props.onPick(emoji)
                   setVisible(false)
                 }}
-                pressed={
+                className={clx(
+                  "h-[32px] w-[32px] cursor-pointer rounded-[3px] border-[var(--color-border)] p-[4px] text-center text-[16px]",
                   findReaction(props.reactions, emoji, userId ?? 0) != null
-                }
-                className={cls({ "ml-1": index > 0 })}
+                    ? "bg-[hsla(0,0%,0%,0.04)]"
+                    : "bg-[var(--color-background-card)]",
+                  index > 0 && "ml-1",
+                )}
               >
                 {emoji}
-              </ReactionButton>
+              </div>
             )
           })}
-        </ReactionContainer>
+        </div>
       }
     >
       <OpenReactions
-        className={cls("cursor-pointer", props.className)}
+        className={clx("cursor-pointer", props.className)}
         onClick={() => {
           setVisible((s) => !s)
         }}
@@ -193,7 +132,7 @@ export function ReactionPopover(props: {
 }
 
 export function ReactionsFooter(props: {
-  reactions: Reaction[]
+  reactions: readonly Reaction[]
   onClick: (_: ReactionType) => void
   onPick: (_: ReactionType) => void
 }) {
@@ -207,23 +146,27 @@ export function ReactionsFooter(props: {
       (x) => orderBy(x.reactions, (reaction) => reaction.created)[0],
     )
   return (
-    <NoteActionsContainer className="text-muted">
+    <div className="flex items-center text-sm text-[var(--color-text-muted)] print:!hidden">
       {groupedReactions.map(({ emoji, reactions }) => (
-        <UpvoteReaction
+        <div
           key={emoji}
           title={reactionTitle(reactions)}
           onClick={() => {
             props.onClick(emoji)
           }}
-          className="cursor-pointer text-muted"
+          className="mr-2 inline-flex cursor-pointer rounded-[15px] border border-solid border-[var(--color-border)] bg-[var(--color-background-card)] px-[0.3rem] py-0 pr-2 text-center text-[var(--color-text-muted)]"
         >
-          <EmojiContainer>{emoji}</EmojiContainer>
-          <ReactionCount>{reactions.length}</ReactionCount>
-        </UpvoteReaction>
+          <div className="flex h-[24px] w-[24px] items-center justify-center">
+            {emoji}
+          </div>
+          <div className="ml-[0.2rem] flex h-[24px] items-center">
+            {reactions.length}
+          </div>
+        </div>
       ))}
       {groupedReactions.length > 0 && (
         <ReactionPopover onPick={props.onPick} reactions={props.reactions} />
       )}
-    </NoteActionsContainer>
+    </div>
   )
 }

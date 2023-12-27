@@ -1,8 +1,10 @@
-const NoMatch = () => (
+export const NotFoundPage = () => (
+  // TODO: Fix this the next time the file is edited.
+  // eslint-disable-next-line react/forbid-elements
   <section>
-    <h1 className="fs-10rem bold text-center">404</h1>
-    <p className="fs-3rem text-center">Nothing here 🌵</p>
+    <h1 className="text-center text-[10rem] font-bold">404</h1>
+    {/* TODO: Fix this the next time the file is edited. */}
+    {/* eslint-disable-next-line react/forbid-elements */}
+    <p className="text-center text-[3rem]">Nothing here 🌵</p>
   </section>
 )
-
-export default NoMatch

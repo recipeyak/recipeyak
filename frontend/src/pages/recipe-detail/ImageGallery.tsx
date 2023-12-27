@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight, Share, Star, X } from "react-feather"
 
 import { Button } from "@/components/Buttons"
 import { styled } from "@/theme"
-import { imgixFmt } from "@/utils/url"
+import { imgixFmt } from "@/url"
 
 const MyGalleryContainer = styled.div`
   opacity: 1 !important;
@@ -25,30 +25,6 @@ const MyGalleryImg = styled.img.attrs({ loading: "eager" })`
   margin: auto;
   object-fit: contain;
 `
-
-const MyGalleryImgContainer = styled.div`
-  display: flex;
-  height: 100%;
-`
-
-const MyGalleryScrollWrap = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-`
-
-const MyGalleryBackground = styled.div`
-  opacity: 0.8;
-  background: #000;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-`
-
 const MyGalleryButton = styled(Button)`
   background: rgba(0, 0, 0, 0.46);
   color: white;
@@ -73,30 +49,9 @@ const MyGalleryLink = styled(Button)`
   padding-right: 0.75em;
 `
 
-const MyGalleryControlOverlay = styled.div`
-  position: absolute;
-
-  top: 0;
-  height: 100%;
-  width: 100%;
-  display: grid;
-  flex-direction: column;
-  padding: 0.5rem;
-  pointer-events: none;
-`
-
 const NavButtonRow = styled.div`
   display: flex;
   margin-top: auto;
-  margin-bottom: auto;
-  justify-content: space-between;
-
-  width: 100%;
-  grid-area: 1/1;
-`
-
-const TopRow = styled.div`
-  display: flex;
   margin-bottom: auto;
   justify-content: space-between;
 
@@ -128,7 +83,6 @@ export const Gallery = (props: {
   onPrevious: () => void
   onStar: () => void
   hasNext: boolean
-  enableStarButton: boolean
   hasPrevious: boolean
 }) => {
   // navigate forward and back depending on horizontal click position.
@@ -146,9 +100,13 @@ export const Gallery = (props: {
   const starColor = props.isPrimary ? "#ffbf00" : undefined
   return (
     <MyGalleryContainer>
-      <MyGalleryBackground />
-      <MyGalleryScrollWrap>
-        <MyGalleryImgContainer onClick={onClick}>
+      <div className="left-0 top-0 h-full w-full bg-[#000] opacity-[0.8]" />
+      <div className="absolute left-0 top-0 h-full w-full">
+        <div
+          className="flex h-full"
+          onClick={onClick}
+          aria-label="view other image"
+        >
           {props.contentType.startsWith("application/pdf") ? (
             // tried using <embed /> but it would fail to load the pdf after the
             // dom node was unmounted and remounted
@@ -176,14 +134,12 @@ export const Gallery = (props: {
               onClick={onClick}
             />
           )}
-        </MyGalleryImgContainer>
-        <MyGalleryControlOverlay>
-          <TopRow>
-            {props.enableStarButton && (
-              <MyGalleryButton className="mr-auto" onClick={props.onStar}>
-                <Star color={starColor} fill={starColor} />
-              </MyGalleryButton>
-            )}
+        </div>
+        <div className="pointer-events-none absolute top-0 grid h-full w-full flex-col p-2">
+          <div className="col-span-full row-span-full mb-auto flex w-full justify-between">
+            <MyGalleryButton className="mr-auto" onClick={props.onStar}>
+              <Star color={starColor} fill={starColor} />
+            </MyGalleryButton>
             <MyGalleryLink
               as={"a"}
               target="_blank"
@@ -196,7 +152,7 @@ export const Gallery = (props: {
             <MyGalleryButton className="ml-2" onClick={props.onClose}>
               <X />
             </MyGalleryButton>
-          </TopRow>
+          </div>
           <NavButtonRow>
             {props.hasPrevious && (
               <MyGalleryButton onClick={props.onPrevious} className="mr-auto">
@@ -209,8 +165,8 @@ export const Gallery = (props: {
               </MyGalleryButton>
             )}
           </NavButtonRow>
-        </MyGalleryControlOverlay>
-      </MyGalleryScrollWrap>
+        </div>
+      </div>
     </MyGalleryContainer>
   )
 }

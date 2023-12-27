@@ -3,69 +3,18 @@ import { orderBy } from "lodash-es"
 import React from "react"
 import { Link } from "react-router-dom"
 
-import { isMobile } from "@/browser"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import Clock from "@/components/icons"
 import { Modal } from "@/components/Modal"
 import { formatDistanceToNow, formatHumanDate, toISODateString } from "@/date"
-import { useTeamId } from "@/hooks"
 import { pathSchedule } from "@/paths"
-import { RecentSchedule } from "@/queries/recipeFetch"
+import { RecipeFetchResponse as Recipe } from "@/queries/recipeFetch"
 import { useScheduleRecipeCreate } from "@/queries/scheduledRecipeCreate"
-import { addQueryParams } from "@/utils/querystring"
+import { addQueryParams } from "@/querystring"
+import { useTeamId } from "@/useTeamId"
 
-function RecentSchedules({
-  scheduleHistory,
-  scheduleUrl,
-}: {
-  readonly scheduleHistory: readonly RecentSchedule[]
-  readonly scheduleUrl: string
-}) {
-  return (
-    <Box dir="col">
-      <div className="fw-bold">Recent Schedules</div>
-      <Box dir="col" gap={2}>
-        {orderBy(scheduleHistory, (x) => x.on).map((x, i) => {
-          const on = parseISO(x.on)
-          const week = toISODateString(startOfWeek(on))
-          const to = {
-            pathname: scheduleUrl,
-            search: addQueryParams(location.search, { week }),
-          }
-          return (
-            <Box space="between" align="center" key={i}>
-              <Link
-                to={to}
-                className="flex-grow-1"
-                style={{ lineHeight: "1.3" }}
-              >
-                <div className="fw-500">
-                  {format(on, "E")} ∙ {formatHumanDate(on)}
-                </div>
-                <Box gap={1}>
-                  {isFuture(on) && <Clock size={14} />}
-                  <div>
-                    {isToday(on)
-                      ? // avoid showing "3 hours ago" for today
-                        ""
-                      : formatDistanceToNow(on, {
-                          allowFuture: true,
-                          ignoreHours: true,
-                        })}
-                  </div>
-                </Box>
-              </Link>
-              <Button size="small" to={to}>
-                view
-              </Button>
-            </Box>
-          )
-        })}
-      </Box>
-    </Box>
-  )
-}
+type RecentSchedule = Recipe["recentSchedules"][number]
 
 export function ScheduleModal({
   recipeName,
@@ -89,7 +38,6 @@ export function ScheduleModal({
       {
         recipeID: recipeId,
         recipeName,
-        teamID: teamId,
         on: parseISO(isoDate),
       },
       {
@@ -114,12 +62,12 @@ export function ScheduleModal({
       onClose={onClose}
       title={`Schedule: ${recipeName}`}
       content={
-        <Box gap={2} dir="col">
+        <div className="flex h-full flex-col gap-2">
           <input
             value={toISODateString(isoDate)}
             onChange={handleDateChange}
             type="date"
-            className="mt-2 w-100"
+            className="mt-2 w-full"
             style={{
               border: "1px solid var(--color-border)",
               borderRadius: 5,
@@ -127,40 +75,72 @@ export function ScheduleModal({
             }}
           />
 
-          <Box space="between" align="center">
-            {!isMobile() ? (
-              <Link to={openInCalendarUrl} className="text-small">
-                open in calendar
-              </Link>
-            ) : (
-              <div />
-            )}
-            <Box align="center" gap={2}>
-              <Button size="small" onClick={onClose}>
-                cancel
-              </Button>
-              <Button
-                size="small"
-                variant="primary"
-                onClick={handleSave}
-                disabled={scheduledRecipeCreate.isLoading}
-              >
-                {!scheduledRecipeCreate.isLoading
-                  ? "schedule"
-                  : "scheduling..."}
-              </Button>
-            </Box>
-          </Box>
-
+          {/* we intentionally hide from view when there are no scheduled
+          recipes in the history window -- avoids having an empty state
+          */}
           {scheduleHistory.length > 0 && (
-            // we intentionally hide from view when there are no scheduled
-            // recipes in the history window -- avoids having an empty state
-            <RecentSchedules
-              scheduleHistory={scheduleHistory}
-              scheduleUrl={pathSchedule({ teamId: teamId.toString() })}
-            />
+            <>
+              <hr className="my-0" />
+              <div className="flex flex-col">
+                <div className="font-bold">Recent Schedules</div>
+                <div className="flex flex-col gap-2">
+                  {orderBy(scheduleHistory, (x) => x.on).map((x, i) => {
+                    const on = parseISO(x.on)
+                    const week = toISODateString(startOfWeek(on))
+                    const to = {
+                      pathname: pathSchedule({ teamId: teamId.toString() }),
+                      search: addQueryParams(location.search, { week }),
+                    }
+                    return (
+                      <Box space="between" align="center" key={i}>
+                        <Link
+                          to={to}
+                          className="grow"
+                          style={{ lineHeight: "1.3" }}
+                        >
+                          <div className="font-medium">
+                            {format(on, "E")} ∙ {formatHumanDate(on)}
+                          </div>
+                          <Box gap={1}>
+                            {isFuture(on) && <Clock size={14} />}
+                            <div>
+                              {isToday(on)
+                                ? // avoid showing "3 hours ago" for today
+                                  ""
+                                : formatDistanceToNow(on, {
+                                    allowFuture: true,
+                                    ignoreHours: true,
+                                  })}
+                            </div>
+                          </Box>
+                        </Link>
+                        <Button size="small" to={to}>
+                          view
+                        </Button>
+                      </Box>
+                    )
+                  })}
+                </div>
+              </div>
+            </>
           )}
-        </Box>
+
+          <div className="mt-auto flex flex-col gap-2">
+            <div className="hidden w-full sm:block">
+              <Button size="normal" className="w-full" to={openInCalendarUrl}>
+                open in calendar
+              </Button>
+            </div>
+            <Button
+              size="normal"
+              variant="primary"
+              onClick={handleSave}
+              disabled={scheduledRecipeCreate.isPending}
+            >
+              {!scheduledRecipeCreate.isPending ? "schedule" : "scheduling..."}
+            </Button>
+          </div>
+        </div>
       }
     />
   )

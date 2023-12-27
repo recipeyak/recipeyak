@@ -2,52 +2,58 @@ import React, { useState } from "react"
 import { useDrag } from "react-dnd"
 import { Link } from "react-router-dom"
 
+import { clx } from "@/classnames"
 import { isInsideChangeWindow } from "@/date"
 import { DragDrop } from "@/dragDrop"
-import { useGlobalEvent } from "@/hooks"
 import { CalendarDayItemModal } from "@/pages/schedule/CalendarDayItemModal"
-import { IRecipe } from "@/queries/recipeFetch"
-import { styled } from "@/theme"
 import { recipeURL } from "@/urls"
+import { useGlobalEvent } from "@/useGlobalEvent"
 
-interface IRecipeLink {
-  readonly id: IRecipe["id"] | string
-  readonly name: IRecipe["name"]
+function RecipeLink({
+  name,
+  id,
+  onClick,
+}: {
+  readonly id: number | string
+  readonly name: string
   readonly onClick: (e: React.MouseEvent) => void
-}
-
-const StyledLink = styled(Link)`
-  line-height: 1.3;
-  font-size: ${(props) => props.theme.text.small};
-  word-break: break-word;
-  background-color: var(--color-background-calendar-item);
-  border-radius: 5px;
-  padding: 0.35rem;
-  font-weight: 600;
-`
-
-function RecipeLink({ name, id, onClick }: IRecipeLink) {
+}) {
   const to = recipeURL(id, name)
   return (
-    <StyledLink to={to} onClick={onClick}>
+    <Link
+      className="break-words rounded-md text-sm font-semibold leading-tight focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)]"
+      to={to}
+      onClick={onClick}
+    >
       {name}
-    </StyledLink>
+    </Link>
   )
 }
 
-interface ICalendarListItemProps {
-  readonly visibility: React.CSSProperties["visibility"]
-}
-
-const CalendarListItem = styled.li<ICalendarListItemProps>`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  &:not(:last-child) {
-    margin-bottom: var(--margin-calendar-item-bottom);
-  }
-  visibility: ${(props) => props.visibility};
-`
+const CalendarListItem = React.forwardRef(
+  (
+    {
+      visibility,
+      children,
+    }: {
+      visibility: "visible" | "hidden"
+      children: React.ReactNode
+    },
+    ref: React.ForwardedRef<HTMLLIElement>,
+  ) => {
+    return (
+      <li
+        ref={ref}
+        className={clx(
+          "flex items-center justify-between",
+          visibility === "visible" ? "visible" : "invisible",
+        )}
+      >
+        {children}
+      </li>
+    )
+  },
+)
 
 export interface ICalendarItemProps {
   readonly remove: () => void
@@ -55,7 +61,6 @@ export interface ICalendarItemProps {
   readonly recipeID: number | string
   readonly recipeName: string
   readonly scheduledId: number
-  readonly teamID: number
   readonly createdAt: string
   readonly createdBy: {
     readonly id: number | string
@@ -69,7 +74,6 @@ export function CalendarItem({
   remove,
   recipeName,
   recipeID,
-  teamID,
   scheduledId,
   createdAt,
   createdBy,
@@ -137,7 +141,6 @@ export function CalendarItem({
           scheduledId={scheduledId}
           createdAt={createdAt}
           createdBy={createdBy}
-          teamID={teamID}
           recipeName={recipeName}
           recipeId={recipeID}
           date={date}

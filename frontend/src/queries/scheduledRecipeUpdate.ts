@@ -3,34 +3,23 @@ import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query"
 import { http } from "@/http"
 import { CalendarResponse, ICalRecipe } from "@/queries/scheduledRecipeCreate"
 import { unwrapResult } from "@/query"
+import { useTeamId } from "@/useTeamId"
 
-// TODO(sbdchd): we shouldn't need teamID here
-const updateScheduleRecipe = (
-  calId: ICalRecipe["id"],
-  teamID: number,
-  recipe: Partial<ICalRecipe>,
-) => {
-  return http.patch<ICalRecipe>(
-    `/api/v1/t/${teamID}/calendar/${calId}/`,
-    recipe,
-  )
+const updateScheduleRecipe = (calId: number, recipe: Partial<ICalRecipe>) => {
+  return http.patch<ICalRecipe>(`/api/v1/calendar/${calId}/`, recipe)
 }
 
 function scheduledRecipeUpdate({
   scheduledRecipeId,
-  teamID,
   update,
 }: {
   scheduledRecipeId: number
-  teamID: number
   update: {
     // ISO date string
     on: string
   }
 }): Promise<ICalRecipe> {
-  return updateScheduleRecipe(scheduledRecipeId, teamID, update).then(
-    unwrapResult,
-  )
+  return updateScheduleRecipe(scheduledRecipeId, update).then(unwrapResult)
 }
 
 export function onScheduledRecipeUpdateSuccess(params: {
@@ -40,7 +29,7 @@ export function onScheduledRecipeUpdateSuccess(params: {
   updatedCalRecipe: ICalRecipe
 }) {
   params.queryClient.setQueriesData(
-    [params.teamID, "calendar"],
+    { queryKey: [params.teamID, "calendar"] },
     (data: unknown) => {
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       const oldData = data as CalendarResponse | undefined
@@ -62,32 +51,36 @@ export function onScheduledRecipeUpdateSuccess(params: {
 
 export function useScheduledRecipeUpdate() {
   const queryClient = useQueryClient()
+  const teamId = useTeamId()
   return useMutation({
     mutationFn: scheduledRecipeUpdate,
     onMutate: (vars) => {
       let previousOn: string | undefined
-      queryClient.setQueriesData([vars.teamID, "calendar"], (data: unknown) => {
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        const oldData = data as CalendarResponse | undefined
-        // TODO: we also need to be careful about shape of the data changing due to persistance
-        if (oldData == null) {
-          return oldData
-        }
-        const updatedScheduledRecipes = oldData.scheduledRecipes.map(
-          (calRecipe) => {
-            if (calRecipe.id === vars.scheduledRecipeId) {
-              previousOn = calRecipe.on
-              return { ...calRecipe, on: vars.update.on }
-            } else {
-              return calRecipe
-            }
-          },
-        )
-        return {
-          ...oldData,
-          scheduledRecipes: updatedScheduledRecipes,
-        }
-      })
+      queryClient.setQueriesData(
+        { queryKey: [teamId, "calendar"] },
+        (data: unknown) => {
+          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+          const oldData = data as CalendarResponse | undefined
+          // TODO: we also need to be careful about shape of the data changing due to persistance
+          if (oldData == null) {
+            return oldData
+          }
+          const updatedScheduledRecipes = oldData.scheduledRecipes.map(
+            (calRecipe) => {
+              if (calRecipe.id === vars.scheduledRecipeId) {
+                previousOn = calRecipe.on
+                return { ...calRecipe, on: vars.update.on }
+              } else {
+                return calRecipe
+              }
+            },
+          )
+          return {
+            ...oldData,
+            scheduledRecipes: updatedScheduledRecipes,
+          }
+        },
+      )
 
       return {
         optimisticScheduledRecipeId: vars.scheduledRecipeId,
@@ -97,7 +90,7 @@ export function useScheduledRecipeUpdate() {
     onSuccess: (response, vars) => {
       onScheduledRecipeUpdateSuccess({
         queryClient,
-        teamID: vars.teamID,
+        teamID: teamId,
         scheduledRecipeId: vars.scheduledRecipeId,
         updatedCalRecipe: response,
       })
@@ -106,27 +99,30 @@ export function useScheduledRecipeUpdate() {
       if (context == null) {
         return
       }
-      queryClient.setQueriesData([vars.teamID, "calendar"], (data: unknown) => {
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        const oldData = data as CalendarResponse | undefined
-        // TODO: we also need to be careful about shape of the data changing due to persistance
-        if (oldData == null) {
-          return oldData
-        }
-        const updatedScheduledRecipes = oldData.scheduledRecipes.map(
-          (calRecipe) => {
-            if (calRecipe.id === vars.scheduledRecipeId) {
-              return { ...calRecipe, on: context.previousOn }
-            } else {
-              return calRecipe
-            }
-          },
-        )
-        return {
-          ...oldData,
-          scheduledRecipes: updatedScheduledRecipes,
-        }
-      })
+      queryClient.setQueriesData(
+        { queryKey: [teamId, "calendar"] },
+        (data: unknown) => {
+          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+          const oldData = data as CalendarResponse | undefined
+          // TODO: we also need to be careful about shape of the data changing due to persistance
+          if (oldData == null) {
+            return oldData
+          }
+          const updatedScheduledRecipes = oldData.scheduledRecipes.map(
+            (calRecipe) => {
+              if (calRecipe.id === vars.scheduledRecipeId) {
+                return { ...calRecipe, on: context.previousOn }
+              } else {
+                return calRecipe
+              }
+            },
+          )
+          return {
+            ...oldData,
+            scheduledRecipes: updatedScheduledRecipes,
+          }
+        },
+      )
     },
   })
 }

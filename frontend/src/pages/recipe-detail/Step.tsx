@@ -32,23 +32,20 @@
 import React, { useRef, useState } from "react"
 import { useDrag, useDrop } from "react-dnd"
 
-import cls from "@/classnames"
+import { clx } from "@/classnames"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
-import { FormControl } from "@/components/FormControl"
-import { FormField } from "@/components/FormField"
 import { Textarea } from "@/components/Forms"
 import { BetterLabel } from "@/components/Label"
 import { Markdown } from "@/components/Markdown"
 import { DragDrop, handleDndHover } from "@/dragDrop"
-import { IRecipe } from "@/queries/recipeFetch"
 import { useStepDelete } from "@/queries/stepDelete"
 import { useStepUpdate } from "@/queries/stepUpdate"
 
 interface IStepProps {
   readonly index: number
   readonly stepId: number
-  readonly recipeID: IRecipe["id"]
+  readonly recipeID: number
   readonly text: string
   readonly move: (_: { from: number; to: number }) => void
   readonly completeMove: (_: { id: number; to: number }) => void
@@ -96,7 +93,7 @@ function Step({
     <div style={style} ref={isEditing ? ref : undefined} className="mb-2">
       <BetterLabel
         ref={isEditing ? drag : undefined}
-        style={{ cursor: isEditing ? "move" : "" }}
+        cursor={isEditing ? "move" : undefined}
       >
         Step {index + 1}
       </BetterLabel>
@@ -122,7 +119,7 @@ function StepBody({
 }: {
   readonly stepId: number
   readonly text: string
-  readonly recipeID: IRecipe["id"]
+  readonly recipeID: number
   readonly isEditing: boolean
 }) {
   const [text, setText] = useState(propText)
@@ -164,60 +161,48 @@ function StepBody({
   }
 
   const inner = isEditing ? (
-    <form>
-      <FormField>
-        <FormControl>
-          <Textarea
-            autoFocus
-            onChange={(e) => {
-              setText(e.target.value)
-            }}
-            onKeyPress={(e) => {
-              if (text === "") {
-                return
-              }
-              if (e.metaKey && e.key === "Enter") {
-                updateStep(e)
-              }
-            }}
-            defaultValue={text}
-            placeholder="Add you text here"
-            name="text"
-          />
-        </FormControl>
-      </FormField>
+    <form className="flex flex-col gap-2">
+      <Textarea
+        autoFocus
+        onChange={(e) => {
+          setText(e.target.value)
+        }}
+        onKeyPress={(e) => {
+          if (text === "") {
+            return
+          }
+          if (e.metaKey && e.key === "Enter") {
+            updateStep(e)
+          }
+        }}
+        defaultValue={text}
+        placeholder="Add you text here"
+        name="text"
+      />
       <Box space="between">
-        <FormField isGrouped>
-          <FormControl>
-            <Button
-              onClick={removeStep}
-              size="small"
-              loading={remove.isLoading}
-              type="button"
-              name="delete"
-            >
-              Delete
-            </Button>
-          </FormControl>
-        </FormField>
-        <FormField isGrouped>
-          <FormControl>
-            <Button size="small" name="cancel edit" onClick={handleCancel}>
-              Cancel
-            </Button>
-          </FormControl>
-          <FormControl>
-            <Button
-              variant="primary"
-              size="small"
-              onClick={updateStep}
-              loading={update.isLoading}
-              name="save"
-            >
-              Save
-            </Button>
-          </FormControl>
-        </FormField>
+        <Button
+          onClick={removeStep}
+          size="small"
+          loading={remove.isPending}
+          type="button"
+          name="delete"
+        >
+          Delete
+        </Button>
+        <div className="flex gap-2">
+          <Button size="small" name="cancel edit" onClick={handleCancel}>
+            Cancel
+          </Button>
+          <Button
+            variant="primary"
+            size="small"
+            onClick={updateStep}
+            loading={update.isPending}
+            name="save"
+          >
+            Save
+          </Button>
+        </div>
       </Box>
     </form>
   ) : (
@@ -225,20 +210,20 @@ function StepBody({
   )
 
   return (
-    <div>
-      <section
-        className={cls({ "cursor-pointer": editingEnabled })}
-        title={editingEnabled ? "click to edit" : undefined}
-        onClick={() => {
-          if (!editingEnabled) {
-            return
-          }
-          setIsEditing(true)
-        }}
-      >
-        {inner}
-      </section>
-    </div>
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line react/forbid-elements
+    <section
+      className={clx(editingEnabled && "cursor-pointer")}
+      title={editingEnabled ? "click to edit" : undefined}
+      onClick={() => {
+        if (!editingEnabled) {
+          return
+        }
+        setIsEditing(true)
+      }}
+    >
+      {inner}
+    </section>
   )
 }
 

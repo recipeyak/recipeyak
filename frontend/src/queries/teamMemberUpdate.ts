@@ -2,18 +2,28 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AxiosError, AxiosResponse } from "axios"
 
 import { http } from "@/http"
-import { IMember, ITeam } from "@/queries/teamFetch"
+import { setQueryDataTeamMemberList } from "@/queries/teamMembersList"
 import { unwrapResult } from "@/query"
 import { toast } from "@/toast"
 
 type Level = "admin" | "contributor" | "read"
 
 const updateTeamMemberLevel = (
-  teamID: ITeam["id"],
-  membershipID: IMember["id"],
-  level: IMember["level"],
+  teamID: number,
+  membershipID: number,
+  level: Level,
 ) =>
-  http.patch<IMember>(`/api/v1/t/${teamID}/members/${membershipID}/`, { level })
+  http.patch<{
+    readonly id: number
+    readonly created: string
+    readonly level: "admin" | "contributor" | "read"
+    readonly user: {
+      readonly id: number
+      readonly name: string
+      readonly avatar_url: string
+      readonly email: string
+    }
+  }>(`/api/v1/t/${teamID}/members/${membershipID}/`, { level })
 
 export function useTeamMemberUpdate() {
   const queryClient = useQueryClient()
@@ -29,9 +39,9 @@ export function useTeamMemberUpdate() {
     }) => updateTeamMemberLevel(teamId, memberId, level).then(unwrapResult),
     onMutate: (vars) => {
       let prevLevel: Level | undefined
-      queryClient.setQueryData<IMember[]>(
-        ["team-members-list", vars.teamId],
-        (prev) => {
+      setQueryDataTeamMemberList(queryClient, {
+        teamId: vars.teamId,
+        updater: (prev) => {
           return prev?.map((x) => {
             if (x.id === vars.memberId) {
               prevLevel = x.level
@@ -40,13 +50,15 @@ export function useTeamMemberUpdate() {
             return x
           })
         },
-      )
+      })
+      // TODO: ban
+      // queryClient.setQueryData<IMember[]>(
       return { prevLevel }
     },
     onSuccess: (res, vars) => {
-      queryClient.setQueryData<IMember[]>(
-        ["team-members-list", vars.teamId],
-        (prev) => {
+      setQueryDataTeamMemberList(queryClient, {
+        teamId: vars.teamId,
+        updater: (prev) => {
           return prev?.map((x) => {
             if (x.id === vars.memberId) {
               return res
@@ -54,12 +66,12 @@ export function useTeamMemberUpdate() {
             return x
           })
         },
-      )
+      })
     },
     onError: (error, vars, context) => {
-      queryClient.setQueryData<IMember[]>(
-        ["team-members-list", vars.teamId],
-        (prev) => {
+      setQueryDataTeamMemberList(queryClient, {
+        teamId: vars.teamId,
+        updater: (prev) => {
           return prev?.map((x) => {
             if (x.id === vars.memberId && context?.prevLevel != null) {
               return { ...x, level: context.prevLevel }
@@ -67,7 +79,7 @@ export function useTeamMemberUpdate() {
             return x
           })
         },
-      )
+      })
 
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unsafe-assignment
       const err = error as AxiosError | undefined

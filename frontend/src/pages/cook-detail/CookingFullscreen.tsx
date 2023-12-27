@@ -3,6 +3,7 @@ import { useState } from "react"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { Tab, Tabs } from "@/components/Tabs"
+import { getInitialIngredients } from "@/ingredients"
 import { IngredientViewContent } from "@/pages/recipe-detail/IngredientView"
 import { Note } from "@/pages/recipe-detail/Notes"
 import { RecipeSource } from "@/pages/recipe-detail/RecipeSource"
@@ -10,14 +11,17 @@ import { StepView } from "@/pages/recipe-detail/Step"
 import { pathRecipeDetail } from "@/paths"
 import { useCookChecklistFetch } from "@/queries/cookChecklistFetch"
 import { useCookChecklistUpdate } from "@/queries/cookChecklistUpdate"
-import { IIngredient, INote, IStep } from "@/queries/recipeFetch"
+import { PickVariant } from "@/queries/queryUtilTypes"
+import { RecipeFetchResponse as Recipe } from "@/queries/recipeFetch"
 import { notEmpty } from "@/text"
-import { styled } from "@/theme"
-import { getInitialIngredients } from "@/utils/ingredients"
+
+type Ingredient = Recipe["ingredients"][number]
+type Step = Recipe["steps"][number]
+type Note = PickVariant<Recipe["timelineItems"][number], "note">
 
 function useIngredients(recipeId: number) {
   const {
-    isLoading,
+    isPending,
     isError,
     data: checkedIngredients,
     error,
@@ -27,11 +31,11 @@ function useIngredients(recipeId: number) {
   if (isError) {
     throw error
   }
-  if (isLoading) {
-    return { checkedIngredients, isLoading, mutation } as const
+  if (isPending) {
+    return { checkedIngredients, isPending, mutation } as const
   }
 
-  return { checkedIngredients, isLoading, mutation } as const
+  return { checkedIngredients, isPending, mutation } as const
 }
 
 function Ingredients({
@@ -39,7 +43,7 @@ function Ingredients({
   recipeId,
   sections,
 }: {
-  ingredients: readonly IIngredient[]
+  ingredients: readonly Ingredient[]
   recipeId: number
   readonly sections: readonly {
     readonly id: number
@@ -47,9 +51,9 @@ function Ingredients({
     readonly position: string
   }[]
 }) {
-  const { checkedIngredients, isLoading, mutation } = useIngredients(recipeId)
+  const { checkedIngredients, isPending, mutation } = useIngredients(recipeId)
 
-  if (isLoading) {
+  if (isPending) {
     return null
   }
 
@@ -67,7 +71,7 @@ function Ingredients({
           return (
             <div
               key={`section-${ingredientOrSection.item.id}`}
-              className="bold text-small"
+              className="text-sm font-bold"
             >
               {ingredientOrSection.item.title}
             </div>
@@ -79,7 +83,7 @@ function Ingredients({
           <div
             key={`ingredient-${i.id}`}
             style={{ fontSize: "18px" }}
-            className="d-flex align-items-start"
+            className="flex items-start"
           >
             <input
               id={`ingredient-${i.id}`}
@@ -95,7 +99,7 @@ function Ingredients({
             />
             <label
               htmlFor={`ingredient-${i.id}`}
-              className="selectable"
+              className="cursor-auto select-text"
               style={{
                 paddingLeft: "0.5rem",
                 paddingBottom: "0.5rem",
@@ -116,7 +120,7 @@ function Ingredients({
     </div>
   )
 }
-function Steps({ steps }: { steps: readonly IStep[] }) {
+function Steps({ steps }: { steps: readonly Step[] }) {
   const [selectedStep, setSelectedStep] = useState<number | undefined>()
   return (
     <div
@@ -141,12 +145,12 @@ function Steps({ steps }: { steps: readonly IStep[] }) {
               fontWeight: isSelected ? "500" : undefined,
               paddingBottom: "1rem",
             }}
-            className="d-flex flex-direction-column"
+            className="flex flex-col"
           >
             <div
               style={{
                 fontSize: "14px",
-                fontWeight: isSelected ? "bold" : "500",
+                fontWeight: isSelected ? "font-bold" : "500",
                 textDecoration: isSelected ? "underline" : undefined,
                 textUnderlineOffset: "0.25rem",
               }}
@@ -164,7 +168,7 @@ function Notes({
   notes,
   recipeId,
 }: {
-  notes: readonly INote[]
+  notes: readonly Note[]
   recipeId: number
 }) {
   if (notes.length === 0) {
@@ -184,15 +188,6 @@ function Notes({
   )
 }
 
-const Container = styled.div`
-  align-items: center;
-  justify-content: center;
-  background-color: var(--color-background);
-  position: fixed;
-  z-index: 20;
-  inset: 0;
-`
-
 export function CookingFullscreen({
   recipeName,
   recipeId,
@@ -205,20 +200,20 @@ export function CookingFullscreen({
   readonly recipeId: number
   readonly recipeName: string
   readonly recipeSource: string | null
-  readonly ingredients: readonly IIngredient[]
+  readonly ingredients: readonly Ingredient[]
   readonly sections: readonly {
     readonly id: number
     readonly title: string
     readonly position: string
   }[]
-  readonly steps: readonly IStep[]
-  readonly notes: readonly INote[]
+  readonly steps: readonly Step[]
+  readonly notes: readonly Note[]
 }) {
   const [tab, setTab] = useState<"ingredients" | "steps" | "notes">(
     "ingredients",
   )
   return (
-    <Container>
+    <div className="fixed inset-0 z-20 items-center justify-center bg-[var(--color-background)]">
       <div
         style={{
           padding: "0.5rem 1.25rem",
@@ -247,7 +242,7 @@ export function CookingFullscreen({
           }}
         >
           <div
-            className="selectable"
+            className="cursor-auto select-text"
             style={{
               fontSize: "2rem",
               lineHeight: "1em",
@@ -303,6 +298,6 @@ export function CookingFullscreen({
           )}
         </Box>
       </div>
-    </Container>
+    </div>
   )
 }

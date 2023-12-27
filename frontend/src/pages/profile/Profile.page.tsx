@@ -4,30 +4,14 @@ import React from "react"
 import { RouteComponentProps } from "react-router"
 
 import { assertNever } from "@/assert"
+import { Avatar } from "@/components/Avatar"
 import { Box } from "@/components/Box"
 import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
+import { NavPage } from "@/components/Page"
 import { Link } from "@/components/Routing"
 import { pathRecipeDetail } from "@/paths"
 import { useUserById } from "@/queries/userById"
-
-interface IProfileImgProps {
-  readonly avatarURL: string
-}
-function ProfileImg({ avatarURL }: IProfileImgProps) {
-  const size = 96
-  return (
-    <a href="https://secure.gravatar.com" className="justify-self-center ">
-      <img
-        width={size}
-        height={size}
-        alt="user profile"
-        className="br-5"
-        src={avatarURL + `&s=${size}`}
-      />
-    </a>
-  )
-}
 
 // icons from: https://lucide.dev
 
@@ -152,17 +136,23 @@ function formatNumber(val: number) {
   return new Intl.NumberFormat().format(val)
 }
 
-export default function Profile(
-  props: RouteComponentProps<{ userId: string }>,
-) {
+export function ProfilePage(props: RouteComponentProps<{ userId: string }>) {
   const userInfo = useUserById({ id: props.match.params.userId })
 
-  if (userInfo.isLoading) {
-    return <Loader />
+  if (userInfo.isPending) {
+    return (
+      <NavPage>
+        <Loader />
+      </NavPage>
+    )
   }
 
   if (userInfo.isError) {
-    return <div>error loading profile, 404 maybe?</div>
+    return (
+      <NavPage>
+        <div>error loading profile, 404 maybe?</div>
+      </NavPage>
+    )
   }
 
   const allStats = [
@@ -181,48 +171,41 @@ export default function Profile(
   )
 
   return (
-    <Box
-      style={{
-        maxWidth: 700,
-        marginLeft: "auto",
-        marginRight: "auto",
-      }}
-      dir="col"
-    >
-      <Helmet title="Profile" />
+    <NavPage>
+      <Box dir="col" className="mx-auto mt-8 max-w-[700px] gap-2">
+        <Helmet title="Profile" />
 
-      <Box dir="col" align="center">
-        <ProfileImg avatarURL={userInfo.data.avatar_url} />
-        <span className="fs-6">{userInfo.data.name}</span>
-        <span>Joined {joinedDateStr}</span>
+        <Box dir="col" align="center">
+          <Avatar avatarURL={userInfo.data.avatar_url} size={96} />
+          <span className="text-2xl">{userInfo.data.name}</span>
+          <span>Joined {joinedDateStr}</span>
+        </Box>
+
+        <div>
+          <span className="text-2xl">Stats</span>
+
+          <Box dir="row" align="start" wrap gap={2}>
+            {allStats.map(([value, name, Icon]) => {
+              return (
+                <Box
+                  key={name}
+                  gap={1}
+                  align="center"
+                  className="rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-calendar-day)] px-2 py-1"
+                >
+                  <Icon /> {name} · {formatNumber(value)}
+                </Box>
+              )
+            })}
+          </Box>
+        </div>
+
+        <div>
+          <div className="text-2xl">Activity</div>
+          <ActivityLog activity={userInfo.data.activity} />
+        </div>
       </Box>
-
-      <span className="fs-6">Stats</span>
-
-      <Box dir="row" align="start" wrap gap={2}>
-        {allStats.map(([value, name, Icon]) => {
-          return (
-            <Box
-              key={name}
-              gap={1}
-              align="center"
-              style={{
-                padding: "0.5rem",
-                paddingTop: "0.25rem",
-                paddingBottom: "0.25rem",
-                border: "1px solid lightgray",
-                borderRadius: 6,
-              }}
-            >
-              <Icon /> {name} · {formatNumber(value)}
-            </Box>
-          )
-        })}
-      </Box>
-
-      <div className="fs-6">Activity</div>
-      <ActivityLog activity={userInfo.data.activity} />
-    </Box>
+    </NavPage>
   )
 }
 
@@ -358,7 +341,7 @@ function ActivityLog({
           </div>
           <div style={{ lineHeight: "1.2" }}>
             <Link
-              className="text-truncate"
+              className="line-clamp-1 text-ellipsis"
               to={pathRecipeDetail({ recipeId: x.recipe_id.toString() })}
             >
               {x.recipe_name}

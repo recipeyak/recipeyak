@@ -1,7 +1,5 @@
 from typing import Any, cast
 
-from django.shortcuts import get_object_or_404
-from rest_framework import permissions
 from rest_framework.request import Request
 
 from recipeyak.models import Recipe, Team, User
@@ -17,13 +15,6 @@ class DisallowAny:
 
     def has_object_permission(self, request: Request, view: Any, obj: Any) -> bool:
         return False
-
-
-class IsTeamMember(permissions.BasePermission):  # type: ignore[misc]
-    def has_permission(self, request: Any, view: Any) -> bool:
-        team_pk = view.kwargs["team_pk"]
-        team: Team = get_object_or_404(Team, pk=team_pk)
-        return team.is_member(request.user)
 
 
 def has_recipe_access(*, user: User, recipe: Recipe) -> bool:

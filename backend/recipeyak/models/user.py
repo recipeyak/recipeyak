@@ -72,7 +72,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     recipes = GenericRelation("Recipe", related_query_name="owner_user")
 
-    theme = models.TextField(default="light")
+    theme_day = models.TextField(db_column="theme", default="light")
+    theme_night = models.TextField(default="dark")
+    theme_mode = models.TextField(default="single")
 
     # deprecated
     _deprecated_dark_mode_enabled = models.BooleanField(
@@ -102,18 +104,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     schedule_team_id: int | None
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS: list[str] = []
+    REQUIRED_FIELDS: list[str] = []  # noqa: RUF012
 
     objects = UserManager()
 
     class Meta:
         db_table = "core_myuser"
-        constraints = [
-            models.CheckConstraint(
-                check=models.Q(theme__in=("light", "solarized", "autumn")),
-                name="theme_is_valid",
-            )
-        ]
 
     def get_full_name(self) -> str:
         return self.email

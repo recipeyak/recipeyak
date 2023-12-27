@@ -2,7 +2,8 @@ import React, { useState } from "react"
 
 import { Box } from "@/components/Box"
 import { Modal } from "@/components/Modal"
-import { useGlobalEvent } from "@/hooks"
+import { Kbd } from "@/pages/schedule/Kbd"
+import { useGlobalEvent } from "@/useGlobalEvent"
 
 const keybinds = [
   {
@@ -31,12 +32,12 @@ function KeyBind({ bind }: IKeyBindProps) {
   return (
     <div className="mb-1">
       {typeof bind === "string" ? (
-        <kbd key={bind}>{bind}</kbd>
+        <Kbd key={bind}>{bind}</Kbd>
       ) : (
         bind.map((k, i) => (
           <React.Fragment key={k}>
             {i !== 0 ? <span className="mx-1">or</span> : null}
-            <kbd key={k}>{k}</kbd>
+            <Kbd key={k}>{k}</Kbd>
           </React.Fragment>
         ))
       )}

@@ -2,14 +2,13 @@ import { AxiosError } from "axios"
 import React, { useState } from "react"
 import { Link } from "react-router-dom"
 
-import AuthContainer from "@/components/AuthContainer"
+import { useIsLoggedIn } from "@/auth"
 import { BorderBox } from "@/components/BorderBox"
 import { Button } from "@/components/Buttons"
-import { FormField } from "@/components/FormField"
 import { EmailInput, FormErrorHandler } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Label } from "@/components/Label"
-import { useIsLoggedIn } from "@/hooks"
+import { AuthPage } from "@/components/Page"
 import { useAuthPasswordReset } from "@/queries/authPasswordReset"
 import { toast } from "@/toast"
 
@@ -31,7 +30,7 @@ function formatError(error: unknown) {
   return {}
 }
 
-function PasswordReset() {
+export function PasswordResetPage() {
   const [email, setEmail] = useState("")
 
   const resetPassword = useAuthPasswordReset()
@@ -65,14 +64,14 @@ function PasswordReset() {
     : { name: "Login", route: "/login" }
 
   return (
-    <AuthContainer>
+    <AuthPage>
       <Helmet title="Password Reset" />
       <BorderBox p={3} as="form" onSubmit={handleReset}>
-        <h1 className="is-5 mb-2 fw-500">Password Reset</h1>
+        <h1 className="mb-2 text-xl font-medium">Password Reset</h1>
 
         <FormErrorHandler error={errors.nonFieldErrors} />
 
-        <FormField>
+        <div>
           <Label>Email</Label>
           <EmailInput
             autoFocus
@@ -85,18 +84,16 @@ function PasswordReset() {
             placeholder="a.person@me.com"
           />
           <FormErrorHandler error={errors.email} />
-        </FormField>
+        </div>
 
-        <FormField className="d-flex flex-space-between align-items-center">
-          <Button loading={resetPassword.isLoading} type="submit">
+        <div className="flex items-center justify-between">
+          <Button loading={resetPassword.isPending} type="submit">
             Send Reset Email
           </Button>
 
           <Link to={redirect.route}>{redirect.name} →</Link>
-        </FormField>
+        </div>
       </BorderBox>
-    </AuthContainer>
+    </AuthPage>
   )
 }
-
-export default PasswordReset

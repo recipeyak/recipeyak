@@ -14,7 +14,8 @@ from recipeyak.api.ingredients_detail_view import ingredients_detail_view
 from recipeyak.api.ingredients_list_view import ingredients_list_view
 from recipeyak.api.login_user_detail_view import login_user_detail_view
 from recipeyak.api.logout_user_detail_view import logout_user_detail_view
-from recipeyak.api.notes_view import note_create_view, note_detail_view
+from recipeyak.api.note_create_view import note_create_view
+from recipeyak.api.notes_view import note_detail_view
 from recipeyak.api.password_change_detail_view import password_change_detail_view
 from recipeyak.api.password_reset_confirm_view import password_reset_confirm_view
 from recipeyak.api.password_reset_view import password_reset_view
@@ -30,8 +31,9 @@ from recipeyak.api.recipe_bot_detail_view import (
 from recipeyak.api.recipe_detail_view import receipe_detail_view
 from recipeyak.api.recipe_list_view import recipe_list_view
 from recipeyak.api.register_user_detail_view import register_user_detail_view
+from recipeyak.api.search_click_create_view import search_click_create_view
+from recipeyak.api.section_create_view import create_section_view
 from recipeyak.api.sections_view import (
-    create_section_view,
     delete_or_update_section_view,
 )
 from recipeyak.api.sessions_detail_view import sessions_detail_view
@@ -87,16 +89,22 @@ urlpatterns = [
     path("api/v1/recipes/<int:recipe_pk>/timeline", get_recipe_timeline),
     path("api/v1/recipes/recently_viewed", get_recently_viewed_recipes),
     path("api/v1/recipes/recently_created", get_recently_created_recipes),
+    path("api/v1/search-click/", search_click_create_view),
     path("api/v1/sections/<int:section_pk>/", delete_or_update_section_view),
     path("api/v1/sessions/", sessions_list_view),
     path("api/v1/sessions/<str:pk>/", sessions_detail_view),
-    # TODO: remove team param from these
     path("api/v1/t/<int:team_pk>/calendar/", calendar_list_view),
+    path("api/v1/calendar/", calendar_list_view),
     path("api/v1/t/<int:team_pk>/calendar/settings/", update_settings),
+    path("api/v1/calendar/settings/", update_settings),
     path("api/v1/t/<int:team_pk>/calendar/next_open/", next_open),
+    path("api/v1/calendar/next_open/", next_open),
     path("api/v1/t/<int:team_pk>/calendar/generate_link/", generate_link),
+    path("api/v1/calendar/generate_link/", generate_link),
     path("api/v1/t/<int:team_pk>/calendar/<int:pk>/", calendar_detail_view),
+    path("api/v1/calendar/<int:pk>/", calendar_detail_view),
     path("api/v1/t/<int:team_pk>/shoppinglist/", get_shopping_list_view),
+    path("api/v1/shoppinglist/", get_shopping_list_view),
     path("api/v1/upload/", start_upload_view),
     path("api/v1/upload/<int:upload_pk>/complete", complete_upload_view),
     path("api/v1/user/", user_detail_view),

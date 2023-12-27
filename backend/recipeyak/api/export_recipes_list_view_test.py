@@ -80,20 +80,16 @@ name: foo 🦠
 author: Recipe author
 time: 1 hour
 source: www.exmple.com
-servings: null
 ingredients:
 - quantity: 1 lbs
   name: egg
   description: scrambled
-  optional: false
 - quantity: 2 tbs
   name: soy sauce
-  description: ''
-  optional: false
+- section: a section title
+- section: a diff section
 steps:
 - Place egg in boiling water and cook for ten minutes
-owner:
-  user: john@doe.org
 tags:
 - foo
 - bar

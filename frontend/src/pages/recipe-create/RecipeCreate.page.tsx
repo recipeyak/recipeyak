@@ -5,6 +5,7 @@ import { useHistory } from "react-router"
 import { Button } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
+import { NavPage } from "@/components/Page"
 import { pathRecipeDetail } from "@/paths"
 import { useRecipeCreate } from "@/queries/recipeCreate"
 
@@ -28,12 +29,11 @@ function CreateFromURLForm() {
   }
   return (
     <form onSubmit={handleImport}>
-      <div className="text-left fw-bold fs-14px">URL</div>
-      <div className="d-flex">
+      <div className="text-left text-[14px] font-medium">URL</div>
+      <div className="flex gap-2">
         <TextInput
           placeholder="https://cooking.nytimes.com..."
           name="recipe url"
-          className="mr-2"
           value={url}
           onChange={(e) => {
             setUrl(e.target.value)
@@ -43,13 +43,13 @@ function CreateFromURLForm() {
         <Button
           variant="primary"
           type="submit"
-          loading={recipeCreate.isLoading}
+          loading={recipeCreate.isPending}
         >
           Import
         </Button>
       </div>
       {recipeCreate.isError ? (
-        <div className="has-text-danger text-left mb-1">
+        <div className="mb-1 text-left text-[var(--color-danger)]">
           Error:{" "}
           {
             // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unsafe-member-access
@@ -85,40 +85,47 @@ function CreateManuallyForm() {
   }
   return (
     <form onSubmit={handleManualAdd}>
-      <div className="text-left fw-bold fs-14px">Title</div>
-      <TextInput
-        placeholder="Butternutt Squash Soup"
-        name="recipe url"
-        className="mb-2"
-        value={title}
-        onChange={(e) => {
-          setTitle(e.target.value)
-        }}
-      />
-      {recipeCreate.isError ? (
-        <div className="has-text-danger text-left mb-1">
-          Error:
-          {
-            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-            (recipeCreate.error as Error).message ?? "something went wrong."
-          }
-        </div>
-      ) : null}
-      <Button variant="primary" type="submit" loading={recipeCreate.isLoading}>
-        Add Manually
-      </Button>
+      <div className="text-left text-[14px] font-medium">Title</div>
+      <div className="flex gap-2">
+        <TextInput
+          placeholder="Butternutt Squash Soup"
+          name="recipe url"
+          value={title}
+          onChange={(e) => {
+            setTitle(e.target.value)
+          }}
+        />
+        {recipeCreate.isError ? (
+          <div className="mb-1 text-left text-[var(--color-danger)]">
+            Error:
+            {
+              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+              (recipeCreate.error as Error).message ?? "something went wrong."
+            }
+          </div>
+        ) : null}
+        <Button
+          variant="primary"
+          type="submit"
+          loading={recipeCreate.isPending}
+        >
+          Add Manually
+        </Button>
+      </div>
     </form>
   )
 }
 
-export default function RecipeCreate() {
+export function RecipeCreatePage() {
   return (
-    <div style={{ maxWidth: 500 }} className="mx-auto text-center">
-      <Helmet title="Add Recipe" />
-      <h1 className="fs-2rem mb-2">Add Recipe</h1>
-      <CreateFromURLForm />
-      <div className="text-center mt-4">or</div>
-      <CreateManuallyForm />
-    </div>
+    <NavPage>
+      <div style={{ maxWidth: 500 }} className="mx-auto flex-col text-center">
+        <Helmet title="Add Recipe" />
+        <h1 className="my-2 text-left text-lg font-medium">Add Recipe</h1>
+        <CreateFromURLForm />
+        <div className="mt-2 text-center">or</div>
+        <CreateManuallyForm />
+      </div>
+    </NavPage>
   )
 }

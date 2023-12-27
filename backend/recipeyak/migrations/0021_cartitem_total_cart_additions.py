@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("recipeyak", "0020_recipe_cart_additions")]
 
     operations = [

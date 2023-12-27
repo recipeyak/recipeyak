@@ -4,84 +4,16 @@ import { RouteComponentProps } from "react-router"
 import { Link } from "react-router-dom"
 
 import { Button } from "@/components/Buttons"
-import { FormField } from "@/components/FormField"
 import { TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Label } from "@/components/Label"
-import { Loader } from "@/components/Loader"
+import { NavPage } from "@/components/Page"
 import { Tab, Tabs } from "@/components/Tabs"
-import { useUserId } from "@/hooks"
-import MemberRow from "@/pages/team-detail/MemberRow"
+import { Members } from "@/pages/team-detail/Members"
 import { useTeamDelete } from "@/queries/teamDelete"
-import { IMember, ITeam, useTeam } from "@/queries/teamFetch"
-import { useTeamMembersList } from "@/queries/teamMembersList"
+import { useTeam } from "@/queries/teamFetch"
 import { useTeamUpdate } from "@/queries/teamUpdate"
-import { inviteURL, teamSettingsURL, teamURL } from "@/urls"
-
-interface IMembersProps {
-  readonly teamID: ITeam["id"]
-  readonly members: IMember[]
-  readonly loading: boolean
-}
-
-function Members({ teamID, loading, members }: IMembersProps) {
-  const userId = useUserId()
-  if (loading) {
-    return <Loader />
-  }
-  if (members.length > 0) {
-    const isTeamAdmin = members.some(
-      (x) => x.level === "admin" && x.user.id === userId,
-    )
-    return (
-      <div className="table-responsive">
-        <table className="table-spacing">
-          <tbody>
-            {members.map((x) => (
-              <MemberRow
-                key={x.id}
-                teamID={teamID}
-                userID={x.user.id}
-                isTeamAdmin={isTeamAdmin}
-                membershipID={x.id}
-                level={x.level}
-                avatarURL={x.user.avatar_url}
-                email={x.user.email}
-                isActive={x.is_active}
-              />
-            ))}
-          </tbody>
-        </table>
-      </div>
-    )
-  }
-
-  return (
-    <section>
-      <h1 className="text-center fs-6 bold text-muted">No Team Members</h1>
-      <p className="text-center">Add one via the Invite button</p>
-    </section>
-  )
-}
-
-interface ITeamMembers {
-  readonly id: ITeam["id"]
-  readonly name: ITeam["name"]
-  readonly members: IMember[]
-  readonly loading: boolean
-}
-
-const TeamMembers = ({ id, name, members, loading }: ITeamMembers) => (
-  <>
-    <section className="d-flex justify-space-between align-items-center">
-      <h2 className="fs-6">Members</h2>
-      <Button variant="primary" to={inviteURL(id, name)}>
-        Invite
-      </Button>
-    </section>
-    <Members teamID={id} loading={loading} members={members} />
-  </>
-)
+import { teamSettingsURL, teamURL } from "@/urls"
 
 function TeamSettings({ id, name: initialName }: { id: number; name: string }) {
   const [name, setName] = useState(initialName)
@@ -101,30 +33,28 @@ function TeamSettings({ id, name: initialName }: { id: number; name: string }) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <FormField>
-        <Label>Team Name</Label>
-        <TextInput
-          disabled={false}
-          onChange={(e) => {
-            setName(e.target.value)
-          }}
-          placeholder="The Grand Budapest Staff"
-          value={name}
-          name="name"
-        />
-      </FormField>
-      <div className="d-flex justify-space-between align-items-center">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+      <Label>Team Name</Label>
+      <TextInput
+        disabled={false}
+        onChange={(e) => {
+          setName(e.target.value)
+        }}
+        placeholder="The Grand Budapest Staff"
+        value={name}
+        name="name"
+      />
+      <div className="flex items-center justify-between">
         <Button
           variant="danger"
           onClick={() => {
             deleteTeam()
           }}
-          loading={teamDelete.isLoading}
+          loading={teamDelete.isPending}
         >
           Delete Team
         </Button>
-        <Button variant="primary" type="submit" loading={teamUpdate.isLoading}>
+        <Button variant="primary" type="submit" loading={teamUpdate.isPending}>
           Save Changes
         </Button>
       </div>
@@ -132,25 +62,13 @@ function TeamSettings({ id, name: initialName }: { id: number; name: string }) {
   )
 }
 
-interface ITeamNameProps {
-  readonly name: string
-}
-const TeamName = ({ name }: ITeamNameProps) => {
-  return (
-    <div>
-      <h1 className="fs-9 text-center fw-500 p-3">{name}</h1>
-    </div>
-  )
-}
-
 const is404 = (err: unknown) =>
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   (err as AxiosError | undefined)?.response?.status === 404
 
-function Team(props: RouteComponentProps<{ teamId: string }>) {
+export function TeamDetailPage(props: RouteComponentProps<{ teamId: string }>) {
   const id = parseInt(props.match.params.teamId, 10)
   const teamInfo = useTeam({ teamId: id })
-  const teamMembers = useTeamMembersList({ teamId: id })
   if (is404(teamInfo.error)) {
     return <div>team not found</div>
   }
@@ -159,36 +77,35 @@ function Team(props: RouteComponentProps<{ teamId: string }>) {
     return <div>error fetching team</div>
   }
 
-  if (teamInfo.isLoading) {
+  if (teamInfo.isPending) {
     return <div>loading team...</div>
   }
 
   const isSettings = props.match.url.endsWith("settings")
 
   return (
-    <div style={{ maxWidth: 800, marginLeft: "auto", marginRight: "auto" }}>
-      <Helmet title="Team" />
-      <TeamName name={teamInfo.data.name} />
-      <Tabs>
-        <Tab isActive={!isSettings}>
-          <Link to={teamURL(id, teamInfo.data.name)}>Team</Link>
-        </Tab>
-        <Tab isActive={isSettings}>
-          <Link to={teamSettingsURL(id, teamInfo.data.name)}>Settings</Link>
-        </Tab>
-      </Tabs>
-      {isSettings ? (
-        <TeamSettings id={id} name={teamInfo.data.name} />
-      ) : (
-        <TeamMembers
-          id={id}
-          name={teamInfo.data.name}
-          loading={teamMembers.isLoading}
-          members={teamMembers.data ?? []}
-        />
-      )}
-    </div>
+    <NavPage>
+      <div className="mx-auto max-w-[800px]">
+        <Helmet title="Team" />
+        <div>
+          <h1 className="p-3 text-center text-4xl font-medium">
+            {teamInfo.data.name}
+          </h1>
+        </div>
+        <Tabs>
+          <Tab isActive={!isSettings}>
+            <Link to={teamURL(id, teamInfo.data.name)}>Team</Link>
+          </Tab>
+          <Tab isActive={isSettings}>
+            <Link to={teamSettingsURL(id, teamInfo.data.name)}>Settings</Link>
+          </Tab>
+        </Tabs>
+        {isSettings ? (
+          <TeamSettings id={id} name={teamInfo.data.name} />
+        ) : (
+          <Members teamId={id} />
+        )}
+      </div>
+    </NavPage>
   )
 }
-
-export default Team

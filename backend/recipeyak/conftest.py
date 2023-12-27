@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+from collections.abc import Iterator
 from datetime import date
 from logging import getLogger
-from typing import Any, Iterator
+from typing import Any
 from unittest.mock import patch
 
 import pytest

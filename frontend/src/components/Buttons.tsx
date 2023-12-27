@@ -55,19 +55,26 @@ const ButtonBase = styled.button<{
   transition: all 0.2s;
   transition-property: translateY, border-color, box-shadow;
   text-decoration: none;
-  font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    "Helvetica", "Arial", sans-serif;
+  font-family:
+    BlinkMacSystemFont,
+    -apple-system,
+    "Segoe UI",
+    "Roboto",
+    "Oxygen",
+    "Ubuntu",
+    "Cantarell",
+    "Fira Sans",
+    "Droid Sans",
+    "Helvetica Neue",
+    "Helvetica",
+    "Arial",
+    sans-serif;
   font-weight: 500;
 
   &:active:not([disabled]) {
     ${activeCss}
   }
   ${(p) => p.isActive && activeCss}
-
-  &:focus:not([disabled]) {
-    box-shadow: 0 0 5px 0px var(--color-primary-shadow);
-  }
 
   @media (hover: hover) {
     &:hover:not([disabled]) {

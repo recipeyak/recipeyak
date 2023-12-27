@@ -3,38 +3,22 @@ import TextareaAutosize from "react-textarea-autosize"
 
 import { styled } from "@/theme"
 
-type Target = { select: () => void }
-
-export const selectTarget = (e: { target: EventTarget | Target }) => {
-  // hack to get around typescript not knowing about the select property
-  if ("select" in e.target) {
-    e.target.select()
-  }
-}
-
 interface IFormErrorHandlerProps {
   readonly error: string[] | null | undefined
 }
-
-const Help = styled.div`
-  display: block;
-  font-size: 0.75rem;
-  margin-top: 0.25rem;
-  color: var(--color-danger);
-`
 
 export const FormErrorHandler = ({ error }: IFormErrorHandlerProps) => {
   if (!error) {
     return null
   }
   return (
-    <Help>
+    <div className="mt-1 block text-xs text-[var(--color-danger)]">
       <ul>
         {error.map((e) => (
           <li key={e}>{e}</li>
         ))}
       </ul>
-    </Help>
+    </div>
   )
 }
 
@@ -77,7 +61,7 @@ const StyledInput = styled.input<{ isDanger?: boolean }>`
   ${(p) => p.isDanger && `border-color: var(--color-danger);`}
 `
 
-type BaseInputProps = {
+type BaseInputProps = React.ComponentProps<"input"> & {
   className?: string
   error?: boolean
   type?: React.HTMLInputTypeAttribute
@@ -96,17 +80,41 @@ type BaseInputProps = {
   readOnly?: boolean
   onClick?: (e: React.MouseEvent<HTMLInputElement>) => void
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onFocus?: (e: React.ChangeEvent<HTMLInputElement>) => void
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>
+  ref?:
+    | ((instance: HTMLInputElement | null) => void)
+    | React.RefObject<HTMLInputElement>
+    | null
+    | undefined
 }
 
-const BaseInput = ({ className, error = false, ...props }: BaseInputProps) => {
-  return <StyledInput className={className} isDanger={error} {...props} />
-}
+const BaseInput = React.forwardRef(
+  (
+    { className, error = false, ...props }: BaseInputProps,
+    ref: BaseInputProps["ref"],
+  ) => {
+    return (
+      <StyledInput
+        className={
+          className + " " + "placeholder:text-[var(--color-input-placeholder)]"
+        }
+        isDanger={error}
+        {...props}
+        ref={ref}
+      />
+    )
+  },
+)
 
-const createInput =
-  (type: React.InputHTMLAttributes<HTMLInputElement>["type"]) =>
-  (props: Omit<BaseInputProps, "type">) =>
-    <BaseInput {...props} type={type} />
+const createInput = (
+  type: React.InputHTMLAttributes<HTMLInputElement>["type"],
+) =>
+  React.forwardRef(
+    (props: Omit<BaseInputProps, "type">, ref: BaseInputProps["ref"]) => (
+      <BaseInput {...props} type={type} ref={ref} />
+    ),
+  )
 
 export const TextInput = createInput("text")
 export const SearchInput = createInput("search")
@@ -196,6 +204,7 @@ const SelectInner = styled.select`
 `
 
 export function Select(props: {
+  id?: string
   value: number | string
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
   disabled?: boolean
@@ -208,7 +217,9 @@ export function Select(props: {
   )
 }
 
-export const Textarea = styled(TextareaAutosize)<{
+export const Textarea = styled(TextareaAutosize).attrs({
+  className: "placeholder:text-[var(--color-input-placeholder)]",
+})<{
   isError?: boolean
   bottomFlat?: boolean
   minimized?: boolean

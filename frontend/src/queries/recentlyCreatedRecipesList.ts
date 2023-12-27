@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query"
 import * as t from "io-ts"
 
-import { useTeamId } from "@/hooks"
 import { http } from "@/http"
 import { unwrapEither } from "@/query"
+import { useTeamId } from "@/useTeamId"
 
 function recentlyCreatedRecipes() {
   return http.request({

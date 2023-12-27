@@ -17,6 +17,7 @@ class TimelineEventKind(Enum):
 
 
 class TimelineEvent(CommonInfo):
+    id: int
     action = models.CharField(max_length=255)
     created_by = models.ForeignKey["User"]("User", on_delete=models.CASCADE, null=True)
     recipe = models.ForeignKey["Recipe"]("Recipe", on_delete=models.CASCADE)
@@ -24,4 +25,4 @@ class TimelineEvent(CommonInfo):
 
     class Meta:
         db_table = "timeline_event"
-        ordering = ["-created"]
+        ordering = ["-created"]  # noqa: RUF012

@@ -1,25 +1,18 @@
-import { useQuery } from "@tanstack/react-query"
+import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
 import { toISODateString } from "@/date"
-import { useTeamId } from "@/hooks"
 import { http } from "@/http"
 import { unwrapResult } from "@/query"
+import { useTeamId } from "@/useTeamId"
 
-const getShoppingList = (
-  teamID: number | "personal",
-  start: Date | number,
-  end: Date | number,
-) => {
-  return http.get<IGetShoppingListResponse>(
-    `/api/v1/t/${teamID}/shoppinglist/`,
-    {
-      params: {
-        start: toISODateString(start),
-        end: toISODateString(end),
-        with_recipes: 1,
-      },
+const getShoppingList = (start: Date | number, end: Date | number) => {
+  return http.get<IGetShoppingListResponse>(`/api/v1/shoppinglist/`, {
+    params: {
+      start: toISODateString(start),
+      end: toISODateString(end),
+      with_recipes: 1,
     },
-  )
+  })
 }
 
 // eslint-disable-next-line no-restricted-syntax
@@ -76,7 +69,7 @@ export function useShoppingListFetch({
   const teamId = useTeamId()
   return useQuery({
     queryKey: [teamId, "shopping-list", startDay, endDay],
-    queryFn: () => getShoppingList(teamId, startDay, endDay).then(unwrapResult),
-    keepPreviousData: true,
+    queryFn: () => getShoppingList(startDay, endDay).then(unwrapResult),
+    placeholderData: keepPreviousData,
   })
 }

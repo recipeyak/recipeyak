@@ -1,15 +1,14 @@
+import * as Sentry from "@sentry/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
-import raven from "raven-js"
 import { useHistory } from "react-router"
 
 import { http } from "@/http"
 import { pathHome } from "@/paths"
-import { ITeam } from "@/queries/teamFetch"
 import { unwrapResult } from "@/query"
 import { toast } from "@/toast"
 
-const deleteTeam = (teamID: ITeam["id"]) => http.delete(`/api/v1/t/${teamID}`)
+const deleteTeam = (teamID: number) => http.delete(`/api/v1/t/${teamID}`)
 
 export function useTeamDelete() {
   const history = useHistory()
@@ -20,7 +19,9 @@ export function useTeamDelete() {
     onSuccess: (_res, vars) => {
       history.push(pathHome({}))
       toast.success(`Team deleted`)
-      queryClient.removeQueries(["teams", vars.teamId])
+      queryClient.removeQueries({
+        queryKey: ["teams", vars.teamId],
+      })
     },
     onError: (res) => {
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unsafe-assignment
@@ -40,7 +41,7 @@ export function useTeamDelete() {
             err.response.data.detail
           : "The team you are attempting to delete doesn't exist"
       } else {
-        raven.captureException(err)
+        Sentry.captureException(err)
       }
       toast.error(message)
     },

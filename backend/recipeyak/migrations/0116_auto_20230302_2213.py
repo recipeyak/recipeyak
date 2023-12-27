@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("recipeyak", "0115_alter_scheduledrecipe_unique_together"),
     ]

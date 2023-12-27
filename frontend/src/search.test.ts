@@ -1,4 +1,3 @@
-import { IIngredient } from "@/queries/recipeFetch"
 import { RecipeListItem } from "@/queries/recipeList"
 import { queryMatchesRecipe, searchRecipes } from "@/search"
 
@@ -21,11 +20,12 @@ function createRecipe(properties: {
     archived_at: null,
     ingredients: [],
     primaryImage: null,
+    scheduledCount: 1,
     ...properties,
   }
 }
 
-function createIngredient(properties?: Partial<IIngredient>): IIngredient {
+function createIngredient(properties?: { name: string }) {
   return {
     id: 50394,
     quantity: "1 pound",
@@ -48,6 +48,12 @@ test("searchRecipes recipeId PascalCase", () => {
   const recipe = createRecipe({ id: 5432 })
   expect(
     searchRecipes({ recipes: [recipe], query: "RecipeId:5432" }).recipes,
+  ).toHaveLength(1)
+})
+test("searchRecipes Æ", () => {
+  const recipe = createRecipe({ id: 5432, name: "Æbleskivers" })
+  expect(
+    searchRecipes({ recipes: [recipe], query: "aeble" }).recipes,
   ).toHaveLength(1)
 })
 

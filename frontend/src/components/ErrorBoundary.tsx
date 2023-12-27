@@ -1,59 +1,46 @@
-import Raven from "raven-js"
+import * as Sentry from "@sentry/react"
 import * as React from "react"
 
 import { Button } from "@/components/Buttons"
 import Logo from "@/components/Logo"
 
-interface IErrorBoundaryState {
-  readonly error: null | Error
-}
-
 const ErrorReportButton = () => (
   <Button
     size="small"
     variant="primary"
-    className="ml-1"
     onClick={() => {
-      Raven.showReportDialog()
+      Sentry.showReportDialog()
     }}
   >
     Submit error report
   </Button>
 )
 
-export default class ErrorBoundary extends React.Component<
-  { children: React.ReactNode },
-  IErrorBoundaryState
-> {
-  state = {
-    error: null,
-  }
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    this.setState({ error })
-    Raven.captureException(error, { extra: errorInfo })
-  }
-  render() {
-    const errorReported = Boolean(Raven.lastEventId())
-    if (this.state.error) {
-      return (
-        <div className="">
-          <section className="align-center d-flex flex-direction-column justify-center">
+export function ErrorBoundary({ children }: { children?: React.ReactNode }) {
+  return (
+    <Sentry.ErrorBoundary
+      fallback={(args) => (
+        <div>
+          <div className="flex flex-col items-center justify-self-center">
             <Logo width="150" />
-            <div className="d-flex flex-direction-column fs-5 justify-content-center text-center">
-              <h1 className="fs-7 ">Something's gone wrong.</h1>
-              <p>
-                {" "}
-                Try to navigate{" "}
-                <a className="fw-bold" href="/">
-                  home
-                </a>
-                .{errorReported && <ErrorReportButton />}
-              </p>
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-col justify-center gap-0 text-center text-xl">
+                <h1 className="text-2xl">Something's gone wrong.</h1>
+                <span>
+                  Try to navigate{" "}
+                  <a className="font-bold" href="/">
+                    home
+                  </a>
+                  .
+                </span>
+              </div>
+              {args.eventId && <ErrorReportButton />}
             </div>
-          </section>
+          </div>
         </div>
-      )
-    }
-    return this.props.children
-  }
+      )}
+    >
+      {children}
+    </Sentry.ErrorBoundary>
+  )
 }

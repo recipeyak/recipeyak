@@ -1,8 +1,10 @@
 import React from "react"
 import { Link } from "react-router-dom"
 
+import { clx } from "@/classnames"
 import { Button } from "@/components/Buttons"
-import Footer from "@/components/Footer"
+import { Footer } from "@/components/Footer"
+import { NavPage } from "@/components/Page"
 import { pathRecipeAdd, pathSignup } from "@/paths"
 import addRecipeImg from "@/static/images/pages/add-recipe.png"
 import copyShoppingList from "@/static/images/pages/copy-shopping-list.png"
@@ -13,17 +15,34 @@ import teamImg from "@/static/images/pages/team.png"
 
 const isOdd = (i: number) => i % 2 !== 0
 
-interface IFeaturesContainerProps {
-  readonly children: JSX.Element[]
+const styles = {
+  subtitle: "text-[3rem] font-bold md:text-left md:text-[4.5rem]",
+} as const
+
+function HomeContainer({
+  children,
+  className,
+}: {
+  children: React.ReactNode
+  className?: string
+}) {
+  return (
+    <div
+      className={clx("relative mx-auto my-0 max-w-[1024px]", className)}
+      children={children}
+    />
+  )
 }
 
-function FeaturesContainer({ children }: IFeaturesContainerProps) {
+function FeaturesContainer({ children }: { children: JSX.Element[] }) {
   return (
-    <section className="bg-primary color-white pt-4 pb-4 pr-4 pl-4">
-      <section className="home-container">
-        <h2 className="home-subtitle bold">Features</h2>
-        <ul className="d-grid gap-1rem">{children}</ul>
-      </section>
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line react/forbid-elements
+    <section className="bg-[var(--color-primary)] p-4 text-white">
+      <HomeContainer>
+        <h2 className={styles.subtitle}>Features</h2>
+        <ul className="grid gap-4">{children}</ul>
+      </HomeContainer>
     </section>
   )
 }
@@ -34,20 +53,46 @@ interface IFeatureProps {
   readonly index: number
 }
 
-function Feature({ text, imageURL, index }: IFeatureProps) {
+function FeatureGrid({
+  children,
+  className,
+}: {
+  children: React.ReactNode
+  className: string
+}) {
   return (
-    <li className="feature-grid" key={text}>
-      <p
-        className={`align-self-center ${
-          isOdd(index) ? "grid-column-2 grid-row-1" : ""
-        }`}
-      >
-        {text}
-      </p>
-      <div className="fact-img align-self-center ">
-        <img className="box-shadow-normal " src={imageURL} alt="" />
-      </div>
-    </li>
+    <li
+      className={clx("flex gap-8 text-[2rem]", className)}
+      children={children}
+    />
+  )
+}
+
+function Feature({ text, imageURL, index }: IFeatureProps) {
+  // TODO: Fix this the next time the file is edited.
+  // eslint-disable-next-line react/forbid-elements
+  const description = <p className={`self-center md:w-1/2`}>{text}</p>
+  const image = (
+    <div className="self-center md:w-1/2">
+      <img className="shadow" src={imageURL} alt="" />
+    </div>
+  )
+
+  const [first, second] = isOdd(index)
+    ? [image, description]
+    : [description, image]
+  return (
+    <FeatureGrid
+      key={text}
+      className={
+        isOdd(index)
+          ? "flex-wrap-reverse md:flex-nowrap"
+          : "flex-wrap md:flex-nowrap"
+      }
+    >
+      {first}
+      {second}
+    </FeatureGrid>
   )
 }
 
@@ -56,11 +101,13 @@ interface IHowItWorksContainerProps {
 }
 function HowItWorksContainer({ children }: IHowItWorksContainerProps) {
   return (
-    <section className="pt-4 pr-4 pl-4">
-      <section className="home-container d-grid">
-        <h2 className="home-subtitle bold">How it works</h2>
-        <ol className="d-grid gap-2rem">{children}</ol>
-      </section>
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line react/forbid-elements
+    <section className="px-4 pt-4">
+      <HomeContainer className="grid">
+        <h2 className={styles.subtitle}>How it works</h2>
+        <ol className="grid gap-8">{children}</ol>
+      </HomeContainer>
     </section>
   )
 }
@@ -72,19 +119,22 @@ interface IHowToProps {
 
 function HowTo({ content, index, imageURL }: IHowToProps) {
   return (
-    <li className="feature-grid" key={imageURL}>
-      <p className="align-self-center">
+    <FeatureGrid key={imageURL} className={"flex-wrap md:flex-nowrap"}>
+      {/* TODO: Fix this the next time the file is edited. */}
+      {/* eslint-disable-next-line react/forbid-elements */}
+      <p className="self-center md:w-1/2">
+        {/* TODO: Fix this the next time the file is edited. */}
+        {/* eslint-disable-next-line react/forbid-elements */}
         <b>
           {index + 1}
           {". "}
         </b>
         {content}
       </p>
-      <div className="fact-img">
-        {/* tslint:disable-next-line:no-unsafe-any */}
-        <img className="box-shadow-normal " src={imageURL} alt="" />
+      <div className="md:w-1/2">
+        <img className="shadow " src={imageURL} alt="" />
       </div>
-    </li>
+    </FeatureGrid>
   )
 }
 
@@ -108,7 +158,7 @@ const howToSteps = [
     text: (
       <span>
         After logging in, add your recipes via the{" "}
-        <Link className="text-decoration-underline" to={pathRecipeAdd({})}>
+        <Link className="underline" to={pathRecipeAdd({})}>
           add recipe
         </Link>{" "}
         form.
@@ -144,14 +194,15 @@ const howToSteps = [
 
 const LandingPage = () => {
   return (
-    <div>
-      <section className="home-container d-grid gap-1rem pb-4 pr-4 pl-4">
-        <section className="d-flex justify-content-center mb-2">
-          <h1 className="home-hero-text">
+    <NavPage includeSearch={false} noContainer>
+      <HomeContainer className="grid gap-4 px-4 pb-4">
+        {/* TODO: Fix this the next time the file is edited. */}
+        {/* eslint-disable-next-line react/forbid-elements */}
+        <section className="mb-2 flex justify-center">
+          <h1 className="max-w-[900px] text-center text-[4rem] leading-[4rem]">
             A place to store, share, and create recipes
           </h1>
         </section>
-
         <Button
           to={pathSignup({})}
           variant="primary"
@@ -160,20 +211,19 @@ const LandingPage = () => {
         >
           Create Account
         </Button>
+      </HomeContainer>
+      {/* TODO: Fix this the next time the file is edited. */}
+      {/* eslint-disable-next-line react/forbid-elements */}
+      <section className="bg-gradient-to-b from-[var(--color-background)] from-50% to-[var(--color-primary)] to-50% px-4 pt-4">
+        <HomeContainer>
+          <img className="shadow" src={landingImg} alt="" />
+        </HomeContainer>
       </section>
-      <section className="pt-4 bg-50-50-primary pr-4 pl-4">
-        <section className="home-container">
-          {/* tslint:disable-next-line:no-unsafe-any */}
-          <img className="box-shadow-normal" src={landingImg} alt="" />
-        </section>
-      </section>
-
       <FeaturesContainer>
         {features.map(({ text, imgURL }, i) => (
           <Feature key={imgURL} text={text} imageURL={imgURL} index={i} />
         ))}
       </FeaturesContainer>
-
       <HowItWorksContainer>
         {howToSteps.map(({ text, imgURL }, i) => (
           <HowTo key={imgURL} content={text} imageURL={imgURL} index={i} />
@@ -183,14 +233,13 @@ const LandingPage = () => {
           to={pathSignup({})}
           variant="primary"
           size="large"
-          className="justify-self-center mt-4 mb-2"
+          className="mb-2 mt-4 justify-self-center"
         >
           Create Account
         </Button>
       </HowItWorksContainer>
-
       <Footer />
-    </div>
+    </NavPage>
   )
 }
 

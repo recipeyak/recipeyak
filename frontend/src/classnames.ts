@@ -1,36 +1,15 @@
-import { uniq } from "lodash-es"
+import { assertNever } from "@/assert"
 
-export function classNames(
-  ...args: (
-    | string
-    | undefined
-    | number
-    | false
-    | string[]
-    | { [key: string]: boolean | undefined }
-  )[]
-): string {
-  const classes: string[] = []
-
-  args.forEach((arg) => {
+export function clx(...args: (string | undefined | number | false)[]): string {
+  const classes = new Set<string>()
+  for (const arg of args) {
     if (!arg) {
-      return
+      continue
+    } else if (typeof arg === "string" || typeof arg === "number") {
+      classes.add(String(arg))
+    } else {
+      assertNever(arg)
     }
-
-    if (typeof arg === "string" || typeof arg === "number") {
-      classes.push(String(arg))
-    } else if (Array.isArray(arg)) {
-      classes.push(...arg)
-    } else if (typeof arg === "object") {
-      Object.keys(arg).forEach((key) => {
-        if (arg[key]) {
-          classes.push(key)
-        }
-      })
-    }
-  })
-
-  return uniq(classes).join(" ")
+  }
+  return [...classes].join(" ")
 }
-
-export default classNames

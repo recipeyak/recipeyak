@@ -3,7 +3,7 @@ import orderBy from "lodash-es/orderBy"
 import React, { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
 
-import { classNames as cls } from "@/classnames"
+import { clx } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
@@ -12,36 +12,38 @@ import { Markdown } from "@/components/Markdown"
 import { RotatingLoader } from "@/components/RoatingLoader"
 import { Link } from "@/components/Routing"
 import { formatAbsoluteDateTime, formatHumanDateTime } from "@/date"
-import { useUserId } from "@/hooks"
 import {
-  findReaction,
   ReactionPopover,
   ReactionsFooter,
   ReactionType,
 } from "@/pages/recipe-detail/Reactions"
+import { findReaction } from "@/pages/recipe-detail/reactionUtils"
+import { SectionTitle } from "@/pages/recipe-detail/RecipeHelpers"
 import { pathProfileById } from "@/paths"
 import { useNoteCreate } from "@/queries/noteCreate"
 import { useNoteDelete } from "@/queries/noteDelete"
 import { useNoteUpdate } from "@/queries/noteUpdate"
+import { PickVariant } from "@/queries/queryUtilTypes"
 import { useReactionCreate } from "@/queries/reactionCreate"
 import { useReactionDelete } from "@/queries/reactionDelete"
-import {
-  INote,
-  IRecipe,
-  RecipeTimelineItem,
-  Upload,
-} from "@/queries/recipeFetch"
+import { RecipeFetchResponse as Recipe } from "@/queries/recipeFetch"
 import * as api from "@/queries/uploadCreate"
 import { isOk } from "@/result"
 import { styled } from "@/theme"
 import { toast } from "@/toast"
-import { notUndefined } from "@/utils/general"
-import { imgixFmt } from "@/utils/url"
+import { notUndefined } from "@/typeguard"
+import { imgixFmt } from "@/url"
+import { useUserId } from "@/useUserId"
 import { uuid4 } from "@/uuid"
 
+type RecipeTimelineItem = Recipe["timelineItems"][number]
+
+type Note = PickVariant<RecipeTimelineItem, "note">
+type Upload = Note["attachments"][number]
+
 interface IUseNoteEditHandlers {
-  readonly note: INote
-  readonly recipeId: IRecipe["id"]
+  readonly note: Note
+  readonly recipeId: number
 }
 function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
   const [draftText, setNewText] = useState(note.text)
@@ -49,7 +51,7 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
     setNewText(note.text)
   }, [note.text])
   const [isEditing, setIsEditing] = React.useState(false)
-  const [uploads, setUploads] = React.useState<UploadSuccess[]>(
+  const [uploads, setUploads] = React.useState<readonly UploadSuccess[]>(
     note.attachments.map((x) => ({ ...x, localId: x.id })),
   )
 
@@ -102,7 +104,7 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
   return {
     draftText,
     isEditing,
-    isUpdating: updateNote.isLoading,
+    isUpdating: updateNote.isPending,
     onCancel,
     onDelete,
     onEditorChange,
@@ -115,7 +117,9 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
     },
     removeUploads: (localIds: string[]) => {
       setUploads((s) => {
-        return s.filter((u) => !localIds.includes(u.localId))
+        return s.filter(
+          (u) => u.localId == null || !localIds.includes(u.localId),
+        )
       })
     },
     resetUploads: () => {
@@ -124,18 +128,18 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
   }
 }
 
-const SmallTime = styled.time`
-  font-size: 0.85rem;
-`
-
 function NoteTimeStamp({ created }: { readonly created: string }) {
   const date = new Date(created)
   const prettyDate = formatAbsoluteDateTime(date, { includeYear: true })
   const humanizedDate = formatHumanDateTime(date)
   return (
-    <SmallTime title={prettyDate} dateTime={created} className="text-muted">
+    <time
+      title={prettyDate}
+      dateTime={created}
+      className="text-[0.85rem] text-[var(--color-text-muted)] print:text-black"
+    >
       {humanizedDate}
-    </SmallTime>
+    </time>
   )
 }
 
@@ -160,12 +164,7 @@ function SharedEntry({
   return (
     <div
       ref={ref}
-      className={cls(
-        {
-          "bg-highlight": isSharedNote,
-        },
-        className,
-      )}
+      className={clx(isSharedNote && "animate-highlighted-fade", className)}
       id={id}
     >
       {children}
@@ -173,13 +172,9 @@ function SharedEntry({
   )
 }
 
-const SmallAnchor = styled.a`
-  font-size: 0.825rem;
-`
-
 interface INoteProps {
-  readonly note: INote
-  readonly recipeId: IRecipe["id"]
+  readonly note: Note
+  readonly recipeId: number
   readonly className?: string
   readonly openImage: (id: string) => void
 }
@@ -230,14 +225,14 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
 
   return (
     <SharedEntry
-      className={cls("d-flex align-items-start", className)}
+      className={clx("flex items-start gap-2", className)}
       id={noteHtmlId}
     >
-      <Avatar avatarURL={note.created_by.avatar_url} className="mr-2" />
-      <div className="w-100">
+      <Avatar avatarURL={note.created_by.avatar_url} />
+      <div className="w-full">
         <Box align="center">
           <Link
-            className="fw-bold"
+            className="font-bold"
             to={pathProfileById({ userId: note.created_by.id.toString() })}
           >
             {note.created_by.name}
@@ -246,23 +241,24 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
             <NoteTimeStamp created={note.created} />
           </a>
           <ReactionPopover
-            className="ml-auto no-print"
+            className="ml-auto print:!hidden"
             onPick={(emoji) => {
               addOrRemoveReaction(emoji)
             }}
             reactions={note.reactions}
           />
           {note.created_by.id === userId ? (
-            <SmallAnchor
-              className="ml-2 text-muted cursor-pointer no-print"
+            <a
+              className="ml-2 cursor-pointer text-[0.825rem] text-[var(--color-text-muted)] print:hidden"
+              data-testid={`edit-note-${note.id}`}
               onClick={onNoteClick}
             >
               edit
-            </SmallAnchor>
+            </a>
           ) : null}
         </Box>
         {!isEditing ? (
-          <Box dir="col">
+          <Box dir="col" className="gap-2">
             <Markdown>{note.text}</Markdown>
             <Box gap={1} dir="col">
               <Box wrap gap={1}>
@@ -329,7 +325,12 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
 
             {isEditing && (
               <Box space="between" align="center">
-                <Button variant="danger" size="small" onClick={onDelete}>
+                <Button
+                  variant="danger"
+                  size="small"
+                  onClick={onDelete}
+                  aria-label="delete note"
+                >
                   delete
                 </Button>
                 <Box gap={3} space="between" align="center">
@@ -339,12 +340,14 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
                       onCancel()
                       reset()
                     }}
+                    aria-label="cancel note"
                   >
                     cancel
                   </Button>
                   <Button
                     variant="primary"
                     size="small"
+                    aria-label="save note"
                     onClick={onSave}
                     loading={isUpdating}
                     disabled={hasUnsavedImages}
@@ -369,10 +372,12 @@ function MaybeLink({
   children: React.ReactNode
 }) {
   if (to == null) {
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line react/forbid-elements
     return <b>{children}</b>
   }
   return (
-    <Link to={to} className="fw-bold">
+    <Link to={to} className="font-bold">
       {children}
     </Link>
   )
@@ -384,9 +389,16 @@ export function TimelineEvent({
   className,
 }: {
   readonly event: Pick<
-    RecipeTimelineItem,
-    "id" | "created_by" | "action" | "created" | "is_scraped"
-  >
+    PickVariant<RecipeTimelineItem, "recipe">,
+    "created" | "action" | "is_scraped"
+  > & {
+    id: string | number
+    created_by: {
+      id: string | number
+      name: string
+      avatar_url: string
+    } | null
+  }
   readonly enableLinking?: boolean
   readonly className?: string
 }) {
@@ -397,13 +409,10 @@ export function TimelineEvent({
   return (
     <SharedEntry
       id={eventId}
-      className={cls("d-flex align-items-center", className)}
+      className={clx("flex items-center gap-2", className)}
     >
-      <Avatar
-        avatarURL={event.created_by?.avatar_url ?? null}
-        className="mr-2"
-      />
-      <div className="d-flex flex-column">
+      <Avatar avatarURL={event.created_by?.avatar_url ?? null} />
+      <div className="flex flex-col">
         <div>
           <MaybeLink
             to={
@@ -422,7 +431,7 @@ export function TimelineEvent({
   )
 }
 
-export const blurNoteTextArea = () => {
+const blurNoteTextArea = () => {
   const el = document.getElementById("new_note_textarea")
   if (el) {
     el.blur()
@@ -430,7 +439,7 @@ export const blurNoteTextArea = () => {
 }
 
 interface IUseNoteCreatorHandlers {
-  readonly recipeId: IRecipe["id"]
+  readonly recipeId: number
 }
 
 // TODO: inline this function instead of having a hook
@@ -498,7 +507,7 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
     editorText,
     onEditorFocus,
     onCreate,
-    isLoading: createNote.isLoading,
+    isLoading: createNote.isPending,
     onCancel,
     isDisabled,
     addUploads: (upload: UploadSuccess) => {
@@ -506,7 +515,9 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
     },
     removeUploads: (localIds: string[]) => {
       setUploads((s) => {
-        return s.filter((u) => !localIds.includes(u.localId))
+        return s.filter(
+          (u) => u.localId == null || !localIds.includes(u.localId),
+        )
       })
     },
     uploadedImages,
@@ -517,7 +528,7 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
 }
 
 interface INoteCreatorProps {
-  readonly recipeId: IRecipe["id"]
+  readonly recipeId: number
   readonly className?: string
 }
 
@@ -538,11 +549,6 @@ const DragDropLabel = styled.label`
   background-color: var(--color-background-card);
 `
 
-const NoteWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-`
-
 const FileUploadContainer = styled.div`
   border-style: solid;
   border-top-style: none;
@@ -555,9 +561,6 @@ const FileUploadContainer = styled.div`
   gap: 0.25rem;
 `
 
-const FilePreviewParent = styled.div`
-  position: relative;
-`
 const CloseButton = styled.button`
   z-index: 10;
   position: absolute;
@@ -599,7 +602,7 @@ function FilePreview({
 }) {
   return (
     <div
-      className="d-grid"
+      className="grid print:!hidden"
       style={{
         backgroundColor: "var(--color-background-empty-image)",
         borderRadius: 6,
@@ -620,41 +623,18 @@ function FilePreview({
             gridArea: "1 / 1",
             backgroundImage: `url(${backgroundUrl})`,
           }}
-          className="blurred-filter"
+          className="relative h-[100px] w-[100px] rounded-md bg-cover bg-center bg-no-repeat object-cover after:pointer-events-none after:absolute after:h-full after:w-full after:rounded-md after:backdrop-blur-[6px] after:content-['']"
         />
       )}
     </div>
   )
 }
 
-const LoaderContainer = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  display: flex;
-`
-
-const BrokenFileContainer = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  display: flex;
-`
-
-const BrokenFile = styled.div`
-  margin: auto;
-  font-size: 2rem;
-`
-
 // todo: clear changes on cancellation
 function useFileUpload(
   addUploads: (upload: UploadSuccess) => void,
   removeUploads: (uploadIds: string[]) => void,
-  remoteFiles: Upload[],
+  remoteFiles: readonly UploadSuccess[],
   resetUploads: () => void,
   recipeId: number,
 ) {
@@ -724,8 +704,11 @@ function useFileUpload(
     }
   }
 
-  const removeFile = (localId: string) => {
+  const removeFile = (localId: string | undefined) => {
     setLocalImages((s) => s.filter((x) => x.localId !== localId))
+    if (localId == null) {
+      return
+    }
     removeUploads([localId])
   }
 
@@ -734,6 +717,7 @@ function useFileUpload(
     ...remoteFiles
       .filter(
         (i) =>
+          i.localId != null &&
           !localImages
             .map((x) => x.localId)
             .filter(notUndefined)
@@ -746,7 +730,7 @@ function useFileUpload(
             url: x.url,
             contentType: x.contentType,
             state: "success",
-          } as const),
+          }) as const,
       ),
   ]
 
@@ -764,10 +748,6 @@ function useFileUpload(
   } as const
 }
 
-const FileAnchor = styled.a`
-  position: relative;
-`
-
 const ProgressBarContainer = styled.div`
   z-index: 10;
   position: absolute;
@@ -779,11 +759,6 @@ const ProgressBarContainer = styled.div`
   display: flex;
   align-items: end;
   justify-content: center;
-`
-
-const StyledProgress = styled.progress`
-  height: 0.2rem;
-  border-radius: 0;
 `
 
 function FileWithStatus({
@@ -801,10 +776,11 @@ function FileWithStatus({
 }) {
   return (
     <>
-      <FileAnchor
+      <a
         href={url}
         target="_blank"
         rel="noreferrer"
+        className="relative"
         onClick={(e) => {
           e.stopPropagation()
         }}
@@ -819,23 +795,23 @@ function FileWithStatus({
           // hide the progress bar once it is complete
           progress !== 100 && (
             <ProgressBarContainer>
-              <StyledProgress
+              <progress
                 value={progress}
                 max="100"
-                className="progress is-primary"
+                className="h-[0.2rem] rounded-none accent-[var(--color-primary)]"
               />
             </ProgressBarContainer>
           )}
-      </FileAnchor>
+      </a>
       {state === "failed" && (
-        <BrokenFileContainer title="Image upload failed">
-          <BrokenFile>❌</BrokenFile>
-        </BrokenFileContainer>
+        <div className="absolute inset-0 flex" title="Image upload failed">
+          <div className="m-auto text-[2rem]">❌</div>
+        </div>
       )}
       {state === "loading" && (
-        <LoaderContainer title="Image uploading...">
+        <div className="absolute inset-0 flex" title="Image uploading...">
           <RotatingLoader />
-        </LoaderContainer>
+        </div>
       )}
     </>
   )
@@ -851,10 +827,10 @@ type InProgressUpload = {
   readonly state: FileUpload["state"]
 }
 
-type UploadSuccess = Upload
+type UploadSuccess = Upload & { localId?: string }
 
 type FileUpload = {
-  localId: string
+  localId: string | undefined
   url: string
   progress?: number
   contentType: string
@@ -867,7 +843,7 @@ function FileUploader({
   files,
 }: {
   addFiles: (files: FileList) => void
-  removeFile: (fileId: string) => void
+  removeFile: (fileId: string | undefined) => void
   files: FileUpload[]
 }) {
   return (
@@ -878,7 +854,7 @@ function FileUploader({
             // NOTE(sbdchd): it's important that the `localId` is consistent
             // throughout the upload content, otherwise we'll wipe out the DOM
             // node and there will be a flash as the image changes.
-            <FilePreviewParent key={f.localId}>
+            <div key={f.localId} className="relative">
               <FileWithStatus
                 progress={f.progress}
                 url={f.url}
@@ -895,11 +871,11 @@ function FileUploader({
               >
                 &times;
               </CloseButton>
-            </FilePreviewParent>
+            </div>
           ))}
         </FileUploadContainer>
       )}
-      <DragDropLabel className="text-muted mb-2">
+      <DragDropLabel className="mb-2 text-[var(--color-text-muted)]">
         <input
           type="file"
           multiple
@@ -931,7 +907,8 @@ function UploadContainer({
   addFiles: (files: FileList) => void
 }) {
   return (
-    <NoteWrapper
+    <div
+      className="flex flex-col"
       onDragOver={(event) => {
         event.dataTransfer.dropEffect = "copy"
       }}
@@ -943,7 +920,7 @@ function UploadContainer({
       }}
     >
       {children}
-    </NoteWrapper>
+    </div>
   )
 }
 
@@ -1002,7 +979,7 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
       </UploadContainer>
 
       {isEditing && (
-        <div className="d-flex justify-end align-center">
+        <div className="flex items-center justify-end">
           <Button
             size="small"
             className="mr-3"
@@ -1029,15 +1006,16 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
 }
 
 interface INoteContainerProps {
-  readonly recipeId: IRecipe["id"]
-  readonly timelineItems: IRecipe["timelineItems"]
+  readonly recipeId: number
+  readonly timelineItems: Recipe["timelineItems"]
   readonly openImage: (_: string) => void
 }
 export function NoteContainer(props: INoteContainerProps) {
   return (
     <>
-      <hr />
-      <NoteCreator recipeId={props.recipeId} className="pb-4 no-print" />
+      <hr className="print:hidden" />
+      <SectionTitle className="hidden print:block">Notes</SectionTitle>
+      <NoteCreator recipeId={props.recipeId} className="pb-4 print:hidden" />
       {orderBy(props.timelineItems, "created", "desc").map((timelineItem) => {
         switch (timelineItem.type) {
           case "note": {
@@ -1047,7 +1025,7 @@ export function NoteContainer(props: INoteContainerProps) {
                 note={timelineItem}
                 openImage={props.openImage}
                 recipeId={props.recipeId}
-                className="pb-2"
+                className="mb-2"
               />
             )
           }
@@ -1056,7 +1034,7 @@ export function NoteContainer(props: INoteContainerProps) {
               <TimelineEvent
                 key={"recipe-recipe" + String(timelineItem.id)}
                 event={timelineItem}
-                className="mb-4 py-4"
+                className="mb-2"
               />
             )
         }

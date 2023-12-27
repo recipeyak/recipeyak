@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models, transaction
 from django.db.models import QuerySet
 from django.db.models.manager import Manager
-from typing_extensions import Literal
 
 from recipeyak.models.base import CommonInfo
 from recipeyak.models.invite import Invite
@@ -74,14 +73,6 @@ class Team(CommonInfo):
         return Invite.objects.create_invite(
             email=user.email, team=self, level=level, creator=creator
         )
-
-    def kick_user(self, user: User) -> None:
-        """
-        Remove user from team. If they have an invite, remove it as well.
-        """
-        membership = Membership.objects.filter(user=user).get(team=self)
-        # delete membership. By deleting, associated invites will be deleted.
-        membership.delete()
 
     def admins(self) -> QuerySet[Membership]:
         return Membership.objects.filter(team=self).filter(

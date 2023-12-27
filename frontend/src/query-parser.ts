@@ -30,7 +30,7 @@ function parseValue(x: string): {
   return { value, newPosition: x.length }
 }
 
-type QueryField = typeof fieldNames[number]
+type QueryField = (typeof fieldNames)[number]
 export type QueryNode = {
   field: QueryField | null
   value: string

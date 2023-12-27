@@ -1,14 +1,14 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
 
-import { useTeamId } from "@/hooks"
 import { http } from "@/http"
-import { IIngredient, IRecipe } from "@/queries/recipeFetch"
+import { setQueryDataRecipe } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
+import { useTeamId } from "@/useTeamId"
 
 const updateIngredient = (
-  recipeID: IRecipe["id"],
-  ingredientID: IIngredient["id"],
+  recipeID: number,
+  ingredientID: number,
   content: {
     quantity?: string
     name?: string
@@ -17,10 +17,14 @@ const updateIngredient = (
     position?: string
   },
 ) =>
-  http.patch<IIngredient>(
-    `/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`,
-    content,
-  )
+  http.patch<{
+    readonly id: number
+    readonly quantity: string
+    readonly name: string
+    readonly description: string
+    readonly position: string
+    readonly optional: boolean
+  }>(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`, content)
 
 export function useIngredientUpdate() {
   const queryClient = useQueryClient()
@@ -42,9 +46,10 @@ export function useIngredientUpdate() {
       }
     }) => updateIngredient(recipeId, ingredientId, update).then(unwrapResult),
     onSuccess: (res, vars) => {
-      queryClient.setQueryData<IRecipe>(
-        [teamId, "recipes", vars.recipeId],
-        (prev) => {
+      setQueryDataRecipe(queryClient, {
+        teamId,
+        recipeId: vars.recipeId,
+        updater: (prev) => {
           if (prev == null) {
             return prev
           }
@@ -57,7 +62,7 @@ export function useIngredientUpdate() {
             })
           })
         },
-      )
+      })
     },
   })
 }

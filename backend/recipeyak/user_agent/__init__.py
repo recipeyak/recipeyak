@@ -2,12 +2,10 @@ import re
 from dataclasses import dataclass
 from enum import Enum
 from itertools import chain
-from typing import Pattern
+from re import Pattern
+from typing import Literal
 
-
-class DeviceKind(str, Enum):
-    mobile = "mobile"
-    desktop = "desktop"
+DeviceKind = Literal["mobile", "desktop"]
 
 
 class Browser(str, Enum):
@@ -96,14 +94,14 @@ def get_browser(user_agent: str) -> Browser | None:
 def get_kind(user_agent: str) -> DeviceKind | None:
     for name, _ in MOBILE_DEVICES:
         if name in user_agent:
-            return DeviceKind.mobile
+            return "mobile"
 
     for matcher, _ in DESKTOP_DEVICES:
         if isinstance(matcher, str):
             if matcher in user_agent:
-                return DeviceKind.desktop
+                return "desktop"
         elif matcher.search(user_agent):
-            return DeviceKind.desktop
+            return "desktop"
     return None
 
 

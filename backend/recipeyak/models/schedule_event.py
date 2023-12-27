@@ -22,4 +22,4 @@ class ScheduleEvent(CommonInfo):
 
     class Meta:
         db_table = "schedule_event"
-        ordering = ["-created"]
+        ordering = ["-created"]  # noqa: RUF012

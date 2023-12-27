@@ -6,14 +6,15 @@ import userEvent from "@testing-library/user-event"
 import { HelmetProvider } from "react-helmet-async"
 import { BrowserRouter, useLocation } from "react-router-dom"
 
-import Login from "@/pages/login/Login.page"
-import { IUserResponse } from "@/queries/authLogin"
+import { LoginPage as Login } from "@/pages/login/Login.page"
+import { useAuthLogin } from "@/queries/authLogin"
+import { ResponseFromUse } from "@/queries/queryUtilTypes"
 import { rest, server } from "@/testUtils"
 
 const queryClientPersistent = new QueryClient({
   defaultOptions: {
     queries: {
-      cacheTime: 1000 * 60 * 60 * 24 * 7, // 7 days
+      gcTime: 1000 * 60 * 60 * 24 * 7, // 7 days
     },
   },
 })
@@ -45,14 +46,16 @@ test("login success", async () => {
           typeof requestJson["email"] === "string" &&
           typeof requestJson["password"] === "string"
         ) {
-          const user: IUserResponse = {
+          const user: ResponseFromUse<typeof useAuthLogin> = {
             user: {
               avatar_url: "",
               email: "foo@example.com",
               name: "",
               id: 123,
               schedule_team: null,
-              theme: "light",
+              theme_day: "light",
+              theme_night: "dark",
+              theme_mode: "single",
             },
           }
           return res(ctx.status(200), ctx.json(user))

@@ -1,22 +1,21 @@
 import { DragElementWrapper, DragSourceOptions } from "react-dnd"
 
-import { IIngredient } from "@/queries/recipeFetch"
+import { clx } from "@/classnames"
+import { RecipeFetchResponse as Recipe } from "@/queries/recipeFetch"
 import { normalizeUnitsFracs } from "@/text"
-import { styled } from "@/theme"
+import {
+  THEME_CSS_BAKING_POWDER,
+  THEME_CSS_BAKING_SODA,
+} from "@/themeConstants"
 
+type Ingredient = Recipe["ingredients"][number]
 interface IIngredientVIewProps {
-  readonly quantity: IIngredient["quantity"]
-  readonly name: IIngredient["name"]
-  readonly description: IIngredient["description"]
-  readonly optional: IIngredient["optional"]
+  readonly quantity: Ingredient["quantity"]
+  readonly name: Ingredient["name"]
+  readonly description: Ingredient["description"]
+  readonly optional: Ingredient["optional"]
   readonly dragRef: DragElementWrapper<DragSourceOptions> | undefined
 }
-
-const IngredientViewInner = styled.p`
-  white-space: pre-wrap;
-  line-height: 1.25rem;
-  padding-bottom: 0.4rem;
-`
 
 export function IngredientViewContent({
   quantity,
@@ -24,15 +23,32 @@ export function IngredientViewContent({
   description,
   optional,
 }: Omit<IIngredientVIewProps, "dragRef">) {
-  const fmtDescription = description
-    ? ", " + normalizeUnitsFracs(description)
+  description = description
+    ? ", " + normalizeUnitsFracs(description).trim()
     : ""
+  name = normalizeUnitsFracs(name.trim())
+  quantity = normalizeUnitsFracs(quantity).trim()
+  const isBakingSoda = name.toLocaleLowerCase() === "baking soda"
+  const isBakingPowder = name.toLocaleLowerCase() === "baking powder"
   return (
     <>
-      <span className="fw-500">{normalizeUnitsFracs(quantity).trim()}</span>{" "}
-      {normalizeUnitsFracs(name.trim())}
-      {fmtDescription.trim()}{" "}
-      {optional ? <span className="text-muted">[optional]</span> : ""}
+      <span className="font-medium">{quantity}</span>{" "}
+      <span
+        className={clx(
+          isBakingSoda && THEME_CSS_BAKING_SODA,
+          isBakingPowder && THEME_CSS_BAKING_POWDER,
+        )}
+      >
+        {name}
+      </span>
+      {description}{" "}
+      {optional ? (
+        <span className="text-[var(--color-text-muted)] print:!text-black">
+          [optional]
+        </span>
+      ) : (
+        ""
+      )}
     </>
   )
 }
@@ -45,8 +61,10 @@ export default function IngredientView({
   dragRef,
 }: IIngredientVIewProps) {
   return (
-    <IngredientViewInner
-      className="justify-space-between selectable"
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line react/forbid-elements
+    <p
+      className="cursor-auto select-text justify-between whitespace-pre-wrap pb-[0.4rem] leading-5"
       ref={dragRef}
     >
       <IngredientViewContent
@@ -55,6 +73,6 @@ export default function IngredientView({
         name={name}
         optional={optional}
       />
-    </IngredientViewInner>
+    </p>
   )
 }

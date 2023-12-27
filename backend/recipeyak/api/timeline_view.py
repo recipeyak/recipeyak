@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+from datetime import date
+
+import pydantic
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import status
@@ -9,8 +12,12 @@ from rest_framework.response import Response
 
 from recipeyak.api.base.permissions import has_recipe_access
 from recipeyak.api.base.request import AuthedRequest
-from recipeyak.api.serializers.recipe import RecipeTimelineSerializer
 from recipeyak.models import Recipe, ScheduledRecipe, User
+
+
+class RecipeTimelineResponse(pydantic.BaseModel):
+    id: int
+    on: date
 
 
 @api_view(["GET"])
@@ -30,4 +37,6 @@ def get_recipe_timeline(request: AuthedRequest, recipe_pk: int) -> Response:
         Q(team=team) | Q(user=user)
     ).filter(recipe=recipe_pk)
 
-    return Response(RecipeTimelineSerializer(scheduled_recipes, many=True).data)
+    return Response(
+        [RecipeTimelineResponse(id=s.id, on=s.on) for s in scheduled_recipes]
+    )

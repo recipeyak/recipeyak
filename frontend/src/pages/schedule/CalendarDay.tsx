@@ -11,7 +11,6 @@ import { useLocation } from "react-router"
 import { assertNever } from "@/assert"
 import { isInsideChangeWindow, toISODateString } from "@/date"
 import { DragDrop } from "@/dragDrop"
-import { useCurrentDay } from "@/hooks"
 import { IRecipeItemDrag } from "@/pages/recipe-list/RecipeItem"
 import {
   CalendarItem,
@@ -24,11 +23,12 @@ import {
 import { useScheduledRecipeDelete } from "@/queries/scheduledRecipeDelete"
 import { useScheduledRecipeUpdate } from "@/queries/scheduledRecipeUpdate"
 import { css, styled } from "@/theme"
+import { useCurrentDay } from "@/useCurrentDay"
 
 function DayOfWeek({ date }: { date: Date }) {
   const dayOfWeek = format(date, "E")
   return (
-    <div className="d-none d-medium-block">
+    <div className="block md:hidden">
       <span>{dayOfWeek}</span>
       <span className="mx-1">∙</span>
     </div>
@@ -38,7 +38,7 @@ function DayOfWeek({ date }: { date: Date }) {
 const Title = ({ date }: { readonly date: Date }) => {
   const dateFmtText = isFirstDayOfMonth(date) ? "MMM d" : "d"
   return (
-    <div className="d-flex fs-14px">
+    <div className="flex text-[14px]">
       <DayOfWeek date={date} />
       <span>{format(date, dateFmtText)}</span>
     </div>
@@ -50,7 +50,7 @@ const isTodayStyle = css`
 `
 
 const isSelectedDayStyle = css`
-  border: 2px solid var(--color-accent);
+  border: 2px solid var(--color-border-selected-day);
   border-radius: 6px;
 `
 
@@ -66,9 +66,13 @@ interface ICalendarDayContainerProps {
 
 const CalendarDayContainer = styled.div<ICalendarDayContainerProps>`
   flex: 1 1 0%;
+  display: flex;
+  flex-direction: column;
   padding: 0.25rem;
   background-color: var(--color-background-calendar-day);
-  transition: background-color 0.2s;
+  transition:
+    background-color,
+    border 0.2s;
   // prevent shifting when we show the highlight border
   border: 2px solid transparent;
 
@@ -91,10 +95,9 @@ const CalendarDayContainer = styled.div<ICalendarDayContainerProps>`
 interface ICalendarDayProps {
   readonly date: Date
   readonly scheduledRecipes: ICalRecipe[]
-  readonly teamID: number
 }
 
-function CalendarDay({ date, scheduledRecipes, teamID }: ICalendarDayProps) {
+function CalendarDay({ date, scheduledRecipes }: ICalendarDayProps) {
   const today = useCurrentDay()
   const isToday = isSameDay(date, today)
 
@@ -127,7 +130,6 @@ function CalendarDay({ date, scheduledRecipes, teamID }: ICalendarDayProps) {
       if (item.type === DragDrop.CAL_RECIPE) {
         scheduledRecipeUpdate.mutate({
           scheduledRecipeId: item.scheduledId,
-          teamID,
           update: {
             on: toISODateString(date),
           },
@@ -136,7 +138,6 @@ function CalendarDay({ date, scheduledRecipes, teamID }: ICalendarDayProps) {
         scheduledRecipeCreate.mutate({
           recipeID: item.recipeID,
           recipeName: item.recipeName,
-          teamID,
           on: date,
         })
       } else {
@@ -165,7 +166,7 @@ function CalendarDay({ date, scheduledRecipes, teamID }: ICalendarDayProps) {
       isSelectedDay={isSelectedDay}
     >
       <Title date={date} />
-      <ul>
+      <ul className="flex h-full flex-col gap-3 overflow-y-auto px-1">
         {scheduled.map((x) => (
           <CalendarItem
             key={x.id}
@@ -175,11 +176,9 @@ function CalendarDay({ date, scheduledRecipes, teamID }: ICalendarDayProps) {
             date={date}
             recipeName={x.recipe.name}
             recipeID={x.recipe.id}
-            teamID={teamID}
             remove={() => {
               scheduledRecipeDelete.mutate({
                 scheduledRecipeId: x.id,
-                teamId: teamID,
               })
             }}
           />

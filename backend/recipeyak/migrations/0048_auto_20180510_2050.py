@@ -15,7 +15,6 @@ def set_position(apps: Any, schema_editor: Any) -> None:
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("recipeyak", "0047_recipe_deleted_at")]
 
     operations = [

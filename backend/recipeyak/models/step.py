@@ -22,7 +22,7 @@ class Step(CommonInfo):
 
     class Meta:
         db_table = "core_step"
-        ordering = ["position"]
+        ordering = ["position"]  # noqa: RUF012
 
     def __str__(self) -> str:
         return self.text

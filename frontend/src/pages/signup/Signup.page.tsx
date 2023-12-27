@@ -4,13 +4,12 @@ import React, { useState } from "react"
 import { Link, useHistory } from "react-router-dom"
 
 import { login } from "@/auth"
-import AuthContainer from "@/components/AuthContainer"
 import { BorderBox } from "@/components/BorderBox"
 import { Button } from "@/components/Buttons"
-import { FormField } from "@/components/FormField"
 import { EmailInput, FormErrorHandler, PasswordInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Label } from "@/components/Label"
+import { AuthPage } from "@/components/Page"
 import { Tab, Tabs } from "@/components/Tabs"
 import {
   pathLogin,
@@ -39,7 +38,7 @@ function formatError(error: unknown) {
   }
 }
 
-function Signup() {
+export function SignupPage() {
   const [email, setEmail] = useState("")
   const [password1, setPassword1] = useState("")
   const [password2, setPassword2] = useState("")
@@ -68,24 +67,24 @@ function Signup() {
   const errors = formatError(signup.error)
 
   return (
-    <AuthContainer>
+    <AuthPage>
       <BorderBox p={3}>
         <Helmet title="Sign Up" />
         <Tabs>
           <Tab>
-            <Link to={pathLogin({})} className="text-decoration-none">
+            <Link to={pathLogin({})} className="no-underline">
               Login
             </Link>
           </Tab>
           <Tab isActive>
-            <Link to={pathSignup({})} className="text-decoration-none">
+            <Link to={pathSignup({})} className="no-underline">
               Sign Up
             </Link>
           </Tab>
         </Tabs>
 
-        <form onSubmit={handleSignup}>
-          <FormField>
+        <form onSubmit={handleSignup} className="flex flex-col gap-2">
+          <div>
             <Label>Email</Label>
             <EmailInput
               onChange={(e) => {
@@ -95,9 +94,9 @@ function Signup() {
               name="email"
               placeholder="rick.sanchez@me.com"
             />
-          </FormField>
+          </div>
 
-          <FormField>
+          <div>
             <Label htmlFor="password1">Password</Label>
             <PasswordInput
               onChange={(e) => {
@@ -107,9 +106,9 @@ function Signup() {
               id="password1"
               placeholder="Super secret password."
             />
-          </FormField>
+          </div>
 
-          <FormField>
+          <div>
             <Label htmlFor="password2">Password Again</Label>
             <PasswordInput
               onChange={(e) => {
@@ -119,21 +118,19 @@ function Signup() {
               id="password2"
               placeholder="Enter your password again."
             />
-          </FormField>
+          </div>
 
           <FormErrorHandler error={errors != null ? [errors] : null} />
 
-          <FormField className="d-flex flex-space-between align-items-center">
-            <Button variant="primary" type="submit" loading={signup.isLoading}>
+          <div className="flex items-center justify-between">
+            <Button variant="primary" type="submit" loading={signup.isPending}>
               Submit
             </Button>
 
             <Link to={pathPasswordReset({})}>Forgot Password?</Link>
-          </FormField>
+          </div>
         </form>
       </BorderBox>
-    </AuthContainer>
+    </AuthPage>
   )
 }
-
-export default Signup

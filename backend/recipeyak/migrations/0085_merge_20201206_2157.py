@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("recipeyak", "0083_auto_20201206_2146"),
         ("recipeyak", "0084_auto_20201126_2226"),

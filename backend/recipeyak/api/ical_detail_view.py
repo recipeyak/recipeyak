@@ -1,5 +1,6 @@
+from collections.abc import Sequence
 from datetime import date, datetime, timedelta
-from typing import Sequence, cast
+from typing import cast
 
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404

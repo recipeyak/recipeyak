@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("recipeyak", "0107_timelineevent_upload"),
     ]

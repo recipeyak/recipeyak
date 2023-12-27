@@ -1,8 +1,6 @@
 import React, { useState } from "react"
 
 import { Button } from "@/components/Buttons"
-import { FormControl } from "@/components/FormControl"
-import { FormField } from "@/components/FormField"
 import { CheckBox, TextInput } from "@/components/Forms"
 import { AddSectionForm } from "@/pages/recipe-detail/AddSectionForm"
 import { useIngredientCreate } from "@/queries/ingredientCreate"
@@ -63,8 +61,8 @@ function AddIngredientForm({
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="add-ingredient-grid mb-2 mt-2">
-        <div>
+      <div className="mb-2 flex flex-col gap-2">
+        <div className="flex flex-row gap-2">
           <TextInput
             id="firstinput"
             onChange={(e) => {
@@ -73,10 +71,8 @@ function AddIngredientForm({
             value={quantity}
             error={createIngredient.isError}
             placeholder="3 lbs"
+            className="!w-2/3"
           />
-        </div>
-
-        <div>
           <TextInput
             onChange={(e) => {
               setName(e.target.value)
@@ -84,10 +80,10 @@ function AddIngredientForm({
             value={name}
             error={createIngredient.isError}
             placeholder="tomato"
+            className="!w-2/3"
           />
         </div>
-
-        <div className="grid-entire-row">
+        <div>
           <TextInput
             onChange={(e) => {
               setDescription(e.target.value)
@@ -97,14 +93,16 @@ function AddIngredientForm({
             placeholder="diced at 3cm"
           />
           {createIngredient.isError ? (
-            <p className="fs-4 has-text-danger">
+            // TODO: Fix this the next time the file is edited.
+            // eslint-disable-next-line react/forbid-elements
+            <p className="text-base text-[var(--color-danger)]">
               A recipe needs at least one ingredient
             </p>
           ) : null}
         </div>
       </div>
 
-      <label className="d-flex align-items-center cursor-pointer mb-2">
+      <label className="mb-2 flex cursor-pointer items-center">
         <CheckBox
           onChange={() => {
             setOptional((prev) => !prev)
@@ -114,29 +112,26 @@ function AddIngredientForm({
         />
         Optional
       </label>
-      <FormField isGrouped>
-        <div className="flex-grow">
-          <Button size="small" type="button" onClick={onChangeSection}>
-            Add Section
-          </Button>
-        </div>
-        <FormControl>
+      <div className="flex justify-between">
+        <Button size="small" type="button" onClick={onChangeSection}>
+          Add Section
+        </Button>
+        <div className="flex gap-2">
           <Button onClick={cancelAddIngredient} size="small" type="button">
             Cancel
           </Button>
-        </FormControl>
-        <FormControl>
           <Button
             variant="primary"
             disabled={addDisabled}
             size="small"
             type="submit"
-            loading={createIngredient.isLoading}
+            aria-label="add ingredient"
+            loading={createIngredient.isPending}
           >
             Add
           </Button>
-        </FormControl>
-      </FormField>
+        </div>
+      </div>
     </form>
   )
 }

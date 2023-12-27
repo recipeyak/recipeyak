@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query"
 
-import { useTeamId } from "@/hooks"
 import { getCalendarRecipeList } from "@/queries/scheduledRecipeList"
 import { unwrapEither } from "@/query"
+import { useTeamId } from "@/useTeamId"
 
 export function useSchedulePreviewList({
   start,
@@ -14,7 +14,6 @@ export function useSchedulePreviewList({
   const teamId = useTeamId()
   return useQuery({
     queryKey: [teamId, "schedule", start, end],
-    queryFn: () =>
-      getCalendarRecipeList({ teamID: teamId, start, end }).then(unwrapEither),
+    queryFn: () => getCalendarRecipeList({ start, end }).then(unwrapEither),
   })
 }

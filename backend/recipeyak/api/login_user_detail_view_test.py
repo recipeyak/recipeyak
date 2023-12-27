@@ -4,7 +4,6 @@ from rest_framework import status
 from rest_framework.test import APIClient
 from user_sessions.models import Session
 
-from recipeyak.api.serializers.user import UserSerializer
 from recipeyak.models import User
 
 pytestmark = pytest.mark.django_db
@@ -29,12 +28,6 @@ def test_signup(client: APIClient) -> None:
 
     res = client.post("/api/v1/auth/registration/", data)
     assert res.status_code == status.HTTP_201_CREATED
-
-    user = User.objects.first()
-    assert (
-        res.json().get("user") == UserSerializer(user).data
-    ), "response didn't return user data"
-
     res = client.get(url)
     assert res.status_code == status.HTTP_200_OK
 
@@ -71,10 +64,6 @@ def test_login(client: APIClient) -> None:
         == settings.SESSION_COOKIE_SAMESITE
     )
     assert settings.SESSION_COOKIE_SAMESITE == "Lax"
-
-    assert (
-        res.json().get("user") == UserSerializer(user).data
-    ), "response didn't return user data"
 
     res = client.get("/api/v1/user/")
     assert res.status_code == status.HTTP_200_OK
@@ -128,13 +117,9 @@ def test_login_in_two_places_and_logout_from_one(
     res = client.post("/api/v1/auth/login/", data)
     assert res.status_code == status.HTTP_200_OK
 
-    assert res.json().get("user") == UserSerializer(user).data
-
     # 2. log in a second time
     res = client_b.post("/api/v1/auth/login/", data)
     assert res.status_code == status.HTTP_200_OK
-
-    assert res.json().get("user") == UserSerializer(user).data
 
     # 3. logout first login session
     res = client.post("/api/v1/auth/logout/")
@@ -166,11 +151,6 @@ def test_signup_case_insensitive(client: APIClient) -> None:
 
     res = client.post("/api/v1/auth/registration/", data)
     assert res.status_code == status.HTTP_201_CREATED
-
-    user = User.objects.first()
-    assert (
-        res.json().get("user") == UserSerializer(user).data
-    ), "response didn't return user data"
 
     res = client.get(url)
     assert res.status_code == status.HTTP_200_OK

@@ -34,7 +34,7 @@ class Ingredient(CommonInfo):
     optional = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ["position"]
+        ordering = ["position"]  # noqa: RUF012
         db_table = "core_ingredient"
 
     def __str__(self) -> str:

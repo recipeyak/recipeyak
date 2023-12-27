@@ -3,17 +3,25 @@ import { RouteComponentProps } from "react-router"
 import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
 import { Meta } from "@/components/Meta"
+import { NavPage } from "@/components/Page"
 import { CookingFullscreen } from "@/pages/cook-detail/CookingFullscreen"
 import { pathCookDetail } from "@/paths"
-import { INote, TimelineItem, useRecipeFetch } from "@/queries/recipeFetch"
-import { formatImgOpenGraph } from "@/utils/url"
-import { useAddSlugToUrl } from "@/utils/useAddSlugToUrl"
+import { PickVariant } from "@/queries/queryUtilTypes"
+import {
+  RecipeFetchResponse as Recipe,
+  useRecipeFetch,
+} from "@/queries/recipeFetch"
+import { formatImgOpenGraph } from "@/url"
+import { useAddSlugToUrl } from "@/useAddSlugToUrl"
 
-function isNote(x: TimelineItem): x is INote {
+type TimelineItem = Recipe["timelineItems"][number]
+type Note = PickVariant<TimelineItem, "note">
+
+function isNote(x: TimelineItem): x is Note {
   return x.type === "note"
 }
 
-export default function CookDetail(
+export function CookDetailPage(
   props: RouteComponentProps<{ recipeId: string }>,
 ) {
   const recipeId = parseInt(props.match.params.recipeId, 10)
@@ -26,12 +34,12 @@ export default function CookDetail(
     maybeRecipe.data?.name,
   )
 
-  if (maybeRecipe.isLoading) {
+  if (maybeRecipe.isPending) {
     return <Loader />
   }
 
   if (maybeRecipe.isError) {
-    return <p>recipe not found</p>
+    return <div>recipe not found</div>
   }
 
   const recipe = maybeRecipe.data
@@ -42,7 +50,7 @@ export default function CookDetail(
   }
 
   return (
-    <div>
+    <NavPage>
       <Helmet title={recipe.name} />
       <Meta
         title={recipeTitle}
@@ -57,6 +65,6 @@ export default function CookDetail(
         steps={recipe.steps}
         notes={notes}
       />
-    </div>
+    </NavPage>
   )
 }

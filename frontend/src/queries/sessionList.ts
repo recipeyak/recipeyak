@@ -11,7 +11,7 @@ export interface ISession {
     readonly browser: string | null
   }
   readonly last_activity: string
-  readonly ip: string
+  readonly ip: string | null
   readonly current: boolean
 }
 

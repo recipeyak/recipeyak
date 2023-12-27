@@ -1,15 +1,45 @@
-import { styled } from "@/theme"
+import { ForwardedRef, forwardRef } from "react"
 
-export const Label = styled.label`
-  display: block;
-  font-size: 1rem;
-  font-weight: 700;
-  &:not(:last-child) {
-    margin-bottom: 0.5em;
-  }
-`
+import { clx } from "@/classnames"
 
-export const BetterLabel = styled.label`
-  font-weight: bold;
-  margin-right: 0.75rem;
-`
+export function Label({
+  children,
+  htmlFor,
+}: {
+  children: React.ReactNode
+  htmlFor?: string
+}) {
+  return (
+    <label
+      htmlFor={htmlFor}
+      className="block text-base font-bold"
+      children={children}
+    />
+  )
+}
+
+export const BetterLabel = forwardRef(
+  (
+    {
+      children,
+      cursor,
+      className,
+      ...props
+    }: {
+      htmlFor?: string
+      children: React.ReactNode
+      cursor?: "move"
+      className?: string
+    },
+    ref: ForwardedRef<HTMLLabelElement>,
+  ) => {
+    return (
+      <label
+        ref={ref}
+        className={clx("mr-3 font-bold", cursor && "cursor-move", className)}
+        children={children}
+        {...props}
+      />
+    )
+  },
+)

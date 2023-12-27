@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, cast
 
 from django.contrib.auth import authenticate, login
 from pydantic import EmailStr
@@ -11,7 +11,8 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from recipeyak.api.base.serialization import RequestParams
-from recipeyak.api.serializers.user import UserSerializer as UserDetailsSerializer
+from recipeyak.api.user_get_view import serialize_user
+from recipeyak.models.user import User
 
 
 class LoginUserParams(RequestParams):
@@ -39,5 +40,5 @@ def login_user_detail_view(request: Request, *args: Any, **kwargs: Any) -> Respo
     login(request, user)
 
     return Response(
-        {"user": UserDetailsSerializer(user).data}, status=status.HTTP_200_OK
+        {"user": serialize_user(cast(User, user))}, status=status.HTTP_200_OK
     )

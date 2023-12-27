@@ -1,44 +1,99 @@
-import { styled } from "@/theme"
+import { assertNever } from "@/assert"
+import { clx } from "@/classnames"
 
-const UserProfileImage = styled.div`
-  background-color: rgb(240, 240, 240);
-  height: 30px;
-  width: 30px;
-  min-width: 30px;
-  margin: 5px;
-  border-radius: 100%;
-  max-height: none;
-`
+const avatarCss =
+  "max-h-none rounded-full bg-[var(--color-background-empty-image)] print:!hidden"
 
-interface IAvatarProps {
-  readonly avatarURL: string | null
-  readonly className?: string
-  readonly onClick?: () => void
-  readonly tabIndex?: number
-}
-export function Avatar({
+function UserProfileImage({
+  onClick,
+  tabIndex,
   className,
+  size,
+  alt,
+  src,
+}: {
+  onClick: (() => void) | undefined
+  tabIndex?: number
+  className?: string
+  size: 30 | 72 | 96
+  src: string
+  alt: string
+}) {
+  return (
+    <img
+      className={clx(className, getAvatarCss(size))}
+      onClick={onClick}
+      tabIndex={tabIndex}
+      width={size}
+      height={size}
+      alt={alt}
+      src={src}
+    />
+  )
+}
+
+function UserProfileImagePlaceholder({
+  onClick,
+  tabIndex,
+  className,
+  size,
+}: {
+  onClick: (() => void) | undefined
+  tabIndex?: number
+  className?: string
+  size: 30 | 72 | 96
+}) {
+  return (
+    <div
+      className={clx(className, getAvatarCss(size))}
+      onClick={onClick}
+      tabIndex={tabIndex}
+    />
+  )
+}
+
+function getAvatarCss(size: 30 | 72 | 96) {
+  return clx(
+    avatarCss,
+    size === 30
+      ? "h-[30px] w-[30px] min-w-[30px]"
+      : size === 72
+        ? "h-[70px] w-[70px] min-w-[70px]"
+        : size === 96
+          ? "h-[96px] w-[96px] min-w-[96px]"
+          : assertNever(size),
+  )
+}
+
+export function Avatar({
   avatarURL,
   onClick,
   tabIndex,
-}: IAvatarProps) {
+  size = 30,
+}: {
+  avatarURL: string | null
+  onClick?: () => void
+  tabIndex?: number
+  size?: 30 | 72 | 96
+}) {
+  const cls = clx(onClick != null && "cursor-pointer")
   if (avatarURL == null) {
     return (
-      <UserProfileImage
+      <UserProfileImagePlaceholder
+        size={size}
         onClick={onClick}
-        className={className}
         tabIndex={tabIndex}
       />
     )
   }
   return (
     <UserProfileImage
-      as="img"
       onClick={onClick}
+      size={size}
       src={avatarURL}
-      className={className}
-      tabIndex={tabIndex}
       alt="avatar"
+      tabIndex={tabIndex}
+      className={cls}
     />
   )
 }

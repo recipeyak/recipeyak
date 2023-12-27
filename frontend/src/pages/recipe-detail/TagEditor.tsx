@@ -9,7 +9,7 @@ export function TagEditor({
   tags,
   onChange,
 }: {
-  readonly tags: string[]
+  readonly tags: readonly string[]
   readonly onChange: (_: string[]) => void
 }) {
   const [newTag, setNewTag] = React.useState("")
@@ -34,7 +34,7 @@ export function TagEditor({
         </Tag>
       ))}
       <TextInput
-        className="max-width-200px"
+        className="max-w-[200px]"
         placeholder="new tag"
         value={newTag}
         onChange={(e) => {

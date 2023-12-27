@@ -1,11 +1,21 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
 
-import { useTeamId, useUser } from "@/hooks"
 import { http } from "@/http"
-import { IRecipe, Reaction } from "@/queries/recipeFetch"
+import { PickVariant } from "@/queries/queryUtilTypes"
+import {
+  RecipeFetchResponse as Recipe,
+  setQueryDataRecipe,
+} from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
+import { useTeamId } from "@/useTeamId"
+import { useUser } from "@/useUser"
 import { uuid4 } from "@/uuid"
+
+type Reaction = PickVariant<
+  Recipe["timelineItems"][number],
+  "note"
+>["reactions"][number]
 
 const createReaction = ({
   noteId,
@@ -17,10 +27,13 @@ const createReaction = ({
   http.post<{
     id: string
     type: "❤️" | "😆" | "🤮"
-    note_id: string
+    // TODO: is this needed?
+    note_id: number
     user: {
       id: number
       name: string
+      email: string
+      avatar_url: string
     }
     created: string
   }>(`/api/v1/notes/${noteId}/reactions/`, {
@@ -49,14 +62,18 @@ export function useReactionCreate() {
         id: tempId,
         created: new Date().toISOString(),
         type: vars.type,
+        note_id: -1,
         user: {
           id: user.id || 0,
           name: user.name,
+          email: user.email,
+          avatar_url: user.avatarURL,
         },
       }
-      queryClient.setQueryData<IRecipe>(
-        [teamId, "recipes", vars.recipeId],
-        (prev) => {
+      setQueryDataRecipe(queryClient, {
+        teamId,
+        recipeId: vars.recipeId,
+        updater: (prev) => {
           if (prev == null) {
             return prev
           }
@@ -71,16 +88,17 @@ export function useReactionCreate() {
             })
           })
         },
-      )
+      })
       return { newReactionTempId: newReaction.id }
     },
     onSuccess: (res, vars, context) => {
       if (context?.newReactionTempId == null) {
         return
       }
-      queryClient.setQueryData<IRecipe>(
-        [teamId, "recipes", vars.recipeId],
-        (prev) => {
+      setQueryDataRecipe(queryClient, {
+        teamId,
+        recipeId: vars.recipeId,
+        updater: (prev) => {
           if (prev == null) {
             return prev
           }
@@ -98,15 +116,16 @@ export function useReactionCreate() {
             })
           })
         },
-      )
+      })
     },
     onError: (_err, vars, context) => {
       if (context?.newReactionTempId == null) {
         return
       }
-      queryClient.setQueryData<IRecipe>(
-        [teamId, "recipes", vars.recipeId],
-        (prev) => {
+      setQueryDataRecipe(queryClient, {
+        teamId,
+        recipeId: vars.recipeId,
+        updater: (prev) => {
           if (prev == null) {
             return prev
           }
@@ -123,7 +142,7 @@ export function useReactionCreate() {
             })
           })
         },
-      )
+      })
     },
   })
 }

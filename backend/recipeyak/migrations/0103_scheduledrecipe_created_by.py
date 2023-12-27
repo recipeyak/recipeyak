@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("recipeyak", "0102_rename_recipe_team_user__deprecated_recipe_team"),
     ]

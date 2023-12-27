@@ -1,29 +1,84 @@
 from __future__ import annotations
 
-from django.db.models import QuerySet
-from django.shortcuts import get_object_or_404
+from datetime import datetime
+from typing import Literal
+
+import pydantic
+from django.db import connection
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from recipeyak.api.base.permissions import IsTeamMember
 from recipeyak.api.base.request import AuthedRequest
-from recipeyak.api.serializers.team import MembershipSerializer
-from recipeyak.models import Membership, Team
+from recipeyak.models import get_team_by_id
+from recipeyak.models.user import get_avatar_url
 
 
-def get_team_members(team: Team) -> QuerySet[Membership]:
-    return team.membership_set.select_related("user").all()
+class UserResponse(pydantic.BaseModel):
+    id: int
+    name: str | None
+    avatar_url: str
+    email: str
+
+
+class TeamMemberResponse(pydantic.BaseModel):
+    id: int
+    created: datetime
+    level: Literal["admin", "contributor", "read"]
+    user: UserResponse
 
 
 @api_view(["GET"])
-@permission_classes([IsAuthenticated, IsTeamMember])
+@permission_classes([IsAuthenticated])
 def team_members_list_view(request: AuthedRequest, team_pk: int) -> Response:
     if request.method == "GET":
-        team = get_object_or_404(Team, pk=team_pk)
-        members = get_team_members(team=team)
-        serializer = MembershipSerializer(members, many=True)
-        return Response(serializer.data)
+        team = get_team_by_id(request=request, team_id=team_pk)
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+select
+	m.id membership_id,
+	m.created membership_created,
+	m.level membership_level,
+	u.id user_id,
+	u.name user_name,
+	u.email user_email
+from
+	core_membership m
+	join core_myuser as u on u.id = m.user_id
+where
+	team_id = %(team_id)s;
+                """,
+                {
+                    "team_id": team.id,
+                },
+            )
+            rows = cursor.fetchall()
+        members = list[TeamMemberResponse]()
+        for (
+            membership_id,
+            membership_created,
+            membership_level,
+            user_id,
+            user_name,
+            user_email,
+        ) in rows:
+            avatar_url = get_avatar_url(user_email)
+            user = UserResponse(
+                id=user_id,
+                name=user_name,
+                avatar_url=avatar_url,
+                email=user_email,
+            )
+            members.append(
+                TeamMemberResponse(
+                    id=membership_id,
+                    created=membership_created,
+                    level=membership_level,
+                    user=user,
+                )
+            )
+        return Response(members)
     else:
         raise MethodNotAllowed(request.method or "")

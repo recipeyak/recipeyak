@@ -1,16 +1,20 @@
 import { configureAbly, useChannel } from "@ably-labs/react-hooks"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import {
+  keepPreviousData,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query"
 import { addWeeks, endOfWeek, startOfWeek, subWeeks } from "date-fns"
 import parseISO from "date-fns/parseISO"
 import * as t from "io-ts"
 
 import { toISODateString } from "@/date"
-import { useTeamId } from "@/hooks"
 import { http } from "@/http"
 import { CalendarResponse } from "@/queries/scheduledRecipeCreate"
 import { onRecipeDeletion } from "@/queries/scheduledRecipeDelete"
 import { onScheduledRecipeUpdateSuccess } from "@/queries/scheduledRecipeUpdate"
 import { unwrapEither } from "@/query"
+import { useTeamId } from "@/useTeamId"
 
 configureAbly({
   authUrl: "/api/v1/auth/ably/",
@@ -27,18 +31,16 @@ type ScheduledRecipeUpdated = {
 }
 
 export function getCalendarRecipeList({
-  teamID,
   start,
   end,
 }: {
-  readonly teamID: number
   readonly start: Date
   readonly end: Date
 }) {
   return http
     .obj({
       method: "GET",
-      url: `/api/v1/t/${teamID}/calendar/`,
+      url: `/api/v1/calendar/`,
       shape: t.type({
         scheduledRecipes: t.array(
           t.type({
@@ -123,16 +125,17 @@ export function useScheduledRecipeList({
   })
   return useQuery({
     queryKey: [teamID, "calendar", startOfWeekMs],
-    queryFn: () => {
+    queryFn: async () => {
       // Fetch for a given week w/ 2 weeks after & 2 weeks before
       // We paginate by week, so we overlap our fetched range
       // We want a fetch to overwrite the cache for the range
       // We want to avoid dupes with our fetches
       const start = startOfWeek(subWeeks(startOfWeekMs, 3))
       const end = endOfWeek(addWeeks(startOfWeekMs, 3))
-      return getCalendarRecipeList({ teamID, start, end }).then(unwrapEither)
-    },
-    onSuccess: (response) => {
+      const response = await getCalendarRecipeList({ start, end }).then(
+        unwrapEither,
+      )
+
       // Iterate through and populate each based on week
       const weekIds = new Set<number>()
       response.scheduledRecipes.forEach((r) => {
@@ -145,8 +148,9 @@ export function useScheduledRecipeList({
           response,
         )
       })
+      return response
     },
     // Schedule recipes plop in due the way we overlap/prefetch without this
-    keepPreviousData: true,
+    placeholderData: keepPreviousData,
   })
 }

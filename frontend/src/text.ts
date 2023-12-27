@@ -42,7 +42,18 @@ export function normalizeUnitsFracs(str: string): string {
  *  https://cooking.nytimes.com/recipes/112390-some-example => cooking.nytimes.com
  */
 export function urlToDomain(url: string) {
-  return new URL(url).hostname
+  if (!url.startsWith("http")) {
+    url = "http://" + url
+  }
+  try {
+    return new URL(url).hostname
+  } catch (e) {
+    if (e instanceof TypeError) {
+      return url
+    } else {
+      throw e
+    }
+  }
 }
 
 export const isURL = (x: string): boolean => !x.includes(" ") && x.includes(".")

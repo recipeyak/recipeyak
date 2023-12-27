@@ -17,6 +17,7 @@ from recipeyak.models import (
     filter_recipes,
     get_team,
 )
+from recipeyak.models.section import Section
 
 
 class IngredientCreateParams(RequestParams):
@@ -27,6 +28,7 @@ class IngredientCreateParams(RequestParams):
     optional: bool | None = None
 
 
+# TODO: rename to ingredient_create_view
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def ingredients_list_view(request: AuthedRequest, recipe_pk: int) -> Response:
@@ -45,7 +47,7 @@ def ingredients_list_view(request: AuthedRequest, recipe_pk: int) -> Response:
     if params.position is not None:
         ingredient.position = params.position
     else:
-        last_section = recipe.section_set.last()
+        last_section = Section.objects.filter(recipe=recipe).last()
         last_ingredient = recipe.ingredient_set.last()
         last_item = last_section or last_ingredient
         if last_item is not None:

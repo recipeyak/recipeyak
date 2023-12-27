@@ -9,7 +9,7 @@ import React, { useEffect, useRef, useState } from "react"
 import { useHistory } from "react-router"
 import { Link } from "react-router-dom"
 
-import { classNames } from "@/classnames"
+import { clx } from "@/classnames"
 import { BorderBox } from "@/components/BorderBox"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
@@ -23,10 +23,10 @@ import {
   Unit,
   useShoppingListFetch,
 } from "@/queries/shoppingListFetch"
+import { removeQueryParams, setQueryParams } from "@/querystring"
 import { ingredientByNameAlphabetical } from "@/sorters"
 import { normalizeUnitsFracs } from "@/text"
 import { toast } from "@/toast"
-import { removeQueryParams, setQueryParams } from "@/utils/querystring"
 
 const selectElementText = (el: Element) => {
   const sel = window.getSelection()
@@ -54,12 +54,7 @@ function formatMonth(date: number | Date | null) {
   return format(date, "yyyy-MM-dd")
 }
 
-interface IShoppingListItemProps {
-  readonly item: [string, IIngredientItem]
-  readonly isFirst: boolean
-}
-
-export function toQuantity(x: IQuantity): string {
+function toQuantity(x: IQuantity): string {
   if (x.unit === Unit.NONE) {
     return x.quantity
   }
@@ -82,16 +77,15 @@ function quantitiesToString(quantities: ReadonlyArray<IQuantity>): string {
 
 function ShoppingListItem({
   item: [name, { quantities }],
-  isFirst,
-}: IShoppingListItemProps) {
-  // padding serves to prevent the button from appearing in front of text
-  // we also use <section>s instead of <p>s to avoid extra new lines in Chrome
-  const cls = classNames("text-small", { "mr-15": isFirst })
-
+}: {
+  item: [string, IIngredientItem]
+}) {
   const units = normalizeUnitsFracs(quantitiesToString(quantities))
 
   return (
-    <section className={cls} key={name + units}>
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line react/forbid-elements
+    <section className="text-sm" key={name + units}>
       {units} {name}
     </section>
   )
@@ -106,7 +100,7 @@ const ShoppingListList = React.forwardRef<
   IShoppingListContainerProps
 >((props, ref) => {
   if (props.items.isError) {
-    return <p>error fetching shoppinglist</p>
+    return <div>error fetching shoppinglist</div>
   }
 
   const items =
@@ -120,41 +114,39 @@ const ShoppingListList = React.forwardRef<
     <BorderBox
       p={2}
       minHeight="74px"
-      style={{
-        backgroundColor: "var(--color-background-card)",
-        border: "1px solid var(--color-border)",
-        overflowY: "auto",
-        maxHeight: 425, // looks good on mobile & desktop
-        color:
-          props.items.isLoading || props.items.isRefetching
-            ? "hsl(0, 0%, 71%)"
-            : "",
-      }}
+      className={clx(
+        "max-h-[425px] overflow-y-auto border-[1px] border-solid border-[var(--color-border)] !bg-[var(--color-background-card)]",
+        props.items.isPending || props.items.isRefetching ? "opacity-70" : "",
+      )}
     >
-      {props.items.isLoading ? (
-        <div className="text-center">loading...</div>
+      {props.items.isPending ? (
+        <div className="text-center" data-testid="shopping list items loading">
+          loading...
+        </div>
       ) : (
-        <div ref={ref} className="selectable">
+        <div
+          ref={ref}
+          className="cursor-auto select-text"
+          data-testid="shopping-list-items"
+        >
           {groups.map(([groupName, values], groupIndex) => {
             values.sort((x, y) => ingredientByNameAlphabetical(x[0], y[0]))
             return (
               <div key={groupName}>
                 {groupIndex > 0 && (
                   // ensure copying the list has a new line between categories
+                  // TODO: Fix this the next time the file is edited.
+                  // eslint-disable-next-line react/forbid-elements
                   <section style={{ maxHeight: "0.5rem" }}>
                     <br />
                   </section>
                 )}
-                {values.map(([name, quantities], i) => {
+                {values.map(([name, quantities]) => {
                   if (quantities == null) {
                     return null
                   }
                   return (
-                    <ShoppingListItem
-                      key={name}
-                      item={[name, quantities]}
-                      isFirst={i === 0}
-                    />
+                    <ShoppingListItem key={name} item={[name, quantities]} />
                   )
                 })}
               </div>
@@ -182,7 +174,7 @@ function RecipeAccordian({
   return (
     <Box dir="col" space="between">
       <Box space="between" align="center" w={100}>
-        <div className="fw-500">
+        <div className="font-medium">
           {recipes?.length ?? "-"}{" "}
           {recipes?.length === 1 ? "recipe" : "recipes"}
         </div>
@@ -202,7 +194,7 @@ function RecipeAccordian({
               <Link
                 key={r.scheduledRecipeId}
                 to={pathRecipeDetail({ recipeId: r.recipeId.toString() })}
-                className="text-truncate"
+                className="line-clamp-1 text-ellipsis"
               >
                 {r.recipeName}
               </Link>
@@ -276,7 +268,7 @@ function ShoppingList() {
             placeholder="from"
             value={formatMonth(startDay)}
           />
-          <h2 className="fs-4">→</h2>
+          <h2 className="text-base">→</h2>
           <DateInput
             onChange={handleSetEndDay}
             placeholder="to"

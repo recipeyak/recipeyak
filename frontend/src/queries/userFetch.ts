@@ -1,31 +1,51 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { login } from "@/auth"
 import { http } from "@/http"
+import { ResponseFromUse } from "@/queries/queryUtilTypes"
 import { unwrapResult } from "@/query"
+import { Theme, ThemeMode } from "@/themeConstants"
 
-export type Theme = "light" | "autumn" | "solarized"
-
-// User state from API
-export interface IUser {
-  readonly avatar_url: string
-  readonly email: string
-  readonly name: string
-  readonly id: number
-  readonly theme: Theme
-  readonly schedule_team: number | null
-}
-
-const getUser = () => http.get<IUser>("/api/v1/user/")
+const getUser = () =>
+  http.get<{
+    readonly id: number
+    readonly name: string
+    readonly avatar_url: string
+    readonly email: string
+    readonly theme_day: Theme
+    readonly theme_night: Theme
+    readonly theme_mode: ThemeMode
+    readonly schedule_team: number | null
+  }>("/api/v1/user/")
 
 export function useUserFetch() {
   // TODO: this api call could be removed with a preload
   const queryClient = useQueryClient()
   return useQuery({
-    queryKey: ["user-detail"],
-    queryFn: () => getUser().then(unwrapResult),
-    onSuccess: (res) => {
+    queryKey: getQueryKey(),
+    queryFn: async () => {
+      const res = await getUser().then(unwrapResult)
       login(res, queryClient)
+      return res
     },
   })
+}
+
+function getQueryKey() {
+  return ["user-detail"]
+}
+
+type UserFetchResponse = ResponseFromUse<typeof useUserFetch>
+
+export function setQueryDataUser(
+  client: QueryClient,
+  {
+    updater,
+  }: {
+    updater: (
+      prev: UserFetchResponse | undefined,
+    ) => UserFetchResponse | undefined
+  },
+) {
+  client.setQueryData<UserFetchResponse>(getQueryKey(), updater)
 }

@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("recipeyak", "0085_merge_20201206_2157"),
     ]

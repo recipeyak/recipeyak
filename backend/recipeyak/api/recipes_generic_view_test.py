@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 import pytest
@@ -164,7 +164,7 @@ def test_recipe_archived_at(
 
     assert TimelineEvent.objects.count() == 0
 
-    data = {"archived_at": datetime.now(timezone.utc)}
+    data = {"archived_at": datetime.now(UTC)}
     res = client.patch(f"/api/v1/recipes/{recipe.id}/", data)
     assert res.status_code == status.HTTP_200_OK
     assert isinstance(res.json()["archived_at"], str), "should be a date string"
@@ -209,7 +209,7 @@ def test_updating_step_of_recipe(
 
     res = client.get(f"/api/v1/recipes/{recipe.id}/")
     assert res.status_code == status.HTTP_200_OK
-    updated_step = next((x for x in res.json()["steps"] if x["id"] == step.pk))
+    updated_step = next(x for x in res.json()["steps"] if x["id"] == step.pk)
 
     assert updated_step.get("id") is not None
 
@@ -381,7 +381,7 @@ def test_updating_ingredient_of_recipe(
     assert res.status_code == status.HTTP_200_OK
 
     updated_ingredient = next(
-        (x for x in res.json()["ingredients"] if x["id"] == ingredient_id)
+        x for x in res.json()["ingredients"] if x["id"] == ingredient_id
     )
 
     assert updated_ingredient.get("name") == ingredient.get(

@@ -14,18 +14,19 @@ import { toISODateString } from "@/date"
 import CalendarDay from "@/pages/schedule/CalendarDay"
 import { ICalConfig } from "@/pages/schedule/CalendarMoreDropdown"
 import { IconSettings } from "@/pages/schedule/IconSettings"
+import { Kbd } from "@/pages/schedule/Kbd"
 import ShoppingList from "@/pages/schedule/ShoppingList"
 import { ICalRecipe } from "@/queries/scheduledRecipeCreate"
 import { useScheduledRecipeList } from "@/queries/scheduledRecipeList"
 import { useScheduledRecipeSettingsFetch } from "@/queries/scheduledRecipeSettingsFetch"
+import { removeQueryParams, setQueryParams } from "@/querystring"
 import { styled } from "@/theme"
-import { removeQueryParams, setQueryParams } from "@/utils/querystring"
 
 function CalTitle({ dayTs }: { readonly dayTs: number }) {
   return (
     <div>
       <span>{format(dayTs, "MMM d")}</span>
-      <span className="hide-sm"> | {format(dayTs, "yyyy")}</span>
+      <span className="hidden sm:inline"> | {format(dayTs, "yyyy")}</span>
     </div>
   )
 }
@@ -52,6 +53,8 @@ function Weekdays() {
   return (
     <WeekdaysContainer>
       {weekDays.map((x) => (
+        // TODO: Fix this the next time the file is edited.
+        // eslint-disable-next-line react/forbid-elements
         <b key={x}>{x}</b>
       ))}
     </WeekdaysContainer>
@@ -75,29 +78,24 @@ const CalendarWeekContainer = styled.div`
   }
 `
 
-const DaysContainer = styled.div`
-  margin-bottom: 0.5rem;
-  flex-grow: 1;
-  height: 100%;
-`
-
 const WEEK_DAYS = 7
 
 interface IDaysProps {
   readonly start: Date
   readonly end: Date
-  readonly teamID: number
   readonly days: IDays
   readonly isError: boolean
 }
 
-function Days({ start, end, isError, teamID, days }: IDaysProps) {
+function Days({ start, end, isError, days }: IDaysProps) {
   if (isError) {
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line react/forbid-elements
     return <p className="m-auto">error fetching calendar</p>
   }
 
   return (
-    <DaysContainer>
+    <div className="mb-2 h-full grow">
       {chunk(eachDayOfInterval({ start, end }), WEEK_DAYS).map((dates) => {
         const firstDay = first(dates)
         if (firstDay == null) {
@@ -113,14 +111,13 @@ function Days({ start, end, isError, teamID, days }: IDaysProps) {
                   scheduledRecipes={scheduledRecipes}
                   date={date}
                   key={date.toString()}
-                  teamID={teamID}
                 />
               )
             })}
           </CalendarWeekContainer>
         )
       })}
-    </DaysContainer>
+    </div>
   )
 }
 
@@ -158,7 +155,7 @@ function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
         }}
         title="Shopping List"
         content={
-          <div className="d-flex">
+          <div className="flex">
             <ShoppingList />
           </div>
         }
@@ -169,6 +166,7 @@ function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
         <Button
           size="small"
           className="p-1"
+          data-testid="show calendar settings"
           onClick={() => {
             setShowSettings(true)
           }}
@@ -177,6 +175,7 @@ function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
         </Button>
         <Button
           size="small"
+          data-testid="open shopping list modal"
           onClick={() => {
             setShowShopping(true)
           }}
@@ -185,13 +184,13 @@ function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
         </Button>
       </Box>
       <Box gap={1}>
-        <Button size="small" onClick={onPrev}>
+        <Button size="small" onClick={onPrev} aria-label="previous week">
           {"←"}
         </Button>
-        <Button size="small" onClick={onCurrent}>
+        <Button size="small" onClick={onCurrent} aria-label="current week">
           Today
         </Button>
-        <Button size="small" onClick={onNext}>
+        <Button size="small" onClick={onNext} aria-label="next week">
           {"→"}
         </Button>
       </Box>
@@ -201,8 +200,10 @@ function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
 
 function HelpPrompt() {
   return (
-    <p className="mt-2 mb-1 hide-sm">
-      press <kbd>?</kbd> for help
+    // TODO: Fix this the next time the file is edited.
+    // eslint-disable-next-line react/forbid-elements
+    <p className="mb-1 mt-2 hidden md:block">
+      press<Kbd>?</Kbd>for help
     </p>
   )
 }
@@ -220,11 +221,7 @@ function getToday(search: string): Date {
   return new Date()
 }
 
-interface ICalendarProps {
-  readonly teamID: number
-}
-
-export function Calendar({ teamID }: ICalendarProps) {
+export function Calendar() {
   const location = useLocation()
   const today = getToday(location.search)
   const weekStartDate = startOfWeek(today)
@@ -278,7 +275,6 @@ export function Calendar({ teamID }: ICalendarProps) {
         end={endDate}
         days={scheduledById}
         isError={scheduledRecipesResult.isError}
-        teamID={teamID}
       />
       <HelpPrompt />
     </Box>

@@ -1,8 +1,6 @@
 import React, { useState } from "react"
 
 import { Button } from "@/components/Buttons"
-import { FormControl } from "@/components/FormControl"
-import { FormField } from "@/components/FormField"
 import { TextInput } from "@/components/Forms"
 import { useSectionCreate } from "@/queries/sectionCreate"
 
@@ -39,7 +37,7 @@ export function AddSectionForm({
   const addDisabled = section === ""
   return (
     <form onSubmit={handleSubmit}>
-      <div className="mb-2 mt-2">
+      <div className="my-2">
         <TextInput
           onChange={(e) => {
             setSection(e.target.value)
@@ -50,18 +48,16 @@ export function AddSectionForm({
           name="section title"
         />
       </div>
-      <FormField isGrouped>
-        <FormControl className="flex-grow">
-          <Button
-            size="small"
-            type="button"
-            name="toggle add section"
-            onClick={toggleShowAddSection}
-          >
-            Add Ingredient
-          </Button>
-        </FormControl>
-        <FormControl>
+      <div className="flex justify-between">
+        <Button
+          size="small"
+          type="button"
+          name="toggle add section"
+          onClick={toggleShowAddSection}
+        >
+          Add Ingredient
+        </Button>
+        <div className="flex gap-2">
           <Button
             onClick={onCancel}
             size="small"
@@ -70,20 +66,18 @@ export function AddSectionForm({
           >
             Cancel
           </Button>
-        </FormControl>
-        <FormControl>
           <Button
             variant="primary"
             disabled={addDisabled}
             size="small"
             type="submit"
-            loading={createSection.isLoading}
+            loading={createSection.isPending}
           >
             Save
           </Button>
-        </FormControl>
-      </FormField>
-      {createSection.isError && <p>error adding ingredient</p>}
+        </div>
+      </div>
+      {createSection.isError && <div>error adding ingredient</div>}
     </form>
   )
 }

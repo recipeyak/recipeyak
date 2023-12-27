@@ -1,10 +1,11 @@
-import { useIsLoggedIn } from "@/hooks"
+import { useIsLoggedIn } from "@/auth"
 import LandingPage from "@/pages/index/LandingPage"
-import UserHome from "@/pages/index/UserHome"
+import { UserHome } from "@/pages/index/UserHome"
 
-const Home = () => {
+export const HomePage = () => {
   const loggedIn = useIsLoggedIn()
-  return loggedIn ? <UserHome /> : <LandingPage />
+  if (loggedIn) {
+    return <UserHome />
+  }
+  return <LandingPage />
 }
-
-export default Home

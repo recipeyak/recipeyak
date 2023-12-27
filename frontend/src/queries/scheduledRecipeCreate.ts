@@ -2,11 +2,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { addWeeks, startOfWeek, subWeeks } from "date-fns"
 
 import { toISODateString } from "@/date"
-import { useTeamId, useUser } from "@/hooks"
 import { http } from "@/http"
-import { IRecipe } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
 import { toast } from "@/toast"
+import { useTeamId } from "@/useTeamId"
+import { useUser } from "@/useUser"
 import { random32Id } from "@/uuid"
 
 export type CalendarResponse = {
@@ -62,12 +62,8 @@ function toCalRecipe(
   }
 }
 
-const scheduleRecipe = (
-  recipeID: IRecipe["id"],
-  teamID: number | "personal",
-  on: Date | string,
-) => {
-  return http.post<ICalRecipe>(`/api/v1/t/${teamID}/calendar/`, {
+const scheduleRecipe = (recipeID: number, on: Date | string) => {
+  return http.post<ICalRecipe>(`/api/v1/calendar/`, {
     recipe: recipeID,
     on: toISODateString(on),
   })
@@ -75,15 +71,13 @@ const scheduleRecipe = (
 
 function scheduleRecipeV2({
   recipeID,
-  teamID,
   on,
 }: {
   recipeID: number
   recipeName: string
-  teamID: number
   on: Date
 }): Promise<ICalRecipe> {
-  return scheduleRecipe(recipeID, teamID, on).then(unwrapResult)
+  return scheduleRecipe(recipeID, on).then(unwrapResult)
 }
 
 export function useScheduleRecipeCreate() {
@@ -136,6 +130,7 @@ export function useScheduleRecipeCreate() {
         return
       }
       context.weekIds.forEach((weekId) => {
+        // TODO: replace with type safe wrapper function
         queryClient.setQueryData<CalendarResponse>(
           [teamID, "calendar", weekId.getTime()],
           (data) => {
@@ -163,6 +158,7 @@ export function useScheduleRecipeCreate() {
         return
       }
       context.weekIds.forEach((weekId) => {
+        // TODO: replace with type safe wrapper function
         queryClient.setQueryData<CalendarResponse>(
           [teamID, "calendar", weekId.getTime()],
           (data) => {

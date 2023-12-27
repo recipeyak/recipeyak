@@ -1,10 +1,10 @@
 import { useChannel } from "@ably-labs/react-hooks"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 
-import { useTeamId } from "@/hooks"
 import { http } from "@/http"
 import { updateChecklistItemCache } from "@/queries/cookChecklistUpdate"
 import { unwrapResult } from "@/query"
+import { useTeamId } from "@/useTeamId"
 
 export type CookChecklist = Record<string, boolean>
 

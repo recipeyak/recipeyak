@@ -34,7 +34,6 @@ def backfill(apps: Any, schema_editor: Any) -> None:
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("recipeyak", "0088_auto_20211108_0327"),
     ]

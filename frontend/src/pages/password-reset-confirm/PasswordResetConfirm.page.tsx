@@ -4,14 +4,12 @@ import React, { useState } from "react"
 import { RouteComponentProps, useHistory } from "react-router-dom"
 
 import { login } from "@/auth"
-import AuthContainer from "@/components/AuthContainer"
 import { BorderBox } from "@/components/BorderBox"
 import { Button } from "@/components/Buttons"
-import { FormControl } from "@/components/FormControl"
-import { FormField } from "@/components/FormField"
 import { FormErrorHandler, PasswordInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Label } from "@/components/Label"
+import { AuthPage } from "@/components/Page"
 import { pathHome, pathLogin } from "@/paths"
 import { useAuthPasswordResetConfirm } from "@/queries/authPasswordResetConfirm"
 import { toast } from "@/toast"
@@ -50,7 +48,7 @@ function formatError(error: unknown) {
   return {}
 }
 
-function PasswordResetConfirmation(props: RouteProps) {
+export function PasswordResetConfirmPage(props: RouteProps) {
   const [newPassword1, setNewPassword1] = useState("")
   const [newPassword2, setNewPassword2] = useState("")
   const resetPassword = useAuthPasswordResetConfirm()
@@ -87,62 +85,54 @@ function PasswordResetConfirmation(props: RouteProps) {
   const errors = formatError(resetPassword.error)
 
   return (
-    <AuthContainer>
+    <AuthPage>
       <BorderBox p={3}>
         <Helmet title="Password Reset" />
         <form onSubmit={handleReset}>
-          <h1 className="is-5">Password Reset Confirmation</h1>
+          <h1 className="text-xl">Password Reset Confirmation</h1>
 
           <FormErrorHandler error={errors.nonFieldErrors} />
 
-          <FormField>
+          <div>
             <Label>Password</Label>
-            <FormControl>
-              <PasswordInput
-                autoFocus
-                onChange={(e) => {
-                  setNewPassword1(e.target.value)
-                }}
-                name="newPassword1"
-                value={newPassword1}
-              />
-            </FormControl>
+            <PasswordInput
+              autoFocus
+              onChange={(e) => {
+                setNewPassword1(e.target.value)
+              }}
+              name="newPassword1"
+              value={newPassword1}
+            />
             <FormErrorHandler error={errors.newPassword1} />
-          </FormField>
+          </div>
 
-          <FormField>
+          <div>
             <Label>Password Again</Label>
-            <FormControl>
-              <PasswordInput
-                onChange={(e) => {
-                  setNewPassword2(e.target.value)
-                }}
-                name="newPassword2"
-                value={newPassword2}
-              />
-            </FormControl>
+            <PasswordInput
+              onChange={(e) => {
+                setNewPassword2(e.target.value)
+              }}
+              name="newPassword2"
+              value={newPassword2}
+            />
             <FormErrorHandler error={errors.newPassword2} />
-          </FormField>
+          </div>
 
-          <FormField className="d-flex flex-space-between">
-            <FormControl>
-              <Button
-                variant="primary"
-                loading={resetPassword.isLoading}
-                type="submit"
-              >
-                Change Password
-              </Button>
-            </FormControl>
+          <div className="flex justify-between">
+            <Button
+              variant="primary"
+              loading={resetPassword.isPending}
+              type="submit"
+            >
+              Change Password
+            </Button>
 
             <Button to={pathLogin({})} variant="link">
               To Login
             </Button>
-          </FormField>
+          </div>
         </form>
       </BorderBox>
-    </AuthContainer>
+    </AuthPage>
   )
 }
-
-export default PasswordResetConfirmation
