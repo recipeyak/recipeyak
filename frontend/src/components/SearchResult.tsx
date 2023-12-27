@@ -4,6 +4,7 @@ import { clx } from "@/classnames"
 import { Tag } from "@/components/Tag"
 import { pathRecipeDetail, pathRecipesList } from "@/paths"
 import { RecipeListItem } from "@/queries/recipeList"
+import { searchClickCreate } from "@/queries/searchClickCreate"
 import { Match } from "@/search"
 
 const stylesSuggestion = "p-1 overflow-x-hidden whitespace-nowrap text-ellipsis"
@@ -39,6 +40,9 @@ export function SearchResult({
       return (
         <Link
           key={recipe.id}
+          onClick={() => {
+            void searchClickCreate({ matches, query: searchQuery, recipe })
+          }}
           to={pathRecipeDetail({ recipeId: recipe.id.toString() })}
           className={clx(
             stylesSuggestion,
