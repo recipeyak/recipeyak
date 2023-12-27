@@ -31,6 +31,7 @@ from recipeyak.api.recipe_bot_detail_view import (
 from recipeyak.api.recipe_detail_view import receipe_detail_view
 from recipeyak.api.recipe_list_view import recipe_list_view
 from recipeyak.api.register_user_detail_view import register_user_detail_view
+from recipeyak.api.search_click_create_view import search_click_create_view
 from recipeyak.api.section_create_view import create_section_view
 from recipeyak.api.sections_view import (
     delete_or_update_section_view,
@@ -88,6 +89,7 @@ urlpatterns = [
     path("api/v1/recipes/<int:recipe_pk>/timeline", get_recipe_timeline),
     path("api/v1/recipes/recently_viewed", get_recently_viewed_recipes),
     path("api/v1/recipes/recently_created", get_recently_created_recipes),
+    path("api/v1/search-click/", search_click_create_view),
     path("api/v1/sections/<int:section_pk>/", delete_or_update_section_view),
     path("api/v1/sessions/", sessions_list_view),
     path("api/v1/sessions/<str:pk>/", sessions_detail_view),
