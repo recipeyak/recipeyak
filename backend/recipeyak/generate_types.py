@@ -412,7 +412,7 @@ def typescript_url(path_pattern: tuple[str, dict[str, ConverterProtocol]], path:
         out.append("${params." + param + "}")
         begin = end
 
-        type = match.groupdict()["converter"]
+        # type = match.groupdict()["converter"]
         # print(param, type)
     return "`" + "".join(out) + "`"
 
