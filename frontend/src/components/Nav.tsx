@@ -259,6 +259,7 @@ function Search() {
     {},
   )
 
+  // @ts-expect-error ts(2322): Type 'undefined' is not assignable to type 'RecipeListItem'.
   const filteredRecipes: {
     readonly recipes: {
       readonly recipe: RecipeListItem
