@@ -6,9 +6,7 @@ import { setQueryDataRecipe } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
 import { useTeamId } from "@/useTeamId"
 
-// TODO(sbdchd): this shouldn't require recipeID
 const updateStep = (
-  recipeID: number,
   stepID: number,
   data: {
     readonly text?: string
@@ -19,14 +17,13 @@ const updateStep = (
     readonly id: number
     readonly text: string
     readonly position: string
-  }>(`/api/v1/recipes/${recipeID}/steps/${stepID}/`, data)
+  }>(`/api/v1/steps/${stepID}/`, data)
 
 export function useStepUpdate() {
   const queryClient = useQueryClient()
   const teamId = useTeamId()
   return useMutation({
     mutationFn: ({
-      recipeId,
       stepId,
       update,
     }: {
@@ -36,7 +33,7 @@ export function useStepUpdate() {
         text?: string
         position?: string
       }
-    }) => updateStep(recipeId, stepId, update).then(unwrapResult),
+    }) => updateStep(stepId, update).then(unwrapResult),
     onMutate: (vars) => {
       let oldPosition: string | undefined
       if (vars.update.position !== undefined) {

@@ -6,15 +6,14 @@ import { setQueryDataRecipe } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
 import { useTeamId } from "@/useTeamId"
 
-const deleteStep = (recipeID: number, stepID: number) =>
-  http.delete(`/api/v1/recipes/${recipeID}/steps/${stepID}/`)
+const deleteStep = (stepID: number) => http.delete(`/api/v1/steps/${stepID}/`)
 
 export function useStepDelete() {
   const queryClient = useQueryClient()
   const teamId = useTeamId()
   return useMutation({
-    mutationFn: ({ recipeId, stepId }: { recipeId: number; stepId: number }) =>
-      deleteStep(recipeId, stepId).then(unwrapResult),
+    mutationFn: ({ stepId }: { recipeId: number; stepId: number }) =>
+      deleteStep(stepId).then(unwrapResult),
     onSuccess: (_res, vars) => {
       setQueryDataRecipe(queryClient, {
         teamId,
