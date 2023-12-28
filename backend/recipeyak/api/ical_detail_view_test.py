@@ -151,6 +151,15 @@ def test_get_ical_view_works_with_accept_encoding(
     assert res.status_code == status.HTTP_200_OK
 
 
+def test_head_ical(client: APIClient, user: User, recipe: Recipe, team: Team) -> None:
+    """
+    HEAD should work
+    """
+    url = f"/t/{team.id}/ical/{team.ical_id}/schedule.ics"
+    res = client.head(url, HTTP_ACCEPT="text/calendar")
+    assert res.status_code == status.HTTP_200_OK
+
+
 def test_get_ical_view_with_user_specific_id(
     client: APIClient, user: User, recipe: Recipe, team: Team
 ) -> None:

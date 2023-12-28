@@ -5,6 +5,8 @@ from typing import Literal
 
 import pydantic
 from django.utils import timezone
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from recipeyak import user_agent
@@ -25,6 +27,8 @@ class SessionResponse(pydantic.BaseModel):
     current: bool
 
 
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def session_list_view(request: AuthedRequest) -> Response:
     query_set = request.user.session_set
 

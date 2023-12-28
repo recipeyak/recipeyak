@@ -4,6 +4,8 @@ import pydantic
 from django.db import transaction
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
@@ -30,8 +32,10 @@ class UpdateTeamParams(RequestParams):
     name: str
 
 
-def team_update_view(request: AuthedRequest, team_pk: int) -> Response:
-    team = get_object_or_404(get_teams(request.user), pk=team_pk)
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated])
+def team_update_view(request: AuthedRequest, team_id: int) -> Response:
+    team = get_object_or_404(get_teams(request.user), pk=team_id)
     if not is_team_admin(team, request.user):
         return Response(status=403)
 

@@ -24,14 +24,14 @@ class CreateInviteResponse(pydantic.BaseModel):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def team_invite_list_view(request: AuthedRequest, team_pk: int) -> Response:
+def team_invite_list_view(request: AuthedRequest, team_id: int) -> Response:
     """
     for creating, we want: level, user_id
     for response, we want: id, user data, team
     We want id, user object, and team data response
     need to use to_representation or form_represenation
     """
-    team = Team.objects.get(pk=team_pk)
+    team = Team.objects.get(pk=team_id)
     params = CreateInviteSerializer.parse_obj(request.data)
     with transaction.atomic():
         invite_ids = list[int]()

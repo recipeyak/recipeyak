@@ -4,6 +4,8 @@ from datetime import datetime
 
 from django.db import connection
 from pydantic import BaseModel
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
@@ -16,6 +18,11 @@ class ListTeamResponse(BaseModel):
     members: int
 
 
+# TODO: rename func and module to team_list_view
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def team_list_get_view(request: AuthedRequest) -> Response:
     with connection.cursor() as cursor:
         cursor.execute(

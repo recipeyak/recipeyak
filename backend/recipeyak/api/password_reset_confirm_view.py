@@ -41,8 +41,8 @@ class ResetPasswordViewParams(RequestParams):
 def password_reset_confirm_view(request: AnonymousRequest) -> Response:
     params = ResetPasswordViewParams.parse_obj(request.data)
 
-    user_pk = urlsafe_base64_decode(params.uid)
-    user = User.objects.filter(pk=user_pk).first()
+    user_id = urlsafe_base64_decode(params.uid)
+    user = User.objects.filter(pk=user_id).first()
     if user is None:
         raise ValidationError("Invalid token. Could not find user.")
     if not default_token_generator.check_token(user, token=params.token):

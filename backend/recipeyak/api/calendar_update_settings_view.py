@@ -15,13 +15,13 @@ class CalSettingsSerializer(RequestParams):
 
 @api_view(["PATCH"])
 @permission_classes([IsAuthenticated])
-def update_settings(request: AuthedRequest, team_pk: int = -1) -> Response:
+def update_settings(request: AuthedRequest, team_id: int = -1) -> Response:
     params = CalSettingsSerializer.parse_obj(request.data)
     sync_enabled = params.syncEnabled
-    team_pk = get_team(request).id
+    team_id = get_team(request).id
 
-    membership = get_object_or_404(Membership, team=team_pk, user=request.user)
+    membership = get_object_or_404(Membership, team=team_id, user=request.user)
     membership.calendar_sync_enabled = sync_enabled
     membership.save()
 
-    return Response(get_cal_settings(request=request, team_pk=team_pk))
+    return Response(get_cal_settings(request=request, team_id=team_id))

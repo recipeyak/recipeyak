@@ -22,20 +22,20 @@ class RecipeTimelineResponse(pydantic.BaseModel):
 
 @api_view(["GET"])
 @permission_classes((IsAuthenticated,))
-def get_recipe_timeline(request: AuthedRequest, recipe_pk: int) -> Response:
+def get_recipe_timeline(request: AuthedRequest, recipe_id: int) -> Response:
     user: User = request.user
     # TODO: we probably don't want to rely on this so we can support multiple
     # sessions with different teams for a given user.
     team = user.schedule_team
 
-    recipe = get_object_or_404(Recipe, pk=recipe_pk)
+    recipe = get_object_or_404(Recipe, pk=recipe_id)
 
     if not has_recipe_access(recipe=recipe, user=user):
         return Response(status=status.HTTP_403_FORBIDDEN)
 
     scheduled_recipes = ScheduledRecipe.objects.filter(
         Q(team=team) | Q(user=user)
-    ).filter(recipe=recipe_pk)
+    ).filter(recipe=recipe_id)
 
     return Response(
         [RecipeTimelineResponse(id=s.id, on=s.on) for s in scheduled_recipes]

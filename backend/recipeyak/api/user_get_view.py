@@ -1,6 +1,8 @@
 from typing import Literal, cast
 
 import pydantic
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
@@ -38,5 +40,7 @@ def serialize_user(user: User) -> UserSerializer:
     )
 
 
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def user_get_view(request: AuthedRequest) -> Response:
     return Response(serialize_user(request.user))

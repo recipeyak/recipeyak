@@ -28,13 +28,12 @@ class IngredientCreateParams(RequestParams):
     optional: bool | None = None
 
 
-# TODO: rename to ingredient_create_view
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def ingredients_list_view(request: AuthedRequest, recipe_pk: int) -> Response:
+def ingredients_create_view(request: AuthedRequest, recipe_id: int) -> Response:
     params = IngredientCreateParams.parse_obj(request.data)
     team = get_team(request)
-    recipe = get_object_or_404(filter_recipes(team=team), pk=recipe_pk)
+    recipe = get_object_or_404(filter_recipes(team=team), pk=recipe_id)
 
     ingredient = Ingredient(
         quantity=params.quantity,

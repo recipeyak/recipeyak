@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from datetime import datetime
 
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
@@ -31,9 +33,11 @@ class RecipePatchParams(RequestParams):
     primaryImageId: str | None = None
 
 
-def recipe_update_view(request: AuthedRequest, recipe_pk: str) -> Response:
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated])
+def recipe_update_view(request: AuthedRequest, recipe_id: str) -> Response:
     team = get_team(request)
-    recipe = filter_recipe_or_404(recipe_pk=recipe_pk, team=team)
+    recipe = filter_recipe_or_404(recipe_id=recipe_id, team=team)
 
     params = RecipePatchParams.parse_obj(request.data)
     provided_fields = set(params.dict(exclude_unset=True))
@@ -108,5 +112,5 @@ def recipe_update_view(request: AuthedRequest, recipe_pk: str) -> Response:
     recipe.save()
 
     team = get_team(request)
-    recipe = filter_recipe_or_404(team=team, recipe_pk=recipe_pk)
+    recipe = filter_recipe_or_404(team=team, recipe_id=recipe_id)
     return Response(serialize_recipe(recipe))
