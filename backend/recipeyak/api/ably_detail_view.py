@@ -13,7 +13,7 @@ from recipeyak.api.team_update_view import get_teams
 from recipeyak.config import ABLY_API_KEY
 
 
-async def get_token(user_id: str, team_ids: list[int]) -> dict[object, object]:
+async def get_token(user_id: str, team_ids: list[int]) -> dict[str, object]:
     async with AblyRest(ABLY_API_KEY) as ably:
         res = await ably.auth.create_token_request(
             {
@@ -27,7 +27,7 @@ async def get_token(user_id: str, team_ids: list[int]) -> dict[object, object]:
             }
         )
 
-        return res.to_dict()  # type: ignore [no-any-return]
+        return res.to_dict()
 
 
 @api_view(["GET"])
