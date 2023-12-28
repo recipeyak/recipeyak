@@ -1,6 +1,6 @@
-import algoliasearch from "algoliasearch/lite"
+import algoliasearch, { SearchClient } from "algoliasearch/lite"
 import { Hit } from "instantsearch.js"
-import React from "react"
+import React, { useMemo } from "react"
 import {
   Button,
   Menu,
@@ -10,13 +10,7 @@ import {
   Popover,
   Separator,
 } from "react-aria-components"
-import {
-  InstantSearch,
-  useHits,
-  UseHitsProps,
-  useSearchBox,
-  UseSearchBoxProps,
-} from "react-instantsearch"
+import { InstantSearch, useHits, useSearchBox } from "react-instantsearch"
 import { Link, useHistory } from "react-router-dom"
 import useOnClickOutside from "use-onclickoutside"
 
@@ -42,8 +36,7 @@ import {
 import { useAuthLogout } from "@/queries/authLogout"
 import { RecipeListItem, useRecipeList } from "@/queries/recipeList"
 import { useTeam } from "@/queries/teamFetch"
-import { useAlgoliaApiKey } from "@/queries/userAlgoliaApiKey"
-import { Match, searchRecipes } from "@/search"
+import { useAlgoliaApiKey } from "@/queries/useAlgoliaApiKey"
 import { useGlobalEvent } from "@/useGlobalEvent"
 import { useTeamId } from "@/useTeamId"
 import { useUser } from "@/useUser"
@@ -324,12 +317,15 @@ function Search() {
   )
 }
 
-function useSearchClient() {
+function useSearchClient(): SearchClient | null {
   const apiKey = useAlgoliaApiKey()
-  if (apiKey.data?.key == null) {
-    return null
-  }
-  return algoliasearch("5R9T0OJITJ", apiKey.data.key)
+
+  return useMemo(() => {
+    if (apiKey.data?.key == null) {
+      return null
+    }
+    return algoliasearch("5R9T0OJITJ", apiKey.data.key)
+  }, [apiKey.data?.key])
 }
 
 export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {

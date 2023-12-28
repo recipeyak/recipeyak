@@ -22,12 +22,12 @@ class Config(BaseSettings):
     DATABASE_URL: PostgresDsn
     SENTRY_DSN: str
     ALGOLIA_APPLICATION_ID: str
-    ALGOLIA_API_KEY: str
+    ALGOLIA_ADMIN_API_KEY: str
 
 
 async def job(config: Config) -> None:
     async with SearchClient.create(
-        app_id=config.ALGOLIA_APPLICATION_ID, api_key=config.ALGOLIA_API_KEY
+        app_id=config.ALGOLIA_APPLICATION_ID, api_key=config.ALGOLIA_ADMIN_API_KEY
     ) as client:
         index = client.init_index("recipes")
         pg = await asyncpg.connect(dsn=config.DATABASE_URL)
@@ -46,6 +46,10 @@ async def job(config: Config) -> None:
             'archived_at', archived_at,
             'tags', tags,
             'team_id', team_id,
+            'primary_image_url', (
+                select 'https://images-cdn.recipeyak.com/' || key from core_upload
+                where core_upload.id = core_recipe.primary_image_id
+            ),
             'scheduled_count', (
                 SELECT
                     count(*)
