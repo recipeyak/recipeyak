@@ -1,6 +1,5 @@
-import algoliasearch, { SearchClient } from "algoliasearch/lite"
 import { Hit } from "instantsearch.js"
-import React, { useMemo } from "react"
+import React from "react"
 import {
   Button,
   Menu,
@@ -36,7 +35,7 @@ import {
 import { useAuthLogout } from "@/queries/authLogout"
 import { RecipeListItem, useRecipeList } from "@/queries/recipeList"
 import { useTeam } from "@/queries/teamFetch"
-import { useAlgoliaApiKey } from "@/queries/useAlgoliaApiKey"
+import { useSearchClient } from "@/queries/useSearchClient"
 import { useGlobalEvent } from "@/useGlobalEvent"
 import { useTeamId } from "@/useTeamId"
 import { useUser } from "@/useUser"
@@ -316,17 +315,6 @@ function Search() {
       )}
     </div>
   )
-}
-
-function useSearchClient(): SearchClient | null {
-  const apiKey = useAlgoliaApiKey()
-
-  return useMemo(() => {
-    if (apiKey.data?.key == null) {
-      return null
-    }
-    return algoliasearch("5R9T0OJITJ", apiKey.data.key)
-  }, [apiKey.data?.key])
 }
 
 export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {

@@ -1,22 +1,11 @@
 import { Hit } from "instantsearch.js"
-import {
-  Highlight,
-  HighlightProps,
-  InstantSearch,
-  useHits,
-  UseHitsProps,
-  useInstantSearch,
-  useSearchBox,
-  UseSearchBoxProps,
-} from "react-instantsearch"
+import { Highlight, useInstantSearch } from "react-instantsearch"
 import { Link } from "react-router-dom"
 
 import { clx } from "@/classnames"
 import { Tag } from "@/components/Tag"
 import { pathRecipeDetail, pathRecipesList } from "@/paths"
 import { RecipeListItem } from "@/queries/recipeList"
-import { searchClickCreate } from "@/queries/searchClickCreate"
-import { Match } from "@/search"
 
 const stylesSuggestion = "p-1 overflow-x-hidden whitespace-nowrap text-ellipsis"
 

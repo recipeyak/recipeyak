@@ -1,5 +1,11 @@
-import React, { useEffect, useState } from "react"
-import { useHistory } from "react-router"
+import { orderBy, sortBy } from "lodash-es"
+import {
+  InstantSearch,
+  useHits,
+  useInstantSearch,
+  useSearchBox,
+  useToggleRefinement,
+} from "react-instantsearch"
 
 import { clx } from "@/classnames"
 import { Box } from "@/components/Box"
@@ -7,11 +13,9 @@ import { Button } from "@/components/Buttons"
 import { CheckBox, SearchInput } from "@/components/Forms"
 import { Loader } from "@/components/Loader"
 import RecipeItem from "@/pages/recipe-list/RecipeItem"
-import { parseIntOrNull } from "@/parseIntOrNull"
 import { pathRecipeAdd } from "@/paths"
-import { useRecipeList } from "@/queries/recipeList"
-import { removeQueryParams, setQueryParams } from "@/querystring"
-import { searchRecipes } from "@/search"
+import { RecipeListItem, useRecipeList } from "@/queries/recipeList"
+import { useSearchClient } from "@/queries/useSearchClient"
 import { styled } from "@/theme"
 
 interface IResultsProps {
@@ -46,12 +50,6 @@ function NoMatchingRecipe({ query }: { readonly query: string }) {
   )
 }
 
-interface IRecipeList {
-  readonly query: string
-  readonly drag?: boolean
-  readonly scroll?: boolean
-}
-
 const NAV_HEIGHT = "65px"
 const SEARCH_AND_TAB_HEIGHT = "30px"
 
@@ -81,65 +79,84 @@ const RecipeGrid = styled.div`
   }
 `
 
-function RecipeList(props: IRecipeList) {
-  const [showArchived, setShowArchived] = useState(false)
+function RecipeList(props: {
+  readonly drag?: boolean
+  readonly scroll?: boolean
+}) {
+  const { hits, results: algoliaResults } = useHits<{
+    name: string
+    archived_at: string
+  }>()
+  const {
+    indexUiState: { query },
+  } = useInstantSearch()
+  const {
+    refine,
+    value: {
+      offFacetValue: { count: countOff },
+      onFacetValue: { count: countOn },
+    },
+  } = useToggleRefinement({
+    attribute: "archived",
+    on: [true, false],
+    off: false,
+  })
 
   const recipes = useRecipeList()
 
   if (!recipes.isSuccess) {
     return <Loader />
   }
+  const recipeMap = recipes.data.reduce<Record<string, RecipeListItem>>(
+    (map, recipe) => {
+      map[recipe.id] = recipe
+      return map
+    },
+    {},
+  )
 
-  const results = searchRecipes({
-    recipes: recipes.data,
-    query: props.query,
-    includeArchived: true,
-  })
+  const results = query
+    ? hits.map((hit) => {
+        return { recipe: recipeMap[hit.objectID], match: [] }
+      })
+    : // if not query, show everything.
+      orderBy(
+        recipes.data.map((recipe) => ({ recipe, match: [] })),
+        [
+          (x) => x.recipe.archived_at != null,
+          (x) => x.recipe.name.toUpperCase(),
+        ],
+      )
 
-  const normalResults = results.recipes
-    .filter((result) => !result.recipe.archived_at)
-    .map((result, index) => (
-      <RecipeItem
-        {...result.recipe}
-        index={index}
-        match={result.match}
-        drag={props.drag}
-        key={result.recipe.id}
-      />
-    ))
-  const archivedResults = results.recipes
-    .filter((result) => result.recipe.archived_at)
-    .map((result, index) => (
-      <RecipeItem
-        {...result.recipe}
-        index={index}
-        match={result.match}
-        drag={props.drag}
-        key={result.recipe.id}
-      />
-    ))
+  const recipeItems = results.map((result, index) => (
+    <RecipeItem
+      {...result.recipe}
+      index={index}
+      match={result.match}
+      drag={props.drag}
+      key={result.recipe.id}
+    />
+  ))
 
-  if (results.recipes.length === 0 && props.query === "") {
+  if (recipes.data.length === 0) {
     return <AddRecipeCallToAction />
   }
+
+  const archivedCount = (countOn ?? 0) - (countOff ?? 0)
 
   return (
     <RecipeScroll scroll={props.scroll}>
       <div className="mb-2 flex flex-wrap justify-between">
         <div className="mr-2 text-[14px]">
-          results: {normalResults.length + archivedResults.length}{" "}
-          {archivedResults.length > 0 && (
-            <>({archivedResults.length} archived)</>
-          )}
+          matches: {algoliaResults?.nbHits || 0}
         </div>
         <div className="text-[14px]">
           <label>
-            show all:
+            include archived ({archivedCount}):
             <CheckBox
-              onChange={() => {
-                setShowArchived((s) => !s)
+              onChange={(event) => {
+                refine({ isRefined: !event.target.checked })
               }}
-              checked={showArchived}
               name="optional"
               className="ml-1 mr-2"
             />
@@ -147,45 +164,24 @@ function RecipeList(props: IRecipeList) {
         </div>
       </div>
       <RecipeGrid>
-        <Results recipes={normalResults} query={props.query} />
+        <Results recipes={recipeItems} query={"props.query"} />
       </RecipeGrid>
-      {archivedResults.length > 0 && showArchived ? (
-        <>
-          <div className="flex items-center">
-            <hr className="grow" />
-            {/* TODO: Fix this the next time the file is edited. */}
-            {/* eslint-disable-next-line react/forbid-elements */}
-            <b className="m-4">Archived Recipes</b>
-            <hr className="grow" />
-          </div>
-          <RecipeGrid>
-            <Results recipes={archivedResults} query={props.query} />
-          </RecipeGrid>
-        </>
-      ) : null}
     </RecipeScroll>
   )
 }
 
-function getSearch(qs: string): string {
-  const params = new URLSearchParams(qs)
-  const searchQuery = params.get("search")
-  if (searchQuery != null && typeof searchQuery === "string") {
-    return decodeURIComponent(searchQuery)
-  }
-  const tagParam = params.get("tag")
-  if (typeof tagParam === "string") {
-    return `tag:${tagParam}`
-  }
-  const recipeIdParam = params.get("recipeId")
-  if (recipeIdParam == null || Array.isArray(recipeIdParam)) {
-    return ""
-  }
-  const recipeId = parseIntOrNull(recipeIdParam)
-  if (recipeId == null) {
-    return ""
-  }
-  return `recipeId:${recipeId}`
+function Search({ noPadding }: { noPadding: boolean | undefined }) {
+  const { query, refine } = useSearchBox()
+  return (
+    <SearchInput
+      value={query}
+      className={clx(noPadding ? "" : "mb-2")}
+      onChange={(e) => {
+        refine(e.target.value)
+      }}
+      placeholder="search"
+    />
+  )
 }
 
 // TODO(sbdchd): this really shouldn't be shared like it is
@@ -198,30 +194,18 @@ export function RecipeSearchList({
   readonly drag?: boolean
   readonly noPadding?: boolean
 }) {
-  const [query, setQuery] = useState(() => getSearch(window.location.search))
-  const history = useHistory()
+  const searchClient = useSearchClient()
 
-  useEffect(() => {
-    if (query === "") {
-      removeQueryParams(history, ["search"])
-    } else {
-      setQueryParams(history, { search: query })
-    }
-  }, [query, history])
-
-  const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value)
+  if (!searchClient) {
+    return null
   }
 
   return (
-    <div className={clx(noPadding ? "" : "ml-auto mr-auto max-w-[1000px]")}>
-      <SearchInput
-        value={query}
-        className={clx(noPadding ? "" : "mb-2")}
-        onChange={handleQueryChange}
-        placeholder="search • optionally prepended a tag, 'author:' 'name:' 'ingredient:"
-      />
-      <RecipeList query={query} drag={drag} scroll={scroll} />
-    </div>
+    <InstantSearch searchClient={searchClient} indexName="recipes">
+      <div className={clx(noPadding ? "" : "ml-auto mr-auto max-w-[1000px]")}>
+        <Search noPadding={noPadding} />
+        <RecipeList drag={drag} scroll={scroll} />
+      </div>
+    </InstantSearch>
   )
 }
