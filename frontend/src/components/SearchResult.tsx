@@ -1,3 +1,14 @@
+import { Hit } from "instantsearch.js"
+import {
+  Highlight,
+  HighlightProps,
+  InstantSearch,
+  useHits,
+  UseHitsProps,
+  useInstantSearch,
+  useSearchBox,
+  UseSearchBoxProps,
+} from "react-instantsearch"
 import { Link } from "react-router-dom"
 
 import { clx } from "@/classnames"
@@ -14,35 +25,38 @@ const styleSuggestionInfo = clx(
   stylesSuggestion,
 )
 
+function CustomHighlight(props: { hit: Hit; attribute: string }) {
+  return (
+    <Highlight
+      hit={props.hit}
+      attribute={props.attribute}
+      // replace default <mark/> attribute with span to remove yellow highlight.
+      highlightedTagName="span"
+      classNames={{ highlighted: "font-bold" }}
+    />
+  )
+}
+
 export function SearchResult({
   isLoading,
   searchResults,
-  searchQuery,
   onClick,
 }: {
-  searchQuery: string
   isLoading: boolean
   onClick?: () => void
   searchResults: {
     readonly recipe: RecipeListItem
-    readonly match: Match[]
+    readonly hit: Hit
   }[]
 }) {
+  const { indexUiState } = useInstantSearch()
   const suggestions = searchResults
     .map((result, index) => {
-      const { recipe, match: matches } = result
-
-      const nameMatch = matches.find((x) => x.kind === "name")
-      const ingredientMatch = matches.find((x) => x.kind === "ingredient")
-      const tagMatch = matches.find((x) => x.kind === "tag")
-      const authorMatch = matches.find((x) => x.kind === "author")
+      const { recipe, hit } = result
 
       return (
         <Link
           key={recipe.id}
-          onClick={() => {
-            void searchClickCreate({ matches, query: searchQuery, recipe })
-          }}
           to={pathRecipeDetail({ recipeId: recipe.id.toString() })}
           className={clx(
             stylesSuggestion,
@@ -54,24 +68,41 @@ export function SearchResult({
             <span
               className={clx(
                 "grow-0 overflow-x-hidden text-ellipsis whitespace-pre",
-                nameMatch != null && "font-bold",
               )}
             >
-              {recipe.name}{" "}
+              <CustomHighlight hit={hit} attribute="name" />{" "}
             </span>
             {recipe.author && (
               <span className="grow">
                 by{" "}
-                <span className={clx(authorMatch != null && "font-bold")}>
-                  {recipe.author}
+                <span>
+                  <CustomHighlight hit={hit} attribute="author" />
                 </span>
               </span>
             )}
           </div>
-          {ingredientMatch != null ? (
-            <div className="ml-4 font-bold">{ingredientMatch.value}</div>
-          ) : null}
-          {tagMatch != null ? <Tag>{tagMatch.value}</Tag> : null}
+          {hit._highlightResult?.["ingredients"]?.map(
+            (ingredientHit, index) => {
+              if (ingredientHit.name.matchLevel === "none") {
+                return null
+              }
+
+              return (
+                <div className="ml-4" key={index}>
+                  <CustomHighlight
+                    hit={hit}
+                    attribute={`ingredients.${index}.name`}
+                  />
+                </div>
+              )
+            },
+          )}
+          {hit._highlightResult?.["tag"] != null &&
+            hit._highlightResult["tag"].matchLevel !== "none" && (
+              <Tag>
+                <Highlight hit={hit} attribute="tag" />
+              </Tag>
+            )}
         </Link>
       )
     })
@@ -100,7 +131,9 @@ export function SearchResult({
             <Link
               to={{
                 pathname: pathRecipesList({}),
-                search: `search=${encodeURIComponent(searchQuery)}`,
+                search: `search=${encodeURIComponent(
+                  indexUiState.query ?? "",
+                )}`,
               }}
               data-testid="search browse"
             >

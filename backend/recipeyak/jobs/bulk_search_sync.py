@@ -42,6 +42,7 @@ async def job(config: Config) -> None:
             'source', source,
             'time', time,
             'servings', servings,
+            'archived', archived_at is distinct from null,
             'archived_at', archived_at,
             'tags', tags,
             'team_id', team_id,

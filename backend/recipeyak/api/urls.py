@@ -1,4 +1,5 @@
 from recipeyak.api.ably_detail_view import ably_detail_view
+from recipeyak.api.algolia_detail_view import algolia_detail_view
 from recipeyak.api.base.router import route, routes
 from recipeyak.api.calendar_delete_view import calendar_delete_view
 from recipeyak.api.calendar_generate_link_view import generate_link
@@ -94,6 +95,11 @@ urlpatterns = routes(
         "api/v1/auth/ably/",
         method="get",
         view=ably_detail_view,
+    ),
+    route(
+        "api/v1/auth/algolia/",
+        method="get",
+        view=algolia_detail_view,
     ),
     route(
         "api/v1/auth/password/change/",
