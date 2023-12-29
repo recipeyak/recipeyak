@@ -7,7 +7,7 @@ from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import RequestParams
-from recipeyak.api.user_get_view import serialize_user
+from recipeyak.api.user_retrieve_view import serialize_user
 
 THEMES = Literal["light", "autumn", "solarized", "dark", "dark_dimmed"]
 THEME_MODE = Literal["single", "sync_with_system"]

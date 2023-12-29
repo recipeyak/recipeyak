@@ -11,7 +11,7 @@ from rest_framework.response import Response
 
 from recipeyak.api.base.request import AnonymousRequest
 from recipeyak.api.base.serialization import RequestParams
-from recipeyak.api.user_get_view import serialize_user
+from recipeyak.api.user_retrieve_view import serialize_user
 from recipeyak.models.user import User
 
 if TYPE_CHECKING:

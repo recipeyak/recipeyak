@@ -29,13 +29,13 @@ from recipeyak.api.recipe_bot_detail_view import recipe_bot_detail_view
 from recipeyak.api.recipe_create_view import recipe_create_view
 from recipeyak.api.recipe_delete_view import recipe_delete_view
 from recipeyak.api.recipe_list_view import recipe_list_view
+from recipeyak.api.recipe_recently_created_view import (
+    recipe_recently_created_view,
+)
 from recipeyak.api.recipe_recently_viewed_view import recipe_recently_viewed_view
 from recipeyak.api.recipe_retrieve_view import recipe_retrieve_view
 from recipeyak.api.recipe_timeline_view import recipe_timline_view
 from recipeyak.api.recipe_update_view import recipe_update_view
-from recipeyak.api.recipes_recently_created_view import (
-    recipe_recently_created_view,
-)
 from recipeyak.api.scheduled_recipe_create_view import scheduled_recipe_create_view
 from recipeyak.api.search_click_create_view import search_click_create_view
 from recipeyak.api.section_create_view import section_create_view
@@ -83,7 +83,7 @@ urlpatterns = routes(
     route(
         "api/v1/members/<int:member_id>/",
         method="delete",
-        view=team_member_delete_view,
+        view=member_delete_view,
     ),
     route(
         # TODO(2024-01-28): remove this dupe endpoint
@@ -94,7 +94,7 @@ urlpatterns = routes(
     route(
         "api/v1/members/<int:member_id>/",
         method="patch",
-        view=team_member_update_view,
+        view=member_update_view,
     ),
     route(
         "api/v1/auth/login/",

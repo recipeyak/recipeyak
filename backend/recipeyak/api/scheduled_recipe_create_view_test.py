@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from recipeyak.models import Recipe, ScheduledRecipe, ScheduleEvent, Team, User
+from recipeyak.models.membership import Membership
 
 pytestmark = pytest.mark.django_db
 

@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
-from recipeyak.api.calendar_list_get_view import get_cal_settings
+from recipeyak.api.calendar_list_view import get_cal_settings
 from recipeyak.models import Membership, get_random_ical_id, get_team
 
 
