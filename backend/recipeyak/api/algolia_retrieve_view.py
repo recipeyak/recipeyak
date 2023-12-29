@@ -3,13 +3,11 @@ from __future__ import annotations
 import asyncio
 
 from algoliasearch.search_client import SearchClient
-from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
+from django.http import JsonResponse
 
 from recipeyak import config
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.team_update_view import get_teams
 
 
@@ -27,15 +25,14 @@ async def get_token(team_ids: list[int]) -> str:
         )
 
 
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def algolia_detail_view(request: AuthedRequest) -> Response:
+@endpoint()
+def algolia_retrieve_view(request: AuthedHttpRequest) -> JsonResponse:
     # NOTE: this isn't really scalable if the user has a lot of teams.
     team_ids = list(get_teams(user=request.user).values_list("id", flat=True))
-    return Response(
+    return JsonResponse(
         {
             "app_id": config.ALGOLIA_APPLICATION_ID,
             "api_key": asyncio.run(get_token(team_ids=team_ids)),
         },
-        status=status.HTTP_200_OK,
+        status=200,
     )

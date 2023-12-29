@@ -31,65 +31,80 @@ async def job(config: Config) -> None:
     ) as client:
         index = client.init_index("recipes")
         pg = await asyncpg.connect(dsn=config.DATABASE_URL)
-        res = await pg.fetch(
-            """
-    SELECT
-        json_build_object(
-            'objectID', id,
-            'id', id,
-            'name', name,
-            'author', author,
-            'source', source,
-            'time', time,
-            'servings', servings,
-            'archived', archived_at is distinct from null,
-            'archived_at', archived_at,
-            'tags', tags,
-            'team_id', team_id,
-            'primary_image_url', (
-                select 'https://images-cdn.recipeyak.com/' || key from core_upload
-                where core_upload.id = core_recipe.primary_image_id
-            ),
-            'scheduled_count', (
-                SELECT
-                    count(*)
-                FROM
-                    core_scheduledrecipe
-                WHERE
-                    core_scheduledrecipe.recipe_id = core_recipe.id
-            ),
-            'ingredients', (
-                SELECT
-                    json_agg(ingredient)
-                FROM (
-                    SELECT
-                        json_build_object(
-                            'id', id,
-                            'description', "description",
-                            'quantity_name', "quantity" || ' ' || "name",
-                            'quantity_name_description', "quantity" || ' ' || "name" || ', ' || "description",
-                            'recipe_id', "recipe_id",
-                            'quantity', "quantity",
-                            'name', "name",
-                            'optional', "optional"
-                        ) AS ingredient
-                    FROM
-                        core_ingredient
-                    WHERE
-                        recipe_id = core_recipe.id
-                    ORDER BY
-                        position ASC
-                ) sub
+        async with pg.transaction():
+            recipes_to_update = await pg.fetch(
+                """
+select id, recipe_id
+from recipe_index_queue
+"""
             )
-        ) recipe
-    FROM
-        core_recipe
-    WHERE
-        team_id IS NOT NULL;
-    """
-        )
-        objects = [json.loads(row["recipe"]) for row in res]
-        await index.save_objects_async(objects)
+            res = await pg.fetch(
+                """
+        SELECT
+            json_build_object(
+                'objectID', id,
+                'id', id,
+                'name', name,
+                'author', author,
+                'source', source,
+                'time', time,
+                'servings', servings,
+                'archived', archived_at is distinct from null,
+                'archived_at', archived_at,
+                'tags', tags,
+                'team_id', team_id,
+                'primary_image_url', (
+                    select 'https://images-cdn.recipeyak.com/' || key from core_upload
+                    where core_upload.id = core_recipe.primary_image_id
+                ),
+                'scheduled_count', (
+                    SELECT
+                        count(*)
+                    FROM
+                        core_scheduledrecipe
+                    WHERE
+                        core_scheduledrecipe.recipe_id = core_recipe.id
+                ),
+                'ingredients', (
+                    SELECT
+                        json_agg(ingredient)
+                    FROM (
+                        SELECT
+                            json_build_object(
+                                'id', id,
+                                'description', "description",
+                                'quantity_name', "quantity" || ' ' || "name",
+                                'quantity_name_description', "quantity" || ' ' || "name" || ', ' || "description",
+                                'recipe_id', "recipe_id",
+                                'quantity', "quantity",
+                                'name', "name",
+                                'optional', "optional"
+                            ) AS ingredient
+                        FROM
+                            core_ingredient
+                        WHERE
+                            recipe_id = core_recipe.id
+                        ORDER BY
+                            position ASC
+                    ) sub
+                )
+            ) recipe
+        FROM
+            core_recipe
+        WHERE
+            team_id IS NOT NULL
+            and core_recipe.id = ANY($1);
+        """,
+                [x["recipe_id"] for x in recipes_to_update],
+            )
+            objects = [json.loads(row["recipe"]) for row in res]
+            await index.save_objects_async(objects)
+            recipes_to_update = await pg.fetch(
+                """
+delete from recipe_index_queue where id = ANY($1)
+""",
+                [x["id"] for x in recipes_to_update],
+            )
 
 
 def main() -> None:
