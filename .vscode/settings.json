@@ -68,12 +68,6 @@
   "python.testing.promptToConfigure": false,
   "explorer.excludeGitIgnore": true,
   "editor.detectIndentation": false,
-  "mypy-type-checker.cwd": "${workspaceFolder}/backend",
-  "mypy-type-checker.importStrategy": "fromEnvironment",
-  "mypy-type-checker.interpreter": [
-    "${workspaceFolder}/backend/.venv/bin/python3"
-  ],
-  "mypy-type-checker.args": ["--config-file=pyproject.toml"],
   "prettier.ignorePath": "frontend/.prettierignore",
   "search.useParentIgnoreFiles": true,
   "search.useGlobalIgnoreFiles": true,

@@ -50,15 +50,11 @@ function AddRecipeCallToAction() {
 
 function NoMatchingRecipe({ query }: { readonly query: string }) {
   return (
-    // eslint-disable-next-line react/forbid-elements
-    <p className="col-span-full justify-self-center [word-break:break-word]">
+    <div className="col-span-full justify-self-center [word-break:break-word]">
       No recipes found matching <strong>{query}</strong>
-    </p>
+    </div>
   )
 }
-
-const NAV_HEIGHT = "65px"
-const SEARCH_AND_TAB_HEIGHT = "30px"
 
 const RecipeScroll = styled.div<{ scroll: boolean | undefined }>`
   // we only enable scrolling when not at the small width (aka mobile), since
@@ -66,7 +62,7 @@ const RecipeScroll = styled.div<{ scroll: boolean | undefined }>`
   ${(p) =>
     p.scroll &&
     `@media (min-width: ${p.theme.small}) {
-       height: calc(100vh - (${NAV_HEIGHT} + ${SEARCH_AND_TAB_HEIGHT}));
+       height: calc(100vh - 9rem);
        overflow: auto;
        // edges of the recipe boxes get cut without extra padding
        padding: 0.125rem; 
@@ -242,8 +238,8 @@ function CustomRefinement({
     limit: 5,
   })
   return (
-    <div className="flex  max-h-48 min-h-48 flex-col">
-      <div className="font-bold">{label}</div>
+    <div className="flex max-h-48 min-h-48 flex-col">
+      <div className="font-medium">{label}</div>
       <SearchInput
         placeholder="search..."
         onChange={(e) => {
@@ -284,7 +280,7 @@ function ArchivedToggle() {
   })
   return (
     <div>
-      <div className="font-bold">Archived Recipes</div>
+      <div className="font-medium">Archived Recipes</div>
       <div className="flex items-center gap-2">
         <input
           id="archived_recipes"
@@ -312,7 +308,7 @@ function Matches() {
   })
 
   return (
-    <div>
+    <div className="text-sm">
       matches: {algoliaResults?.nbHits || 0} (archived:{" "}
       {(countOn ?? 0) - (algoliaResults?.nbHits ?? 0)})
     </div>
@@ -362,7 +358,7 @@ export function RecipeSearchList({
       <div className={clx(noPadding ? "" : "ml-auto mr-auto max-w-[1000px]")}>
         <Search noPadding={noPadding} />
         <div className="flex flex-col gap-2">
-          <div className="flex  gap-2 ">
+          <div className="flex gap-1">
             <div className="flex flex-col">
               {showAdvanced && (
                 <div className="flex gap-2">
