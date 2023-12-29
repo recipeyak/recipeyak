@@ -1,0 +1,14 @@
+[Unit]
+Description=Runs algolia sync job
+[Service]
+ExecStart=/usr/bin/docker run \
+        --rm \
+        --network host \
+        --log-driver=journald \
+        --env-file=/root/.env-production \
+        recipeyak/django:{{GIT_SHA}} \
+        ./.venv/bin/python -m recipeyak.jobs.bulk_search_sync
+# kill after 2 minutes
+TimeoutSec=120
+[Install]
+WantedBy=multi-user.target
