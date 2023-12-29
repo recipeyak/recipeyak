@@ -3,12 +3,10 @@ from __future__ import annotations
 from datetime import date
 
 from django.shortcuts import get_object_or_404
-from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
+from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.calendar_serialization import serialize_scheduled_recipe
 from recipeyak.api.team_update_view import get_teams
@@ -21,12 +19,11 @@ class ScheduledRecipeCreateParams(RequestParams):
     on: date
 
 
-@api_view(["POST"])
-@permission_classes([IsAuthenticated])
+@endpoint()
 def scheduled_recipe_create_view(
     request: AuthedRequest, team_id: object = ()
-) -> Response:
-    params = ScheduledRecipeCreateParams.parse_obj(request.data)
+) -> JsonResponse:
+    params = ScheduledRecipeCreateParams.parse_raw(request.body)
 
     team = get_team(request)
 
@@ -42,7 +39,7 @@ def scheduled_recipe_create_view(
     )
 
     publish_calendar_event(res, team_id=team.id)
-    return Response(
+    return JsonResponse(
         res,
-        status=status.HTTP_201_CREATED,
+        status=201,
     )
