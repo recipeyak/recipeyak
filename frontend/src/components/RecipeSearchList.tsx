@@ -338,7 +338,27 @@ export function RecipeSearchList({
   }
 
   return (
-    <InstantSearch searchClient={searchClient} indexName="recipes">
+    <InstantSearch
+      searchClient={searchClient}
+      indexName="recipes"
+      // use custom routing config so we can have `search` be our query parameter.
+      // https://www.algolia.com/doc/guides/building-search-ui/going-further/routing-urls/react-hooks/
+      routing={{
+        stateMapping: {
+          stateToRoute(uiState) {
+            const indexUiState = uiState["recipes"]
+            return { search: indexUiState.query }
+          },
+          routeToState(routeState) {
+            return {
+              ["recipes"]: {
+                query: routeState.search,
+              },
+            }
+          },
+        },
+      }}
+    >
       <div className={clx(noPadding ? "" : "ml-auto mr-auto max-w-[1000px]")}>
         <Search noPadding={noPadding} />
         <div className="flex flex-col gap-2">
