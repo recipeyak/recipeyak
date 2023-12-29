@@ -33,6 +33,9 @@ def algolia_detail_view(request: AuthedRequest) -> Response:
     # NOTE: this isn't really scalable if the user has a lot of teams.
     team_ids = list(get_teams(user=request.user).values_list("id", flat=True))
     return Response(
-        {"key": asyncio.run(get_token(team_ids=team_ids))},
+        {
+            "app_id": config.ALGOLIA_APPLICATION_ID,
+            "api_key": asyncio.run(get_token(team_ids=team_ids)),
+        },
         status=status.HTTP_200_OK,
     )
