@@ -6,6 +6,7 @@ import { clx } from "@/classnames"
 import { CustomHighlight } from "@/components/CustomHighlight"
 import { pathRecipeDetail, pathRecipesList } from "@/paths"
 import { RecipeListItem } from "@/queries/recipeList"
+import { toURL } from "@/urls"
 
 const stylesSuggestion = "p-1 overflow-x-hidden whitespace-nowrap text-ellipsis"
 
@@ -34,7 +35,11 @@ export function SearchResult({
       return (
         <Link
           key={recipe.id}
-          to={pathRecipeDetail({ recipeId: recipe.id.toString() })}
+          to={
+            pathRecipeDetail({ recipeId: recipe.id.toString() }) +
+            "-" +
+            toURL(recipe.name)
+          }
           className={clx(
             stylesSuggestion,
             index === 0 && "underline",
