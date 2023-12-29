@@ -4,6 +4,7 @@ from rest_framework.request import Request
 from recipeyak.models import User
 
 
+# TODO: switch to HttpRequest subclassing
 class AuthedRequest(Request):
     user: User
 

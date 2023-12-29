@@ -2,13 +2,12 @@ from datetime import date, datetime
 
 import pydantic
 from django.db import connection
+from django.http import Http404
 from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.exceptions import NotFound
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
+from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.unwrap import unwrap
 from recipeyak.models.note import Note
 from recipeyak.models.scheduled_recipe import ScheduledRecipe
@@ -267,12 +266,11 @@ where a.user_id = %(user_a_id)s
         return cursor.fetchone() is not None
 
 
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def user_retrieve_by_id_view(request: AuthedRequest, user_id: str) -> Response:
+@endpoint()
+def user_retrieve_by_id_view(request: AuthedRequest, user_id: str) -> JsonResponse:
     user = get_object_or_404(User, id=user_id)
     if not has_team_connection(user_id, request.user.id):
-        raise NotFound()
+        raise Http404
     recipes_added_count = get_recipes_added_count(user_id=user_id)
     recipes_archived_count = get_recipes_archived_count(user_id=user_id)
     comments_count = get_comments_count(user_id=user_id)
@@ -280,7 +278,7 @@ def user_retrieve_by_id_view(request: AuthedRequest, user_id: str) -> Response:
     photos_count = get_photos_count(user_id=user_id)
     primary_photos_count = get_primary_photos_count(user_id=user_id)
     activity = get_activity(user_id=user_id)
-    return Response(
+    return JsonResponse(
         UserDetailByIdResponse(
             id=user.id,
             name=user.name,
