@@ -247,6 +247,7 @@ function Search() {
   })
 
   const resetForm = () => {
+    refine("")
     setIsClosed(false)
   }
 
