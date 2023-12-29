@@ -71,4 +71,25 @@ DROP TRIGGER ingredient_modified_trigger on  core_ingredient;
 DROP function update_core_ingredient_indexing;
 """,
         ),
+        migrations.RunSQL(
+            """
+CREATE OR REPLACE FUNCTION notify_index_updated()
+RETURNS TRIGGER AS $$
+BEGIN
+    notify recipe_enqueued_for_indexing;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+                          
+CREATE TRIGGER notify_index_updated_trigger
+AFTER INSERT OR UPDATE ON recipe_index_queue
+FOR EACH STATEMENT
+EXECUTE FUNCTION notify_index_updated();
+""",
+            """
+DROP TRIGGER notify_index_updated_trigger on recipe_index_queue;
+DROP function notify_index_updated;
+
+""",
+        ),
     ]

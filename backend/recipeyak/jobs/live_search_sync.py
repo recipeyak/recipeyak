@@ -1,5 +1,6 @@
 import asyncio
 import json
+import random
 import time
 
 import asyncpg
@@ -25,20 +26,19 @@ class Config(BaseSettings):
     ALGOLIA_ADMIN_API_KEY: str
 
 
-async def job(config: Config) -> None:
+async def process_queue(connection: asyncpg.Connection, config: Config) -> int:
     async with SearchClient.create(
         app_id=config.ALGOLIA_APPLICATION_ID, api_key=config.ALGOLIA_ADMIN_API_KEY
     ) as client:
         index = client.init_index("recipes")
-        pg = await asyncpg.connect(dsn=config.DATABASE_URL)
-        async with pg.transaction():
-            recipes_to_update = await pg.fetch(
+        async with connection.transaction():
+            recipes_to_update = await connection.fetch(
                 """
 select id, recipe_id
 from recipe_index_queue
 """
             )
-            res = await pg.fetch(
+            res = await connection.fetch(
                 """
         SELECT
             json_build_object(
@@ -99,15 +99,42 @@ from recipe_index_queue
             )
             objects = [json.loads(row["recipe"]) for row in res]
             await index.save_objects_async(objects)
-            recipes_to_update = await pg.fetch(
+            ids_to_delete = [x["id"] for x in recipes_to_update]
+            recipes_to_update = await connection.fetch(
                 """
 delete from recipe_index_queue where id = ANY($1)
 """,
-                [x["id"] for x in recipes_to_update],
+                ids_to_delete,
             )
+            return len(ids_to_delete)
 
 
-def main() -> None:
+async def job(config: Config, single_run: bool) -> None:
+    pg = await asyncpg.connect(dsn=config.DATABASE_URL)
+
+    if single_run:
+        count = await process_queue(pg, config=config)
+        logger.info("processed rows", count=count)
+        return
+
+    async def callback(
+        conn: asyncpg.Connection,
+        pid: int,
+        channel: str,
+        payload: object,
+    ) -> None:
+        count = await process_queue(conn, config=config)
+        logger.info("processed rows", count=count)
+
+    await pg.add_listener("recipe_enqueued_for_indexing", callback)
+
+    while True:
+        await asyncio.sleep(0.5)
+        if random.random() < 0.005:
+            logger.info("tick")
+
+
+def main(single_run: bool = False) -> None:
     logger.info("initiate")
     sentry_sdk.init(
         send_default_pii=True,
@@ -115,8 +142,7 @@ def main() -> None:
     )
     config = Config()
     start = time.monotonic()
-    with sentry_sdk.monitor(monitor_slug="bulk-search-sync"):
-        asyncio.run(job(config=config))
+    asyncio.run(job(config=config, single_run=single_run))
     logger.info("done!", total_time_sec=time.monotonic() - start)
     logger.info("exiting")
 
