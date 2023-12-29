@@ -161,7 +161,6 @@ function AuthButtons() {
 }
 
 function NavButtons() {
-  const teamId = useTeamId()
   return (
     <div className="relative flex items-center justify-center gap-2 justify-self-end">
       <div className="flex print:!hidden sm:gap-2">
@@ -180,7 +179,7 @@ function NavButtons() {
           Browse
         </NavLink>
         <NavLink
-          to={pathSchedule({ teamId: teamId.toString() })}
+          to={pathSchedule({})}
           className={navItemCss}
           activeClassName={activeNavItemCss}
         >
