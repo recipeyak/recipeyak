@@ -1,8 +1,9 @@
 import { Hit } from "instantsearch.js"
-import { Highlight, useInstantSearch } from "react-instantsearch"
+import { useInstantSearch } from "react-instantsearch"
 import { Link } from "react-router-dom"
 
 import { clx } from "@/classnames"
+import { CustomHighlight } from "@/components/CustomHighlight"
 import { Tag } from "@/components/Tag"
 import { pathRecipeDetail, pathRecipesList } from "@/paths"
 import { RecipeListItem } from "@/queries/recipeList"
@@ -13,18 +14,6 @@ const styleSuggestionInfo = clx(
   "text-center text-[var(--color-text-muted)]",
   stylesSuggestion,
 )
-
-function CustomHighlight(props: { hit: Hit; attribute: string }) {
-  return (
-    <Highlight
-      hit={props.hit}
-      attribute={props.attribute}
-      // replace default <mark/> attribute with span to remove yellow highlight.
-      highlightedTagName="span"
-      classNames={{ highlighted: "font-bold" }}
-    />
-  )
-}
 
 export function SearchResult({
   isLoading,
@@ -89,7 +78,7 @@ export function SearchResult({
           {hit._highlightResult?.["tag"] != null &&
             hit._highlightResult["tag"].matchLevel !== "none" && (
               <Tag>
-                <Highlight hit={hit} attribute="tag" />
+                <CustomHighlight hit={hit} attribute="tag" />
               </Tag>
             )}
         </Link>

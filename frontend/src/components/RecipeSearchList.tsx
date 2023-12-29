@@ -1,4 +1,4 @@
-import { orderBy, sortBy } from "lodash-es"
+import { orderBy } from "lodash-es"
 import {
   InstantSearch,
   useHits,
@@ -12,9 +12,14 @@ import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { CheckBox, SearchInput } from "@/components/Forms"
 import { Loader } from "@/components/Loader"
-import RecipeItem from "@/pages/recipe-list/RecipeItem"
+import RecipeItemDraggable, {
+  RecipeListItem,
+} from "@/pages/recipe-list/RecipeItem"
 import { pathRecipeAdd } from "@/paths"
-import { RecipeListItem, useRecipeList } from "@/queries/recipeList"
+import {
+  RecipeListItem as RecipeListItemT,
+  useRecipeList,
+} from "@/queries/recipeList"
 import { useSearchClient } from "@/queries/useSearchClient"
 import { styled } from "@/theme"
 
@@ -107,7 +112,7 @@ function RecipeList(props: {
   if (!recipes.isSuccess) {
     return <Loader />
   }
-  const recipeMap = recipes.data.reduce<Record<string, RecipeListItem>>(
+  const recipeMap = recipes.data.reduce<Record<string, RecipeListItemT>>(
     (map, recipe) => {
       map[recipe.id] = recipe
       return map
@@ -117,26 +122,54 @@ function RecipeList(props: {
 
   const results = query
     ? hits.map((hit) => {
-        return { recipe: recipeMap[hit.objectID], match: [] }
+        return { recipe: recipeMap[hit.objectID], hit }
       })
     : // if not query, show everything.
       orderBy(
-        recipes.data.map((recipe) => ({ recipe, match: [] })),
+        recipes.data.map((recipe) => ({
+          recipe,
+          hit: {
+            __position: 0,
+            objectID: recipe.id.toString(),
+            _highlightResult: {
+              author: {
+                value: recipe.author ?? "",
+                matchedWords: [],
+                matchLevel: "none" as const,
+              },
+              name: {
+                value: recipe.name,
+                matchedWords: [],
+                matchLevel: "none" as const,
+              },
+            },
+          },
+        })),
         [
           (x) => x.recipe.archived_at != null,
           (x) => x.recipe.name.toUpperCase(),
         ],
       )
 
-  const recipeItems = results.map((result, index) => (
-    <RecipeItem
-      {...result.recipe}
-      index={index}
-      match={result.match}
-      drag={props.drag}
-      key={result.recipe.id}
-    />
-  ))
+  const recipeItems = results.map((result, index) => {
+    if (!props.drag) {
+      return (
+        <RecipeListItem
+          key={index}
+          index={result.recipe.id}
+          hit={result.hit}
+          {...result.recipe}
+        />
+      )
+    }
+    return (
+      <RecipeItemDraggable
+        {...result.recipe}
+        hit={result.hit}
+        key={result.recipe.id}
+      />
+    )
+  })
 
   if (recipes.data.length === 0) {
     return <AddRecipeCallToAction />
