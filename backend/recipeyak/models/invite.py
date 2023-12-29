@@ -43,9 +43,6 @@ class Invite(CommonInfo):
     class Meta:
         db_table = "core_invite"
 
-    def __str__(self) -> str:
-        return f"<Invite • Membership: {self.membership}>"
-
     @property
     def user(self) -> User:
         return self.membership.user

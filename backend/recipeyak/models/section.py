@@ -22,9 +22,6 @@ class Section(CommonInfo):
     title = models.CharField(
         max_length=255, help_text="name of the ingredient section group"
     )
-    _deprecated_position = models.FloatField(
-        null=True, db_column="_deprecated_position"
-    )
     position = models.TextField(db_column="position")
 
     class Meta:

@@ -3,7 +3,6 @@ from __future__ import annotations
 from datetime import date
 
 import pydantic
-from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
 from recipeyak.api.base.decorators import endpoint
@@ -30,9 +29,9 @@ def recipe_timline_view(request: AuthedHttpRequest, recipe_id: int) -> JsonRespo
     if not has_recipe_access(recipe=recipe, user=user):
         return JsonResponse(status=403)
 
-    scheduled_recipes = ScheduledRecipe.objects.filter(
-        Q(team=team) | Q(user=user)
-    ).filter(recipe=recipe_id)
+    scheduled_recipes = ScheduledRecipe.objects.filter(team=team).filter(
+        recipe=recipe_id
+    )
 
     return JsonResponse(
         [RecipeTimelineResponse(id=s.id, on=s.on) for s in scheduled_recipes]

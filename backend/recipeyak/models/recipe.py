@@ -1,10 +1,8 @@
 from __future__ import annotations
 
 from datetime import date
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.db.models.manager import Manager
@@ -34,39 +32,10 @@ class Recipe(CommonInfo):
     time = models.CharField(max_length=255, blank=True, null=True)
     servings = models.CharField(max_length=255, blank=True, null=True)
 
-    # deprecated
-    edits = models.IntegerField(default=0, editable=False)
-
     team = models.ForeignKey["Team"]("Team", on_delete=models.CASCADE, null=True)
-
-    # deprecated
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    owner = GenericForeignKey("content_type", "object_id")
 
     archived_at = models.DateTimeField(null=True)
 
-    # deprecated
-    cloned_at = models.DateTimeField(
-        blank=True,
-        null=True,
-        default=None,
-        help_text="If a clone, when the Recipe was cloned from a parent. Otherwise null.",
-    )
-    # deprecated
-    cloned_by = models.ForeignKey["User"](
-        "User",
-        on_delete=models.SET_NULL,
-        null=True,
-        help_text="If a clone, User who cloned the recipe.",
-    )
-    # deprecated
-    cloned_from = models.ForeignKey["Recipe"](
-        "Recipe",
-        on_delete=models.SET_NULL,
-        null=True,
-        help_text="If a clone, the parent this Recipe was cloned from.",
-    )
     tags = ArrayField(
         base_field=models.TextField(),
         null=True,
@@ -96,16 +65,3 @@ class Recipe(CommonInfo):
     timelineevent_set: RelatedManager[TimelineEvent]
     section_set: RelatedManager[Section]
     step_set: RelatedManager[Step]
-
-    def __str__(self) -> str:
-        return f"{self.name} by {self.author}"
-
-    def save(self, *args: Any, **kwargs: Any) -> None:
-        is_new = self.pk is None
-        if not is_new:
-            # we only want to increment the edits if we aren't setting the
-            # edits field specifically
-            edits_unchanged = Recipe.objects.get(pk=self.id).edits == self.edits
-            if edits_unchanged:
-                self.edits += 1
-        super().save(*args, **kwargs)

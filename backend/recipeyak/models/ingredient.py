@@ -27,18 +27,12 @@ class Ingredient(CommonInfo):
     description = models.CharField(max_length=255, blank=True)
     recipe = models.ForeignKey["Recipe"]("Recipe", on_delete=models.CASCADE)
     recipe_id: int
-    _deprecated_position = models.FloatField(
-        null=True, db_column="_deprecated_position"
-    )
     position = models.TextField(db_column="position")
     optional = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["position"]  # noqa: RUF012
         db_table = "core_ingredient"
-
-    def __str__(self) -> str:
-        return f"{self.quantity} {self.name} {self.description}"
 
     def __repr__(self) -> str:
         optional = "[optional]" if self.optional else ""

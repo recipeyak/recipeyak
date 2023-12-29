@@ -36,6 +36,3 @@ class Note(CommonInfo):
     class Meta:
         ordering = ["-created"]  # noqa: RUF012
         db_table = "core_note"
-
-    def __str__(self) -> str:
-        return self.text

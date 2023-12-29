@@ -104,7 +104,9 @@ def test_recipe_creation_for_a_team(client: Client, team: Team, user: User) -> N
 
     assert client.get(f"/api/v1/recipes/{recipe_id}/").status_code == 200
 
-    assert Team.objects.get(id=team.id).recipes.first().id == recipe_id
+    recipe = Team.objects.get(id=team.id).recipe_set.first()
+    assert recipe is not None
+    assert recipe.id == recipe_id
 
 
 def test_recipe_deletion(
@@ -450,22 +452,6 @@ def test_deleting_ingredient_from_recipe(
     assert ingredient_id not in (
         ingredient.get("id") for ingredient in res.json().get("ingredients")
     ), "ingredient was still in the recipe after being deleted"
-
-
-def test_recording_edits_for_recipes(
-    client: Client, user: User, recipe: Recipe
-) -> None:
-    """
-    ensure edits being recorded for recipes
-    """
-    client.force_login(user)
-
-    assert recipe.edits == 0
-
-    recipe.name = "A different name"
-    recipe.save()
-
-    assert recipe.edits == 1
 
 
 def test_updating_edit_recipe_via_api_empty_tags(

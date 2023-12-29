@@ -17,8 +17,6 @@ def test_ical_view_with_invalid_id(client: Client, user: User, team: Team) -> No
     We should return a 404 when a user doesn't pass the correct id for the schedule.
     """
     fake_team_id = get_random_ical_id()
-    assert str(team.ical_id) != fake_team_id
-
     res = client.get(f"/t/{team.id}/ical/{fake_team_id}/schedule.ics")
     assert res.status_code == 404
 
@@ -45,7 +43,11 @@ def test_ical_ids_consistent(
     ScheduledRecipe.objects.create(recipe=recipe, team=team, on=date(1976, 7, 6))
     ScheduledRecipe.objects.create(recipe=recipe, team=team, on=date(1976, 7, 7))
     ScheduledRecipe.objects.create(recipe=recipe, team=team, on=date(1976, 7, 10))
-    url = f"/t/{team.id}/ical/{team.ical_id}/schedule.ics"
+    membership = Membership.objects.filter(user=user).get(team=team)
+    membership.calendar_sync_enabled = True
+    membership.save()
+    ical_id = membership.calendar_secret_key
+    url = f"/t/{team.id}/ical/{ical_id}/schedule.ics"
     res = client.get(url)
     assert res.status_code == 200
 
@@ -82,7 +84,11 @@ def test_ical_view_with_correct_id(
         on=date(1976, 7, 10),
     )
 
-    url = f"/t/{team.id}/ical/{team.ical_id}/schedule.ics"
+    membership = Membership.objects.filter(user=user).get(team=team)
+    membership.calendar_sync_enabled = True
+    membership.save()
+    ical_id = membership.calendar_secret_key
+    url = f"/t/{team.id}/ical/{ical_id}/schedule.ics"
     res = client.get(url)
     assert res.status_code == 200
     assert res["Content-Type"] == "text/calendar"
@@ -145,7 +151,11 @@ def test_get_ical_view_works_with_accept_encoding(
     When the view is setup using DRF this fails and returns a 406, which
     prevents the Calendar app from using the "subscribed" calendar.
     """
-    url = f"/t/{team.id}/ical/{team.ical_id}/schedule.ics"
+    membership = Membership.objects.filter(user=user).get(team=team)
+    membership.calendar_sync_enabled = True
+    membership.save()
+    ical_id = membership.calendar_secret_key
+    url = f"/t/{team.id}/ical/{ical_id}/schedule.ics"
     res = client.get(url, HTTP_ACCEPT="text/calendar")
     assert res.status_code == 200
 
@@ -154,7 +164,11 @@ def test_head_ical(client: Client, user: User, recipe: Recipe, team: Team) -> No
     """
     HEAD should work
     """
-    url = f"/t/{team.id}/ical/{team.ical_id}/schedule.ics"
+    membership = Membership.objects.filter(user=user).get(team=team)
+    membership.calendar_sync_enabled = True
+    membership.save()
+    ical_id = membership.calendar_secret_key
+    url = f"/t/{team.id}/ical/{ical_id}/schedule.ics"
     res = client.head(url, HTTP_ACCEPT="text/calendar")
     assert res.status_code == 200
 

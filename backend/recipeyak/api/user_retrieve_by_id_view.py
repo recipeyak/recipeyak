@@ -121,7 +121,7 @@ WHERE
 
 
 def get_scheduled_count(*, user_id: str) -> int:
-    return ScheduledRecipe.objects.filter(user_id=user_id).count()
+    return ScheduledRecipe.objects.filter(created_by_id=user_id).count()
 
 
 def get_activity(*, user_id: str) -> list[Activity]:
