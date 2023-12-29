@@ -83,8 +83,6 @@ class Recipe(CommonInfo):
     primary_image_id: int
     objects = Manager["Recipe"]()
 
-    notes: QuerySet[Note]
-
     class Meta:
         db_table = "core_recipe"
 
@@ -93,6 +91,7 @@ class Recipe(CommonInfo):
             recipe=self, on=on, user=user, team=team
         )
 
+    notes: RelatedManager[Note]
     ingredient_set: RelatedManager[Ingredient]
     scheduledrecipe_set: RelatedManager[ScheduledRecipe]
     timelineevent_set: RelatedManager[TimelineEvent]
