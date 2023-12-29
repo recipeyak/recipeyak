@@ -2,6 +2,7 @@ import asyncio
 import json
 import random
 import time
+from typing import Any
 
 import asyncpg
 import sentry_sdk
@@ -26,7 +27,7 @@ class Config(BaseSettings):
     ALGOLIA_ADMIN_API_KEY: str
 
 
-async def process_queue(connection: asyncpg.Connection, config: Config) -> int:
+async def process_queue(connection: asyncpg.Connection[Any], config: Config) -> int:
     async with SearchClient.create(
         app_id=config.ALGOLIA_APPLICATION_ID, api_key=config.ALGOLIA_ADMIN_API_KEY
     ) as client:
@@ -118,7 +119,7 @@ async def job(config: Config, single_run: bool) -> None:
         return
 
     async def callback(
-        conn: asyncpg.Connection,
+        conn: asyncpg.Connection[Any],
         pid: int,
         channel: str,
         payload: object,
@@ -126,7 +127,7 @@ async def job(config: Config, single_run: bool) -> None:
         count = await process_queue(conn, config=config)
         logger.info("processed rows", count=count)
 
-    await pg.add_listener("recipe_enqueued_for_indexing", callback)
+    await pg.add_listener("recipe_enqueued_for_indexing", callback)  # type: ignore[arg-type]
 
     while True:
         await asyncio.sleep(0.5)
