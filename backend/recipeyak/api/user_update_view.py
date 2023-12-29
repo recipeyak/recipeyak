@@ -24,7 +24,7 @@ class UserUpdatePayload(RequestParams):
 
 @api_view(["PATCH"])
 @permission_classes([IsAuthenticated])
-def user_patch_view(request: AuthedRequest) -> Response:
+def user_update_view(request: AuthedRequest) -> Response:
     params = UserUpdatePayload.parse_obj(request.data)
 
     with transaction.atomic():
