@@ -1,14 +1,12 @@
 from __future__ import annotations
 
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.template import Context, Template
-from rest_framework.decorators import api_view, permission_classes, renderer_classes
-from rest_framework.permissions import AllowAny
-from rest_framework.renderers import StaticHTMLRenderer
-from rest_framework.response import Response
 from yarl import URL
 
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AnonymousHttpRequest
 from recipeyak.models.recipe import Recipe
 
 template = Template(
@@ -42,13 +40,13 @@ def _format_img_open_graph(x: str) -> str:
     )
 
 
-def _recipe_get_view(request: AuthedRequest, recipe_id: str) -> Response:
+def _recipe_get_view(request: AnonymousHttpRequest, recipe_id: str) -> HttpResponse:
     recipe = get_object_or_404(Recipe, pk=recipe_id)
 
     recipe_title = recipe.name
     if recipe.author:
         recipe_title += f" by {recipe.author}"
-    return Response(
+    return HttpResponse(
         template.render(
             Context(
                 {
@@ -65,8 +63,8 @@ def _recipe_get_view(request: AuthedRequest, recipe_id: str) -> Response:
     )
 
 
-@api_view(["GET"])
-@permission_classes([AllowAny])
-@renderer_classes([StaticHTMLRenderer])
-def recipe_bot_detail_view(request: AuthedRequest, recipe_id: str) -> Response:
+@endpoint(auth_required=False)
+def recipe_bot_detail_view(
+    request: AnonymousHttpRequest, recipe_id: str
+) -> HttpResponse:
     return _recipe_get_view(request, recipe_id)

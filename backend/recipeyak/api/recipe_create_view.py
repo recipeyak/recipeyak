@@ -5,12 +5,11 @@ import structlog
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from recipe_scrapers._exceptions import RecipeScrapersExceptions
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
 from recipeyak import ordering
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams, StrTrimmed
 from recipeyak.api.serializers.recipe import (
     serialize_recipe,
@@ -92,16 +91,15 @@ def create_recipe_from_scrape(*, scrape: ScrapeResult, team: Team) -> Recipe:
     return recipe
 
 
-@api_view(["POST"])
-@permission_classes([IsAuthenticated])
-def recipe_create_view(request: AuthedRequest) -> Response:
+@endpoint()
+def recipe_create_view(request: AuthedHttpRequest) -> JsonResponse:
     log = logger.bind(user_id=request.user.id)
-    params = RecipePostParams.parse_obj(request.data)
+    params = RecipePostParams.parse_raw(request.body)
 
     # validate params
     team = Team.objects.filter(id=params.team, membership__user=request.user).first()
     if team is None:
-        return Response(
+        return JsonResponse(
             # TODO(sbdchd): figure out error format
             {"error": True, "message": "Unknown Team"},
             status=400,
@@ -118,7 +116,7 @@ def recipe_create_view(request: AuthedRequest) -> Response:
             RecipeScrapersExceptions,
         ):
             log.info("invalid url")
-            return Response(
+            return JsonResponse(
                 {"error": True, "message": "invalid url"},
                 status=400,
             )
@@ -134,7 +132,7 @@ def recipe_create_view(request: AuthedRequest) -> Response:
             recipe=recipe,
         ).save()
 
-    return Response(
+    return JsonResponse(
         serialize_recipe(recipe=recipe),
         status=201,
     )

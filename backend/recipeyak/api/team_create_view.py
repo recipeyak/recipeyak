@@ -4,11 +4,10 @@ from typing import Literal
 
 from django.db import transaction
 from pydantic import BaseModel
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.models.invite import Invite
 from recipeyak.models.team import Team
@@ -25,10 +24,9 @@ class TeamCreateParams(RequestParams):
     level: Literal["admin", "contributor", "read"]
 
 
-@api_view(["POST"])
-@permission_classes([IsAuthenticated])
-def team_create_view(request: AuthedRequest) -> Response:
-    params = TeamCreateParams.parse_obj(request.data)
+@endpoint()
+def team_create_view(request: AuthedHttpRequest) -> JsonResponse:
+    params = TeamCreateParams.parse_raw(request.body)
     with transaction.atomic():
         team = Team.objects.create(name=params.name)
         team.force_join_admin(request.user)
@@ -36,7 +34,7 @@ def team_create_view(request: AuthedRequest) -> Response:
             Invite.objects.create_invite(
                 email=email, team=team, level=params.level, creator=request.user
             )
-    return Response(
+    return JsonResponse(
         RetrieveTeamResponse(id=team.id, name=params.name),
         status=201,
     )

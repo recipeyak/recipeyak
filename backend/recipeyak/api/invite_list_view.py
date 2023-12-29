@@ -3,11 +3,10 @@ from typing import Literal
 
 import pydantic
 from django.db import connection
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
 from recipeyak.models.user import get_avatar_url
 
 
@@ -30,9 +29,8 @@ class InviteResponse(pydantic.BaseModel):
     creator: CreatorResponse
 
 
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def invite_list_view(request: AuthedRequest) -> Response:
+@endpoint()
+def invite_list_view(request: AuthedHttpRequest) -> JsonResponse:
     with connection.cursor() as cursor:
         cursor.execute(
             """
@@ -75,4 +73,4 @@ where
                 user_email,
             ) in invite_rows
         ]
-        return Response(invites)
+        return JsonResponse(invites)

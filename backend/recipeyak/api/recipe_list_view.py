@@ -7,11 +7,10 @@ from typing import Any, NamedTuple, cast
 from django.db import connection
 from django.db.backends.utils import CursorWrapper
 from pydantic import BaseModel, Field
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
 from recipeyak.models import (
     get_team,
 )
@@ -70,9 +69,8 @@ def namedtuplefetchall(cursor: CursorWrapper) -> list[ListQueryResult]:
     return cast(list[ListQueryResult], [nt_result(*row) for row in cursor.fetchall()])
 
 
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def recipe_list_view(request: AuthedRequest) -> Response:
+@endpoint()
+def recipe_list_view(request: AuthedHttpRequest) -> JsonResponse:
     team = get_team(request.user)
     list_items = list[RecipeListItem]()
     with connection.cursor() as cursor:
@@ -156,4 +154,4 @@ where core_recipe.team_id = %(team_id)s
             )
         )
 
-    return Response(list_items)
+    return JsonResponse(list_items)

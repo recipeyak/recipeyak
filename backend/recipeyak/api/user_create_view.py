@@ -6,12 +6,10 @@ from django.contrib.auth import login
 from django.contrib.auth.password_validation import validate_password
 from django.db import transaction
 from pydantic import root_validator, validator
-from rest_framework import serializers
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
-from rest_framework.request import Request
-from rest_framework.response import Response
 
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AnonymousHttpRequest
+from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.user_retrieve_view import serialize_user
 from recipeyak.models.team import Team
@@ -32,22 +30,19 @@ class RegisterUserDetailView(RequestParams):
     def validate_email(cls, email: str) -> str:
         if User.objects.filter(email=email).first() is not None:
             msg = f"An email/password account is already associated with { email }."
-            raise serializers.ValidationError({"error": {"message": msg}})
+            raise ValueError(msg)
         return email
 
     @root_validator
     def validate(cls, data: dict[str, Any]) -> dict[str, Any]:  # type: ignore[override]
         if data["password1"] != data["password2"]:
-            raise serializers.ValidationError(
-                {"error": {"message": "The two password fields didn't match."}}
-            )
+            raise ValueError("The two password fields didn't match.")
         return data
 
 
-@api_view(["POST"])
-@permission_classes([AllowAny])
-def user_create_view(request: Request) -> Response:
-    params = RegisterUserDetailView.parse_obj(request.data)
+@endpoint(auth_required=False)
+def user_create_view(request: AnonymousHttpRequest) -> JsonResponse:
+    params = RegisterUserDetailView.parse_raw(request.body)
     with transaction.atomic():
         team = Team.objects.create(name="Personal")
         user = User()
@@ -57,6 +52,6 @@ def user_create_view(request: Request) -> Response:
         user.save()
         team.force_join_admin(user)
 
-    login(request._request, user)
+    login(request, user)
 
-    return Response({"user": serialize_user(user)}, status=201)
+    return JsonResponse({"user": serialize_user(user)}, status=201)

@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "user_sessions",
     "recipeyak.django.app.CoreConfig",
-    "rest_framework",
     "django.contrib.sites",
     "django.contrib.postgres",
 ]
@@ -62,15 +61,6 @@ sentry_sdk.init(
     traces_sample_rate=1.0,
     profiles_sample_rate=1.0,
 )
-
-REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": ("recipeyak.api.base.permissions.DisallowAny",),
-    "DEFAULT_RENDERER_CLASSES": ("recipeyak.api.base.drf_json_renderer.JSONRenderer",),
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "recipeyak.api.base.authentication.SessionAuthentication",
-    ),
-    "TEST_REQUEST_DEFAULT_FORMAT": "json",
-}
 
 # Ensure request.is_secure returns true with the correct header since we're
 # running behind a proxy

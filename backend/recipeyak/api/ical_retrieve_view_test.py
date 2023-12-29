@@ -3,7 +3,7 @@ from email.utils import parsedate_to_datetime
 from urllib.parse import urlparse
 
 import pytest
-from rest_framework.test import APIClient
+from django.test.client import Client
 
 from recipeyak.api.ical_retrieve_view import to_ical_time
 from recipeyak.models import Recipe, ScheduledRecipe, Team, User, get_random_ical_id
@@ -12,7 +12,7 @@ from recipeyak.models.membership import Membership
 pytestmark = pytest.mark.django_db
 
 
-def test_ical_view_with_invalid_id(client: APIClient, user: User, team: Team) -> None:
+def test_ical_view_with_invalid_id(client: Client, user: User, team: Team) -> None:
     """
     We should return a 404 when a user doesn't pass the correct id for the schedule.
     """
@@ -36,7 +36,7 @@ def omit_entry_ids(content: str) -> str:
 
 
 def test_ical_ids_consistent(
-    client: APIClient, user: User, recipe: Recipe, team: Team
+    client: Client, user: User, recipe: Recipe, team: Team
 ) -> None:
     """
     Regression test to ensure the ids for the items aren't changing on each
@@ -58,7 +58,7 @@ def test_ical_ids_consistent(
 
 
 def test_ical_view_with_correct_id(
-    client: APIClient, user: User, recipe: Recipe, team: Team
+    client: Client, user: User, recipe: Recipe, team: Team
 ) -> None:
     """
     When the client passes in the correct id we should return the ical data.
@@ -136,7 +136,7 @@ def test_ical_view_with_correct_id(
 
 
 def test_get_ical_view_works_with_accept_encoding(
-    client: APIClient, user: User, recipe: Recipe, team: Team
+    client: Client, user: User, recipe: Recipe, team: Team
 ) -> None:
     """
     Clicking an .ics link on iOS will trigger iOS to make a GET request to
@@ -150,7 +150,7 @@ def test_get_ical_view_works_with_accept_encoding(
     assert res.status_code == 200
 
 
-def test_head_ical(client: APIClient, user: User, recipe: Recipe, team: Team) -> None:
+def test_head_ical(client: Client, user: User, recipe: Recipe, team: Team) -> None:
     """
     HEAD should work
     """
@@ -160,7 +160,7 @@ def test_head_ical(client: APIClient, user: User, recipe: Recipe, team: Team) ->
 
 
 def test_get_ical_view_with_user_specific_id(
-    client: APIClient, user: User, recipe: Recipe, team: Team
+    client: Client, user: User, recipe: Recipe, team: Team
 ) -> None:
     """
     Ensure the user specific secret key works.
@@ -174,19 +174,19 @@ def test_get_ical_view_with_user_specific_id(
 
 
 def test_get_ical_view_with_schedule_endpoint(
-    client: APIClient, user: User, recipe: Recipe, team: Team
+    client: Client, user: User, recipe: Recipe, team: Team
 ) -> None:
     """
     Ensure the url from the schedule endpoint is valid.
     """
     url = url = f"/api/v1/t/{team.pk}/calendar/"
-    client.force_authenticate(user)
+    client.force_login(user)
 
     res = client.get(url, {"start": date(1976, 1, 1), "end": date(1977, 1, 1), "v2": 1})
     assert res.status_code == 200
     calendar_link = res.json()["settings"]["calendarLink"]
 
-    client.force_authenticate(None)
+    client.logout()
     relative_url = urlparse(calendar_link).path
 
     membership = user.membership_set.get(team=team)
@@ -200,7 +200,7 @@ def test_get_ical_view_with_schedule_endpoint(
 
 
 def test_get_ical_view_404_when_disabled(
-    client: APIClient, user: User, recipe: Recipe, team: Team
+    client: Client, user: User, recipe: Recipe, team: Team
 ) -> None:
     """
     Url should be disabled when calendar_sync_enabled is false.

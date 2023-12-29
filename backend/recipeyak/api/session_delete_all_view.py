@@ -4,11 +4,10 @@ from datetime import datetime
 from typing import Literal
 
 import pydantic
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
 
 
 class DeviceResponse(pydantic.BaseModel):
@@ -25,8 +24,7 @@ class SessionResponse(pydantic.BaseModel):
     current: bool
 
 
-@api_view(["DELETE"])
-@permission_classes([IsAuthenticated])
-def session_delete_all_view(request: AuthedRequest) -> Response:
+@endpoint()
+def session_delete_all_view(request: AuthedHttpRequest) -> JsonResponse:
     request.user.session_set.exclude(pk=request.session.session_key).delete()
-    return Response(status=204)
+    return JsonResponse(status=204)

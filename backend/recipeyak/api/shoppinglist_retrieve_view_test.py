@@ -3,7 +3,7 @@ from datetime import date, timedelta
 from decimal import Decimal
 
 import pytest
-from rest_framework.test import APIClient
+from django.test.client import Client
 
 from recipeyak.cumin.combine import Ingredient as IngredientCumin
 from recipeyak.cumin.combine import (
@@ -19,25 +19,25 @@ pytestmark = pytest.mark.django_db
 
 
 def test_fetching_shoppinglist(
-    client: APIClient, user: User, team: Team, recipe: Recipe
+    client: Client, user: User, team: Team, recipe: Recipe
 ) -> None:
     assert ShoppingList.objects.count() == 0
 
-    client.force_authenticate(user)
+    client.force_login(user)
     start = date(1976, 7, 6)
     end = start + timedelta(days=1)
     params = {"start": start, "end": end}
 
     res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
     assert res.status_code == 200
-    assert res.json() == {}
+    assert res.json()["ingredients"] == {}
     assert ShoppingList.objects.count() == 1
 
     recipe.schedule(user=user, on=start, team=team)
 
     res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
     assert res.status_code == 200
-    assert res.json() == {
+    assert res.json()["ingredients"] == {
         "egg": {
             "category": "dairy",
             "quantities": [{"quantity": "1", "unit": "POUND", "unknown_unit": None}],
@@ -53,13 +53,13 @@ def test_fetching_shoppinglist(
     assert ShoppingList.objects.count() == 2
     shopping_list = ShoppingList.objects.order_by("-created").first()
     assert shopping_list is not None
-    assert json.loads(shopping_list.ingredients) == res.json()
+    assert json.loads(shopping_list.ingredients) == res.json()["ingredients"]
 
 
 def test_fetching_shoppinglist_with_team_recipe(
-    client: APIClient, team: Team, user: User, recipe: Recipe
+    client: Client, team: Team, user: User, recipe: Recipe
 ) -> None:
-    client.force_authenticate(user)
+    client.force_login(user)
 
     assert team.is_member(user)
 
@@ -69,15 +69,15 @@ def test_fetching_shoppinglist_with_team_recipe(
 
     res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
     assert res.status_code == 200
-    assert res.json() == {}
+    assert res.json()["ingredients"] == {}
 
     recipe.schedule(user=user, on=start, team=team)
 
     res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
     assert res.status_code == 200
-    assert res.json() != []
+    assert res.json()["ingredients"] != []
 
-    assert res.json() == {
+    assert res.json()["ingredients"] == {
         "egg": {
             "category": "dairy",
             "quantities": [{"quantity": "1", "unit": "POUND", "unknown_unit": None}],
@@ -92,17 +92,17 @@ def test_fetching_shoppinglist_with_team_recipe(
 
 
 def test_fetching_shoppinglist_with_invalid_dates(
-    user: User, team: Team, client: APIClient
+    user: User, team: Team, client: Client
 ) -> None:
     params = {"start": "", "end": "invalid date"}
-    client.force_authenticate(user)
+    client.force_login(user)
     res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
     assert res.status_code == 400
 
 
 @pytest.mark.parametrize("quantity", ["sprinkle", "some"])
 def test_scheduling_multiple_times_some_ingredient(
-    quantity: str, user: User, team: Team, client: APIClient
+    quantity: str, user: User, team: Team, client: Client
 ) -> None:
     """
     with an ingredient of quantity sprinkle that we add to the cart multiple
@@ -122,10 +122,10 @@ def test_scheduling_multiple_times_some_ingredient(
 
     end = start + timedelta(days=1)
     params = {"start": start, "end": end}
-    client.force_authenticate(user)
+    client.force_login(user)
     res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
     assert res.status_code == 200
-    assert res.json() == {
+    assert res.json()["ingredients"] == {
         "black pepper": {
             "category": "spices",
             "quantities": [{"quantity": "1", "unit": "SOME", "unknown_unit": None}],
@@ -314,7 +314,7 @@ def test_combine_ingredients(
 
 
 def test_combining_feta(
-    user: User, team: Team, client: APIClient, empty_recipe: Recipe
+    user: User, team: Team, client: Client, empty_recipe: Recipe
 ) -> None:
     """
     ensure the singularize function doesn't result in feta becoming fetum along
@@ -347,11 +347,11 @@ def test_combining_feta(
 
     end = start + timedelta(days=1)
     params = {"start": start, "end": end}
-    client.force_authenticate(user)
+    client.force_login(user)
     res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
     assert res.status_code == 200
 
-    assert res.json() == {
+    assert res.json()["ingredients"] == {
         "all purpose flour": {
             "category": "baking",
             "quantities": [{"quantity": "1.25", "unit": "CUP", "unknown_unit": None}],
@@ -385,21 +385,21 @@ def test_combining_feta(
 
 
 def test_fetching_team_shopping_list(
-    client: APIClient, user: User, team: Team, recipe: Recipe
+    client: Client, user: User, team: Team, recipe: Recipe
 ) -> None:
     start = date(1976, 7, 6)
     end = start + timedelta(days=1)
     params = {"start": start, "end": end}
 
     url = f"/api/v1/t/{team.pk}/shoppinglist/"
-    client.force_authenticate(user)
+    client.force_login(user)
     res = client.get(url, params)
     assert res.status_code == 200
-    assert res.json() == {}
+    assert res.json()["ingredients"] == {}
 
     recipe.schedule(on=start, team=team, user=user)
     res = client.get(url, params)
     assert res.status_code == 200
-    assert len(res.json()) == len(
+    assert len(res.json()["ingredients"]) == len(
         recipe.ingredients
     ), "only return the schedule recipe ingredients"

@@ -2,12 +2,11 @@ from __future__ import annotations
 
 from collections.abc import Iterator
 from datetime import date
-from logging import getLogger
 from typing import Any
 from unittest.mock import patch
 
 import pytest
-from rest_framework.test import APIClient
+from django.test.client import Client
 
 from recipeyak.models import (
     Ingredient,
@@ -19,8 +18,6 @@ from recipeyak.models import (
     Team,
     User,
 )
-
-getLogger("flake8").propagate = False
 
 
 @pytest.fixture
@@ -61,13 +58,13 @@ def user3() -> User:
 
 
 @pytest.fixture
-def client() -> APIClient:
-    return APIClient()
+def client() -> Client:
+    return Client()
 
 
 @pytest.fixture
-def client_b() -> APIClient:
-    return APIClient()
+def client_b() -> Client:
+    return Client()
 
 
 @pytest.fixture

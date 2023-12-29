@@ -1,22 +1,42 @@
 from __future__ import annotations
 
-from django.db import connection
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
+from datetime import date
+from typing import Literal
 
-from recipeyak.api.base.request import AuthedRequest
+from django.db import connection
+
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
+from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.unwrap import unwrap
 from recipeyak.models import get_team
 
 
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def calendar_next_open_view(request: AuthedRequest, team_id: int = -1) -> Response:
+class CalendarNexOpenParams(RequestParams):
+    day: Literal[
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Weekday",
+        "Weekend",
+    ]
+    now: date
+
+
+@endpoint()
+def calendar_next_open_view(
+    request: AuthedHttpRequest, team_id: int = -1
+) -> JsonResponse:
+    params = CalendarNexOpenParams.parse_obj(request.GET.dict())
     team_id = get_team(request.user).id
     with connection.cursor() as cursor:
-        weekday = request.query_params["day"]
-        now = request.query_params["now"]
+        weekday = params.day
+        now = params.now
         day_number = {
             "Sunday": (0,),
             "Monday": (1,),
@@ -44,7 +64,7 @@ ORDER BY
 gen_date ASC
 LIMIT 1;
 """,
-            {"day_number": day_number, "team_id": team_id, "now": now},
+            {"day_number": day_number, "team_id": team_id, "now": now.isoformat()},
         )
         (date,) = unwrap(cursor.fetchone())
-        return Response({"date": date})
+        return JsonResponse({"date": date})

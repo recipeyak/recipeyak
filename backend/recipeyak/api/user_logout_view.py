@@ -1,15 +1,14 @@
 from __future__ import annotations
 
 from django.contrib.auth import logout
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.request import Request
-from rest_framework.response import Response
+
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
 
 
-@api_view(["POST"])
-@permission_classes([IsAuthenticated])
-def user_logout_view(request: Request) -> Response:
+@endpoint()
+def user_logout_view(request: AuthedHttpRequest) -> JsonResponse:
     """
     Calls Django logout method and logs out current User object.
 
@@ -17,4 +16,4 @@ def user_logout_view(request: Request) -> Response:
     """
     logout(request)
 
-    return Response({"detail": "Successfully logged out."}, status=200)
+    return JsonResponse({"detail": "Successfully logged out."}, status=200)

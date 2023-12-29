@@ -2,11 +2,10 @@ from __future__ import annotations
 
 from django.shortcuts import get_object_or_404
 from pydantic import root_validator
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.recipe import serialize_note
 from recipeyak.models import Note, Upload, filter_recipes, get_team
@@ -25,12 +24,11 @@ class CreateNoteParams(RequestParams):
         return values
 
 
-@api_view(["POST"])
-@permission_classes([IsAuthenticated])
-def note_create_view(request: AuthedRequest, recipe_id: int) -> Response:
+@endpoint()
+def note_create_view(request: AuthedHttpRequest, recipe_id: int) -> JsonResponse:
     team = get_team(request.user)
     recipe = get_object_or_404(filter_recipes(team=team), pk=recipe_id)
-    params = CreateNoteParams.parse_obj(request.data)
+    params = CreateNoteParams.parse_raw(request.body)
 
     note = Note.objects.create(
         text=params.text,
@@ -42,7 +40,7 @@ def note_create_view(request: AuthedRequest, recipe_id: int) -> Response:
         id__in=params.attachment_upload_ids, created_by=request.user
     ).update(note=note)
 
-    return Response(
+    return JsonResponse(
         serialize_note(note, primary_image_id=recipe.primary_image_id),
         status=201,
     )

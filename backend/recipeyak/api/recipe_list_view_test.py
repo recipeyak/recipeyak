@@ -1,15 +1,15 @@
 from datetime import UTC, datetime, timedelta
 
 import pytest
-from rest_framework.test import APIClient
+from django.test.client import Client
 
 from recipeyak.models import Recipe, Team, User
 
 pytestmark = pytest.mark.django_db
 
 
-def test_list_view(client: APIClient, user: User, team: Team, recipe: Recipe) -> None:
-    client.force_authenticate(user)
+def test_list_view(client: Client, user: User, team: Team, recipe: Recipe) -> None:
+    client.force_login(user)
     recipe.team = team
     recipe.save()
 
@@ -28,9 +28,9 @@ def test_list_view(client: APIClient, user: User, team: Team, recipe: Recipe) ->
 
 
 def test_list_view_no_ingredients_regression(
-    client: APIClient, user: User, team: Team, recipe: Recipe
+    client: Client, user: User, team: Team, recipe: Recipe
 ) -> None:
-    client.force_authenticate(user)
+    client.force_login(user)
     recipe.team = team
     recipe.save()
     recipe.ingredient_set.all().delete()

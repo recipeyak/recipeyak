@@ -1,5 +1,5 @@
 import pytest
-from rest_framework.test import APIClient
+from django.test.client import Client
 
 from recipeyak.models import ChangeType, Ingredient, Recipe, RecipeChange, Step, User
 from recipeyak.models.team import Team
@@ -21,15 +21,17 @@ def ingredient(recipe: Recipe) -> Ingredient:
     )
 
 
-def test_step_create(client: APIClient, recipe: Recipe, user: User, team: Team) -> None:
+def test_step_create(client: Client, recipe: Recipe, user: User, team: Team) -> None:
     recipe.team = team
     recipe.save()
     assert (
         RecipeChange.objects.count() == 0
     ), "We shouldn't have any changes recorded yet."
     data = {"text": "Combine ingredients and mix well."}
-    client.force_authenticate(user)
-    res = client.post(f"/api/v1/recipes/{recipe.id}/steps/", data)
+    client.force_login(user)
+    res = client.post(
+        f"/api/v1/recipes/{recipe.id}/steps/", data, content_type="application/json"
+    )
     assert res.status_code == 201
     assert res.json()["text"] == data["text"]
 
@@ -44,7 +46,7 @@ def test_step_create(client: APIClient, recipe: Recipe, user: User, team: Team) 
 
 
 def test_step_update(
-    client: APIClient, recipe: Recipe, user: User, step: Step, team: Team
+    client: Client, recipe: Recipe, user: User, step: Step, team: Team
 ) -> None:
     recipe.team = team
     recipe.save()
@@ -53,8 +55,12 @@ def test_step_update(
     ), "We shouldn't have any changes recorded yet."
     data = {"text": "Combine ingredients and mix well."}
     assert data["text"] != step.text, "Ensure we are changing the step with our update."
-    client.force_authenticate(user)
-    res = client.patch(f"/api/v1/recipes/{recipe.id}/steps/{step.id}/", data)
+    client.force_login(user)
+    res = client.patch(
+        f"/api/v1/recipes/{recipe.id}/steps/{step.id}/",
+        data,
+        content_type="application/json",
+    )
     assert res.status_code == 200
     assert res.json()["text"] == data["text"]
 
@@ -69,14 +75,14 @@ def test_step_update(
 
 
 def test_step_delete(
-    client: APIClient, recipe: Recipe, user: User, step: Step, team: Team
+    client: Client, recipe: Recipe, user: User, step: Step, team: Team
 ) -> None:
     recipe.team = team
     recipe.save()
     assert (
         RecipeChange.objects.count() == 0
     ), "We shouldn't have any changes recorded yet."
-    client.force_authenticate(user)
+    client.force_login(user)
     res = client.delete(f"/api/v1/recipes/{recipe.id}/steps/{step.id}/")
     assert res.status_code == 204
 
@@ -91,7 +97,7 @@ def test_step_delete(
 
 
 def test_recipe_name_update(
-    client: APIClient, recipe: Recipe, user: User, team: Team
+    client: Client, recipe: Recipe, user: User, team: Team
 ) -> None:
     recipe.team = team
     recipe.save()
@@ -100,8 +106,10 @@ def test_recipe_name_update(
     ), "We shouldn't have any changes recorded yet."
     data = {"name": "A different title."}
     assert data["name"] != recipe.name, "Ensure we are changing the title."
-    client.force_authenticate(user)
-    res = client.patch(f"/api/v1/recipes/{recipe.id}/", data)
+    client.force_login(user)
+    res = client.patch(
+        f"/api/v1/recipes/{recipe.id}/", data, content_type="application/json"
+    )
     assert res.status_code == 200
     assert res.json()["name"] == data["name"]
 
@@ -116,7 +124,7 @@ def test_recipe_name_update(
 
 
 def test_recipe_source_update(
-    client: APIClient, recipe: Recipe, user: User, team: Team
+    client: Client, recipe: Recipe, user: User, team: Team
 ) -> None:
     recipe.team = team
     recipe.save()
@@ -125,8 +133,10 @@ def test_recipe_source_update(
     ), "We shouldn't have any changes recorded yet."
     data = {"source": "A different title."}
     assert data["source"] != recipe.source, "Ensure we are changing the title."
-    client.force_authenticate(user)
-    res = client.patch(f"/api/v1/recipes/{recipe.id}/", data)
+    client.force_login(user)
+    res = client.patch(
+        f"/api/v1/recipes/{recipe.id}/", data, content_type="application/json"
+    )
     assert res.status_code == 200
     assert res.json()["source"] == data["source"]
 
@@ -141,7 +151,7 @@ def test_recipe_source_update(
 
 
 def test_recipe_servings_update(
-    client: APIClient, recipe: Recipe, user: User, team: Team
+    client: Client, recipe: Recipe, user: User, team: Team
 ) -> None:
     recipe.team = team
     recipe.save()
@@ -150,8 +160,10 @@ def test_recipe_servings_update(
     ), "We shouldn't have any changes recorded yet."
     data = {"servings": "A different title."}
     assert data["servings"] != recipe.servings, "Ensure we are changing the title."
-    client.force_authenticate(user)
-    res = client.patch(f"/api/v1/recipes/{recipe.id}/", data)
+    client.force_login(user)
+    res = client.patch(
+        f"/api/v1/recipes/{recipe.id}/", data, content_type="application/json"
+    )
     assert res.status_code == 200
     assert res.json()["servings"] == data["servings"]
 
@@ -166,7 +178,7 @@ def test_recipe_servings_update(
 
 
 def test_recipe_time_update(
-    client: APIClient, recipe: Recipe, user: User, team: Team
+    client: Client, recipe: Recipe, user: User, team: Team
 ) -> None:
     recipe.team = team
     recipe.save()
@@ -175,8 +187,10 @@ def test_recipe_time_update(
     ), "We shouldn't have any changes recorded yet."
     data = {"time": "A different title."}
     assert data["time"] != recipe.time, "Ensure we are changing the title."
-    client.force_authenticate(user)
-    res = client.patch(f"/api/v1/recipes/{recipe.id}/", data)
+    client.force_login(user)
+    res = client.patch(
+        f"/api/v1/recipes/{recipe.id}/", data, content_type="application/json"
+    )
     assert res.status_code == 200
     assert res.json()["time"] == data["time"]
 
@@ -191,7 +205,7 @@ def test_recipe_time_update(
 
 
 def test_ingredient_create(
-    client: APIClient, recipe: Recipe, user: User, team: Team
+    client: Client, recipe: Recipe, user: User, team: Team
 ) -> None:
     recipe.team = team
     recipe.save()
@@ -203,8 +217,12 @@ def test_ingredient_create(
         "name": "black pepper",
         "description": "roughly ground",
     }
-    client.force_authenticate(user)
-    res = client.post(f"/api/v1/recipes/{recipe.id}/ingredients/", ingredient_data)
+    client.force_login(user)
+    res = client.post(
+        f"/api/v1/recipes/{recipe.id}/ingredients/",
+        ingredient_data,
+        content_type="application/json",
+    )
     assert res.status_code == 201
 
     assert RecipeChange.objects.count() == 1
@@ -218,7 +236,7 @@ def test_ingredient_create(
 
 
 def test_ingredient_update(
-    client: APIClient, recipe: Recipe, user: User, ingredient: Ingredient, team: Team
+    client: Client, recipe: Recipe, user: User, ingredient: Ingredient, team: Team
 ) -> None:
     recipe.team = team
     recipe.save()
@@ -226,9 +244,11 @@ def test_ingredient_update(
         RecipeChange.objects.count() == 0
     ), "We shouldn't have any changes recorded yet."
     ingredient_data = {"quantity": "3 cups", "optional": True}
-    client.force_authenticate(user)
+    client.force_login(user)
     res = client.patch(
-        f"/api/v1/recipes/{recipe.id}/ingredients/{ingredient.id}/", ingredient_data
+        f"/api/v1/recipes/{recipe.id}/ingredients/{ingredient.id}/",
+        ingredient_data,
+        content_type="application/json",
     )
     assert res.status_code == 200
     assert res.json()["quantity"] == ingredient_data["quantity"]
@@ -244,7 +264,7 @@ def test_ingredient_update(
 
 
 def test_ingredient_delete(
-    client: APIClient, recipe: Recipe, user: User, ingredient: Ingredient, team: Team
+    client: Client, recipe: Recipe, user: User, ingredient: Ingredient, team: Team
 ) -> None:
     recipe.team = team
     recipe.save()
@@ -252,7 +272,7 @@ def test_ingredient_delete(
         RecipeChange.objects.count() == 0
     ), "We shouldn't have any changes recorded yet."
 
-    client.force_authenticate(user)
+    client.force_login(user)
     res = client.delete(f"/api/v1/recipes/{recipe.id}/ingredients/{ingredient.id}/")
     assert res.status_code == 204
 

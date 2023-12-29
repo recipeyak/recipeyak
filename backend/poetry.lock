@@ -864,20 +864,6 @@ files = [
 Django = ">=1.11"
 
 [[package]]
-name = "djangorestframework"
-version = "3.12.4"
-description = "Web APIs for Django, made easy."
-optional = false
-python-versions = ">=3.5"
-files = [
-    {file = "djangorestframework-3.12.4-py3-none-any.whl", hash = "sha256:6d1d59f623a5ad0509fe0d6bfe93cbdfe17b8116ebc8eda86d45f6e16e819aaf"},
-    {file = "djangorestframework-3.12.4.tar.gz", hash = "sha256:f747949a8ddac876e879190df194b925c177cdeb725a099db1460872f7c0a7f2"},
-]
-
-[package.dependencies]
-django = ">=2.2"
-
-[[package]]
 name = "djangorestframework-types"
 version = "0.2.0"
 description = "Type stubs for Django Rest Framework"
@@ -2937,4 +2923,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "9879c7336200bcb97fe9f6b4cf651be7c0e5453074b292ac5c080e90a144855f"
+content-hash = "30ede8b2733ea5ce54a46711d207f74c9cdf8912c7b798aad18e32d467186b7f"

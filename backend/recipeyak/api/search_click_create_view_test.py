@@ -1,18 +1,18 @@
 from __future__ import annotations
 
 import pytest
-from rest_framework.test import APIClient
+from django.test.client import Client
 
 from recipeyak.models import User
 
 pytestmark = pytest.mark.django_db
 
 
-def test_updating_edit_recipe_via_api_empty_tags(client: APIClient, user: User) -> None:
+def test_updating_edit_recipe_via_api_empty_tags(client: Client, user: User) -> None:
     """
     regression test to allow empty lists for tags
     """
-    client.force_authenticate(user)
+    client.force_login(user)
 
     res = client.post(
         "/api/v1/search-click/",
@@ -41,5 +41,6 @@ def test_updating_edit_recipe_via_api_empty_tags(client: APIClient, user: User) 
                 "archived_at": None,
             },
         },
+        content_type="application/json",
     )
     assert res.status_code == 200

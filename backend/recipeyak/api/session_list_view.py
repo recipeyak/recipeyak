@@ -5,12 +5,11 @@ from typing import Literal
 
 import pydantic
 from django.utils import timezone
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
 from recipeyak import user_agent
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
 
 
 class DeviceResponse(pydantic.BaseModel):
@@ -27,9 +26,8 @@ class SessionResponse(pydantic.BaseModel):
     current: bool
 
 
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def session_list_view(request: AuthedRequest) -> Response:
+@endpoint()
+def session_list_view(request: AuthedHttpRequest) -> JsonResponse:
     query_set = request.user.session_set
 
     qs = query_set.filter(expire_date__gt=timezone.now()).order_by("-last_activity")
@@ -48,4 +46,4 @@ def session_list_view(request: AuthedRequest) -> Response:
             )
         )
 
-    return Response(sessions)
+    return JsonResponse(sessions)

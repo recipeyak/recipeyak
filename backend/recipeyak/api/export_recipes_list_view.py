@@ -6,12 +6,11 @@ from typing import Any
 
 import pydantic
 import yaml
-from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
-from django.views.decorators.http import require_http_methods
 
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.models import Recipe, filter_recipes, get_team
 from recipeyak.models.team import Team
 
@@ -161,10 +160,9 @@ class YamlResponse(HttpResponse):
         super().__init__(content=data, **kwargs)
 
 
-@require_http_methods(["GET"])
-@login_required(login_url="/login/")
+@endpoint(redirect_to_login=True)
 def export_recipes_list_view(
-    request: AuthedRequest, filetype: str, pk: str | None = None
+    request: AuthedHttpRequest, filetype: str, pk: str | None = None
 ) -> HttpResponse:
     team = get_team(request.user)
 

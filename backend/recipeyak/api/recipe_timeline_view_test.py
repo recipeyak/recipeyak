@@ -1,7 +1,7 @@
 from datetime import date
 
 import pytest
-from rest_framework.test import APIClient
+from django.test.client import Client
 
 from recipeyak.models import Recipe, ScheduledRecipe, Team, User
 
@@ -9,7 +9,7 @@ pytestmark = pytest.mark.django_db
 
 
 def test_get_recipe_timeline(
-    user: User, user2: User, client: APIClient, recipe: Recipe, empty_team: Team
+    user: User, user2: User, client: Client, recipe: Recipe, empty_team: Team
 ) -> None:
     """
     Ensure our timeline endpoint returns the correct data shape. We could
@@ -24,7 +24,7 @@ def test_get_recipe_timeline(
     res = client.get(url)
     assert res.status_code == 403, "Endpoint requires auth."
 
-    client.force_authenticate(user)
+    client.force_login(user)
 
     res = client.get("/api/v1/recipes/does_not_exist/timeline")
     assert res.status_code == 404
@@ -54,7 +54,7 @@ def test_get_recipe_timeline(
 
 
 def test_get_recipe_timeline_ordering(
-    user: User, client: APIClient, recipe: Recipe, team: Team
+    user: User, client: Client, recipe: Recipe, team: Team
 ) -> None:
     """
     ensure we return the timeline items in the correct ordering
@@ -67,7 +67,7 @@ def test_get_recipe_timeline_ordering(
     user.save()
 
     url = f"/api/v1/recipes/{recipe.id}/timeline"
-    client.force_authenticate(user)
+    client.force_login(user)
     res = client.get(url)
     assert res.status_code == 200
 
