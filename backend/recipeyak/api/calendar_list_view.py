@@ -56,7 +56,7 @@ def calendar_list_view(request: AuthedRequest, team_id: object = ()) -> Response
     params = StartEndDateSerializer.parse_obj(request.query_params.dict())
     start = params.start
     end = params.end
-    team_id = get_team(request).id
+    team_id = get_team(request.user).id
 
     queryset = get_scheduled_recipes(team_id).filter(on__gte=start).filter(on__lte=end)
 

@@ -22,7 +22,7 @@ def calendar_update_view(
     request: AuthedRequest, scheduled_recipe_id: int, team_id: object = ()
 ) -> Response:
     params = ScheduledRecipeUpdateParams.parse_obj(request.data)
-    team_id = get_team(request).id
+    team_id = get_team(request.user).id
     scheduled_recipe = get_scheduled_recipes(team_id).get(id=scheduled_recipe_id)
     if params.on is not None:
         scheduled_recipe.on = params.on

@@ -14,7 +14,7 @@ from recipeyak.models import (
 @api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
 def recipe_delete_view(request: AuthedRequest, recipe_id: str) -> Response:
-    team = get_team(request)
+    team = get_team(request.user)
     recipe = filter_recipe_or_404(team=team, recipe_id=recipe_id)
     recipe.delete()
     return Response(status=204)

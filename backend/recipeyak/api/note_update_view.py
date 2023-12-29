@@ -21,7 +21,7 @@ class EditNoteParams(RequestParams):
 @permission_classes([IsAuthenticated])
 def note_update_view(request: AuthedRequest, note_id: str) -> Response:
     params = EditNoteParams.parse_obj(request.data)
-    team = get_team(request)
+    team = get_team(request.user)
     note = get_object_or_404(filter_notes(team=team), pk=note_id)
     # only allow the note's author to update the note
     if note.created_by.id != request.user.id:

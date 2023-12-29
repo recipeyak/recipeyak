@@ -33,7 +33,7 @@ class StartUploadResponse(pydantic.BaseModel):
 def upload_start_view(request: AuthedRequest) -> Response:
     params = StartUploadParams.parse_obj(request.data)
     key = f"{request.user.id}/{uuid4().hex}/{params.file_name}"
-    team = get_team(request)
+    team = get_team(request.user)
     recipe = filter_recipes(team=team).filter(id=params.recipe_id).first()
     if recipe is None:
         raise ValidationError("Could not find recipe with provided ID.")

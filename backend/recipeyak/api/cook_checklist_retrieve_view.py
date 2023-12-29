@@ -14,7 +14,7 @@ from recipeyak.models import (
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def cook_checklist_retrieve_view(request: AuthedRequest, recipe_id: str) -> Response:
-    team = get_team(request)
+    team = get_team(request.user)
     recipe_checklist_items = filter_cook_checklist(team=team).filter(
         recipe_id=recipe_id
     )

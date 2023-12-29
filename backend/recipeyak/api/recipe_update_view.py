@@ -36,7 +36,7 @@ class RecipePatchParams(RequestParams):
 @api_view(["PATCH"])
 @permission_classes([IsAuthenticated])
 def recipe_update_view(request: AuthedRequest, recipe_id: str) -> Response:
-    team = get_team(request)
+    team = get_team(request.user)
     recipe = filter_recipe_or_404(recipe_id=recipe_id, team=team)
 
     params = RecipePatchParams.parse_obj(request.data)
@@ -111,6 +111,6 @@ def recipe_update_view(request: AuthedRequest, recipe_id: str) -> Response:
             ).save()
     recipe.save()
 
-    team = get_team(request)
+    team = get_team(request.user)
     recipe = filter_recipe_or_404(team=team, recipe_id=recipe_id)
     return Response(serialize_recipe(recipe))

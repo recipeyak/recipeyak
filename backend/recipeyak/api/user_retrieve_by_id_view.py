@@ -6,7 +6,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 
 from recipeyak.api.base.decorators import endpoint
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.unwrap import unwrap
 from recipeyak.models.note import Note
@@ -267,7 +267,7 @@ where a.user_id = %(user_a_id)s
 
 
 @endpoint()
-def user_retrieve_by_id_view(request: AuthedRequest, user_id: str) -> JsonResponse:
+def user_retrieve_by_id_view(request: AuthedHttpRequest, user_id: str) -> JsonResponse:
     user = get_object_or_404(User, id=user_id)
     if not has_team_connection(user_id, request.user.id):
         raise Http404

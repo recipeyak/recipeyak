@@ -20,7 +20,7 @@ def calendar_update_settings_view(
 ) -> Response:
     params = CalSettingsSerializer.parse_obj(request.data)
     sync_enabled = params.syncEnabled
-    team_id = get_team(request).id
+    team_id = get_team(request.user).id
 
     membership = get_object_or_404(Membership, team=team_id, user=request.user)
     membership.calendar_sync_enabled = sync_enabled

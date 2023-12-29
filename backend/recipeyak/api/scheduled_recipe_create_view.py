@@ -5,7 +5,7 @@ from datetime import date
 from django.shortcuts import get_object_or_404
 
 from recipeyak.api.base.decorators import endpoint
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.calendar_serialization import serialize_scheduled_recipe
@@ -21,11 +21,11 @@ class ScheduledRecipeCreateParams(RequestParams):
 
 @endpoint()
 def scheduled_recipe_create_view(
-    request: AuthedRequest, team_id: object = ()
+    request: AuthedHttpRequest, team_id: object = ()
 ) -> JsonResponse:
     params = ScheduledRecipeCreateParams.parse_raw(request.body)
 
-    team = get_team(request)
+    team = get_team(request.user)
 
     recipe = get_object_or_404(filter_recipes(team=team), id=params.recipe)
 

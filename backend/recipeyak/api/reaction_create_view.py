@@ -27,7 +27,7 @@ class ReactToNoteViewParams(RequestParams):
 def reaction_create_view(request: AuthedRequest, note_id: int) -> Response:
     params = ReactToNoteViewParams.parse_obj(request.data)
 
-    team = get_team(request)
+    team = get_team(request.user)
 
     note = get_object_or_404(filter_notes(team=team), pk=note_id)
     reaction = Reaction(emoji=params.type, created_by=request.user, note=note)

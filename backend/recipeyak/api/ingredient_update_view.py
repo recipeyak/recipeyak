@@ -24,7 +24,7 @@ class IngredientsPatchParams(RequestParams):
 def ingredient_update_view(
     request: AuthedRequest, ingredient_id: int, recipe_id: object = ()
 ) -> Response:
-    team = get_team(request)
+    team = get_team(request.user)
     params = IngredientsPatchParams.parse_obj(request.data)
     ingredient = get_object_or_404(filter_ingredients(team=team), pk=ingredient_id)
 

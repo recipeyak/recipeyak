@@ -21,7 +21,7 @@ class StepCreateParams(RequestParams):
 @permission_classes([IsAuthenticated])
 def step_create_view(request: AuthedRequest, recipe_id: int) -> Response:
     params = StepCreateParams.parse_obj(request.data)
-    team = get_team(request)
+    team = get_team(request.user)
     recipe = get_object_or_404(filter_recipes(team=team), pk=recipe_id)
 
     step = Step(text=params.text, recipe=recipe)
