@@ -7,7 +7,7 @@ from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import RequestParams
-from recipeyak.api.user_get_view import serialize_user
+from recipeyak.api.user_retrieve_view import serialize_user
 
 THEMES = Literal["light", "autumn", "solarized", "dark", "dark_dimmed"]
 THEME_MODE = Literal["single", "sync_with_system"]
@@ -24,7 +24,7 @@ class UserUpdatePayload(RequestParams):
 
 @api_view(["PATCH"])
 @permission_classes([IsAuthenticated])
-def user_patch_view(request: AuthedRequest) -> Response:
+def user_update_view(request: AuthedRequest) -> Response:
     params = UserUpdatePayload.parse_obj(request.data)
 
     with transaction.atomic():

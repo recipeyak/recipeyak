@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
-from recipeyak.api.calendar_list_get_view import get_scheduled_recipes
+from recipeyak.api.calendar_list_view import get_scheduled_recipes
 from recipeyak.models import get_team
 from recipeyak.realtime import publish_calendar_event_deleted
 
