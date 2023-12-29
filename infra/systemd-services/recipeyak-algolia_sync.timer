@@ -1,0 +1,8 @@
+[Unit]
+Description=Run algolia_sync on cron every 15 minutes
+[Timer]
+Unit=recipeyak-algolia_sync.service
+OnBootSec=15minutes
+OnUnitActiveSec=15minutes
+[Install]
+WantedBy=timers.target

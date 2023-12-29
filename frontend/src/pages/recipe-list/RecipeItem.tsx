@@ -1,14 +1,14 @@
+import { Hit } from "instantsearch.js"
 import { ForwardedRef, forwardRef } from "react"
 import { useDrag } from "react-dnd"
 import { Link } from "react-router-dom"
 
 import { clx } from "@/classnames"
+import { CustomHighlight } from "@/components/CustomHighlight"
 import { DragIcon } from "@/components/icons"
 import { Image } from "@/components/Image"
-import { Tag } from "@/components/Tag"
 import { DragDrop } from "@/dragDrop"
 import { RecipeListItem as TRecipeListItem } from "@/queries/recipeList"
-import { Match } from "@/search"
 import { imgixFmt } from "@/url"
 import { recipeURL } from "@/urls"
 
@@ -55,73 +55,28 @@ const Card = forwardRef(
   },
 )
 
-function RecipeTitle({
-  url,
-  name,
-  dragable,
-}: {
-  readonly url: string
-  readonly name: string
-  readonly dragable: boolean
-}) {
-  return (
-    <div className="flex grow justify-between">
-      <Link tabIndex={0} to={url} className="mb-1 grow self-start leading-5">
-        {name}
-      </Link>
-      {dragable && <DragIcon />}
-    </div>
-  )
-}
-
 type IRecipeItemProps = {
   readonly name: string
   readonly author: string | null
   readonly id: number
   readonly url?: string
-  readonly drag?: boolean
-  readonly match: Match[]
-  readonly index: number
+  readonly hit: Hit
 } & TRecipeListItem
 
-function RecipeListItem({
+export function RecipeListItem({
   index,
   name,
   author,
   id,
-  match: matches,
+  hit,
+
   ...props
 }: {
   readonly index: number
   readonly url?: string
-  readonly match: Match[]
+  readonly hit: Hit
 } & TRecipeListItem) {
   const url = props.url || recipeURL(id, name)
-
-  const ingredientMatch = matches.find((x) => x.kind === "ingredient")
-  const tagMatch = matches.find((x) => x.kind === "tag")
-  const authorMatch = matches.find((x) => x.kind === "author")
-
-  const recipeContent = (
-    <div className="h-full p-2 leading-5">
-      <div tabIndex={0} className="mb-1">
-        {name}
-      </div>
-
-      {ingredientMatch != null ? (
-        <small className="overflow-x-hidden text-ellipsis whitespace-nowrap font-bold">
-          {ingredientMatch.value}
-        </small>
-      ) : null}
-      {author !== "" && (
-        <small className={clx("block", authorMatch != null && "font-bold")}>
-          {author}
-        </small>
-      )}
-
-      <div>{tagMatch != null ? <Tag>{tagMatch.value}</Tag> : null}</div>
-    </div>
-  )
 
   return (
     <Card as={"Link"} tabIndex={0} to={url}>
@@ -145,46 +100,29 @@ function RecipeListItem({
           rounded={false}
         />
       </div>
-      {recipeContent}
+      <div className="h-full p-2 leading-5">
+        <div
+          tabIndex={0}
+          className={clx("mb-1", props.archived_at != null && "line-through")}
+        >
+          {hit ? <CustomHighlight attribute="name" hit={hit} /> : name}
+        </div>
+        {author !== "" && hit && (
+          <small className={clx("block")}>
+            <CustomHighlight attribute="author" hit={hit} />
+          </small>
+        )}
+      </div>
     </Card>
   )
 }
-
-function Meta({
-  author,
-  bold,
-}: {
-  readonly author: string
-  readonly bold: boolean
-}) {
-  return (
-    <div className={clx("flex", "items-center", bold && "font-bold")}>
-      {author !== "" ? <small>{author}</small> : null}
-    </div>
-  )
-}
-
-export function RecipeItem({
+export function RecipeItemDraggable({
   name,
   author,
   id,
-  index,
-  match: matches,
+  hit,
   ...props
 }: IRecipeItemProps) {
-  if (!props.drag) {
-    return (
-      <RecipeListItem
-        index={index}
-        name={name}
-        author={author}
-        id={id}
-        match={matches}
-        {...props}
-      />
-    )
-  }
-
   const url = props.url || recipeURL(id, name)
 
   const item: IRecipeItemDrag = {
@@ -193,14 +131,10 @@ export function RecipeItem({
     recipeName: name,
   }
 
-  // We don't actually run this conditionally in production.
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [{ isDragging }, drag] = useDrag({
     type: DragDrop.RECIPE,
     item,
-    canDrag: () => {
-      return !!props.drag
-    },
+    canDrag: true,
     collect: (monitor) => {
       return {
         isDragging: monitor.isDragging(),
@@ -208,26 +142,22 @@ export function RecipeItem({
     },
   })
 
-  const ingredientMatch = matches.find((x) => x.kind === "ingredient")
-  const tagMatch = matches.find((x) => x.kind === "tag")
-  const authorMatch = matches.find((x) => x.kind === "author")
-
-  const recipeContent = (
-    <div className="flex h-full flex-col p-2">
-      <RecipeTitle name={name} url={url} dragable={!!props.drag} />
-      {ingredientMatch != null ? (
-        <small className="overflow-x-hidden text-ellipsis whitespace-nowrap font-bold">
-          {ingredientMatch.value}
-        </small>
-      ) : null}
-      <div>{tagMatch != null ? <Tag>{tagMatch.value}</Tag> : null}</div>
-      <Meta bold={authorMatch != null} author={author ?? ""} />
-    </div>
-  )
-
   return (
     <Card ref={drag} isDragging={isDragging}>
-      {recipeContent}
+      <div className="flex h-full flex-col p-2">
+        <div className="flex grow justify-between">
+          <Link
+            tabIndex={0}
+            to={url}
+            className="mb-1 grow self-start leading-5"
+          >
+            {hit ? <CustomHighlight hit={hit} attribute="name" /> : name}
+          </Link>
+          <DragIcon />
+        </div>
+        {author &&
+          (hit ? <CustomHighlight hit={hit} attribute="author" /> : author)}
+      </div>
     </Card>
   )
 }
@@ -238,4 +168,4 @@ export interface IRecipeItemDrag {
   readonly type: DragDrop.RECIPE
 }
 
-export default RecipeItem
+export default RecipeItemDraggable

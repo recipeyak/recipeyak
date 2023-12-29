@@ -1,3 +1,4 @@
+import { Hit } from "instantsearch.js"
 import React from "react"
 import {
   Button,
@@ -8,6 +9,7 @@ import {
   Popover,
   Separator,
 } from "react-aria-components"
+import { InstantSearch, useHits, useSearchBox } from "react-instantsearch"
 import { Link, useHistory } from "react-router-dom"
 import useOnClickOutside from "use-onclickoutside"
 
@@ -31,9 +33,9 @@ import {
   pathTeamList,
 } from "@/paths"
 import { useAuthLogout } from "@/queries/authLogout"
-import { useRecipeList } from "@/queries/recipeList"
+import { RecipeListItem, useRecipeList } from "@/queries/recipeList"
 import { useTeam } from "@/queries/teamFetch"
-import { searchRecipes } from "@/search"
+import { useSearchClient } from "@/queries/useSearchClient"
 import { useGlobalEvent } from "@/useGlobalEvent"
 import { useTeamId } from "@/useTeamId"
 import { useUser } from "@/useUser"
@@ -213,7 +215,12 @@ function isInputFocused() {
 function Search() {
   const history = useHistory()
   const recipes = useRecipeList()
-  const [searchQuery, setSearchQuery] = React.useState("")
+  const { query, refine } = useSearchBox()
+  const { hits } = useHits<{
+    name: string
+    archived_at: string
+  }>()
+
   // If a user clicks outside of the dropdown, we want to hide the dropdown, but
   // keep their search query.
   //
@@ -240,12 +247,29 @@ function Search() {
   })
 
   const resetForm = () => {
-    setSearchQuery("")
     setIsClosed(false)
   }
 
-  const filteredRecipes = recipes.isSuccess
-    ? searchRecipes({ recipes: recipes.data, query: searchQuery })
+  const recipeMap = recipes.data?.reduce<Record<string, RecipeListItem>>(
+    (map, recipe) => {
+      map[recipe.id.toString()] = recipe
+      return map
+    },
+    {},
+  )
+
+  // @ts-expect-error ts(2322): Type 'undefined' is not assignable to type 'RecipeListItem'.
+  const filteredRecipes: {
+    readonly recipes: {
+      readonly recipe: RecipeListItem
+      readonly hit: Hit
+    }[]
+  } = recipes.isSuccess
+    ? {
+        recipes: hits
+          .map((hit) => ({ recipe: recipeMap?.[hit.objectID], hit }))
+          .filter((x) => x.recipe),
+      }
     : { recipes: [] }
 
   const handleSearchKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -268,21 +292,20 @@ function Search() {
     <div ref={ref} className="flex w-full">
       <SearchInput
         ref={searchInputRef}
-        value={searchQuery}
+        value={query}
         placeholder="Press / to search"
         onChange={(e) => {
-          setSearchQuery(e.target.value)
+          refine(e.target.value)
         }}
         onKeyDown={handleSearchKeydown}
         onFocus={() => {
           setIsClosed(false)
         }}
       />
-      {searchQuery && !isClosed && (
+      {query && !isClosed && (
         <div className="absolute inset-x-0 top-[60px] z-10 w-full sm:inset-x-[unset] sm:max-w-[400px]">
           <SearchResult
             isLoading={recipes.isLoading}
-            searchQuery={searchQuery}
             searchResults={filteredRecipes.recipes}
             onClick={() => {
               resetForm()
@@ -296,6 +319,7 @@ function Search() {
 
 export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
   const isLoggedIn = useIsLoggedIn()
+  const searchClient = useSearchClient()
   return (
     <nav className="flex h-[3.5rem] shrink-0 justify-between gap-1 px-3 pb-1 print:!hidden md:grid md:grid-cols-3">
       <div className="flex items-center justify-start gap-2">
@@ -316,7 +340,31 @@ export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
         </Link>
       </div>
       <div className="flex grow items-center">
-        {includeSearch && <Search />}
+        {includeSearch && searchClient && (
+          <InstantSearch
+            searchClient={searchClient}
+            indexName="recipes"
+            // use custom routing config so we can have `search` be our query parameter.
+            // https://www.algolia.com/doc/guides/building-search-ui/going-further/routing-urls/react-hooks/
+            routing={{
+              stateMapping: {
+                stateToRoute(uiState) {
+                  const indexUiState = uiState["recipes"]
+                  return { search: indexUiState.query }
+                },
+                routeToState(routeState) {
+                  return {
+                    ["recipes"]: {
+                      query: routeState.search,
+                    },
+                  }
+                },
+              },
+            }}
+          >
+            <Search />
+          </InstantSearch>
+        )}
       </div>
       {isLoggedIn ? <NavButtons /> : <AuthButtons />}
     </nav>

@@ -1,11 +1,11 @@
+import { Hit } from "instantsearch.js"
+import { useInstantSearch } from "react-instantsearch"
 import { Link } from "react-router-dom"
 
 import { clx } from "@/classnames"
-import { Tag } from "@/components/Tag"
+import { CustomHighlight } from "@/components/CustomHighlight"
 import { pathRecipeDetail, pathRecipesList } from "@/paths"
 import { RecipeListItem } from "@/queries/recipeList"
-import { searchClickCreate } from "@/queries/searchClickCreate"
-import { Match } from "@/search"
 
 const stylesSuggestion = "p-1 overflow-x-hidden whitespace-nowrap text-ellipsis"
 
@@ -17,61 +17,48 @@ const styleSuggestionInfo = clx(
 export function SearchResult({
   isLoading,
   searchResults,
-  searchQuery,
   onClick,
 }: {
-  searchQuery: string
   isLoading: boolean
   onClick?: () => void
   searchResults: {
     readonly recipe: RecipeListItem
-    readonly match: Match[]
+    readonly hit: Hit
   }[]
 }) {
+  const { indexUiState } = useInstantSearch()
   const suggestions = searchResults
     .map((result, index) => {
-      const { recipe, match: matches } = result
-
-      const nameMatch = matches.find((x) => x.kind === "name")
-      const ingredientMatch = matches.find((x) => x.kind === "ingredient")
-      const tagMatch = matches.find((x) => x.kind === "tag")
-      const authorMatch = matches.find((x) => x.kind === "author")
+      const { recipe, hit } = result
 
       return (
         <Link
           key={recipe.id}
-          onClick={() => {
-            void searchClickCreate({ matches, query: searchQuery, recipe })
-          }}
           to={pathRecipeDetail({ recipeId: recipe.id.toString() })}
           className={clx(
             stylesSuggestion,
             index === 0 && "underline",
-            recipe.archived_at != null && "text-[var(--color-text-muted)]",
+            recipe.archived_at != null &&
+              "text-[var(--color-text-muted)] line-through",
           )}
         >
           <div className="flex">
             <span
               className={clx(
                 "grow-0 overflow-x-hidden text-ellipsis whitespace-pre",
-                nameMatch != null && "font-bold",
               )}
             >
-              {recipe.name}{" "}
+              <CustomHighlight hit={hit} attribute="name" />{" "}
             </span>
             {recipe.author && (
               <span className="grow">
                 by{" "}
-                <span className={clx(authorMatch != null && "font-bold")}>
-                  {recipe.author}
+                <span>
+                  <CustomHighlight hit={hit} attribute="author" />
                 </span>
               </span>
             )}
           </div>
-          {ingredientMatch != null ? (
-            <div className="ml-4 font-bold">{ingredientMatch.value}</div>
-          ) : null}
-          {tagMatch != null ? <Tag>{tagMatch.value}</Tag> : null}
         </Link>
       )
     })
@@ -100,7 +87,9 @@ export function SearchResult({
             <Link
               to={{
                 pathname: pathRecipesList({}),
-                search: `search=${encodeURIComponent(searchQuery)}`,
+                search: `search=${encodeURIComponent(
+                  indexUiState.query ?? "",
+                )}`,
               }}
               data-testid="search browse"
             >
