@@ -1,4 +1,3 @@
-import { Hit } from "instantsearch.js"
 import { ForwardedRef, forwardRef } from "react"
 import { useDrag } from "react-dnd"
 import { Link } from "react-router-dom"
@@ -8,7 +7,7 @@ import { CustomHighlight } from "@/components/CustomHighlight"
 import { DragIcon } from "@/components/icons"
 import { Image } from "@/components/Image"
 import { DragDrop } from "@/dragDrop"
-import { RecipeListItem as TRecipeListItem } from "@/queries/recipeList"
+import { RecipeYakHit } from "@/search-types"
 import { imgixFmt } from "@/url"
 import { recipeURL } from "@/urls"
 
@@ -55,28 +54,15 @@ const Card = forwardRef(
   },
 )
 
-type IRecipeItemProps = {
-  readonly name: string
-  readonly author: string | null
-  readonly id: number
-  readonly url?: string
-  readonly hit: Hit
-} & TRecipeListItem
-
 export function RecipeListItem({
   index,
-  name,
-  author,
-  id,
   hit,
-
-  ...props
 }: {
   readonly index: number
   readonly url?: string
-  readonly hit: Hit
-} & TRecipeListItem) {
-  const url = props.url || recipeURL(id, name)
+  readonly hit: RecipeYakHit
+}) {
+  const url = recipeURL(hit.id, hit.name)
 
   return (
     <Card as={"Link"} tabIndex={0} to={url}>
@@ -85,9 +71,9 @@ export function RecipeListItem({
           // lazy load everything after the first 20ish
           lazyLoad={index > 20}
           sources={
-            props.primaryImage && {
-              url: imgixFmt(props.primaryImage.url ?? ""),
-              backgroundUrl: props.primaryImage.backgroundUrl ?? "",
+            hit.primary_image && {
+              url: imgixFmt(hit.primary_image.url ?? ""),
+              backgroundUrl: hit.primary_image.background_url ?? "",
             }
           }
           // TODO: add back background image with backdrop-filter: blur /
@@ -103,11 +89,11 @@ export function RecipeListItem({
       <div className="h-full p-2 leading-5">
         <div
           tabIndex={0}
-          className={clx("mb-1", props.archived_at != null && "line-through")}
+          className={clx("mb-1", hit.archived_at != null && "line-through")}
         >
-          {hit ? <CustomHighlight attribute="name" hit={hit} /> : name}
+          <CustomHighlight attribute="name" hit={hit} />
         </div>
-        {author !== "" && hit && (
+        {hit.author && (
           <small className={clx("block")}>
             <CustomHighlight attribute="author" hit={hit} />
           </small>
@@ -116,19 +102,13 @@ export function RecipeListItem({
     </Card>
   )
 }
-export function RecipeItemDraggable({
-  name,
-  author,
-  id,
-  hit,
-  ...props
-}: IRecipeItemProps) {
-  const url = props.url || recipeURL(id, name)
+export function RecipeItemDraggable({ hit }: { hit: RecipeYakHit }) {
+  const url = recipeURL(hit.id, hit.name)
 
   const item: IRecipeItemDrag = {
     type: DragDrop.RECIPE,
-    recipeID: id,
-    recipeName: name,
+    recipeID: hit.id,
+    recipeName: hit.name,
   }
 
   const [{ isDragging }, drag] = useDrag({
@@ -151,12 +131,11 @@ export function RecipeItemDraggable({
             to={url}
             className="mb-1 grow self-start leading-5"
           >
-            {hit ? <CustomHighlight hit={hit} attribute="name" /> : name}
+            <CustomHighlight hit={hit} attribute="name" />
           </Link>
           <DragIcon />
         </div>
-        {author &&
-          (hit ? <CustomHighlight hit={hit} attribute="author" /> : author)}
+        {hit.author && <CustomHighlight hit={hit} attribute="author" />}
       </div>
     </Card>
   )

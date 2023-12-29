@@ -56,8 +56,12 @@ from recipe_index_queue
                 'archived_at', archived_at,
                 'tags', tags,
                 'team_id', team_id,
-                'primary_image_url', (
-                    select 'https://images-cdn.recipeyak.com/' || key from core_upload
+                'primary_image', (
+                    select json_build_object(
+                        'url', 'https://images-cdn.recipeyak.com/' || "key" ,
+                        'background_url', "background_url"
+                    )
+                    from core_upload
                     where core_upload.id = core_recipe.primary_image_id
                 ),
                 'scheduled_count', (

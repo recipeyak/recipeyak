@@ -1,6 +1,6 @@
-import { orderBy } from "lodash-es"
 import { useState } from "react"
 import {
+  Configure,
   InstantSearch,
   useHits,
   useInstantSearch,
@@ -12,17 +12,15 @@ import {
 import { clx } from "@/classnames"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
-import { CheckBox, SearchInput } from "@/components/Forms"
+import { SearchInput } from "@/components/Forms"
 import { Loader } from "@/components/Loader"
 import RecipeItemDraggable, {
   RecipeListItem,
 } from "@/pages/recipe-list/RecipeItem"
 import { pathRecipeAdd } from "@/paths"
-import {
-  RecipeListItem as RecipeListItemT,
-  useRecipeList,
-} from "@/queries/recipeList"
+import { useRecipeList } from "@/queries/recipeList"
 import { useSearchClient } from "@/queries/useSearchClient"
+import { RecipeYakHit } from "@/search-types"
 import { styled } from "@/theme"
 
 interface IResultsProps {
@@ -82,54 +80,13 @@ const RecipeGrid = styled.div`
   }
 `
 
-export function ResultInfo() {
-  const { results: algoliaResults } = useHits<{
-    name: string
-    archived_at: string
-  }>()
-  const {
-    refine,
-    value: {
-      offFacetValue: { count: countOff },
-      onFacetValue: { count: countOn },
-    },
-  } = useToggleRefinement({
-    attribute: "archived",
-    on: [true, false],
-    off: false,
-  })
-  const archivedCount = (countOn ?? 0) - (countOff ?? 0)
-  return (
-    <div className="mb-2 flex flex-wrap justify-between">
-      <div className="mr-2 text-[14px]">
-        matches: {algoliaResults?.nbHits || 0}
-      </div>
-      <div className="text-[14px]">
-        <label>
-          include archived ({archivedCount}):
-          <CheckBox
-            onChange={(event) => {
-              refine({ isRefined: !event.target.checked })
-            }}
-            name="optional"
-            className="ml-1 mr-2"
-          />
-        </label>
-      </div>
-    </div>
-  )
-}
-
 function RecipeList(props: {
   readonly drag?: boolean
   readonly className?: string
   readonly scroll?: boolean
   readonly advancedSearch?: boolean
 }) {
-  const { hits } = useHits<{
-    name: string
-    archived_at: string
-  }>()
+  const { hits } = useHits<RecipeYakHit>()
   const {
     indexUiState: { query },
   } = useInstantSearch()
@@ -139,64 +96,12 @@ function RecipeList(props: {
   if (!recipes.isSuccess) {
     return <Loader />
   }
-  const recipeMap = recipes.data.reduce<Record<string, RecipeListItemT>>(
-    (map, recipe) => {
-      map[recipe.id] = recipe
-      return map
-    },
-    {},
-  )
 
-  const results =
-    query || props.advancedSearch
-      ? hits.map((hit) => {
-          return { recipe: recipeMap[hit.objectID], hit }
-        })
-      : // if not query, show everything.
-        orderBy(
-          recipes.data.map((recipe) => ({
-            recipe,
-            hit: {
-              __position: 0,
-              objectID: recipe.id.toString(),
-              _highlightResult: {
-                author: {
-                  value: recipe.author ?? "",
-                  matchedWords: [],
-                  matchLevel: "none" as const,
-                },
-                name: {
-                  value: recipe.name,
-                  matchedWords: [],
-                  matchLevel: "none" as const,
-                },
-              },
-            },
-          })),
-          [
-            (x) => x.recipe.archived_at != null,
-            (x) => x.recipe.name.toUpperCase(),
-          ],
-        )
-
-  const recipeItems = results.map((result, index) => {
+  const recipeItems = hits.map((hit, index) => {
     if (!props.drag) {
-      return (
-        <RecipeListItem
-          key={index}
-          index={result.recipe.id}
-          hit={result.hit}
-          {...result.recipe}
-        />
-      )
+      return <RecipeListItem key={index} index={hit.id} hit={hit} {...hit} />
     }
-    return (
-      <RecipeItemDraggable
-        {...result.recipe}
-        hit={result.hit}
-        key={result.recipe.id}
-      />
-    )
+    return <RecipeItemDraggable hit={hit} key={hit.id} />
   })
 
   if (recipes.data.length === 0) {
@@ -357,6 +262,7 @@ export function RecipeSearchList({
     >
       <div className={clx(noPadding ? "" : "ml-auto mr-auto max-w-[1000px]")}>
         <Search noPadding={noPadding} />
+        <Configure hitsPerPage={1000} />
         <div className="flex flex-col gap-2">
           <div className="flex gap-1">
             <div className="flex flex-col">
@@ -405,6 +311,7 @@ export function RecipeSearchListSchedule() {
   return (
     <InstantSearch searchClient={searchClient} indexName="recipes">
       <Search noPadding={true} />
+      <Configure hitsPerPage={1000} />
       <Matches />
       <RecipeList drag={true} scroll={true} className="w-full" />
     </InstantSearch>

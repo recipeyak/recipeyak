@@ -1,10 +1,10 @@
-import { Hit } from "instantsearch.js"
 import { useInstantSearch } from "react-instantsearch"
 import { Link } from "react-router-dom"
 
 import { clx } from "@/classnames"
 import { CustomHighlight } from "@/components/CustomHighlight"
 import { pathRecipeDetail, pathRecipesList } from "@/paths"
+import { RecipeYakHit } from "@/search-types"
 import { toURL } from "@/urls"
 
 const stylesSuggestion = "p-1 overflow-x-hidden whitespace-nowrap text-ellipsis"
@@ -19,14 +19,7 @@ export function SearchResult({
   onClick,
 }: {
   onClick?: () => void
-  hits: Array<
-    Hit<{
-      readonly id: number
-      readonly name: string
-      readonly archived_at: string | null
-      readonly author: string | null
-    }>
-  >
+  hits: Array<RecipeYakHit>
 }) {
   const { indexUiState } = useInstantSearch()
   const suggestions = hits
