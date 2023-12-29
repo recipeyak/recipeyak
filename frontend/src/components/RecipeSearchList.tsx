@@ -96,7 +96,7 @@ function RecipeList(props: {
     return <RecipeItemDraggable hit={hit} key={hit.id} />
   })
 
-  if (recipeItems.length === 0) {
+  if (!query && recipeItems.length === 0) {
     return <AddRecipeCallToAction />
   }
 
