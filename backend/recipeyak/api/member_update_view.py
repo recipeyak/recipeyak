@@ -6,11 +6,10 @@ from typing import Literal
 import pydantic
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.team_delete_view import is_team_admin
 from recipeyak.models import Membership, Team
@@ -45,22 +44,21 @@ class UpdateMembershipParams(RequestParams):
     level: Literal["admin", "contributor", "read"]
 
 
-@api_view(["PATCH"])
-@permission_classes([IsAuthenticated])
+@endpoint()
 def member_update_view(
-    request: AuthedRequest, *, team_id: int = -1, member_id: int
-) -> Response:
-    params = UpdateMembershipParams.parse_obj(request.data)
+    request: AuthedHttpRequest, *, team_id: int = -1, member_id: int
+) -> JsonResponse:
+    params = UpdateMembershipParams.parse_raw(request.body)
     if not is_team_admin(team_id=team_id, user_id=request.user.id):
-        return Response(status=403)
+        return JsonResponse(status=403)
     membership = get_object_or_404(get_memberships(request.user), pk=member_id)
     membership.level = params.level
     try:
         membership.save()
     except DemoteLastAdminError as e:
-        return Response(str(e), status=400)
+        return JsonResponse(str(e), status=400)
 
-    return Response(
+    return JsonResponse(
         TeamMemberResponse(
             id=membership.id,
             level=membership.level,

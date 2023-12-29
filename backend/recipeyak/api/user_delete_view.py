@@ -1,13 +1,13 @@
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
+from django.contrib.auth import logout
 
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
 
 
-@api_view(["DELETE"])
-@permission_classes([IsAuthenticated])
-def user_delete_view(request: AuthedRequest) -> Response:
-    # TODO: probably disable login and then logout user
-    request.user.delete()
-    return Response(status=204)
+@endpoint()
+def user_delete_view(request: AuthedHttpRequest) -> JsonResponse:
+    user = request.user
+    logout(request)
+    user.delete()
+    return JsonResponse(status=204)

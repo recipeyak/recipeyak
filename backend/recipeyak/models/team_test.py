@@ -1,5 +1,5 @@
 import pytest
-from rest_framework.test import APIClient
+from django.test.client import Client
 
 from recipeyak.models import Team, User
 
@@ -7,7 +7,7 @@ pytestmark = pytest.mark.django_db
 
 
 def test_team_force_join(
-    client: APIClient,
+    client: Client,
     team: Team,
     user: User,
     user2: User,
@@ -31,7 +31,7 @@ def test_team_force_join(
     assert not user3.has_invite(empty_team), "Invite should be removed"
 
 
-def test_team_is_member(client: APIClient, team: Team, user: User, user2: User) -> None:
+def test_team_is_member(client: Client, team: Team, user: User, user2: User) -> None:
     assert not team.is_member(user2), "User2 should not not be a default team member"
     assert team.is_member(user), "User should be a default team member"
 
@@ -39,13 +39,13 @@ def test_team_is_member(client: APIClient, team: Team, user: User, user2: User) 
     assert team.is_member(user2), "User2 should be a member"
 
 
-def test_team_invite_user(client: APIClient, empty_team: Team, user: User) -> None:
+def test_team_invite_user(client: Client, empty_team: Team, user: User) -> None:
     assert not user.membership_set.filter(team=empty_team).exists()
     empty_team.invite_user(user, creator=user)
     assert user.membership_set.filter(team=empty_team, is_active=False).exists()
 
 
-def test_user_has_invite(client: APIClient, empty_team: Team, user: User) -> None:
+def test_user_has_invite(client: Client, empty_team: Team, user: User) -> None:
     """
     Returns whether a user has pending invited to team
     """

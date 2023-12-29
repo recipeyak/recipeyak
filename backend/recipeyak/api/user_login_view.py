@@ -6,7 +6,9 @@ from django.contrib.auth import authenticate, login
 from pydantic import EmailStr
 
 from recipeyak.api.base.decorators import endpoint
-from recipeyak.api.base.request import AnonymousHttpRequest
+from recipeyak.api.base.request import (
+    AnonymousHttpRequest,
+)
 from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.user_retrieve_view import serialize_user
@@ -18,7 +20,7 @@ class LoginUserParams(RequestParams):
     password: str
 
 
-@endpoint(dangerously_disable_auth_check=True)
+@endpoint(auth_required=False)
 def user_login_view(request: AnonymousHttpRequest) -> JsonResponse:
     """
     Check the credentials and login if credentials are valid and authenticated.

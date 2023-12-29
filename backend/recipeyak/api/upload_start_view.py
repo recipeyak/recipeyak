@@ -3,13 +3,11 @@ from __future__ import annotations
 from uuid import uuid4
 
 import pydantic
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
 from recipeyak import config
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.models import filter_recipes, get_team
 from recipeyak.models.upload import Upload, s3
@@ -28,15 +26,17 @@ class StartUploadResponse(pydantic.BaseModel):
     upload_headers: dict[str, str]
 
 
-@api_view(["POST"])
-@permission_classes([IsAuthenticated])
-def upload_start_view(request: AuthedRequest) -> Response:
-    params = StartUploadParams.parse_obj(request.data)
+@endpoint()
+def upload_start_view(request: AuthedHttpRequest) -> JsonResponse:
+    params = StartUploadParams.parse_raw(request.body)
     key = f"{request.user.id}/{uuid4().hex}/{params.file_name}"
     team = get_team(request.user)
     recipe = filter_recipes(team=team).filter(id=params.recipe_id).first()
     if recipe is None:
-        raise ValidationError("Could not find recipe with provided ID.")
+        return JsonResponse(
+            {"error": {"message": "Could not find recipe with provided ID."}},
+            status=400,
+        )
     upload = Upload(
         created_by=request.user,
         bucket=config.STORAGE_BUCKET_NAME,
@@ -57,7 +57,7 @@ def upload_start_view(request: AuthedRequest) -> Response:
         },
     )
 
-    return Response(
+    return JsonResponse(
         StartUploadResponse(
             id=upload.pk,
             upload_url=upload_url,

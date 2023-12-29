@@ -4,7 +4,7 @@ from decimal import Decimal
 
 import pytest
 
-from recipeyak.api.base.drf_json_renderer import JSONRenderer
+from recipeyak.api.base.json import json_dumps
 from recipeyak.cumin.combine import (
     Ingredient,
     IngredientItem,
@@ -66,7 +66,7 @@ def test_combining_ingredients_to_json() -> None:
         Ingredient(quantity="some", name="Soy Sauce"),
     ]
 
-    assert json.loads(JSONRenderer().render(combine_ingredients(ingredients))) == {
+    assert json.loads(json_dumps(combine_ingredients(ingredients))) == {
         "soy sauce": {
             "category": None,
             "quantities": [

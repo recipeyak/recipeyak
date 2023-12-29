@@ -1,6 +1,6 @@
 import pytest
 from django.http import HttpResponse
-from rest_framework.test import APIClient
+from django.test.client import Client
 
 from recipeyak.api.base.middleware import ServerTimingMiddleware
 
@@ -16,7 +16,7 @@ def test_server_timing_middleware() -> None:
     assert server_timing_middleware("test")["Server-Timing"] is not None  # type: ignore
 
 
-def test_health_check_middleware(client: APIClient) -> None:
+def test_health_check_middleware(client: Client) -> None:
     """
     smoke test for the health check endpoints
     """

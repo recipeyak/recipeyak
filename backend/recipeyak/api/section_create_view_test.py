@@ -1,20 +1,22 @@
 import pytest
-from rest_framework.test import APIClient
+from django.test.client import Client
 
 from recipeyak.models import Recipe, RecipeChange, Section, Team, User
 
 pytestmark = pytest.mark.django_db
 
 
-def test_creating_section(client: APIClient, user: User, recipe: Recipe) -> None:
-    client.force_authenticate(user)
+def test_creating_section(client: Client, user: User, recipe: Recipe) -> None:
+    client.force_login(user)
 
     before_section_count = Section.objects.count()
     data = {"title": "a section title", "position": "17.76"}
 
     assert RecipeChange.objects.count() == 0
 
-    res = client.post(f"/api/v1/recipes/{recipe.id}/sections", data)
+    res = client.post(
+        f"/api/v1/recipes/{recipe.id}/sections", data, content_type="application/json"
+    )
 
     assert res.status_code == 201
     assert isinstance(res.json()["id"], int)
@@ -33,16 +35,18 @@ def test_creating_section(client: APIClient, user: User, recipe: Recipe) -> None
 
 
 def test_creating_section_without_position(
-    client: APIClient, user: User, recipe: Recipe
+    client: Client, user: User, recipe: Recipe
 ) -> None:
-    client.force_authenticate(user)
+    client.force_login(user)
 
     before_section_count = Section.objects.count()
     data = {"title": "a section title"}
 
     assert RecipeChange.objects.count() == 0
 
-    res = client.post(f"/api/v1/recipes/{recipe.id}/sections", data)
+    res = client.post(
+        f"/api/v1/recipes/{recipe.id}/sections", data, content_type="application/json"
+    )
 
     assert res.status_code == 201
     assert isinstance(res.json()["id"], int)
@@ -60,7 +64,7 @@ def test_creating_section_without_position(
 
     assert (
         max(
-            list(recipe.ingredients.values_list("position", flat=True))
+            list(recipe.ingredient_set.values_list("position", flat=True))
             + list(recipe.section_set.values_list("position", flat=True))
         )
         == res.json()["position"]
@@ -68,12 +72,12 @@ def test_creating_section_without_position(
 
 
 def test_fetching_sections_for_recipe(
-    client: APIClient, user: User, recipe: Recipe, team: Team
+    client: Client, user: User, recipe: Recipe, team: Team
 ) -> None:
     """
     check both team list view and list view
     """
-    client.force_authenticate(user)
+    client.force_login(user)
 
     recipe.team = team
     recipe.save()
@@ -88,11 +92,11 @@ def test_fetching_sections_for_recipe(
         assert isinstance(s["title"], str)
         assert isinstance(s["position"], str)
 
-    team.recipes.add(recipe)
+    team.recipe_set.add(recipe)
 
 
-def test_updating_section(client: APIClient, user: User, recipe: Recipe) -> None:
-    client.force_authenticate(user)
+def test_updating_section(client: Client, user: User, recipe: Recipe) -> None:
+    client.force_login(user)
 
     section = Section.objects.create(
         recipe=recipe, title="a new section", position="88.0"
@@ -103,7 +107,9 @@ def test_updating_section(client: APIClient, user: User, recipe: Recipe) -> None
     assert data["position"] != section.position
     assert RecipeChange.objects.count() == 0
 
-    res = client.patch(f"/api/v1/sections/{section.id}/", data)
+    res = client.patch(
+        f"/api/v1/sections/{section.id}/", data, content_type="application/json"
+    )
 
     assert res.status_code == 200
     assert res.json()["title"] == data["title"]
@@ -113,13 +119,17 @@ def test_updating_section(client: APIClient, user: User, recipe: Recipe) -> None
     assert recipe_change.recipe is not None
     assert recipe_change.recipe.id == recipe.id
 
-    res = client.patch(f"/api/v1/sections/{section.id}/", {"position": "124.0"})
+    res = client.patch(
+        f"/api/v1/sections/{section.id}/",
+        {"position": "124.0"},
+        content_type="application/json",
+    )
     assert res.status_code == 200
     assert res.json()["position"] == "124.0"
 
 
-def test_deleting_section(client: APIClient, user: User, recipe: Recipe) -> None:
-    client.force_authenticate(user)
+def test_deleting_section(client: Client, user: User, recipe: Recipe) -> None:
+    client.force_login(user)
 
     section = Section.objects.create(
         recipe=recipe, title="a new section", position="88.0"

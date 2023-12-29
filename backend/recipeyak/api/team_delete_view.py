@@ -3,11 +3,10 @@ from __future__ import annotations
 from django.db import transaction
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
 from recipeyak.models import Team
 from recipeyak.models.membership import Membership
 from recipeyak.models.user import User
@@ -23,9 +22,8 @@ def is_team_admin(*, team_id: int, user_id: int) -> bool:
     ).exists()
 
 
-@api_view(["DELETE"])
-@permission_classes([IsAuthenticated])
-def team_delete_view(request: AuthedRequest, team_id: int) -> Response:
+@endpoint()
+def team_delete_view(request: AuthedHttpRequest, team_id: int) -> JsonResponse:
     with transaction.atomic():
         team = get_object_or_404(get_teams(request.user), pk=team_id)
         if (
@@ -33,6 +31,6 @@ def team_delete_view(request: AuthedRequest, team_id: int) -> Response:
             # don't allow deleting last team
             or get_teams(request.user).count() <= 1
         ):
-            return Response(status=403)
+            return JsonResponse(status=403)
         team.delete()
-        return Response(status=204)
+        return JsonResponse(status=204)

@@ -10,7 +10,6 @@ const getShoppingList = (start: Date | number, end: Date | number) => {
     params: {
       start: toISODateString(start),
       end: toISODateString(end),
-      with_recipes: 1,
     },
   })
 }

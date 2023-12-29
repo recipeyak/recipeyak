@@ -3,11 +3,10 @@ from __future__ import annotations
 import pydantic
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
 from recipeyak.models import Team
 from recipeyak.models.user import User
 
@@ -21,8 +20,7 @@ class RetrieveTeamResponse(pydantic.BaseModel):
     name: str
 
 
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def team_retrieve_view(request: AuthedRequest, team_id: int) -> Response:
+@endpoint()
+def team_retrieve_view(request: AuthedHttpRequest, team_id: int) -> JsonResponse:
     team = get_object_or_404(get_teams(request.user), pk=team_id)
-    return Response(RetrieveTeamResponse(id=team.id, name=team.name))
+    return JsonResponse(RetrieveTeamResponse(id=team.id, name=team.name))

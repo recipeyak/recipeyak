@@ -4,8 +4,8 @@ from datetime import UTC, datetime
 from typing import Any
 
 import pytest
+from django.test.client import Client
 from django.utils.dateparse import parse_datetime
-from rest_framework.test import APIClient
 
 from recipeyak import ordering
 from recipeyak.models import Ingredient, Note, Recipe, Step, Team, TimelineEvent, User
@@ -13,18 +13,18 @@ from recipeyak.models import Ingredient, Note, Recipe, Step, Team, TimelineEvent
 pytestmark = pytest.mark.django_db
 
 
-def test_recipe_creation(client: APIClient, user: User, team: Team) -> None:
+def test_recipe_creation(client: Client, user: User, team: Team) -> None:
     """
     ensure that the user can create recipes
     """
-    client.force_authenticate(user)
+    client.force_login(user)
 
     data = {
         "team": team.id,
         "name": "Recipe name",
     }
 
-    res = client.post("/api/v1/recipes/", data)
+    res = client.post("/api/v1/recipes/", data, content_type="application/json")
     assert res.status_code == 201
 
     recipe_id = res.json().get("id")
@@ -37,27 +37,25 @@ def test_recipe_creation(client: APIClient, user: User, team: Team) -> None:
 
 
 def test_creating_recipe_with_empty_ingredients_and_steps(
-    client: APIClient, user: User, team: Team
+    client: Client, user: User, team: Team
 ) -> None:
     """
     ensure we can create a recipe without ingredients or steps
     """
 
-    client.force_authenticate(user)
+    client.force_login(user)
 
     data = {"name": "some recipe", "team": team.id}
 
-    res = client.post("/api/v1/recipes/", data)
+    res = client.post("/api/v1/recipes/", data, content_type="application/json")
     assert res.status_code == 201
 
 
-def test_cache_headers(
-    client: APIClient, user: User, recipe: Recipe, team: Team
-) -> None:
+def test_cache_headers(client: Client, user: User, recipe: Recipe, team: Team) -> None:
     """
     check that we actually disable caching
     """
-    client.force_authenticate(user)
+    client.force_login(user)
     recipe.team = team
     recipe.save()
 
@@ -66,14 +64,14 @@ def test_cache_headers(
     assert res["Cache-Control"] == "no-store, no-cache, must-revalidate"
 
 
-def test_recipe_creation_for_a_team(client: APIClient, team: Team, user: User) -> None:
+def test_recipe_creation_for_a_team(client: Client, team: Team, user: User) -> None:
     """
     ensure that the user can create recipe for a team
     """
 
     assert team.is_member(user)
 
-    client.force_authenticate(user)
+    client.force_login(user)
 
     assert TimelineEvent.objects.count() == 0
 
@@ -93,7 +91,7 @@ def test_recipe_creation_for_a_team(client: APIClient, team: Team, user: User) -
 
     url = "/api/v1/recipes/"
 
-    res = client.post(url, data)
+    res = client.post(url, data, content_type="application/json")
     assert res.status_code == 201
 
     assert (
@@ -106,11 +104,13 @@ def test_recipe_creation_for_a_team(client: APIClient, team: Team, user: User) -
 
     assert client.get(f"/api/v1/recipes/{recipe_id}/").status_code == 200
 
-    assert Team.objects.get(id=team.id).recipes.first().id == recipe_id
+    recipe = Team.objects.get(id=team.id).recipe_set.first()
+    assert recipe is not None
+    assert recipe.id == recipe_id
 
 
 def test_recipe_deletion(
-    client: APIClient, user: User, recipe: Recipe, team: Team
+    client: Client, user: User, recipe: Recipe, team: Team
 ) -> None:
     """
     ensure that the user can delete a recipe
@@ -118,7 +118,7 @@ def test_recipe_deletion(
     recipe.team = team
     recipe.save()
 
-    client.force_authenticate(user)
+    client.force_login(user)
 
     res = client.delete(f"/api/v1/recipes/{recipe.id}/")
     assert res.status_code == 204
@@ -128,34 +128,36 @@ def test_recipe_deletion(
 
 
 def test_recipe_updating(
-    client: APIClient, user: User, recipe: Recipe, team: Team
+    client: Client, user: User, recipe: Recipe, team: Team
 ) -> None:
     """
     ensure a user can update a recipe
     """
     recipe.team = team
     recipe.save()
-    client.force_authenticate(user)
+    client.force_login(user)
 
     data = {"name": "A new name"}
 
     assert recipe.name != data.get("name")
 
-    res = client.patch(f"/api/v1/recipes/{recipe.id}/", data)
+    res = client.patch(
+        f"/api/v1/recipes/{recipe.id}/", data, content_type="application/json"
+    )
     assert res.status_code == 200
 
     assert res.json().get("name") == data.get("name")
 
 
 def test_recipe_archived_at(
-    client: APIClient, user: User, recipe: Recipe, team: Team
+    client: Client, user: User, recipe: Recipe, team: Team
 ) -> None:
     """
     check we can set archived_at on the recipe
     """
     recipe.team = team
     recipe.save()
-    client.force_authenticate(user)
+    client.force_login(user)
 
     res = client.get(f"/api/v1/recipes/{recipe.id}/")
     assert res.status_code == 200
@@ -164,7 +166,9 @@ def test_recipe_archived_at(
     assert TimelineEvent.objects.count() == 0
 
     data = {"archived_at": datetime.now(UTC)}
-    res = client.patch(f"/api/v1/recipes/{recipe.id}/", data)
+    res = client.patch(
+        f"/api/v1/recipes/{recipe.id}/", data, content_type="application/json"
+    )
     assert res.status_code == 200
     assert isinstance(res.json()["archived_at"], str), "should be a date string"
 
@@ -174,7 +178,11 @@ def test_recipe_archived_at(
         == 1
     )
 
-    res = client.patch(f"/api/v1/recipes/{recipe.id}/", {"archived_at": None})
+    res = client.patch(
+        f"/api/v1/recipes/{recipe.id}/",
+        {"archived_at": None},
+        content_type="application/json",
+    )
     assert res.status_code == 200
     assert res.json()["archived_at"] is None
 
@@ -184,7 +192,7 @@ def test_recipe_archived_at(
 
 
 def test_updating_step_of_recipe(
-    client: APIClient, user: User, recipe: Recipe, team: Team
+    client: Client, user: User, recipe: Recipe, team: Team
 ) -> None:
     """
     ensure a user can update an step of a recipe
@@ -192,9 +200,9 @@ def test_updating_step_of_recipe(
     recipe.team = team
     recipe.save()
 
-    client.force_authenticate(user)
+    client.force_login(user)
 
-    step = recipe.steps[0]
+    step = recipe.step_set.all()[0]
 
     step_data = {
         "text": "An updated step",
@@ -203,7 +211,7 @@ def test_updating_step_of_recipe(
 
     url = f"/api/v1/recipes/{recipe.id}/steps/{step.id}/"
 
-    res = client.patch(url, step_data)
+    res = client.patch(url, step_data, content_type="application/json")
     assert res.status_code == 200
 
     res = client.get(f"/api/v1/recipes/{recipe.id}/")
@@ -217,7 +225,7 @@ def test_updating_step_of_recipe(
 
 
 def test_deleting_step_from_recipe(
-    client: APIClient, user: User, recipe: Recipe, team: Team
+    client: Client, user: User, recipe: Recipe, team: Team
 ) -> None:
     """
     ensure a user can remove a step from a recipe
@@ -225,9 +233,9 @@ def test_deleting_step_from_recipe(
     recipe.team = team
     recipe.save()
 
-    client.force_authenticate(user)
+    client.force_login(user)
 
-    step_id = recipe.steps[0].id
+    step_id = recipe.step_set.all()[0].id
 
     assert isinstance(step_id, int)
 
@@ -259,7 +267,7 @@ step = {"text": "place fish in salt"}
     ],
 )
 def test_position_step_ingredient(
-    client: APIClient,
+    client: Client,
     user: User,
     recipe: Recipe,
     data: Any,
@@ -274,52 +282,56 @@ def test_position_step_ingredient(
     """
     recipe.team = team
     recipe.save()
-    client.force_authenticate(user)
+    client.force_login(user)
     url = url_template.format(recipe_id=recipe.id)
 
-    res = client.post(url, data)
+    res = client.post(url, data, content_type="application/json")
     assert res.status_code == 201
     model.objects.get(id=res.json()["id"]).delete()
-    res = client.post(url, data)
+    res = client.post(url, data, content_type="application/json")
     assert res.status_code == 201
 
 
 def test_adding_note_to_recipe(
-    client: APIClient, user: User, recipe: Recipe, team: Team
+    client: Client, user: User, recipe: Recipe, team: Team
 ) -> None:
     recipe.team = team
     recipe.save()
     Note.objects.all().delete()
-    client.force_authenticate(user)
+    client.force_login(user)
     data = {"text": "use a mixer to speed things along.", "attachment_upload_ids": []}
-    res = client.post(f"/api/v1/recipes/{recipe.id}/notes/", data)
+    res = client.post(
+        f"/api/v1/recipes/{recipe.id}/notes/", data, content_type="application/json"
+    )
     assert res.status_code == 201
     assert res.json()["created_by"]["id"] == user.id
     assert res.json()["text"] == data["text"]
 
 
 def test_modifying_note_of_recipe(
-    client: APIClient, user: User, user2: User, recipe: Recipe, team: Team
+    client: Client, user: User, user2: User, recipe: Recipe, team: Team
 ) -> None:
     recipe.team = team
     recipe.save()
     note = recipe.notes.first()
-    client.force_authenticate(user)
+    client.force_login(user)
     data = {"text": "preheat the oven!!"}
     assert note is not None
-    res = client.patch(f"/api/v1/notes/{note.id}/", data)
+    res = client.patch(
+        f"/api/v1/notes/{note.id}/", data, content_type="application/json"
+    )
     assert res.status_code == 200
     assert res.json()["last_modified_by"]["id"] == user.id
     assert res.json()["created_by"]["id"] == user.id
 
 
 def test_delete_note(
-    client: APIClient, user: User, user2: User, recipe: Recipe, team: Team
+    client: Client, user: User, user2: User, recipe: Recipe, team: Team
 ) -> None:
     recipe.team = team
     recipe.save()
     note = recipe.notes.first()
-    client.force_authenticate(user)
+    client.force_login(user)
     before_count = recipe.notes.count()
     assert before_count > 0
     assert note is not None
@@ -329,14 +341,14 @@ def test_delete_note(
 
 
 def test_adding_ingredient_to_recipe(
-    client: APIClient, user: User, recipe: Recipe, team: Team
+    client: Client, user: User, recipe: Recipe, team: Team
 ) -> None:
     """
     ensure a user can add a ingredient to a recipe
     """
     recipe.team = team
     recipe.save()
-    client.force_authenticate(user)
+    client.force_login(user)
 
     ingredient = {
         "quantity": "1",
@@ -345,7 +357,11 @@ def test_adding_ingredient_to_recipe(
         "description": "",
     }
 
-    res = client.post(f"/api/v1/recipes/{recipe.id}/ingredients/", ingredient)
+    res = client.post(
+        f"/api/v1/recipes/{recipe.id}/ingredients/",
+        ingredient,
+        content_type="application/json",
+    )
     assert res.status_code == 201
 
     res = client.get(f"/api/v1/recipes/{recipe.id}/")
@@ -358,21 +374,23 @@ def test_adding_ingredient_to_recipe(
 
 
 def test_updating_ingredient_of_recipe(
-    client: APIClient, user: User, recipe: Recipe, team: Team
+    client: Client, user: User, recipe: Recipe, team: Team
 ) -> None:
     """
     ensure a user can update an ingredient of a recipe
     """
     recipe.team = team
     recipe.save()
-    client.force_authenticate(user)
+    client.force_login(user)
 
-    ingredient_id = recipe.ingredients[0].id
+    ingredient_id = recipe.ingredient_set.all()[0].id
 
     ingredient = {"name": "black pepper"}
 
     res = client.patch(
-        f"/api/v1/recipes/{recipe.id}/ingredients/{ingredient_id}/", ingredient
+        f"/api/v1/recipes/{recipe.id}/ingredients/{ingredient_id}/",
+        ingredient,
+        content_type="application/json",
     )
     assert res.status_code == 200
 
@@ -389,22 +407,24 @@ def test_updating_ingredient_of_recipe(
 
 
 def test_updating_ingredient_position(
-    client: APIClient, user: User, recipe: Recipe, team: Team
+    client: Client, user: User, recipe: Recipe, team: Team
 ) -> None:
     """
     ensure we can update the position, necessary for drag and drop in the ui
     """
     recipe.team = team
     recipe.save()
-    client.force_authenticate(user)
+    client.force_login(user)
 
-    ingredient = recipe.ingredients[0]
+    ingredient = recipe.ingredient_set.all()[0]
 
     data = {"position": "15"}
     assert data["position"] != ingredient.position
 
     res = client.patch(
-        f"/api/v1/recipes/{recipe.id}/ingredients/{ingredient.id}/", data
+        f"/api/v1/recipes/{recipe.id}/ingredients/{ingredient.id}/",
+        data,
+        content_type="application/json",
     )
     assert res.status_code == 200
     ingredient.refresh_from_db()
@@ -412,16 +432,16 @@ def test_updating_ingredient_position(
 
 
 def test_deleting_ingredient_from_recipe(
-    client: APIClient, user: User, recipe: Recipe, team: Team
+    client: Client, user: User, recipe: Recipe, team: Team
 ) -> None:
     """
     ensure a user can remove a ingredient from a recipe
     """
     recipe.team = team
     recipe.save()
-    client.force_authenticate(user)
+    client.force_login(user)
 
-    ingredient_id = recipe.ingredients[0].id
+    ingredient_id = recipe.ingredient_set.all()[0].id
 
     res = client.delete(f"/api/v1/recipes/{recipe.id}/ingredients/{ingredient_id}/")
     assert res.status_code == 204
@@ -434,31 +454,17 @@ def test_deleting_ingredient_from_recipe(
     ), "ingredient was still in the recipe after being deleted"
 
 
-def test_recording_edits_for_recipes(
-    client: APIClient, user: User, recipe: Recipe
-) -> None:
-    """
-    ensure edits being recorded for recipes
-    """
-    client.force_authenticate(user)
-
-    assert recipe.edits == 0
-
-    recipe.name = "A different name"
-    recipe.save()
-
-    assert recipe.edits == 1
-
-
 def test_updating_edit_recipe_via_api_empty_tags(
-    client: APIClient, user: User, recipe: Recipe, team: Team
+    client: Client, user: User, recipe: Recipe, team: Team
 ) -> None:
     """
     regression test to allow empty lists for tags
     """
-    client.force_authenticate(user)
+    client.force_login(user)
     recipe.team = team
     recipe.save()
 
-    res = client.patch(f"/api/v1/recipes/{recipe.id}/", {"tags": []})
+    res = client.patch(
+        f"/api/v1/recipes/{recipe.id}/", {"tags": []}, content_type="application/json"
+    )
     assert res.status_code == 200

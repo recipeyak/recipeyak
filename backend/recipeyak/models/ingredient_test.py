@@ -1,6 +1,6 @@
 import pytest
 from django.db.utils import IntegrityError
-from rest_framework.test import APIClient
+from django.test.client import Client
 
 from recipeyak.models import Ingredient, Recipe
 from recipeyak.models.team import Team
@@ -35,18 +35,18 @@ def test_position_constraint(recipe: Recipe) -> None:
         Ingredient.objects.create(recipe=recipe, position=100)
 
 
-def test_recipe_field_trimming(client: APIClient, user: User, team: Team) -> None:
+def test_recipe_field_trimming(client: Client, user: User, team: Team) -> None:
     """
     Trim excess whitespace
     """
-    client.force_authenticate(user)
+    client.force_login(user)
     user.schedule_team = team
     user.save()
     payload = {
         "name": "   Chocolate Cake   ",
         "team": team.pk,
     }
-    res = client.post("/api/v1/recipes/", payload)
+    res = client.post("/api/v1/recipes/", payload, content_type="application/json")
     assert res.status_code == 201
     assert res.json()["name"] == "Chocolate Cake"
 
@@ -60,7 +60,9 @@ def test_recipe_field_trimming(client: APIClient, user: User, team: Team) -> Non
         "team": team.pk,
     }
     recipe_id = res.json()["id"]
-    res = client.patch(f"/api/v1/recipes/{recipe_id}/", payload)
+    res = client.patch(
+        f"/api/v1/recipes/{recipe_id}/", payload, content_type="application/json"
+    )
     assert res.status_code == 200
     assert res.json()["name"] == "Chocolate Cake"
     assert res.json()["author"] == "J. Doe"
@@ -71,12 +73,12 @@ def test_recipe_field_trimming(client: APIClient, user: User, team: Team) -> Non
 
 
 def test_ingredient_field_trimming(
-    client: APIClient, user: User, team: Team, recipe: Recipe
+    client: Client, user: User, team: Team, recipe: Recipe
 ) -> None:
     """
     Trim excess whitespace
     """
-    client.force_authenticate(user)
+    client.force_login(user)
     user.schedule_team = team
     user.save()
     recipe.team = team
@@ -89,14 +91,20 @@ def test_ingredient_field_trimming(
         "position": "$",
         "optional": False,
     }
-    res = client.post(f"/api/v1/recipes/{recipe.pk}/ingredients/", payload)
+    res = client.post(
+        f"/api/v1/recipes/{recipe.pk}/ingredients/",
+        payload,
+        content_type="application/json",
+    )
     assert res.status_code == 201
     assert res.json()["name"] == "tomato"
     assert res.json()["description"] == "chopped"
 
     ingredient_id = res.json()["id"]
     res = client.patch(
-        f"/api/v1/recipes/{recipe.pk}/ingredients/{ingredient_id}/", payload
+        f"/api/v1/recipes/{recipe.pk}/ingredients/{ingredient_id}/",
+        payload,
+        content_type="application/json",
     )
     assert res.status_code == 200
     assert res.json()["name"] == "tomato"
@@ -104,12 +112,12 @@ def test_ingredient_field_trimming(
 
 
 def test_step_field_trimming(
-    client: APIClient, user: User, team: Team, recipe: Recipe
+    client: Client, user: User, team: Team, recipe: Recipe
 ) -> None:
     """
     Trim excess whitespace
     """
-    client.force_authenticate(user)
+    client.force_login(user)
     user.schedule_team = team
     user.save()
     recipe.team = team
@@ -119,11 +127,17 @@ def test_step_field_trimming(
         "text": " some test here  ",
         "position": "$",
     }
-    res = client.post(f"/api/v1/recipes/{recipe.pk}/steps/", payload)
+    res = client.post(
+        f"/api/v1/recipes/{recipe.pk}/steps/", payload, content_type="application/json"
+    )
     assert res.status_code == 201
     assert res.json()["text"] == "some test here"
 
     step_id = res.json()["id"]
-    res = client.patch(f"/api/v1/recipes/{recipe.pk}/steps/{step_id}/", payload)
+    res = client.patch(
+        f"/api/v1/recipes/{recipe.pk}/steps/{step_id}/",
+        payload,
+        content_type="application/json",
+    )
     assert res.status_code == 200
     assert res.json()["text"] == "some test here"

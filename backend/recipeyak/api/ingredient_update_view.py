@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams, StrTrimmed
 from recipeyak.api.serializers.recipe import ingredient_to_text, serialize_ingredient
 from recipeyak.models import ChangeType, RecipeChange, filter_ingredients, get_team
@@ -19,13 +18,12 @@ class IngredientsPatchParams(RequestParams):
     optional: bool | None = None
 
 
-@api_view(["PATCH"])
-@permission_classes([IsAuthenticated])
+@endpoint()
 def ingredient_update_view(
-    request: AuthedRequest, ingredient_id: int, recipe_id: object = ()
-) -> Response:
+    request: AuthedHttpRequest, ingredient_id: int, recipe_id: object = ()
+) -> JsonResponse:
     team = get_team(request.user)
-    params = IngredientsPatchParams.parse_obj(request.data)
+    params = IngredientsPatchParams.parse_raw(request.body)
     ingredient = get_object_or_404(filter_ingredients(team=team), pk=ingredient_id)
 
     before = ingredient_to_text(ingredient)
@@ -53,4 +51,4 @@ def ingredient_update_view(
         change_type=ChangeType.INGREDIENT_UPDATE,
     )
 
-    return Response(serialize_ingredient(ingredient))
+    return JsonResponse(serialize_ingredient(ingredient))

@@ -3,12 +3,11 @@ from __future__ import annotations
 from datetime import date
 
 from django.db.models import QuerySet
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 from typing_extensions import TypedDict
 
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.calendar_serialization import serialize_scheduled_recipe
 from recipeyak.models import Membership, ScheduledRecipe, get_team
@@ -19,7 +18,7 @@ class CalSettings(TypedDict):
     calendarLink: str
 
 
-def get_cal_settings(*, team_id: int, request: AuthedRequest) -> CalSettings:
+def get_cal_settings(*, team_id: int, request: AuthedHttpRequest) -> CalSettings:
     membership = Membership.objects.get(team=team_id, user=request.user)
 
     method = "https" if request.is_secure() else "http"
@@ -50,10 +49,11 @@ class StartEndDateSerializer(RequestParams):
     end: date
 
 
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def calendar_list_view(request: AuthedRequest, team_id: object = ()) -> Response:
-    params = StartEndDateSerializer.parse_obj(request.query_params.dict())
+@endpoint()
+def calendar_list_view(
+    request: AuthedHttpRequest, team_id: object = ()
+) -> JsonResponse:
+    params = StartEndDateSerializer.parse_obj(request.GET.dict())
     start = params.start
     end = params.end
     team_id = get_team(request.user).id
@@ -69,4 +69,4 @@ def calendar_list_view(request: AuthedRequest, team_id: object = ()) -> Response
 
     settings = get_cal_settings(request=request, team_id=team_id)
 
-    return Response({"scheduledRecipes": scheduled_recipes, "settings": settings})
+    return JsonResponse({"scheduledRecipes": scheduled_recipes, "settings": settings})

@@ -1,5 +1,5 @@
 import pytest
-from rest_framework.test import APIClient
+from django.test.client import Client
 
 from recipeyak.models import Recipe, RecipeView, User
 from recipeyak.models.team import Team
@@ -7,9 +7,9 @@ from recipeyak.models.team import Team
 
 @pytest.mark.django_db
 def test_recently_viewed(
-    client: APIClient, user: User, recipe: Recipe, team: Team
+    client: Client, user: User, recipe: Recipe, team: Team
 ) -> None:
-    client.force_authenticate(user)
+    client.force_login(user)
     recipe.team = team
     recipe.save()
 

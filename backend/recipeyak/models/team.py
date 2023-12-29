@@ -2,39 +2,32 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal
 
-from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models, transaction
 from django.db.models import QuerySet
 from django.db.models.manager import Manager
 
 from recipeyak.models.base import CommonInfo
 from recipeyak.models.invite import Invite
-from recipeyak.models.membership import Membership, get_random_ical_id
+from recipeyak.models.membership import Membership
 from recipeyak.models.scheduled_recipe import ScheduledRecipe
 
 if TYPE_CHECKING:
+    from django.db.models.manager import RelatedManager
+
+    from recipeyak.models.recipe import Recipe
     from recipeyak.models.user import User
 
 
 class Team(CommonInfo):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
-    # deprecated
-    is_public = models.BooleanField(default=False)
-    recipes = GenericRelation("Recipe", related_query_name="owner_team")
-    # deprecated
-    ical_id = models.TextField(
-        default=get_random_ical_id,
-        help_text="Secret key used to prevent unauthorized access to schedule calendar.",
-    )
 
     objects = Manager["Team"]()
 
+    recipe_set: RelatedManager[Recipe]
+
     class Meta:
         db_table = "core_team"
-
-    def __str__(self) -> str:
-        return f"<Team • name: {self.name}, is_public: {self.is_public}>"
 
     def force_join(
         self,
@@ -95,11 +88,5 @@ class Team(CommonInfo):
     def invite_exists(self, email: User | str) -> bool:
         return Membership.objects.filter(team=self, user__email=email).exists()
 
-    @property
-    def membership_set(self) -> QuerySet[Membership]:
-        return Membership.objects.filter(team=self)
-
-    @property
-    def scheduled_recipes(self) -> QuerySet[ScheduledRecipe]:
-        # TODO(sbdchd): this can probably be team.scheduled_recipes_set
-        return ScheduledRecipe.objects.filter(team=self)
+    membership_set: RelatedManager[Membership]
+    scheduledrecipe_set: RelatedManager[ScheduledRecipe]

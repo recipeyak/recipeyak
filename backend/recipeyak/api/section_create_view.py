@@ -1,13 +1,12 @@
 from __future__ import annotations
 
 from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
 from recipeyak import ordering
+from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.permissions import has_recipe_access
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.request import AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.recipe import serialize_section
 from recipeyak.models import ChangeType, Recipe, RecipeChange, Section
@@ -18,14 +17,13 @@ class SectionCreateParams(RequestParams):
     title: str
 
 
-@api_view(["POST"])
-@permission_classes([IsAuthenticated])
-def section_create_view(request: AuthedRequest, recipe_id: int) -> Response:
+@endpoint()
+def section_create_view(request: AuthedHttpRequest, recipe_id: int) -> JsonResponse:
     recipe = get_object_or_404(Recipe, pk=recipe_id)
     if not has_recipe_access(recipe=recipe, user=request.user):
-        return Response(status=403)
+        return JsonResponse(status=403)
 
-    params = SectionCreateParams.parse_obj(request.data)
+    params = SectionCreateParams.parse_raw(request.body)
 
     RecipeChange.objects.create(
         recipe=recipe,
@@ -49,4 +47,4 @@ def section_create_view(request: AuthedRequest, recipe_id: int) -> Response:
 
     section.save()
 
-    return Response(serialize_section(section), status=201)
+    return JsonResponse(serialize_section(section), status=201)

@@ -4,12 +4,12 @@ from typing import TYPE_CHECKING
 
 from django.contrib.auth import login
 from django.utils.http import urlsafe_base64_decode
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
 
-from recipeyak.api.base.request import AnonymousRequest
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import (
+    AnonymousHttpRequest,
+)
+from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.user_retrieve_view import serialize_user
 from recipeyak.models.user import User
@@ -36,21 +36,30 @@ class ResetPasswordViewParams(RequestParams):
     new_password2: str
 
 
-@api_view(["POST"])
-@permission_classes([AllowAny])
-def user_password_reset_confirm_view(request: AnonymousRequest) -> Response:
-    params = ResetPasswordViewParams.parse_obj(request.data)
+@endpoint(auth_required=False)
+def user_password_reset_confirm_view(request: AnonymousHttpRequest) -> JsonResponse:
+    params = ResetPasswordViewParams.parse_raw(request.body)
 
     user_id = urlsafe_base64_decode(params.uid)
     user = User.objects.filter(pk=user_id).first()
     if user is None:
-        raise ValidationError("Invalid token. Could not find user.")
+        return JsonResponse(
+            {"error": {"message": "Invalid token. Could not find user."}},
+            status=400,
+        )
+
     if not default_token_generator.check_token(user, token=params.token):
-        raise ValidationError("Invalid or expired token.")
+        return JsonResponse(
+            {"error": {"message": "Invalid or expired token."}},
+            status=400,
+        )
     if params.new_password1 != params.new_password2:
-        raise ValidationError("Passwords don't match")
+        return JsonResponse(
+            {"error": {"message": "Passwords don't match"}},
+            status=400,
+        )
     user.set_password(params.new_password1)
     user.save()
     login(request, user)
 
-    return Response(serialize_user(user))
+    return JsonResponse(serialize_user(user))

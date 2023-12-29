@@ -5,11 +5,10 @@ from typing import Literal
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from psycopg2.errors import UniqueViolation
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.recipe import serialize_reactions
 from recipeyak.models import filter_notes, get_team, user_reactions
@@ -22,10 +21,9 @@ class ReactToNoteViewParams(RequestParams):
     type: EMOJIS
 
 
-@api_view(["POST"])
-@permission_classes([IsAuthenticated])
-def reaction_create_view(request: AuthedRequest, note_id: int) -> Response:
-    params = ReactToNoteViewParams.parse_obj(request.data)
+@endpoint()
+def reaction_create_view(request: AuthedHttpRequest, note_id: int) -> JsonResponse:
+    params = ReactToNoteViewParams.parse_raw(request.body)
 
     team = get_team(request.user)
 
@@ -41,4 +39,4 @@ def reaction_create_view(request: AuthedRequest, note_id: int) -> Response:
             reaction = user_reactions(user=request.user).filter(note=note).get()
         else:
             raise
-    return Response(next(iter(serialize_reactions([reaction]))))
+    return JsonResponse(next(iter(serialize_reactions([reaction]))))

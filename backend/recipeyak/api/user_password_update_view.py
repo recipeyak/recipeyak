@@ -4,11 +4,10 @@ from typing import Annotated
 
 from django.contrib.auth import password_validation, update_session_auth_hash
 from pydantic import Field
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
 
 
@@ -18,19 +17,18 @@ class PasswordChangeParams(RequestParams):
     new_password2: Annotated[str, Field(max_length=128)]
 
 
-@api_view(["POST"])
-@permission_classes([IsAuthenticated])
-def user_password_update_view(request: AuthedRequest) -> Response:
+@endpoint()
+def user_password_update_view(request: AuthedHttpRequest) -> JsonResponse:
     """
     Calls Django Auth SetPasswordForm save method.
 
     Accepts the following POST parameters: new_password1, new_password2
     Returns the success/fail message.
     """
-    params = PasswordChangeParams.parse_obj(request.data)
+    params = PasswordChangeParams.parse_raw(request.body)
     user = request.user
     if not user.check_password(params.old_password):
-        return Response(
+        return JsonResponse(
             {
                 "error": {
                     "code": "invalid_password",
@@ -40,7 +38,7 @@ def user_password_update_view(request: AuthedRequest) -> Response:
             status=400,
         )
     if params.new_password1 != params.new_password2:
-        return Response(
+        return JsonResponse(
             {
                 "error": {
                     "code": "mismatched_passwords",
@@ -55,4 +53,4 @@ def user_password_update_view(request: AuthedRequest) -> Response:
     user.save()
     update_session_auth_hash(request, user)
 
-    return Response({"detail": "New password has been saved."})
+    return JsonResponse({"detail": "New password has been saved."})
