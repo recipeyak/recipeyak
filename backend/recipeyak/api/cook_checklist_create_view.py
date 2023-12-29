@@ -28,7 +28,7 @@ class CookChecklistPostParams(RequestParams):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def cook_checklist_create_view(request: AuthedRequest, recipe_id: str) -> Response:
-    team = get_team(request)
+    team = get_team(request.user)
     recipe = filter_recipe_or_404(recipe_id=recipe_id, team=team)
 
     params = CookChecklistPostParams.parse_obj(request.data)

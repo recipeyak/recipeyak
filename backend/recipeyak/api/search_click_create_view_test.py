@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import pytest
-from rest_framework import status
 from rest_framework.test import APIClient
 
 from recipeyak.models import User
@@ -43,4 +42,4 @@ def test_updating_edit_recipe_via_api_empty_tags(client: APIClient, user: User) 
             },
         },
     )
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200

@@ -21,7 +21,7 @@ class StepPatchParams(RequestParams):
 def step_update_view(
     request: AuthedRequest, step_id: int, recipe_id: object = ()
 ) -> Response:
-    team = get_team(request)
+    team = get_team(request.user)
     params = StepPatchParams.parse_obj(request.data)
     step = get_object_or_404(filter_steps(team=team), pk=step_id)
     before_text = step.text

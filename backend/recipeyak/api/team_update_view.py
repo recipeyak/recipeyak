@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import pydantic
 from django.db import transaction
-from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -10,17 +9,7 @@ from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import RequestParams
-from recipeyak.models import Team
-from recipeyak.models.membership import Membership
-from recipeyak.models.user import User
-
-
-def get_teams(user: User) -> QuerySet[Team]:
-    return Team.objects.filter(membership__user_id=user.id)
-
-
-def is_team_admin(team: Team, user: User) -> bool:
-    return team.membership_set.filter(level=Membership.ADMIN).filter(user=user).exists()
+from recipeyak.api.team_delete_view import get_teams, is_team_admin
 
 
 class UpdateTeamResponse(pydantic.BaseModel):
@@ -36,7 +25,7 @@ class UpdateTeamParams(RequestParams):
 @permission_classes([IsAuthenticated])
 def team_update_view(request: AuthedRequest, team_id: int) -> Response:
     team = get_object_or_404(get_teams(request.user), pk=team_id)
-    if not is_team_admin(team, request.user):
+    if not is_team_admin(team_id=team.id, user_id=request.user.id):
         return Response(status=403)
 
     params = UpdateTeamParams.parse_obj(request.data)

@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 
@@ -28,11 +26,8 @@ from recipeyak.models.timeline_event import TimelineEvent  # noqa: F401
 from recipeyak.models.upload import Upload  # noqa: F401
 from recipeyak.models.user import User
 
-if TYPE_CHECKING:
-    from recipeyak.api.base.request import AuthedRequest
 
-
-def get_team(request: AuthedRequest) -> Team:
+def get_team(user: User) -> Team:
     # HACK: ideally we'd have this accessible on the request (request.team) but
     # with DRF it's close to impossible to access authed user
     # see: https://stackoverflow.com/questions/26240832/django-and-middleware-which-uses-request-user-is-always-anonymous
@@ -41,15 +36,15 @@ def get_team(request: AuthedRequest) -> Team:
     # should only be used to populate the default team value on login.
     # If we send it with the request, then a user can have multiple tabs work
     # properly.
-    team_id = request.user.schedule_team_id
+    team_id = user.schedule_team_id
     assert team_id is not None, "should always have a team selected"
-    return get_team_by_id(request=request, team_id=team_id)
+    return get_team_by_id(user_id=user.id, team_id=team_id)
 
 
-def get_team_by_id(*, request: AuthedRequest, team_id: int) -> Team:
+def get_team_by_id(*, user_id: int, team_id: int) -> Team:
     return get_object_or_404(
         Team.objects.filter(
-            membership__user_id=request.user.id,
+            membership__user_id=user_id,
             membership__is_active=True,
         ),
         id=team_id,

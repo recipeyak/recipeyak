@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from django.db import transaction
 from django.shortcuts import get_object_or_404
-from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -22,11 +21,11 @@ class EditNoteParams(RequestParams):
 @permission_classes([IsAuthenticated])
 def note_update_view(request: AuthedRequest, note_id: str) -> Response:
     params = EditNoteParams.parse_obj(request.data)
-    team = get_team(request)
+    team = get_team(request.user)
     note = get_object_or_404(filter_notes(team=team), pk=note_id)
     # only allow the note's author to update the note
     if note.created_by.id != request.user.id:
-        return Response(status=status.HTTP_403_FORBIDDEN)
+        return Response(status=403)
     note.last_modified_by = request.user
     if params.text is not None:
         note.text = params.text

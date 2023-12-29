@@ -166,7 +166,7 @@ class YamlResponse(HttpResponse):
 def export_recipes_list_view(
     request: AuthedRequest, filetype: str, pk: str | None = None
 ) -> HttpResponse:
-    team = get_team(request)
+    team = get_team(request.user)
 
     recipes = pydantic_to_dict(export_recipes(team, pk))
 

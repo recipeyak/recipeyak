@@ -1,7 +1,6 @@
 from datetime import UTC, datetime, timedelta
 
 import pytest
-from rest_framework import status
 from rest_framework.test import APIClient
 
 from recipeyak.models import Recipe, Team, User
@@ -15,7 +14,7 @@ def test_list_view(client: APIClient, user: User, team: Team, recipe: Recipe) ->
     recipe.save()
 
     res = client.get("/api/v1/recipes/")
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert res.json()[0]["scheduledCount"] == 0
 
     one_year_ago = datetime.now(tz=UTC) - timedelta(days=365 * 1)
@@ -24,7 +23,7 @@ def test_list_view(client: APIClient, user: User, team: Team, recipe: Recipe) ->
     recipe.schedule(on=two_years_ago, user=user, team=team)
 
     res = client.get("/api/v1/recipes/")
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert res.json()[0]["scheduledCount"] == 1
 
 
@@ -37,4 +36,4 @@ def test_list_view_no_ingredients_regression(
     recipe.ingredient_set.all().delete()
 
     res = client.get("/api/v1/recipes/")
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200

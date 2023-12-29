@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from django.shortcuts import get_object_or_404
 from pydantic import root_validator
-from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -29,7 +28,7 @@ class CreateNoteParams(RequestParams):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def note_create_view(request: AuthedRequest, recipe_id: int) -> Response:
-    team = get_team(request)
+    team = get_team(request.user)
     recipe = get_object_or_404(filter_recipes(team=team), pk=recipe_id)
     params = CreateNoteParams.parse_obj(request.data)
 
@@ -45,5 +44,5 @@ def note_create_view(request: AuthedRequest, recipe_id: int) -> Response:
 
     return Response(
         serialize_note(note, primary_image_id=recipe.primary_image_id),
-        status=status.HTTP_201_CREATED,
+        status=201,
     )

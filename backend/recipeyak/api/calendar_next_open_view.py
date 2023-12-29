@@ -12,8 +12,8 @@ from recipeyak.models import get_team
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def next_open(request: AuthedRequest, team_id: int = -1) -> Response:
-    team_id = get_team(request).id
+def calendar_next_open_view(request: AuthedRequest, team_id: int = -1) -> Response:
+    team_id = get_team(request.user).id
     with connection.cursor() as cursor:
         weekday = request.query_params["day"]
         now = request.query_params["now"]

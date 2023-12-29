@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from django.shortcuts import get_object_or_404
-from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -16,7 +15,7 @@ from recipeyak.models import ChangeType, RecipeChange, filter_ingredients, get_t
 def ingredient_delete_view(
     request: AuthedRequest, ingredient_id: int, recipe_id: object = ()
 ) -> Response:
-    team = get_team(request)
+    team = get_team(request.user)
     ingredient = get_object_or_404(filter_ingredients(team=team), pk=ingredient_id)
     RecipeChange.objects.create(
         recipe=ingredient.recipe,
@@ -26,4 +25,4 @@ def ingredient_delete_view(
         change_type=ChangeType.INGREDIENT_DELETE,
     )
     filter_ingredients(team=team).filter(pk=ingredient_id).delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
+    return Response(status=204)
