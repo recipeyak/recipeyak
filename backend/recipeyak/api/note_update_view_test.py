@@ -1,5 +1,4 @@
 import pytest
-from rest_framework import status
 from rest_framework.test import APIClient
 
 from recipeyak.models import Note, Recipe, Team, User
@@ -21,13 +20,13 @@ def test_updating_other_users_note(
 
     client.force_authenticate(user)
     res = client.patch(f"/api/v1/notes/{note.id}/")
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
 
     client.force_authenticate(user2)
     res = client.patch(f"/api/v1/notes/{note.id}/")
-    assert res.status_code == status.HTTP_404_NOT_FOUND
+    assert res.status_code == 404
 
     team.force_join(user3)
     client.force_authenticate(user3)
     res = client.patch(f"/api/v1/notes/{note.id}/")
-    assert res.status_code == status.HTTP_404_NOT_FOUND
+    assert res.status_code == 404

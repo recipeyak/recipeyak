@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from django.contrib.auth import logout
-from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -18,4 +17,4 @@ def user_logout_view(request: Request) -> Response:
     """
     logout(request)
 
-    return Response({"detail": "Successfully logged out."}, status=status.HTTP_200_OK)
+    return Response({"detail": "Successfully logged out."}, status=200)

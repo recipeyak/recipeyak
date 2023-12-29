@@ -1,5 +1,4 @@
 import pytest
-from rest_framework import status
 from rest_framework.test import APIClient
 
 from recipeyak.models import Recipe, RecipeView, User
@@ -18,7 +17,7 @@ def test_recently_viewed(
 
     res = client.get(f"/api/v1/recipes/{recipe.pk}/")
 
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert RecipeView.objects.count() == 1
 
     res = client.get("/api/v1/recipes/recently_viewed")

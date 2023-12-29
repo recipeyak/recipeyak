@@ -1,5 +1,4 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -15,4 +14,4 @@ def invite_accept_view(request: AuthedRequest, invite_id: int) -> Response:
         Invite.objects.filter(membership__user=request.user), id=invite_id
     )
     invite.accept()
-    return Response({"detail": "accepted invite"}, status=status.HTTP_200_OK)
+    return Response({"detail": "accepted invite"}, status=200)

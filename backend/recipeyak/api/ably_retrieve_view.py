@@ -3,7 +3,6 @@ from __future__ import annotations
 import asyncio
 
 from ably import AblyRest
-from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -37,5 +36,5 @@ def ably_retrieve_view(request: AuthedRequest) -> Response:
     team_ids = list(get_teams(user=request.user).values_list("id", flat=True))
     return Response(
         asyncio.run(get_token(user_id=str(request.user.id), team_ids=team_ids)),
-        status=status.HTTP_200_OK,
+        status=200,
     )

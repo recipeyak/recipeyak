@@ -1,6 +1,5 @@
 import pytest
 from django.conf import settings
-from rest_framework import status
 from rest_framework.test import APIClient
 from user_sessions.models import Session
 
@@ -15,7 +14,7 @@ def test_signup(client: APIClient) -> None:
     """
     url = "/api/v1/user/"
     res = client.get(url)
-    assert res.status_code == status.HTTP_403_FORBIDDEN
+    assert res.status_code == 403
     assert (
         res.json().get("detail") == "Authentication credentials were not provided."
     ), "Required detail for client side logout on session expiration missing"
@@ -27,9 +26,9 @@ def test_signup(client: APIClient) -> None:
     data = {"email": email, "password1": password, "password2": password}
 
     res = client.post("/api/v1/auth/registration/", data)
-    assert res.status_code == status.HTTP_201_CREATED
+    assert res.status_code == 201
     res = client.get(url)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
 
 
 def test_login(client: APIClient) -> None:
@@ -52,7 +51,7 @@ def test_login(client: APIClient) -> None:
     }
 
     res = client.post("/api/v1/auth/login/", data, **headers)  # type: ignore[arg-type]
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
 
     assert Session.objects.count() == 1
     session = Session.objects.get()
@@ -66,7 +65,7 @@ def test_login(client: APIClient) -> None:
     assert settings.SESSION_COOKIE_SAMESITE == "Lax"
 
     res = client.get("/api/v1/user/")
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
 
 
 def test_logout(client: APIClient) -> None:
@@ -82,14 +81,14 @@ def test_logout(client: APIClient) -> None:
     data = {"email": email, "password": password}
 
     res = client.post("/api/v1/auth/login/", data)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
 
     res = client.post("/api/v1/auth/logout/")
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
 
     res = client.get("/api/v1/user/")
     assert (
-        res.status_code == status.HTTP_403_FORBIDDEN
+        res.status_code == 403
     ), "logged out user was able to access login required info"
 
     assert (
@@ -115,23 +114,23 @@ def test_login_in_two_places_and_logout_from_one(
 
     # 1. log in once
     res = client.post("/api/v1/auth/login/", data)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
 
     # 2. log in a second time
     res = client_b.post("/api/v1/auth/login/", data)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
 
     # 3. logout first login session
     res = client.post("/api/v1/auth/logout/")
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
 
     # 4. ensure first login key doesn't work
     res = client.get("/api/v1/user/")
-    assert res.status_code == status.HTTP_403_FORBIDDEN
+    assert res.status_code == 403
 
     # 4. ensure second login key still works
     res = client_b.get("/api/v1/user/")
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
 
 
 def test_signup_case_insensitive(client: APIClient) -> None:
@@ -141,7 +140,7 @@ def test_signup_case_insensitive(client: APIClient) -> None:
     """
     url = "/api/v1/user/"
     res = client.get(url)
-    assert res.status_code == status.HTTP_403_FORBIDDEN
+    assert res.status_code == 403
 
     email = "testing@gmail.com"
 
@@ -150,16 +149,16 @@ def test_signup_case_insensitive(client: APIClient) -> None:
     data = {"email": email, "password1": password, "password2": password}
 
     res = client.post("/api/v1/auth/registration/", data)
-    assert res.status_code == status.HTTP_201_CREATED
+    assert res.status_code == 201
 
     res = client.get(url)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
 
     client.force_authenticate(user=None)
     email2 = "TESTing@gmail.com"
     assert email2.lower() == email
     res = client.post("/api/v1/auth/registration/", data)
     assert res.status_code in (
-        status.HTTP_401_UNAUTHORIZED,
-        status.HTTP_400_BAD_REQUEST,
+        401,
+        400,
     )

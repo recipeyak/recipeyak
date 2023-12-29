@@ -3,7 +3,6 @@ from __future__ import annotations
 from django.db import transaction
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
-from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -36,4 +35,4 @@ def team_delete_view(request: AuthedRequest, team_id: int) -> Response:
         ):
             return Response(status=403)
         team.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=204)

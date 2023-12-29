@@ -1,5 +1,4 @@
 import pytest
-from rest_framework import status
 from rest_framework.test import APIClient
 
 from recipeyak.models import ChangeType, Ingredient, Recipe, RecipeChange, Step, User
@@ -31,7 +30,7 @@ def test_step_create(client: APIClient, recipe: Recipe, user: User, team: Team) 
     data = {"text": "Combine ingredients and mix well."}
     client.force_authenticate(user)
     res = client.post(f"/api/v1/recipes/{recipe.id}/steps/", data)
-    assert res.status_code == status.HTTP_201_CREATED
+    assert res.status_code == 201
     assert res.json()["text"] == data["text"]
 
     assert RecipeChange.objects.count() == 1, "We should have our step creation change."
@@ -56,7 +55,7 @@ def test_step_update(
     assert data["text"] != step.text, "Ensure we are changing the step with our update."
     client.force_authenticate(user)
     res = client.patch(f"/api/v1/recipes/{recipe.id}/steps/{step.id}/", data)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert res.json()["text"] == data["text"]
 
     assert RecipeChange.objects.count() == 1, "We should have our step update change."
@@ -79,7 +78,7 @@ def test_step_delete(
     ), "We shouldn't have any changes recorded yet."
     client.force_authenticate(user)
     res = client.delete(f"/api/v1/recipes/{recipe.id}/steps/{step.id}/")
-    assert res.status_code == status.HTTP_204_NO_CONTENT
+    assert res.status_code == 204
 
     assert RecipeChange.objects.count() == 1, "We should have our step delete change."
     change: RecipeChange = RecipeChange.objects.get()
@@ -103,7 +102,7 @@ def test_recipe_name_update(
     assert data["name"] != recipe.name, "Ensure we are changing the title."
     client.force_authenticate(user)
     res = client.patch(f"/api/v1/recipes/{recipe.id}/", data)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert res.json()["name"] == data["name"]
 
     assert RecipeChange.objects.count() == 1, "We should have our recipe update change."
@@ -128,7 +127,7 @@ def test_recipe_source_update(
     assert data["source"] != recipe.source, "Ensure we are changing the title."
     client.force_authenticate(user)
     res = client.patch(f"/api/v1/recipes/{recipe.id}/", data)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert res.json()["source"] == data["source"]
 
     assert RecipeChange.objects.count() == 1, "We should have our recipe update change."
@@ -153,7 +152,7 @@ def test_recipe_servings_update(
     assert data["servings"] != recipe.servings, "Ensure we are changing the title."
     client.force_authenticate(user)
     res = client.patch(f"/api/v1/recipes/{recipe.id}/", data)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert res.json()["servings"] == data["servings"]
 
     assert RecipeChange.objects.count() == 1, "We should have our recipe update change."
@@ -178,7 +177,7 @@ def test_recipe_time_update(
     assert data["time"] != recipe.time, "Ensure we are changing the title."
     client.force_authenticate(user)
     res = client.patch(f"/api/v1/recipes/{recipe.id}/", data)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert res.json()["time"] == data["time"]
 
     assert RecipeChange.objects.count() == 1, "We should have our recipe update change."
@@ -206,7 +205,7 @@ def test_ingredient_create(
     }
     client.force_authenticate(user)
     res = client.post(f"/api/v1/recipes/{recipe.id}/ingredients/", ingredient_data)
-    assert res.status_code == status.HTTP_201_CREATED
+    assert res.status_code == 201
 
     assert RecipeChange.objects.count() == 1
     change: RecipeChange = RecipeChange.objects.get()
@@ -231,7 +230,7 @@ def test_ingredient_update(
     res = client.patch(
         f"/api/v1/recipes/{recipe.id}/ingredients/{ingredient.id}/", ingredient_data
     )
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert res.json()["quantity"] == ingredient_data["quantity"]
 
     assert RecipeChange.objects.count() == 1
@@ -255,7 +254,7 @@ def test_ingredient_delete(
 
     client.force_authenticate(user)
     res = client.delete(f"/api/v1/recipes/{recipe.id}/ingredients/{ingredient.id}/")
-    assert res.status_code == status.HTTP_204_NO_CONTENT
+    assert res.status_code == 204
 
     assert RecipeChange.objects.count() == 1
     change: RecipeChange = RecipeChange.objects.get()

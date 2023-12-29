@@ -1,7 +1,6 @@
 import pydantic
 from django.core.exceptions import ValidationError
 from django.db.models import QuerySet
-from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -42,7 +41,7 @@ def shoppinglist_retrieve_view(request: AuthedRequest, team_id: int = -1) -> Res
     team_id = get_team(request).id
     scheduled_recipes = get_scheduled_recipes(request=request, team_id=team_id)
     if scheduled_recipes is None:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=400)
 
     recipes = dict[int, ShoppingListRecipe]()
     ingredients: list[Ingredient] = []
@@ -71,8 +70,8 @@ def shoppinglist_retrieve_view(request: AuthedRequest, team_id: int = -1) -> Res
     if request.query_params.get("with_recipes") == "1":
         return Response(
             {"ingredients": ingredient_mapping, "recipes": recipes.values()},
-            status=status.HTTP_200_OK,
+            status=200,
         )
 
     # deprecated 2022-01-16
-    return Response(ingredient_mapping, status=status.HTTP_200_OK)
+    return Response(ingredient_mapping, status=200)

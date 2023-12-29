@@ -4,7 +4,6 @@ from typing import Literal
 
 from django.db import transaction
 from pydantic import BaseModel
-from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -39,5 +38,5 @@ def team_create_view(request: AuthedRequest) -> Response:
             )
     return Response(
         RetrieveTeamResponse(id=team.id, name=params.name),
-        status=status.HTTP_201_CREATED,
+        status=201,
     )

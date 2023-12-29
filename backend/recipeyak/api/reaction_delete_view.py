@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -13,4 +12,4 @@ from recipeyak.models import user_reactions
 @permission_classes([IsAuthenticated])
 def reaction_delete_view(request: AuthedRequest, reaction_id: int) -> Response:
     user_reactions(user=request.user).filter(pk=reaction_id).delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
+    return Response(status=204)

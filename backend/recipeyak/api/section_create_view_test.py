@@ -1,5 +1,4 @@
 import pytest
-from rest_framework import status
 from rest_framework.test import APIClient
 
 from recipeyak.models import Recipe, RecipeChange, Section, Team, User
@@ -17,7 +16,7 @@ def test_creating_section(client: APIClient, user: User, recipe: Recipe) -> None
 
     res = client.post(f"/api/v1/recipes/{recipe.id}/sections", data)
 
-    assert res.status_code == status.HTTP_201_CREATED
+    assert res.status_code == 201
     assert isinstance(res.json()["id"], int)
     assert isinstance(res.json()["title"], str)
     assert isinstance(res.json()["position"], str)
@@ -45,7 +44,7 @@ def test_creating_section_without_position(
 
     res = client.post(f"/api/v1/recipes/{recipe.id}/sections", data)
 
-    assert res.status_code == status.HTTP_201_CREATED
+    assert res.status_code == 201
     assert isinstance(res.json()["id"], int)
     assert isinstance(res.json()["title"], str)
     assert isinstance(res.json()["position"], str)
@@ -81,7 +80,7 @@ def test_fetching_sections_for_recipe(
 
     # detail
     res = client.get(f"/api/v1/recipes/{recipe.id}/")
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert isinstance(res.json()["sections"], list)
     assert res.json()["sections"]
     for s in res.json()["sections"]:
@@ -106,7 +105,7 @@ def test_updating_section(client: APIClient, user: User, recipe: Recipe) -> None
 
     res = client.patch(f"/api/v1/sections/{section.id}/", data)
 
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert res.json()["title"] == data["title"]
     assert res.json()["position"] == data["position"]
     assert RecipeChange.objects.count() == 1
@@ -115,7 +114,7 @@ def test_updating_section(client: APIClient, user: User, recipe: Recipe) -> None
     assert recipe_change.recipe.id == recipe.id
 
     res = client.patch(f"/api/v1/sections/{section.id}/", {"position": "124.0"})
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert res.json()["position"] == "124.0"
 
 
@@ -130,7 +129,7 @@ def test_deleting_section(client: APIClient, user: User, recipe: Recipe) -> None
 
     res = client.delete(f"/api/v1/sections/{section.id}/")
 
-    assert res.status_code == status.HTTP_204_NO_CONTENT
+    assert res.status_code == 204
     after_count = recipe.section_set.count()
     assert after_count == before_count - 1
     assert RecipeChange.objects.count() == 1
