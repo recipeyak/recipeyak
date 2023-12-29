@@ -3,7 +3,6 @@ from email.utils import parsedate_to_datetime
 from urllib.parse import urlparse
 
 import pytest
-from rest_framework import status
 from rest_framework.test import APIClient
 
 from recipeyak.api.ical_retrieve_view import to_ical_time
@@ -21,7 +20,7 @@ def test_ical_view_with_invalid_id(client: APIClient, user: User, team: Team) ->
     assert str(team.ical_id) != fake_team_id
 
     res = client.get(f"/t/{team.id}/ical/{fake_team_id}/schedule.ics")
-    assert res.status_code == status.HTTP_404_NOT_FOUND
+    assert res.status_code == 404
 
 
 def omit_entry_ids(content: str) -> str:
@@ -48,10 +47,10 @@ def test_ical_ids_consistent(
     ScheduledRecipe.objects.create(recipe=recipe, team=team, on=date(1976, 7, 10))
     url = f"/t/{team.id}/ical/{team.ical_id}/schedule.ics"
     res = client.get(url)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
 
     res_second = client.get(url)
-    assert res_second.status_code == status.HTTP_200_OK
+    assert res_second.status_code == 200
 
     assert (
         res.content == res_second.content
@@ -85,7 +84,7 @@ def test_ical_view_with_correct_id(
 
     url = f"/t/{team.id}/ical/{team.ical_id}/schedule.ics"
     res = client.get(url)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert res["Content-Type"] == "text/calendar"
     assert isinstance(parsedate_to_datetime(res["Last-Modified"]), datetime)
 
@@ -148,7 +147,7 @@ def test_get_ical_view_works_with_accept_encoding(
     """
     url = f"/t/{team.id}/ical/{team.ical_id}/schedule.ics"
     res = client.get(url, HTTP_ACCEPT="text/calendar")
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
 
 
 def test_head_ical(client: APIClient, user: User, recipe: Recipe, team: Team) -> None:
@@ -157,7 +156,7 @@ def test_head_ical(client: APIClient, user: User, recipe: Recipe, team: Team) ->
     """
     url = f"/t/{team.id}/ical/{team.ical_id}/schedule.ics"
     res = client.head(url, HTTP_ACCEPT="text/calendar")
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
 
 
 def test_get_ical_view_with_user_specific_id(
@@ -171,7 +170,7 @@ def test_get_ical_view_with_user_specific_id(
     membership.save()
     url = f"/t/{team.id}/ical/{membership.calendar_secret_key}/schedule.ics"
     res = client.get(url, HTTP_ACCEPT="text/calendar")
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
 
 
 def test_get_ical_view_with_schedule_endpoint(
@@ -184,7 +183,7 @@ def test_get_ical_view_with_schedule_endpoint(
     client.force_authenticate(user)
 
     res = client.get(url, {"start": date(1976, 1, 1), "end": date(1977, 1, 1), "v2": 1})
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     calendar_link = res.json()["settings"]["calendarLink"]
 
     client.force_authenticate(None)
@@ -196,7 +195,7 @@ def test_get_ical_view_with_schedule_endpoint(
 
     res = client.get(relative_url, HTTP_ACCEPT="text/calendar")
     assert (
-        res.status_code == status.HTTP_200_OK
+        res.status_code == 200
     ), "API returned a valid URL for retrieving calendar info."
 
 
@@ -211,9 +210,9 @@ def test_get_ical_view_404_when_disabled(
     membership.save()
     url = f"/t/{team.id}/ical/{membership.calendar_secret_key}/schedule.ics"
     res = client.get(url, HTTP_ACCEPT="text/calendar")
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
 
     membership.calendar_sync_enabled = False
     membership.save()
     res = client.get(url, HTTP_ACCEPT="text/calendar")
-    assert res.status_code == status.HTTP_404_NOT_FOUND
+    assert res.status_code == 404

@@ -1,5 +1,4 @@
 import pytest
-from rest_framework import status
 from rest_framework.test import APIClient
 
 from recipeyak.models import Invite, Membership, Team, User
@@ -19,21 +18,19 @@ def test_creating_team(client: APIClient, user: User, user2: User) -> None:
 
     res = client.post(url, data)
     assert (
-        res.status_code == status.HTTP_403_FORBIDDEN
+        res.status_code == 403
     ), "Unauthenticated users should not be able to create a team"
 
     client.force_authenticate(user)
     res = client.post(url, data)
-    assert (
-        res.status_code == status.HTTP_201_CREATED
-    ), "Authenticated users should be able to create teams"
+    assert res.status_code == 201, "Authenticated users should be able to create teams"
     assert res.json().get("name") == data.get("name")
     team_id = res.json().get("id")
     team = Team.objects.get(pk=team_id)
 
     url = f"/api/v1/t/{team.pk}/"
     res = client.get(url)
-    assert res.status_code == status.HTTP_200_OK, "user can access newly created team"
+    assert res.status_code == 200, "user can access newly created team"
 
     assert res.json()["id"] == team_id
     assert res.json()["name"] == team_name
@@ -41,7 +38,7 @@ def test_creating_team(client: APIClient, user: User, user2: User) -> None:
 
     client.force_authenticate(user2)
     assert (
-        client.get(url).status_code == status.HTTP_404_NOT_FOUND
+        client.get(url).status_code == 404
     ), "user2 cannnot access team since they aren't members"
 
 
@@ -53,7 +50,7 @@ def test_updating_team_name(
     data = {"name": "new Recipe Yak Team"}
     url = f"/api/v1/t/{team.pk}/"
     res = client.patch(url, data)
-    assert res.status_code == status.HTTP_200_OK, "team admin can update team"
+    assert res.status_code == 200, "team admin can update team"
     assert res.json().get("name") == data.get("name")
 
     client.force_authenticate(user2)
@@ -62,7 +59,7 @@ def test_updating_team_name(
 
     team.force_join(user2, level=Membership.CONTRIBUTOR)
     res = client.patch(url, data)
-    assert res.status_code == status.HTTP_403_FORBIDDEN, "non-admin cannot update team"
+    assert res.status_code == 403, "non-admin cannot update team"
 
 
 def test_deleting_team(
@@ -81,12 +78,12 @@ def test_deleting_team(
     # non-member cannot delete team
     client.force_authenticate(user2)
     res = client.delete(url)
-    assert res.status_code == status.HTTP_404_NOT_FOUND, "non-member cannot delete team"
+    assert res.status_code == 404, "non-member cannot delete team"
 
     # join user2 to team as non-admin
     team.force_join(user2, level=Membership.CONTRIBUTOR)
     res = client.delete(url)
-    assert res.status_code == status.HTTP_403_FORBIDDEN, "non-admin cannot delete team"
+    assert res.status_code == 403, "non-admin cannot delete team"
 
     # admins of other teams cannot delete team they are not an admin of
     empty_team.force_join(user3, level=Membership.ADMIN)
@@ -94,7 +91,7 @@ def test_deleting_team(
     assert empty_team.is_admin(user3)
     client.force_authenticate(user3)
     assert (
-        client.delete(url).status_code == status.HTTP_404_NOT_FOUND
+        client.delete(url).status_code == 404
     ), "admin of another team cannot delete this team"
 
 
@@ -107,9 +104,7 @@ def test_list_team(
     # verify non-members cannot see private teams
     assert not team.is_member(user2), "User should not be team member"
     res = client.get(url)
-    assert (
-        res.status_code == status.HTTP_200_OK
-    ), "all users should be able to list teams"
+    assert res.status_code == 200, "all users should be able to list teams"
     assert len(res.json()) == 1
     assert res.json()[0]["id"] != team.id
 
@@ -117,9 +112,7 @@ def test_list_team(
     client.force_authenticate(user)
     assert team.is_member(user), "User should be team member"
     res = client.get(url)
-    assert (
-        res.status_code == status.HTTP_200_OK
-    ), "all users should be able to list teams"
+    assert res.status_code == 200, "all users should be able to list teams"
     assert len(res.json()) == 1, "Team member should be able to list private team"
     assert res.json()[0].get("id") == team.id
 
@@ -130,15 +123,13 @@ def test_retrieve_team(client: APIClient, team: Team, user: User, user2: User) -
 
     # verify non-members cannot see private team
     res = client.get(url)
-    assert (
-        res.status_code == status.HTTP_404_NOT_FOUND
-    ), "non-members should not see private team"
+    assert res.status_code == 404, "non-members should not see private team"
 
     # verify members can see private team
     client.force_authenticate(user)
     assert team.is_member(user), "User should be team member"
     res = client.get(url)
-    assert res.status_code == status.HTTP_200_OK, "member should be able to get team"
+    assert res.status_code == 200, "member should be able to get team"
     assert res.json()["id"] == team.id
 
 
@@ -154,8 +145,8 @@ def test_create_team_member(
         url = f"/api/v1/t/{team.id}/members/"
         res = client.post(url, {})
         assert res.status_code in (
-            status.HTTP_405_METHOD_NOT_ALLOWED,
-            status.HTTP_403_FORBIDDEN,
+            405,
+            403,
         )
 
 
@@ -171,16 +162,14 @@ def test_list_team_members(
     client.force_authenticate(user)
     assert team.is_admin(user)
     res = client.get(url)
-    assert res.status_code == status.HTTP_200_OK, "Team admins can view members"
+    assert res.status_code == 200, "Team admins can view members"
     assert len(res.json()) == 1
 
     # team viewer can see members
     team.force_join(user3, level=Membership.READ_ONLY)
     client.force_authenticate(user3)
     res = client.get(url)
-    assert (
-        res.status_code == status.HTTP_200_OK
-    ), "Viewer members can retrieve team members"
+    assert res.status_code == 200, "Viewer members can retrieve team members"
 
 
 def test_destory_team_member(
@@ -197,7 +186,7 @@ def test_destory_team_member(
     client.force_authenticate(user2)
     assert (
         client.delete(f"/api/v1/t/{team.pk}/members/{user_membership.id}/").status_code
-        == status.HTTP_404_NOT_FOUND
+        == 404
     ), "non-member should not be able to delete member"
 
     # non-admins cannot delete team members
@@ -207,14 +196,14 @@ def test_destory_team_member(
     client.force_authenticate(user3)
     assert (
         client.delete(f"/api/v1/t/{team.pk}/members/{user_membership.id}/").status_code
-        == status.HTTP_403_FORBIDDEN
+        == 403
     ), "non-admin member should not be able to revoke admin user's membership"
 
     user3_membership = user3.membership_set.get(team=team)
     # admins can remove memberships of members
     client.force_authenticate(user)
     res = client.delete(f"/api/v1/t/{team.pk}/members/{user3_membership.id}/")
-    assert res.status_code == status.HTTP_204_NO_CONTENT
+    assert res.status_code == 204
     assert not Membership.objects.filter(
         id=user3_membership.id
     ).exists(), "admin should be able to remove team membership of member"
@@ -226,9 +215,7 @@ def test_destory_team_member(
     res = client.delete(
         f"/api/v1/t/{team.pk}/members/{user.membership_set.get(team=team).id}/"
     )
-    assert (
-        res.status_code == status.HTTP_204_NO_CONTENT
-    ), "Team admins can remove other admins"
+    assert res.status_code == 204, "Team admins can remove other admins"
 
     # admins cannot remove members of other teams
     empty_team.force_join(user)
@@ -239,7 +226,7 @@ def test_destory_team_member(
         client.delete(
             f"/api/v1/t/{empty_team.pk}/members/{user.membership_set.get(team=empty_team).id}/"
         ).status_code
-        == status.HTTP_404_NOT_FOUND
+        == 404
     ), "Admin users cannot remove member of another team"
 
     # members can remove their own membership
@@ -250,7 +237,7 @@ def test_destory_team_member(
         client.delete(
             f"/api/v1/t/{empty_team.pk}/members/{user2.membership_set.get(team=empty_team).id}/"
         ).status_code
-        == status.HTTP_204_NO_CONTENT
+        == 204
     )
 
 
@@ -272,31 +259,31 @@ def test_update_team_member(
     # non-members cannot edit member
     assert not team.is_member(user2)
     client.force_authenticate(user2)
-    assert client.patch(url, data).status_code == status.HTTP_403_FORBIDDEN
+    assert client.patch(url, data).status_code == 403
 
     # members cannot edit member
     team.force_join(user2)
     assert team.is_member(user2) and not team.is_admin(user2)
-    assert client.patch(url, data).status_code == status.HTTP_403_FORBIDDEN
+    assert client.patch(url, data).status_code == 403
 
     # members cannot edit their membership
     assert team.is_member(user2) and not team.is_admin(user2)
     user2_membership = user2.membership_set.get(team=team)
     url = f"/api/v1/t/{team.pk}/members/{user2_membership.id}/"
-    assert client.patch(url, data).status_code == status.HTTP_403_FORBIDDEN
+    assert client.patch(url, data).status_code == 403
 
     # admins can edit memberships
     client.force_authenticate(user)
     assert team.is_admin(user)
     assert team.is_member(user2)
-    assert client.patch(url, data).status_code == status.HTTP_200_OK
+    assert client.patch(url, data).status_code == 200
 
     # admins cannot edit memberships on other teams
     empty_team.force_join(user2)
     assert not empty_team.is_member(user) and team.is_admin(user)
     assert empty_team.is_member(user2)
     url = f"/api/v1/t/{empty_team.pk}/members/{user2_membership.id}/"
-    assert client.patch(url, data).status_code == status.HTTP_403_FORBIDDEN
+    assert client.patch(url, data).status_code == 403
 
 
 def test_create_team_invite(
@@ -315,19 +302,19 @@ def test_create_team_invite(
     client.force_authenticate(user)
     assert team.is_admin(user)
     res = client.post(url, {"emails": [user2.email], "level": Membership.ADMIN})
-    assert res.status_code == status.HTTP_201_CREATED
+    assert res.status_code == 201
     assert user2.has_invite(team) and not team.is_member(user2)
 
     for data, description, s in [
         (
             {"emails": [""], "level": "invalid user level"},
             "invalid levels are not valid",
-            status.HTTP_400_BAD_REQUEST,
+            400,
         ),
         (
             {"emails": [user2.email], "level": Membership.CONTRIBUTOR},
             "just filter out emails for invites that already exist",
-            status.HTTP_201_CREATED,
+            201,
         ),
     ]:
         res = client.post(url, data)
@@ -343,7 +330,7 @@ def test_creating_invites_by_non_members(
     url = f"/api/v1/t/{team.id}/invites/"
     client.force_authenticate(user2)
     res = client.post(url, {"emails": [user3.email]})
-    assert res.status_code == status.HTTP_400_BAD_REQUEST
+    assert res.status_code == 400
 
 
 def test_create_user_invite(
@@ -361,7 +348,7 @@ def test_create_user_invite(
     for u in [user, user2]:
         client.force_authenticate(u)
         res = client.post(url, {"emails": [u.email], "level": Membership.ADMIN})
-        assert res.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
+        assert res.status_code == 405
 
 
 def test_list_user_invites(
@@ -380,12 +367,12 @@ def test_list_user_invites(
 
     client.force_authenticate(user)
     res = client.get(url)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert not res.json(), "user should not get invite for user2"
 
     client.force_authenticate(user2)
     res = client.get(url)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert res.json()[0].get("id") == invite.id, "user 2 should get their own invite"
 
 
@@ -402,7 +389,7 @@ def test_retrieve_user_invite(
     client.force_authenticate(user)
     url = f"/api/v1/t/{team.id}/invites/"
     res = client.post(url, {"emails": [user2.email], "level": Membership.ADMIN})
-    assert res.status_code == status.HTTP_201_CREATED
+    assert res.status_code == 201
 
 
 def test_user_invites(
@@ -418,10 +405,10 @@ def test_user_invites(
         {"emails": [user.email]},
         {},
     ]:
-        assert client.post(url, data).status_code == status.HTTP_400_BAD_REQUEST
+        assert client.post(url, data).status_code == 400
 
     res = client.post(url, {"emails": [user2.email], "level": Membership.ADMIN})
-    assert res.status_code == status.HTTP_201_CREATED
+    assert res.status_code == 201
     assert user2.membership_set.filter(
         team=team
     ).exists(), "user should be a member of the team"
@@ -434,13 +421,13 @@ def test_user_invites(
     client.force_authenticate(user)
     url = f"/api/v1/t/{team.id}/invites/"
     res = client.post(url, {"emails": [user3.email], "level": Membership.ADMIN})
-    assert res.status_code == status.HTTP_201_CREATED
+    assert res.status_code == 201
 
     # retrieve all invites for user2
     client.force_authenticate(user2)
     url = "/api/v1/invites/"
     res = client.get(url)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert len(res.json()) == 1
 
 
@@ -457,7 +444,7 @@ def test_accept_team_invite(
     client.force_authenticate(user)
     url = f"/api/v1/t/{team.id}/invites/"
     res = client.post(url, {"emails": [user2.email], "level": Membership.ADMIN})
-    assert res.status_code == status.HTTP_201_CREATED
+    assert res.status_code == 201
     invite_id = res.json()["invite_ids"][0]
     assert Invite.objects.get(pk=invite_id).status == Invite.OPEN
 
@@ -465,13 +452,13 @@ def test_accept_team_invite(
     client.force_authenticate(user2)
     url = f"/api/v1/invites/{invite_id}/accept/"
     res = client.post(url)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert Invite.objects.get(pk=invite_id).status == Invite.ACCEPTED
 
     # check user can view team
     url = f"/api/v1/t/{team.id}/members/"
     res = client.get(url)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
 
 
 def test_decline_team_invite(
@@ -489,7 +476,7 @@ def test_decline_team_invite(
     client.force_authenticate(user)
     url = f"/api/v1/t/{team.id}/invites/"
     res = client.post(url, {"emails": [user2.email], "level": Membership.ADMIN})
-    assert res.status_code == status.HTTP_201_CREATED
+    assert res.status_code == 201
     invite_id = res.json()["invite_ids"][0]
     assert Invite.objects.get(pk=invite_id).status == Invite.OPEN
 
@@ -497,7 +484,7 @@ def test_decline_team_invite(
     client.force_authenticate(user2)
     url = f"/api/v1/invites/{invite_id}/decline/"
     res = client.post(url)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert Invite.objects.get(pk=invite_id).status == Invite.DECLINED
 
 
@@ -518,7 +505,7 @@ def test_creating_team_with_name_and_emails(
             "level": Membership.CONTRIBUTOR,
         },
     )
-    assert res.status_code == status.HTTP_201_CREATED
+    assert res.status_code == 201
     team_id = res.json()["id"]
     team = Team.objects.get(id=team_id)
 
@@ -547,7 +534,7 @@ def test_demoting_self_in_team_from_admin(
 
     client.force_authenticate(user)
     res = client.patch(url, {"level": Membership.CONTRIBUTOR})
-    assert res.status_code == status.HTTP_400_BAD_REQUEST
+    assert res.status_code == 400
 
     assert team.is_member(user)
 
@@ -563,4 +550,4 @@ def test_deleting_last_membership_of_team(
 
     client.force_authenticate(user)
     res = client.delete(url)
-    assert res.status_code == status.HTTP_400_BAD_REQUEST
+    assert res.status_code == 400

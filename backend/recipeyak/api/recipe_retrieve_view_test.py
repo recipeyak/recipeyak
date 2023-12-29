@@ -1,5 +1,4 @@
 import pytest
-from rest_framework import status
 from rest_framework.test import APIClient
 
 from recipeyak.models import Recipe, User
@@ -20,14 +19,14 @@ def test_accessing_recipes(
     recipe.save()
 
     res = client.get(f"/api/v1/recipes/{recipe.id}/")
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
 
     client.force_authenticate(user2)
 
     res = client.get(f"/api/v1/recipes/{recipe.id}/")
-    assert res.status_code == status.HTTP_404_NOT_FOUND
+    assert res.status_code == 404
 
     client.force_authenticate(None)
 
     res = client.get(f"/api/v1/recipes/{recipe.id}/")
-    assert res.status_code == status.HTTP_403_FORBIDDEN
+    assert res.status_code == 403

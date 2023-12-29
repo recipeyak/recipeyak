@@ -1,5 +1,4 @@
 import pytest
-from rest_framework import status
 from rest_framework.test import APIClient
 
 from recipeyak.models import Recipe, Team, User
@@ -21,7 +20,7 @@ def test_cal_updating_settings_view(
 
     client.force_authenticate(user)
     res = client.patch(url, {"syncEnabled": True})
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert res.json()["syncEnabled"] is True
     membership.refresh_from_db()
     assert membership.calendar_sync_enabled is True

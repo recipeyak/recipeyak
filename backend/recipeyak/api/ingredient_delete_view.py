@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from django.shortcuts import get_object_or_404
-from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -26,4 +25,4 @@ def ingredient_delete_view(
         change_type=ChangeType.INGREDIENT_DELETE,
     )
     filter_ingredients(team=team).filter(pk=ingredient_id).delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
+    return Response(status=204)

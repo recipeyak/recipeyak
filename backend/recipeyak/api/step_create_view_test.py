@@ -4,7 +4,6 @@ from typing import Any
 
 import pytest
 from django.db.utils import IntegrityError
-from rest_framework import status
 from rest_framework.test import APIClient
 
 from recipeyak.models import Recipe, Step, User
@@ -31,7 +30,7 @@ def test_step_position_order(
         ]
     )
     res = client.get(f"/api/v1/recipes/{recipe.id}/")
-    assert res.status_code in (status.HTTP_201_CREATED, status.HTTP_200_OK)
+    assert res.status_code in (201, 200)
     assert res.json()["steps"] == sorted(
         res.json()["steps"], key=lambda x: x["position"]
     )
@@ -51,10 +50,10 @@ def test_adding_step_to_recipe(
     recipe.save()
 
     res = client.post(f"/api/v1/recipes/{recipe.id}/steps/", step)
-    assert res.status_code == status.HTTP_201_CREATED
+    assert res.status_code == 201
 
     res = client.get(f"/api/v1/recipes/{recipe.id}/")
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
 
     assert step.get("text") in (
         step.get("text") for step in res.json().get("steps")

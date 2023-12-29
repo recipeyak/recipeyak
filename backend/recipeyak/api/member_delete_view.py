@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
-from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -38,5 +37,5 @@ def member_delete_view(
     try:
         membership.delete()
     except DemoteLastAdminError as e:
-        return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
-    return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(str(e), status=400)
+    return Response(status=204)

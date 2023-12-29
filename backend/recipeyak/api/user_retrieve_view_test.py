@@ -5,7 +5,6 @@ from typing import Any, cast
 
 import pytest
 from django.contrib.auth import get_user_model
-from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.test import APIClient
 from user_sessions.models import Session
@@ -26,14 +25,14 @@ def test_user_delete(client: APIClient, user: User, team: Team) -> None:
     assert team.is_member(user)
     assert user.has_team()
     res = client.delete(url)
-    assert res.status_code == status.HTTP_204_NO_CONTENT
+    assert res.status_code == 204
 
     assert not cast(Any, get_user_model()).objects.filter(id=user.id).exists()
 
 
 def test_detail(client: APIClient, user: User) -> None:
     res = client.get("/api/v1/user/")
-    assert res.status_code == status.HTTP_403_FORBIDDEN, "authentication required"
+    assert res.status_code == 403, "authentication required"
 
     client.force_authenticate(user)
     res = client.get("/api/v1/user/")
@@ -62,7 +61,7 @@ def test_detail(client: APIClient, user: User) -> None:
     for key in data:
         assert original_data[key] != data[key], "we want different fields to test with"
     res = client.patch("/api/v1/user/", data)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     for key in data:
         assert res.json()[key] == data[key], "fields should be updated"
 
@@ -118,7 +117,7 @@ def login_info() -> dict[str, str]:
 def logged_in_user(client: APIClient, login_info: dict[str, Any]) -> None:
     User.objects.create_user(**login_info)
     res = client.post("/api/v1/auth/login/", login_info)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
 
 
 def test_session_list(client: APIClient, logged_in_user: User) -> None:
@@ -147,7 +146,7 @@ def test_session_delete_all(
     APIClient().post("/api/v1/auth/login/", login_info)
     assert Session.objects.count() == 2
     res = client.delete("/api/v1/sessions/")
-    assert res.status_code == status.HTTP_204_NO_CONTENT
+    assert res.status_code == 204
     assert (
         Session.objects.count() == 1
     ), "we delete other sessions, not the session being used"
@@ -158,5 +157,5 @@ def test_session_delete_by_id(client: APIClient, logged_in_user: User) -> None:
     session = Session.objects.first()
     assert session is not None
     res = client.delete(f"/api/v1/sessions/{session.pk}/")
-    assert res.status_code == status.HTTP_204_NO_CONTENT
+    assert res.status_code == 204
     assert Session.objects.count() == 0

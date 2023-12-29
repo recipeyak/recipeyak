@@ -1,6 +1,5 @@
 import pytest
 from django.http import HttpResponse
-from rest_framework import status
 from rest_framework.test import APIClient
 
 from recipeyak.api.base.middleware import ServerTimingMiddleware
@@ -22,6 +21,6 @@ def test_health_check_middleware(client: APIClient) -> None:
     smoke test for the health check endpoints
     """
     res = client.get("/healthz")
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     res = client.get("/readiness")
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200

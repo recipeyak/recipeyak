@@ -6,7 +6,7 @@ from django.contrib.auth import login
 from django.contrib.auth.password_validation import validate_password
 from django.db import transaction
 from pydantic import root_validator, validator
-from rest_framework import serializers, status
+from rest_framework import serializers
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
@@ -59,4 +59,4 @@ def user_create_view(request: Request) -> Response:
 
     login(request._request, user)
 
-    return Response({"user": serialize_user(user)}, status=status.HTTP_201_CREATED)
+    return Response({"user": serialize_user(user)}, status=201)

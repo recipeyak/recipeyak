@@ -4,7 +4,6 @@ from typing import Any, cast
 
 from django.contrib.auth import authenticate, login
 from pydantic import EmailStr
-from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
@@ -34,11 +33,9 @@ def user_login_view(request: Request, *args: Any, **kwargs: Any) -> Response:
     if not user:
         return Response(
             {"non_field_errors": ["invalid email or password"]},
-            status=status.HTTP_400_BAD_REQUEST,
+            status=400,
         )
 
     login(request, user)
 
-    return Response(
-        {"user": serialize_user(cast(User, user))}, status=status.HTTP_200_OK
-    )
+    return Response({"user": serialize_user(cast(User, user))}, status=200)

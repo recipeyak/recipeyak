@@ -3,7 +3,6 @@ from datetime import date, timedelta
 from decimal import Decimal
 
 import pytest
-from rest_framework import status
 from rest_framework.test import APIClient
 
 from recipeyak.cumin.combine import Ingredient as IngredientCumin
@@ -30,14 +29,14 @@ def test_fetching_shoppinglist(
     params = {"start": start, "end": end}
 
     res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert res.json() == {}
     assert ShoppingList.objects.count() == 1
 
     recipe.schedule(user=user, on=start, team=team)
 
     res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert res.json() == {
         "egg": {
             "category": "dairy",
@@ -69,13 +68,13 @@ def test_fetching_shoppinglist_with_team_recipe(
     params = {"start": start, "end": end}
 
     res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert res.json() == {}
 
     recipe.schedule(user=user, on=start, team=team)
 
     res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert res.json() != []
 
     assert res.json() == {
@@ -98,7 +97,7 @@ def test_fetching_shoppinglist_with_invalid_dates(
     params = {"start": "", "end": "invalid date"}
     client.force_authenticate(user)
     res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
-    assert res.status_code == status.HTTP_400_BAD_REQUEST
+    assert res.status_code == 400
 
 
 @pytest.mark.parametrize("quantity", ["sprinkle", "some"])
@@ -125,7 +124,7 @@ def test_scheduling_multiple_times_some_ingredient(
     params = {"start": start, "end": end}
     client.force_authenticate(user)
     res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert res.json() == {
         "black pepper": {
             "category": "spices",
@@ -350,7 +349,7 @@ def test_combining_feta(
     params = {"start": start, "end": end}
     client.force_authenticate(user)
     res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
 
     assert res.json() == {
         "all purpose flour": {
@@ -395,12 +394,12 @@ def test_fetching_team_shopping_list(
     url = f"/api/v1/t/{team.pk}/shoppinglist/"
     client.force_authenticate(user)
     res = client.get(url, params)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert res.json() == {}
 
     recipe.schedule(on=start, team=team, user=user)
     res = client.get(url, params)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert len(res.json()) == len(
         recipe.ingredients
     ), "only return the schedule recipe ingredients"

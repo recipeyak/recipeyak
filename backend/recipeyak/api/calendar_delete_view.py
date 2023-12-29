@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -19,4 +18,4 @@ def calendar_delete_view(
     team_id = get_team(request).id
     get_scheduled_recipes(team_id).filter(id=scheduled_recipe_id).delete()
     publish_calendar_event_deleted(recipe_id=scheduled_recipe_id, team_id=team_id)
-    return Response(status=status.HTTP_204_NO_CONTENT)
+    return Response(status=204)

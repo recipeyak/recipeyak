@@ -1,5 +1,4 @@
 import pytest
-from rest_framework import status
 from rest_framework.test import APIClient
 
 from recipeyak.models import Team, User
@@ -18,5 +17,5 @@ def test_cal_next_open(
         f"/api/v1/t/{team.pk}/calendar/next_open/",
         data={"day": "Wednesday", "now": "2022-04-15"},
     )
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert isinstance(res.json()["date"], str)

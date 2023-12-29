@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from django.shortcuts import get_object_or_404
-from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -43,4 +42,4 @@ def step_create_view(request: AuthedRequest, recipe_id: int) -> Response:
         after=params.text,
         change_type=ChangeType.STEP_CREATE,
     )
-    return Response(serialize_step(step), status=status.HTTP_201_CREATED)
+    return Response(serialize_step(step), status=201)

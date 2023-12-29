@@ -4,7 +4,6 @@ from typing import Annotated
 
 from django.contrib.auth import password_validation, update_session_auth_hash
 from pydantic import Field
-from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -38,7 +37,7 @@ def user_password_update_view(request: AuthedRequest) -> Response:
                     "message": "incorrect current password provided",
                 }
             },
-            status=status.HTTP_400_BAD_REQUEST,
+            status=400,
         )
     if params.new_password1 != params.new_password2:
         return Response(
@@ -48,7 +47,7 @@ def user_password_update_view(request: AuthedRequest) -> Response:
                     "message": "passwords do not match",
                 }
             },
-            status=status.HTTP_400_BAD_REQUEST,
+            status=400,
         )
     password_validation.validate_password(params.new_password2, user)
 

@@ -5,7 +5,6 @@ import structlog
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from recipe_scrapers._exceptions import RecipeScrapersExceptions
-from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -105,7 +104,7 @@ def recipe_create_view(request: AuthedRequest) -> Response:
         return Response(
             # TODO(sbdchd): figure out error format
             {"error": True, "message": "Unknown Team"},
-            status=status.HTTP_400_BAD_REQUEST,
+            status=400,
         )
 
     scrape_result: ScrapeResult | None = None
@@ -121,7 +120,7 @@ def recipe_create_view(request: AuthedRequest) -> Response:
             log.info("invalid url")
             return Response(
                 {"error": True, "message": "invalid url"},
-                status=status.HTTP_400_BAD_REQUEST,
+                status=400,
             )
 
     with transaction.atomic():
@@ -137,5 +136,5 @@ def recipe_create_view(request: AuthedRequest) -> Response:
 
     return Response(
         serialize_recipe(recipe=recipe),
-        status=status.HTTP_201_CREATED,
+        status=201,
     )

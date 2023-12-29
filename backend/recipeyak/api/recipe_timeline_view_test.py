@@ -1,7 +1,6 @@
 from datetime import date
 
 import pytest
-from rest_framework import status
 from rest_framework.test import APIClient
 
 from recipeyak.models import Recipe, ScheduledRecipe, Team, User
@@ -23,18 +22,18 @@ def test_get_recipe_timeline(
 
     url = f"/api/v1/recipes/{recipe.id}/timeline"
     res = client.get(url)
-    assert res.status_code == status.HTTP_403_FORBIDDEN, "Endpoint requires auth."
+    assert res.status_code == 403, "Endpoint requires auth."
 
     client.force_authenticate(user)
 
     res = client.get("/api/v1/recipes/does_not_exist/timeline")
-    assert res.status_code == status.HTTP_404_NOT_FOUND
+    assert res.status_code == 404
 
     res = client.get(url)
     assert (
         ScheduledRecipe.objects.filter(recipe=recipe).exists() is False
     ), "We should start off without ScheduledRecipes"
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert (
         not res.json()
     ), "Should have an empty array since we haven't scheduled a recipe yet."
@@ -44,7 +43,7 @@ def test_get_recipe_timeline(
     scheduled = recipe.schedule(on=date(1776, 1, 1), user=user, team=empty_team)
 
     res = client.get(url)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
 
     # check response shape
 
@@ -70,7 +69,7 @@ def test_get_recipe_timeline_ordering(
     url = f"/api/v1/recipes/{recipe.id}/timeline"
     client.force_authenticate(user)
     res = client.get(url)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
 
     assert [scheduled["on"] for scheduled in res.json()] == [
         "1776-03-01",

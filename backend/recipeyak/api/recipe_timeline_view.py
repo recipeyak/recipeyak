@@ -5,7 +5,6 @@ from datetime import date
 import pydantic
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -31,7 +30,7 @@ def recipe_timline_view(request: AuthedRequest, recipe_id: int) -> Response:
     recipe = get_object_or_404(Recipe, pk=recipe_id)
 
     if not has_recipe_access(recipe=recipe, user=user):
-        return Response(status=status.HTTP_403_FORBIDDEN)
+        return Response(status=403)
 
     scheduled_recipes = ScheduledRecipe.objects.filter(
         Q(team=team) | Q(user=user)

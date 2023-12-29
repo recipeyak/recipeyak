@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from django.shortcuts import get_object_or_404
-from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -24,7 +23,7 @@ class SectionCreateParams(RequestParams):
 def section_create_view(request: AuthedRequest, recipe_id: int) -> Response:
     recipe = get_object_or_404(Recipe, pk=recipe_id)
     if not has_recipe_access(recipe=recipe, user=request.user):
-        return Response(status=status.HTTP_403_FORBIDDEN)
+        return Response(status=403)
 
     params = SectionCreateParams.parse_obj(request.data)
 
@@ -50,4 +49,4 @@ def section_create_view(request: AuthedRequest, recipe_id: int) -> Response:
 
     section.save()
 
-    return Response(serialize_section(section), status=status.HTTP_201_CREATED)
+    return Response(serialize_section(section), status=201)

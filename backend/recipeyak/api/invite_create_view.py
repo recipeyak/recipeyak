@@ -2,7 +2,6 @@ from typing import Literal
 
 import pydantic
 from django.db import transaction
-from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -41,6 +40,4 @@ def invite_create_view(request: AuthedRequest, team_id: int) -> Response:
                     email=email, team=team, level=params.level, creator=request.user
                 )
                 invite_ids.append(invite.id)
-    return Response(
-        CreateInviteResponse(invite_ids=invite_ids), status=status.HTTP_201_CREATED
-    )
+    return Response(CreateInviteResponse(invite_ids=invite_ids), status=201)

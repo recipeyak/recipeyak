@@ -1,7 +1,6 @@
 from datetime import date
 
 import pytest
-from rest_framework import status
 from rest_framework.test import APIClient
 
 from recipeyak.models import Recipe, Team, User
@@ -22,7 +21,7 @@ def test_fetching_team_calendar_v2(
     recipe.schedule(on=date(1976, 1, 2), team=team, user=user)
 
     res = client.get(url, {"start": date(1976, 1, 1), "end": date(1977, 1, 1), "v2": 1})
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
 
     assert isinstance(res.json()["scheduledRecipes"], list)
     assert len(res.json()["scheduledRecipes"]) > 0
@@ -43,7 +42,7 @@ def test_fetching_team_cal_v2_content(
     client.force_authenticate(user)
 
     res = client.get(url, {"start": date(1976, 1, 1), "end": date(1977, 1, 1), "v2": 1})
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
 
     membership = Membership.objects.filter(user=user).get(team=team)
 
@@ -61,6 +60,6 @@ def test_fetching_team_cal_v2_content(
 
     res = client.get(url, {"start": date(1976, 1, 1), "end": date(1977, 1, 1), "v2": 1})
 
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert res.json()["settings"]["syncEnabled"] == membership.calendar_sync_enabled
     assert membership.calendar_sync_enabled is True

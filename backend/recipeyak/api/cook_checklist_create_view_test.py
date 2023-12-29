@@ -1,5 +1,4 @@
 import pytest
-from rest_framework import status
 from rest_framework.test import APIClient
 
 from recipeyak.models import (
@@ -29,7 +28,7 @@ def test_fetch_checklist(
     url = f"/api/v1/cook-checklist/{recipe.id}/"
     client.force_authenticate(user)
     res = client.get(url)
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
 
     for ingredient_id in recipe.ingredient_set.values_list("id", flat=True):
         assert isinstance(
@@ -51,14 +50,14 @@ def test_update_checklist(
     url = f"/api/v1/cook-checklist/{recipe.id}/"
     client.force_authenticate(user)
     res = client.post(url, {"ingredient_id": ingredient.id, "checked": False})
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
     assert res.json() == {"ingredient_id": ingredient.id, "checked": False}
 
     res = client.get(url)
     assert res.json()[str(ingredient.id)] is False
 
     res = client.post(url, {"ingredient_id": ingredient.id, "checked": True})
-    assert res.status_code == status.HTTP_200_OK
+    assert res.status_code == 200
 
     res = client.get(url)
     assert res.json()[str(ingredient.id)] is True
