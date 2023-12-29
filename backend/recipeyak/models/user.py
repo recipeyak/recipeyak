@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import hashlib
 import logging
 from typing import TYPE_CHECKING
@@ -10,11 +12,11 @@ from django.contrib.auth.models import (
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.postgres.fields import CIEmailField
 from django.db import models, transaction
-from django.db.models.query import QuerySet
 
 from recipeyak.models.membership import Membership
 
 if TYPE_CHECKING:
+    from django.db.models.manager import RelatedManager
     from user_sessions.models import Session
 
     from recipeyak.models.scheduled_recipe import ScheduledRecipe
@@ -24,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 
 class UserManager(BaseUserManager["User"]):
-    def create_user(self, email: str, password: str | None = None) -> "User":
+    def create_user(self, email: str, password: str | None = None) -> User:
         """
         Creates and saves a user with given email and password.
         """
@@ -37,7 +39,7 @@ class UserManager(BaseUserManager["User"]):
             logger.info("Created new user: %s", user)
             return user
 
-    def create_superuser(self, email: str, password: str) -> "User":
+    def create_superuser(self, email: str, password: str) -> User:
         """
         Creates and saves a superuser with the given email and password.
         """
@@ -136,7 +138,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         # TODO: Add permissions
         return True
 
-    def has_invite(self, team: "Team") -> bool:
+    def has_invite(self, team: Team) -> bool:
         """
         Return if user has invite to team.
         """
@@ -159,9 +161,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     def avatar_url(self) -> str:
         return get_avatar_url(self.email)
 
-    scheduled_recipes: QuerySet["ScheduledRecipe"]
-    membership_set: QuerySet["Membership"]
-    session_set: QuerySet["Session"]
+    scheduled_recipes: RelatedManager[ScheduledRecipe]
+    membership_set: RelatedManager[Membership]
+    session_set: RelatedManager[Session]
 
     def __str__(self) -> str:
         return self.email

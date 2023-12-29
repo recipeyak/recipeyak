@@ -13,6 +13,8 @@ from recipeyak.models.membership import Membership, get_random_ical_id
 from recipeyak.models.scheduled_recipe import ScheduledRecipe
 
 if TYPE_CHECKING:
+    from django.db.models.manager import RelatedManager
+
     from recipeyak.models.user import User
 
 
@@ -95,11 +97,5 @@ class Team(CommonInfo):
     def invite_exists(self, email: User | str) -> bool:
         return Membership.objects.filter(team=self, user__email=email).exists()
 
-    @property
-    def membership_set(self) -> QuerySet[Membership]:
-        return Membership.objects.filter(team=self)
-
-    @property
-    def scheduled_recipes(self) -> QuerySet[ScheduledRecipe]:
-        # TODO(sbdchd): this can probably be team.scheduled_recipes_set
-        return ScheduledRecipe.objects.filter(team=self)
+    membership_set: RelatedManager[Membership]
+    scheduledrecipe_set: RelatedManager[ScheduledRecipe]

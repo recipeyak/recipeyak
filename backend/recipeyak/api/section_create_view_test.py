@@ -64,7 +64,7 @@ def test_creating_section_without_position(
 
     assert (
         max(
-            list(recipe.ingredients.values_list("position", flat=True))
+            list(recipe.ingredient_set.values_list("position", flat=True))
             + list(recipe.section_set.values_list("position", flat=True))
         )
         == res.json()["position"]

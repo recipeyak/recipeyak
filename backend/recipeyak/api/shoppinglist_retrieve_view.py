@@ -11,6 +11,7 @@ from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.cumin.cat import category
 from recipeyak.cumin.combine import Ingredient, combine_ingredients
+from recipeyak.models import Ingredient as DBIngredient
 from recipeyak.models import ScheduledRecipe, ShoppingList, Team, get_team
 
 
@@ -25,10 +26,10 @@ def get_scheduled_recipes(
     team = Team.objects.filter(pk=team_id).first()
     if team is None:
         return None
-    scheduled_recipes = team.scheduled_recipes
-
     try:
-        return scheduled_recipes.filter(on__gte=params.start).filter(on__lte=params.end)
+        return team.scheduledrecipe_set.filter(on__gte=params.start).filter(
+            on__lte=params.end
+        )
     except (ValueError, ValidationError):
         return None
 
@@ -50,9 +51,9 @@ def shoppinglist_retrieve_view(
         return JsonResponse(status=400)
 
     recipes = dict[int, ShoppingListRecipe]()
-    ingredients: list[Ingredient] = []
+    db_ingredients: list[DBIngredient] = []
     for scheduled_recipe in scheduled_recipes:
-        ingredients += scheduled_recipe.recipe.ingredients  # type: ignore [arg-type]
+        db_ingredients += scheduled_recipe.recipe.ingredient_set.all()
         recipes[scheduled_recipe.recipe.id] = ShoppingListRecipe(
             scheduledRecipeId=scheduled_recipe.id,
             recipeId=scheduled_recipe.recipe.id,
@@ -61,7 +62,7 @@ def shoppinglist_retrieve_view(
 
     ingredients = [
         Ingredient(quantity=i.quantity, name=i.name, description=i.description)
-        for i in ingredients
+        for i in db_ingredients
     ]
 
     ingredient_mapping = combine_ingredients(ingredients)

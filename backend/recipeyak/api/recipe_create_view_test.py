@@ -200,7 +200,7 @@ def test_updating_step_of_recipe(
 
     client.force_login(user)
 
-    step = recipe.steps[0]
+    step = recipe.step_set.all()[0]
 
     step_data = {
         "text": "An updated step",
@@ -233,7 +233,7 @@ def test_deleting_step_from_recipe(
 
     client.force_login(user)
 
-    step_id = recipe.steps[0].id
+    step_id = recipe.step_set.all()[0].id
 
     assert isinstance(step_id, int)
 
@@ -381,7 +381,7 @@ def test_updating_ingredient_of_recipe(
     recipe.save()
     client.force_login(user)
 
-    ingredient_id = recipe.ingredients[0].id
+    ingredient_id = recipe.ingredient_set.all()[0].id
 
     ingredient = {"name": "black pepper"}
 
@@ -414,7 +414,7 @@ def test_updating_ingredient_position(
     recipe.save()
     client.force_login(user)
 
-    ingredient = recipe.ingredients[0]
+    ingredient = recipe.ingredient_set.all()[0]
 
     data = {"position": "15"}
     assert data["position"] != ingredient.position
@@ -439,7 +439,7 @@ def test_deleting_ingredient_from_recipe(
     recipe.save()
     client.force_login(user)
 
-    ingredient_id = recipe.ingredients[0].id
+    ingredient_id = recipe.ingredient_set.all()[0].id
 
     res = client.delete(f"/api/v1/recipes/{recipe.id}/ingredients/{ingredient_id}/")
     assert res.status_code == 204
