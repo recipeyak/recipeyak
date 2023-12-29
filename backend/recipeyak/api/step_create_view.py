@@ -26,7 +26,7 @@ def step_create_view(request: AuthedHttpRequest, recipe_id: int) -> JsonResponse
     if params.position is not None:
         step.position = params.position
     else:
-        last_step = recipe.steps.last()
+        last_step = recipe.step_set.order_by("position", "created").last()
         if last_step is not None:
             step.position = ordering.position_after(last_step.position)
         else:

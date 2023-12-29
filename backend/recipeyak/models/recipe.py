@@ -8,7 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.db.models import QuerySet
-from django.db.models.manager import BaseManager, Manager
+from django.db.models.manager import Manager
 
 from recipeyak.models.base import CommonInfo
 from recipeyak.models.ingredient import Ingredient
@@ -17,6 +17,8 @@ from recipeyak.models.section import Section
 from recipeyak.models.step import Step
 
 if TYPE_CHECKING:
+    from django.db.models.manager import RelatedManager
+
     from recipeyak.models.note import Note
     from recipeyak.models.scrape import Scrape  # noqa: F401
     from recipeyak.models.team import Team
@@ -91,26 +93,11 @@ class Recipe(CommonInfo):
             recipe=self, on=on, user=user, team=team
         )
 
-    @property
-    def ingredients(self) -> QuerySet[Ingredient]:
-        """Return recipe ingredients ordered by creation date"""
-        # TODO(sbdchd): can use reverse relation instead
-        return Ingredient.objects.filter(recipe=self).order_by("created")
-
-    @property
-    def ingredient_set(self) -> QuerySet[Ingredient]:
-        return self.ingredients
-
-    @property
-    def steps(self) -> BaseManager[Step]:
-        """Return recipe steps ordered by creation date"""
-        # TODO(sbdchd): can use reverse relation instead
-        return Step.objects.filter(recipe=self).order_by("position", "created")
-
-    scheduledrecipe_set: QuerySet[ScheduledRecipe]
-    timelineevent_set: QuerySet[TimelineEvent]
-    section_set: QuerySet[Section]
-    step_set: QuerySet[Step]
+    ingredient_set: RelatedManager[Ingredient]
+    scheduledrecipe_set: RelatedManager[ScheduledRecipe]
+    timelineevent_set: RelatedManager[TimelineEvent]
+    section_set: RelatedManager[Section]
+    step_set: RelatedManager[Step]
 
     def __str__(self) -> str:
         return f"{self.name} by {self.author}"

@@ -400,6 +400,6 @@ def test_fetching_team_shopping_list(
     recipe.schedule(on=start, team=team, user=user)
     res = client.get(url, params)
     assert res.status_code == 200
-    assert len(res.json()["ingredients"]) == len(
-        recipe.ingredients
+    assert len(res.json()["ingredients"]) == (
+        recipe.ingredient_set.count()
     ), "only return the schedule recipe ingredients"
