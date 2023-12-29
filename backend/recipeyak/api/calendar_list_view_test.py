@@ -1,7 +1,7 @@
 from datetime import date
 
 import pytest
-from rest_framework.test import APIClient
+from django.test.client import Client
 
 from recipeyak.models import Recipe, Team, User
 from recipeyak.models.membership import Membership
@@ -10,14 +10,14 @@ pytestmark = pytest.mark.django_db
 
 
 def test_fetching_team_calendar_v2(
-    client: APIClient, user: User, team: Team, recipe: Recipe
+    client: Client, user: User, team: Team, recipe: Recipe
 ) -> None:
     """
     Updated response type to include config options for the icalendar
     syncing.
     """
     url = url = f"/api/v1/t/{team.pk}/calendar/"
-    client.force_authenticate(user)
+    client.force_login(user)
     recipe.schedule(on=date(1976, 1, 2), team=team, user=user)
 
     res = client.get(url, {"start": date(1976, 1, 1), "end": date(1977, 1, 1), "v2": 1})
@@ -33,13 +33,13 @@ def test_fetching_team_calendar_v2(
 
 
 def test_fetching_team_cal_v2_content(
-    client: APIClient, user: User, team: Team, recipe: Recipe
+    client: Client, user: User, team: Team, recipe: Recipe
 ) -> None:
     """
     Ensure changing the rows updates the response.
     """
     url = url = f"/api/v1/t/{team.pk}/calendar/"
-    client.force_authenticate(user)
+    client.force_login(user)
 
     res = client.get(url, {"start": date(1976, 1, 1), "end": date(1977, 1, 1), "v2": 1})
     assert res.status_code == 200

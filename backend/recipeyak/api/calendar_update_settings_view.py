@@ -1,9 +1,8 @@
 from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.calendar_list_view import get_cal_settings
 from recipeyak.models import Membership, get_team
@@ -13,12 +12,11 @@ class CalSettingsSerializer(RequestParams):
     syncEnabled: bool
 
 
-@api_view(["PATCH"])
-@permission_classes([IsAuthenticated])
+@endpoint()
 def calendar_update_settings_view(
-    request: AuthedRequest, team_id: int = -1
-) -> Response:
-    params = CalSettingsSerializer.parse_obj(request.data)
+    request: AuthedHttpRequest, team_id: int = -1
+) -> JsonResponse:
+    params = CalSettingsSerializer.parse_raw(request.body)
     sync_enabled = params.syncEnabled
     team_id = get_team(request.user).id
 
@@ -26,4 +24,4 @@ def calendar_update_settings_view(
     membership.calendar_sync_enabled = sync_enabled
     membership.save()
 
-    return Response(get_cal_settings(request=request, team_id=team_id))
+    return JsonResponse(get_cal_settings(request=request, team_id=team_id))

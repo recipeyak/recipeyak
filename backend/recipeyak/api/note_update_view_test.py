@@ -1,5 +1,5 @@
 import pytest
-from rest_framework.test import APIClient
+from django.test.client import Client
 
 from recipeyak.models import Note, Recipe, Team, User
 
@@ -7,7 +7,7 @@ pytestmark = pytest.mark.django_db
 
 
 def test_updating_other_users_note(
-    client: APIClient, recipe: Recipe, user: User, team: Team, user2: User, user3: User
+    client: Client, recipe: Recipe, user: User, team: Team, user2: User, user3: User
 ) -> None:
     """
     Prevent editing notes that other users own
@@ -18,15 +18,15 @@ def test_updating_other_users_note(
 
     note = Note.objects.create(text="some note text", created_by=user, recipe=recipe)
 
-    client.force_authenticate(user)
-    res = client.patch(f"/api/v1/notes/{note.id}/")
+    client.force_login(user)
+    res = client.patch(f"/api/v1/notes/{note.id}/", {}, content_type="application/json")
     assert res.status_code == 200
 
-    client.force_authenticate(user2)
-    res = client.patch(f"/api/v1/notes/{note.id}/")
+    client.force_login(user2)
+    res = client.patch(f"/api/v1/notes/{note.id}/", {}, content_type="application/json")
     assert res.status_code == 404
 
     team.force_join(user3)
-    client.force_authenticate(user3)
-    res = client.patch(f"/api/v1/notes/{note.id}/")
+    client.force_login(user3)
+    res = client.patch(f"/api/v1/notes/{note.id}/", {}, content_type="application/json")
     assert res.status_code == 404

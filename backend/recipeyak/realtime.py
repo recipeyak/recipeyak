@@ -2,7 +2,7 @@ import asyncio
 
 from ably import AblyRest
 
-from recipeyak.api.base.drf_json_renderer import JSONRenderer
+from recipeyak.api.base.json import json_dumps
 from recipeyak.api.calendar_serialization import ScheduleRecipeSerializer
 from recipeyak.config import ABLY_API_KEY
 
@@ -13,7 +13,7 @@ async def _publish_calendar_event_async(
     async with AblyRest(ABLY_API_KEY) as ably:
         channel = ably.channels[f"scheduled_recipe:{team_id}"]
         await channel.publish(
-            "scheduled_recipe_updated", JSONRenderer().render(scheduled_recipe).decode()
+            "scheduled_recipe_updated", json_dumps(scheduled_recipe).decode()
         )
 
 
@@ -28,7 +28,7 @@ async def _publish_calendar_event_delete_async(recipe_id: int, team_id: int) -> 
         channel = ably.channels[f"scheduled_recipe:{team_id}"]
         await channel.publish(
             "scheduled_recipe_delete",
-            JSONRenderer().render({"recipeId": recipe_id}).decode(),
+            json_dumps({"recipeId": recipe_id}).decode(),
         )
 
 
@@ -43,9 +43,7 @@ async def _publish_cook_checklist_async(
         channel = ably.channels[f"cook_checklist:{team_id}:{recipe_id}"]
         await channel.publish(
             "checkmark_updated",
-            JSONRenderer()
-            .render({"ingredientId": ingredient_id, "checked": checked})
-            .decode(),
+            json_dumps({"ingredientId": ingredient_id, "checked": checked}).decode(),
         )
 
 

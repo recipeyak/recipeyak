@@ -1,20 +1,6 @@
-from typing import Any, cast
-
-from rest_framework.request import Request
+from typing import cast
 
 from recipeyak.models import Recipe, Team, User
-
-
-class DisallowAny:
-    """
-    want to disallow access by default, then explicitly open endpoints
-    """
-
-    def has_permission(self, request: Request, view: Any) -> bool:
-        return False
-
-    def has_object_permission(self, request: Request, view: Any, obj: Any) -> bool:
-        return False
 
 
 def has_recipe_access(*, user: User, recipe: Recipe) -> bool:

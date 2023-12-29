@@ -1,15 +1,13 @@
 from __future__ import annotations
 
 from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
 
 
-@api_view(["DELETE"])
-@permission_classes([IsAuthenticated])
-def session_delete_view(request: AuthedRequest, session_id: str) -> Response:
+@endpoint()
+def session_delete_view(request: AuthedHttpRequest, session_id: str) -> JsonResponse:
     get_object_or_404(request.user.session_set, pk=session_id).delete()
-    return Response(status=204)
+    return JsonResponse(status=204)

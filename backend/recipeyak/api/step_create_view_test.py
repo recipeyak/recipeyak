@@ -4,7 +4,7 @@ from typing import Any
 
 import pytest
 from django.db.utils import IntegrityError
-from rest_framework.test import APIClient
+from django.test.client import Client
 
 from recipeyak.models import Recipe, Step, User
 from recipeyak.models.team import Team
@@ -13,12 +13,12 @@ pytestmark = pytest.mark.django_db
 
 
 def test_step_position_order(
-    client: APIClient, user: User, recipe: Recipe, team: Team
+    client: Client, user: User, recipe: Recipe, team: Team
 ) -> None:
     """
     steps should be returned in order based on position
     """
-    client.force_authenticate(user)
+    client.force_login(user)
 
     recipe.team = team
     recipe.save()
@@ -40,16 +40,18 @@ def test_step_position_order(
     "step", [{"text": "A new step"}, {"text": "Another new step", "position": 23.0}]
 )
 def test_adding_step_to_recipe(
-    step: dict[str, Any], client: APIClient, user: User, recipe: Recipe, team: Team
+    step: dict[str, Any], client: Client, user: User, recipe: Recipe, team: Team
 ) -> None:
     """
     ensure a user can add a step to a recipe
     """
-    client.force_authenticate(user)
+    client.force_login(user)
     recipe.team = team
     recipe.save()
 
-    res = client.post(f"/api/v1/recipes/{recipe.id}/steps/", step)
+    res = client.post(
+        f"/api/v1/recipes/{recipe.id}/steps/", step, content_type="application/json"
+    )
     assert res.status_code == 201
 
     res = client.get(f"/api/v1/recipes/{recipe.id}/")

@@ -4,11 +4,10 @@ from datetime import datetime
 
 from django.db import connection
 from pydantic import BaseModel
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
 
 
 class ListTeamResponse(BaseModel):
@@ -21,9 +20,8 @@ class ListTeamResponse(BaseModel):
 # TODO: rename func and module to team_list_view
 
 
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def team_list_view(request: AuthedRequest) -> Response:
+@endpoint()
+def team_list_view(request: AuthedHttpRequest) -> JsonResponse:
     with connection.cursor() as cursor:
         cursor.execute(
             """
@@ -54,4 +52,4 @@ GROUP BY
         ListTeamResponse(id=id, name=name, created=created, members=members)
         for id, name, created, members in teams_raw
     ]
-    return Response(teams)
+    return JsonResponse(teams)

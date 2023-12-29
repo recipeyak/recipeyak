@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
 from recipeyak import ordering
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams, StrTrimmed
 from recipeyak.api.serializers.recipe import serialize_step
 from recipeyak.models import ChangeType, RecipeChange, Step, filter_recipes, get_team
@@ -17,10 +16,9 @@ class StepCreateParams(RequestParams):
     position: StrTrimmed | None = None
 
 
-@api_view(["POST"])
-@permission_classes([IsAuthenticated])
-def step_create_view(request: AuthedRequest, recipe_id: int) -> Response:
-    params = StepCreateParams.parse_obj(request.data)
+@endpoint()
+def step_create_view(request: AuthedHttpRequest, recipe_id: int) -> JsonResponse:
+    params = StepCreateParams.parse_raw(request.body)
     team = get_team(request.user)
     recipe = get_object_or_404(filter_recipes(team=team), pk=recipe_id)
 
@@ -42,4 +40,4 @@ def step_create_view(request: AuthedRequest, recipe_id: int) -> Response:
         after=params.text,
         change_type=ChangeType.STEP_CREATE,
     )
-    return Response(serialize_step(step), status=201)
+    return JsonResponse(serialize_step(step), status=201)

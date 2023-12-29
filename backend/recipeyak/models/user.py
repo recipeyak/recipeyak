@@ -11,12 +11,13 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.postgres.fields import CIEmailField
 from django.db import models, transaction
 from django.db.models.query import QuerySet
-from user_sessions.models import Session
 
 from recipeyak.models.membership import Membership
-from recipeyak.models.scheduled_recipe import ScheduledRecipe
 
 if TYPE_CHECKING:
+    from user_sessions.models import Session
+
+    from recipeyak.models.scheduled_recipe import ScheduledRecipe
     from recipeyak.models.team import Team
 
 logger = logging.getLogger(__name__)
@@ -70,6 +71,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     created = models.DateField(auto_now_add=True)
     last_updated = models.DateField(auto_now=True)
 
+    # deprecated
     recipes = GenericRelation("Recipe", related_query_name="owner_user")
 
     theme_day = models.TextField(db_column="theme", default="light")
@@ -157,18 +159,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     def avatar_url(self) -> str:
         return get_avatar_url(self.email)
 
-    @property
-    def scheduled_recipes(self) -> QuerySet[ScheduledRecipe]:
-        # TODO(sbdchd): this can probably be user.scheduled_recipes_set
-        return ScheduledRecipe.objects.filter(user=self)
-
-    @property
-    def membership_set(self) -> QuerySet["Membership"]:
-        return Membership.objects.filter(user=self)
-
-    @property
-    def session_set(self) -> QuerySet["Session"]:
-        return Session.objects.filter(user=self)
+    scheduled_recipes: QuerySet["ScheduledRecipe"]
+    membership_set: QuerySet["Membership"]
+    session_set: QuerySet["Session"]
 
     def __str__(self) -> str:
         return self.email

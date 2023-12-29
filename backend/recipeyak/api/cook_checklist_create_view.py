@@ -2,11 +2,10 @@ from __future__ import annotations
 
 import pydantic
 from django.db import connection
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.models import (
     filter_recipe_or_404,
@@ -25,13 +24,14 @@ class CookChecklistPostParams(RequestParams):
     checked: bool
 
 
-@api_view(["POST"])
-@permission_classes([IsAuthenticated])
-def cook_checklist_create_view(request: AuthedRequest, recipe_id: str) -> Response:
+@endpoint()
+def cook_checklist_create_view(
+    request: AuthedHttpRequest, recipe_id: str
+) -> JsonResponse:
     team = get_team(request.user)
     recipe = filter_recipe_or_404(recipe_id=recipe_id, team=team)
 
-    params = CookChecklistPostParams.parse_obj(request.data)
+    params = CookChecklistPostParams.parse_raw(request.body)
     with connection.cursor() as cursor:
         cursor.execute(
             """
@@ -55,7 +55,7 @@ def cook_checklist_create_view(request: AuthedRequest, recipe_id: str) -> Respon
         checked=params.checked,
     )
 
-    return Response(
+    return JsonResponse(
         CookChecklistPostSerializer(
             ingredient_id=params.ingredient_id, checked=params.checked
         )

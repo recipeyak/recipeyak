@@ -1,17 +1,15 @@
 from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
 from recipeyak.models.invite import Invite
 
 
-@api_view(["POST"])
-@permission_classes([IsAuthenticated])
-def invite_accept_view(request: AuthedRequest, invite_id: int) -> Response:
+@endpoint()
+def invite_accept_view(request: AuthedHttpRequest, invite_id: int) -> JsonResponse:
     invite = get_object_or_404(
         Invite.objects.filter(membership__user=request.user), id=invite_id
     )
     invite.accept()
-    return Response({"detail": "accepted invite"}, status=200)
+    return JsonResponse({"detail": "accepted invite"}, status=200)

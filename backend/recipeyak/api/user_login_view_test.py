@@ -1,6 +1,6 @@
 import pytest
 from django.conf import settings
-from rest_framework.test import APIClient
+from django.test.client import Client
 from user_sessions.models import Session
 
 from recipeyak.models import User
@@ -8,7 +8,7 @@ from recipeyak.models import User
 pytestmark = pytest.mark.django_db
 
 
-def test_signup(client: APIClient) -> None:
+def test_signup(client: Client) -> None:
     """
     ensure a user can signup
     """
@@ -25,13 +25,15 @@ def test_signup(client: APIClient) -> None:
 
     data = {"email": email, "password1": password, "password2": password}
 
-    res = client.post("/api/v1/auth/registration/", data)
+    res = client.post(
+        "/api/v1/auth/registration/", data, content_type="application/json"
+    )
     assert res.status_code == 201
     res = client.get(url)
     assert res.status_code == 200
 
 
-def test_login(client: APIClient) -> None:
+def test_login(client: Client) -> None:
     """
     make sure we can login with a user
     """
@@ -50,7 +52,12 @@ def test_login(client: APIClient) -> None:
         "HTTP_USER_AGENT": "j person's cool bot",
     }
 
-    res = client.post("/api/v1/auth/login/", data, **headers)  # type: ignore[arg-type]
+    res = client.post(
+        "/api/v1/auth/login/",
+        data,
+        content_type="application/json",
+        **headers,  # type: ignore[arg-type]
+    )
     assert res.status_code == 200
 
     assert Session.objects.count() == 1
@@ -68,7 +75,7 @@ def test_login(client: APIClient) -> None:
     assert res.status_code == 200
 
 
-def test_logout(client: APIClient) -> None:
+def test_logout(client: Client) -> None:
     """
     make sure a user can logout
     """
@@ -80,10 +87,10 @@ def test_logout(client: APIClient) -> None:
 
     data = {"email": email, "password": password}
 
-    res = client.post("/api/v1/auth/login/", data)
+    res = client.post("/api/v1/auth/login/", data, content_type="application/json")
     assert res.status_code == 200
 
-    res = client.post("/api/v1/auth/logout/")
+    res = client.post("/api/v1/auth/logout/", content_type="application/json")
     assert res.status_code == 200
 
     res = client.get("/api/v1/user/")
@@ -97,7 +104,7 @@ def test_logout(client: APIClient) -> None:
 
 
 def test_login_in_two_places_and_logout_from_one(
-    client: APIClient, client_b: APIClient
+    client: Client, client_b: Client
 ) -> None:
     """
     ensure when logged into one place, logging out doesn't result in logging out of both places.
@@ -113,15 +120,15 @@ def test_login_in_two_places_and_logout_from_one(
     data = {"email": email, "password": password}
 
     # 1. log in once
-    res = client.post("/api/v1/auth/login/", data)
+    res = client.post("/api/v1/auth/login/", data, content_type="application/json")
     assert res.status_code == 200
 
     # 2. log in a second time
-    res = client_b.post("/api/v1/auth/login/", data)
+    res = client_b.post("/api/v1/auth/login/", data, content_type="application/json")
     assert res.status_code == 200
 
     # 3. logout first login session
-    res = client.post("/api/v1/auth/logout/")
+    res = client.post("/api/v1/auth/logout/", content_type="application/json")
     assert res.status_code == 200
 
     # 4. ensure first login key doesn't work
@@ -133,7 +140,7 @@ def test_login_in_two_places_and_logout_from_one(
     assert res.status_code == 200
 
 
-def test_signup_case_insensitive(client: APIClient) -> None:
+def test_signup_case_insensitive(client: Client) -> None:
     """
     Emails should be treated as case insensitive. A user should not be able to
     signup with the same email and different case.
@@ -148,16 +155,20 @@ def test_signup_case_insensitive(client: APIClient) -> None:
 
     data = {"email": email, "password1": password, "password2": password}
 
-    res = client.post("/api/v1/auth/registration/", data)
+    res = client.post(
+        "/api/v1/auth/registration/", data, content_type="application/json"
+    )
     assert res.status_code == 201
 
     res = client.get(url)
     assert res.status_code == 200
 
-    client.force_authenticate(user=None)
+    client.logout()
     email2 = "TESTing@gmail.com"
     assert email2.lower() == email
-    res = client.post("/api/v1/auth/registration/", data)
+    res = client.post(
+        "/api/v1/auth/registration/", data, content_type="application/json"
+    )
     assert res.status_code in (
         401,
         400,

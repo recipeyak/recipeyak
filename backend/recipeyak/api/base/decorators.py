@@ -2,10 +2,11 @@ from collections.abc import Callable
 from functools import wraps
 from typing import Any, Literal, Protocol, overload
 
-from django.core.exceptions import PermissionDenied
+from django.contrib.auth.views import redirect_to_login as redirect_to_login_url
 from django.http import HttpResponse
 
 from recipeyak.api.base.request import AnonymousHttpRequest, AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
 
 
 class AuthedView(Protocol):
@@ -29,31 +30,35 @@ class AnyView(Protocol):
 
 @overload
 def endpoint(
-    *, dangerously_disable_auth_check: Literal[True]
+    *, auth_required: Literal[False], redirect_to_login: bool = ...
 ) -> Callable[[AnonView], AnonView]:
     ...
 
 
 @overload
 def endpoint(
-    *, dangerously_disable_auth_check: Literal[False] = False
+    *, auth_required: Literal[True] = ..., redirect_to_login: bool = ...
 ) -> Callable[[AuthedView], AuthedView]:
     ...
 
 
 def endpoint(
-    *, dangerously_disable_auth_check: bool = False
+    *, auth_required: bool = True, redirect_to_login: bool = False
 ) -> Callable[[AnyView], AnyView]:
     def decorator_func(func: AnyView) -> AnyView:
         @wraps(func)
         def wrapper(request: Any, *args: Any, **kwargs: Any) -> HttpResponse:
-            # TODO: maybe we don't need *args
-            if dangerously_disable_auth_check:
-                passed_auth = True
-            else:
-                passed_auth = request.user.is_authenticated
-            if not passed_auth:
-                raise PermissionDenied("Authentication failed")
+            if auth_required and not request.user.is_authenticated:
+                if redirect_to_login:
+                    return redirect_to_login_url(
+                        request.get_full_path(), login_url="/login/"
+                    )
+                # TODO: figure out how we want to do this when the content type isn't json
+                # Seems like anytime we don't have a json response, we want to redirect to login
+                return JsonResponse(
+                    {"detail": "Authentication credentials were not provided."},
+                    status=403,
+                )
             return func(request, *args, **kwargs)
 
         return wrapper

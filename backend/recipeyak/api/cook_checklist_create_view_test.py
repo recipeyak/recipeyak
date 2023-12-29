@@ -1,5 +1,5 @@
 import pytest
-from rest_framework.test import APIClient
+from django.test.client import Client
 
 from recipeyak.models import (
     Recipe,
@@ -12,7 +12,7 @@ pytestmark = pytest.mark.django_db
 
 
 def test_fetch_checklist(
-    client: APIClient,
+    client: Client,
     user: User,
     team: Team,
     recipe: Recipe,
@@ -26,7 +26,7 @@ def test_fetch_checklist(
         for index, ingredient in enumerate(recipe.ingredient_set.all())
     )
     url = f"/api/v1/cook-checklist/{recipe.id}/"
-    client.force_authenticate(user)
+    client.force_login(user)
     res = client.get(url)
     assert res.status_code == 200
 
@@ -37,7 +37,7 @@ def test_fetch_checklist(
 
 
 def test_update_checklist(
-    client: APIClient,
+    client: Client,
     user: User,
     team: Team,
     recipe: Recipe,
@@ -48,15 +48,23 @@ def test_update_checklist(
     ingredient = recipe.ingredient_set.all()[0]
 
     url = f"/api/v1/cook-checklist/{recipe.id}/"
-    client.force_authenticate(user)
-    res = client.post(url, {"ingredient_id": ingredient.id, "checked": False})
+    client.force_login(user)
+    res = client.post(
+        url,
+        {"ingredient_id": ingredient.id, "checked": False},
+        content_type="application/json",
+    )
     assert res.status_code == 200
     assert res.json() == {"ingredient_id": ingredient.id, "checked": False}
 
     res = client.get(url)
     assert res.json()[str(ingredient.id)] is False
 
-    res = client.post(url, {"ingredient_id": ingredient.id, "checked": True})
+    res = client.post(
+        url,
+        {"ingredient_id": ingredient.id, "checked": True},
+        content_type="application/json",
+    )
     assert res.status_code == 200
 
     res = client.get(url)

@@ -1,7 +1,7 @@
 import json
 from decimal import Decimal
 
-from recipeyak.api.base.drf_json_renderer import JSONRenderer
+from recipeyak.api.base.json import json_dumps
 
 
 def test_decimal_encoding() -> None:
@@ -16,7 +16,7 @@ def test_decimal_encoding() -> None:
         "rounding_errors": Decimal("6.500000000000000000000000002"),
     }
 
-    assert json.loads(JSONRenderer().render(data)) == {
+    assert json.loads(json_dumps(data)) == {
         "whole_number": "750",
         "trailing_zeros": "4",
         "decimal": "0.125",

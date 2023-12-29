@@ -1,16 +1,13 @@
 from __future__ import annotations
 
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
 from recipeyak.models import RecipeView, get_team
 
 
-@api_view(["GET"])
-@permission_classes((IsAuthenticated,))
-def recipe_recently_viewed_view(request: AuthedRequest) -> Response:
+@endpoint()
+def recipe_recently_viewed_view(request: AuthedHttpRequest) -> JsonResponse:
     team = get_team(request.user)
     recipes = [
         {
@@ -31,4 +28,4 @@ def recipe_recently_viewed_view(request: AuthedRequest) -> Response:
         .filter(recipe__team=team)
         .order_by("-last_visited_at")[:6]
     ]
-    return Response(recipes)
+    return JsonResponse(recipes)

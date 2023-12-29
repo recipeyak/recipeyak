@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
-from recipeyak.api.base.request import AuthedRequest
+from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.request import AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams, StrTrimmed
 from recipeyak.api.serializers.recipe import serialize_step
 from recipeyak.models import ChangeType, RecipeChange, filter_steps, get_team
@@ -16,13 +15,12 @@ class StepPatchParams(RequestParams):
     position: str | None = None
 
 
-@api_view(["PATCH"])
-@permission_classes([IsAuthenticated])
+@endpoint()
 def step_update_view(
-    request: AuthedRequest, step_id: int, recipe_id: object = ()
-) -> Response:
+    request: AuthedHttpRequest, step_id: int, recipe_id: object = ()
+) -> JsonResponse:
     team = get_team(request.user)
-    params = StepPatchParams.parse_obj(request.data)
+    params = StepPatchParams.parse_raw(request.body)
     step = get_object_or_404(filter_steps(team=team), pk=step_id)
     before_text = step.text
 
@@ -40,4 +38,4 @@ def step_update_view(
         after=step.text,
         change_type=ChangeType.STEP_UPDATE,
     )
-    return Response(serialize_step(step))
+    return JsonResponse(serialize_step(step))
