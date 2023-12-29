@@ -368,7 +368,7 @@ export function RecipeSearchList({
                 <div className="flex gap-2">
                   <CustomRefinement
                     label="Ingredients"
-                    attribute="ingredients.quantity_name"
+                    attribute="ingredients.name"
                   />
                   <CustomRefinement label="Tags" attribute="tags" />
                   <ArchivedToggle />
