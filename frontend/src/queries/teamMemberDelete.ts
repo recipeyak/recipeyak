@@ -6,14 +6,14 @@ import { setQueryDataTeamMemberList } from "@/queries/teamMembersList"
 import { unwrapResult } from "@/query"
 import { toast } from "@/toast"
 
-const deleteTeamMember = (teamID: number, memberID: number) =>
-  http.delete(`/api/v1/t/${teamID}/members/${memberID}/`)
+const deleteTeamMember = (memberID: number) =>
+  http.delete(`/api/v1/members/${memberID}/`)
 
 export function useTeamMemberDelete() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: ({ teamId, memberId }: { teamId: number; memberId: number }) =>
-      deleteTeamMember(teamId, memberId).then(unwrapResult),
+    mutationFn: ({ memberId }: { memberId: number; teamId: number }) =>
+      deleteTeamMember(memberId).then(unwrapResult),
     onSuccess: (_res, vars) => {
       setQueryDataTeamMemberList(queryClient, {
         teamId: vars.teamId,

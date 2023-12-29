@@ -8,11 +8,7 @@ import { toast } from "@/toast"
 
 type Level = "admin" | "contributor" | "read"
 
-const updateTeamMemberLevel = (
-  teamID: number,
-  membershipID: number,
-  level: Level,
-) =>
+const updateTeamMemberLevel = (membershipID: number, level: Level) =>
   http.patch<{
     readonly id: number
     readonly created: string
@@ -23,20 +19,19 @@ const updateTeamMemberLevel = (
       readonly avatar_url: string
       readonly email: string
     }
-  }>(`/api/v1/t/${teamID}/members/${membershipID}/`, { level })
+  }>(`/api/v1/members/${membershipID}/`, { level })
 
 export function useTeamMemberUpdate() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: ({
-      teamId,
       memberId,
       level,
     }: {
       teamId: number
       memberId: number
       level: "admin" | "contributor" | "read"
-    }) => updateTeamMemberLevel(teamId, memberId, level).then(unwrapResult),
+    }) => updateTeamMemberLevel(memberId, level).then(unwrapResult),
     onMutate: (vars) => {
       let prevLevel: Level | undefined
       setQueryDataTeamMemberList(queryClient, {

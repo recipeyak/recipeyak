@@ -18,8 +18,10 @@ def get_teams(user: User) -> QuerySet[Team]:
     return Team.objects.filter(membership__user_id=user.id)
 
 
-def is_team_admin(team: Team, user: User) -> bool:
-    return team.membership_set.filter(level=Membership.ADMIN).filter(user=user).exists()
+def is_team_admin(*, team_id: int, user_id: int) -> bool:
+    return Membership.objects.filter(
+        team_id=team_id, user_id=user_id, level=Membership.ADMIN
+    ).exists()
 
 
 @api_view(["DELETE"])
@@ -28,7 +30,7 @@ def team_delete_view(request: AuthedRequest, team_id: int) -> Response:
     with transaction.atomic():
         team = get_object_or_404(get_teams(request.user), pk=team_id)
         if (
-            not is_team_admin(team, request.user)
+            not is_team_admin(team_id=team.id, user_id=request.user.id)
             # don't allow deleting last team
             or get_teams(request.user).count() <= 1
         ):

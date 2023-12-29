@@ -71,12 +71,24 @@ urlpatterns = routes(
         view=team_members_list_view,
     ),
     route(
+        # TODO(2024-01-28): remove this dupe endpoint
         "api/v1/t/<int:team_id>/members/<int:member_id>/",
         method="delete",
         view=team_member_delete_view,
     ),
     route(
+        "api/v1/members/<int:member_id>/",
+        method="delete",
+        view=team_member_delete_view,
+    ),
+    route(
+        # TODO(2024-01-28): remove this dupe endpoint
         "api/v1/t/<int:team_id>/members/<int:member_id>/",
+        method="patch",
+        view=team_member_update_view,
+    ),
+    route(
+        "api/v1/members/<int:member_id>/",
         method="patch",
         view=team_member_update_view,
     ),
@@ -215,20 +227,34 @@ urlpatterns = routes(
         method="delete",
         view=recipe_delete_view,
     ),
+    # TODO: maybe this should be:
+    #   POST api/v1/ingredients/
+    # and the recipe_id should be in the params
+    # ditto for similar method setups
     route(
         "api/v1/recipes/<int:recipe_id>/ingredients/",
         method="post",
         view=ingredients_create_view,
     ),
     route(
-        # TODO: remove recipe_id
+        # TODO(2024-01-28): remove this dupe endpoint
         "api/v1/recipes/<int:recipe_id>/ingredients/<int:ingredient_id>/",
         method="patch",
         view=ingredient_update_view,
     ),
     route(
-        # TODO: remove recipe_id
+        "api/v1/ingredients/<int:ingredient_id>/",
+        method="patch",
+        view=ingredient_update_view,
+    ),
+    route(
+        # TODO(2024-01-28): remove this dupe endpoint
         "api/v1/recipes/<int:recipe_id>/ingredients/<int:ingredient_id>/",
+        method="delete",
+        view=ingredient_delete_view,
+    ),
+    route(
+        "api/v1/ingredients/<int:ingredient_id>/",
         method="delete",
         view=ingredient_delete_view,
     ),
@@ -248,14 +274,24 @@ urlpatterns = routes(
         view=steps_list_view,
     ),
     route(
-        # TODO: remove recipe_id id
+        # TODO(2024-01-28): remove this dupe endpoint
         "api/v1/recipes/<int:recipe_id>/steps/<int:step_id>/",
         method="patch",
         view=step_update_view,
     ),
     route(
-        # TODO: remove recipe_id id
+        "api/v1/steps/<int:step_id>/",
+        method="patch",
+        view=step_update_view,
+    ),
+    route(
+        # TODO(2024-01-28): remove this dupe endpoint
         "api/v1/recipes/<int:recipe_id>/steps/<int:step_id>/",
+        method="delete",
+        view=step_delete_view,
+    ),
+    route(
+        "api/v1/steps/<int:step_id>/",
         method="delete",
         view=step_delete_view,
     ),
@@ -305,11 +341,13 @@ urlpatterns = routes(
         view=sessions_detail_view,
     ),
     route(
+        # TODO(2024-01-28): remove this dupe endpoint
         "api/v1/t/<int:team_id>/calendar/",
         method="get",
         view=calendar_list_get_view,
     ),
     route(
+        # TODO(2024-01-28): remove this dupe endpoint
         "api/v1/t/<int:team_id>/calendar/",
         method="post",
         view=scheduled_recipe_create_view,
@@ -325,6 +363,7 @@ urlpatterns = routes(
         view=scheduled_recipe_create_view,
     ),
     route(
+        # TODO(2024-01-28): remove this dupe endpoint
         "api/v1/t/<int:team_id>/calendar/settings/",
         method="patch",
         view=update_settings,
@@ -335,6 +374,7 @@ urlpatterns = routes(
         view=update_settings,
     ),
     route(
+        # TODO(2024-01-28): remove this dupe endpoint
         "api/v1/t/<int:team_id>/calendar/next_open/",
         method="get",
         view=next_open,
@@ -345,6 +385,7 @@ urlpatterns = routes(
         view=next_open,
     ),
     route(
+        # TODO(2024-01-28): remove this dupe endpoint
         "api/v1/t/<int:team_id>/calendar/generate_link/",
         method="post",
         view=generate_link,
@@ -355,11 +396,13 @@ urlpatterns = routes(
         view=generate_link,
     ),
     route(
+        # TODO(2024-01-28): remove this dupe endpoint
         "api/v1/t/<int:team_id>/calendar/<int:scheduled_recipe_id>/",
         method="patch",
         view=calendar_update_view,
     ),
     route(
+        # TODO(2024-01-28): remove this dupe endpoint
         "api/v1/t/<int:team_id>/calendar/<int:scheduled_recipe_id>/",
         method="delete",
         view=calendar_delete_view,
@@ -375,6 +418,7 @@ urlpatterns = routes(
         view=calendar_delete_view,
     ),
     route(
+        # TODO(2024-01-28): remove this dupe endpoint
         "api/v1/t/<int:team_id>/shoppinglist/",
         method="get",
         view=get_shopping_list_view,

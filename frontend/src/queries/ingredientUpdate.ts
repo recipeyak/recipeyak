@@ -7,7 +7,6 @@ import { unwrapResult } from "@/query"
 import { useTeamId } from "@/useTeamId"
 
 const updateIngredient = (
-  recipeID: number,
   ingredientID: number,
   content: {
     quantity?: string
@@ -24,14 +23,13 @@ const updateIngredient = (
     readonly description: string
     readonly position: string
     readonly optional: boolean
-  }>(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`, content)
+  }>(`/api/v1/ingredients/${ingredientID}/`, content)
 
 export function useIngredientUpdate() {
   const queryClient = useQueryClient()
   const teamId = useTeamId()
   return useMutation({
     mutationFn: ({
-      recipeId,
       ingredientId,
       update,
     }: {
@@ -44,7 +42,7 @@ export function useIngredientUpdate() {
         optional?: boolean
         position?: string
       }
-    }) => updateIngredient(recipeId, ingredientId, update).then(unwrapResult),
+    }) => updateIngredient(ingredientId, update).then(unwrapResult),
     onSuccess: (res, vars) => {
       setQueryDataRecipe(queryClient, {
         teamId,

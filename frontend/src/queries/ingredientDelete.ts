@@ -6,21 +6,19 @@ import { setQueryDataRecipe } from "@/queries/recipeFetch"
 import { unwrapResult } from "@/query"
 import { useTeamId } from "@/useTeamId"
 
-// TODO(sbdchd): this shouldn't require recipeID
-const deleteIngredient = (recipeID: number, ingredientID: number) =>
-  http.delete(`/api/v1/recipes/${recipeID}/ingredients/${ingredientID}/`)
+const deleteIngredient = (ingredientID: number) =>
+  http.delete(`/api/v1/ingredients/${ingredientID}/`)
 
 export function useIngredientDelete() {
   const queryClient = useQueryClient()
   const teamId = useTeamId()
   return useMutation({
     mutationFn: ({
-      recipeId,
       ingredientId,
     }: {
       recipeId: number
       ingredientId: number
-    }) => deleteIngredient(recipeId, ingredientId).then(unwrapResult),
+    }) => deleteIngredient(ingredientId).then(unwrapResult),
     onSuccess: (_res, vars) => {
       setQueryDataRecipe(queryClient, {
         teamId,
