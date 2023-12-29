@@ -5,7 +5,6 @@ import { Link } from "react-router-dom"
 import { clx } from "@/classnames"
 import { CustomHighlight } from "@/components/CustomHighlight"
 import { pathRecipeDetail, pathRecipesList } from "@/paths"
-import { RecipeListItem } from "@/queries/recipeList"
 import { toURL } from "@/urls"
 
 const stylesSuggestion = "p-1 overflow-x-hidden whitespace-nowrap text-ellipsis"
@@ -16,34 +15,34 @@ const styleSuggestionInfo = clx(
 )
 
 export function SearchResult({
-  isLoading,
-  searchResults,
+  hits,
   onClick,
 }: {
-  isLoading: boolean
   onClick?: () => void
-  searchResults: {
-    readonly recipe: RecipeListItem
-    readonly hit: Hit
-  }[]
+  hits: Array<
+    Hit<{
+      readonly id: number
+      readonly name: string
+      readonly archived_at: string | null
+      readonly author: string | null
+    }>
+  >
 }) {
   const { indexUiState } = useInstantSearch()
-  const suggestions = searchResults
-    .map((result, index) => {
-      const { recipe, hit } = result
-
+  const suggestions = hits
+    .map((hit, index) => {
       return (
         <Link
-          key={recipe.id}
+          key={hit.id}
           to={
-            pathRecipeDetail({ recipeId: recipe.id.toString() }) +
+            pathRecipeDetail({ recipeId: hit.id.toString() }) +
             "-" +
-            toURL(recipe.name)
+            toURL(hit.name)
           }
           className={clx(
             stylesSuggestion,
             index === 0 && "underline",
-            recipe.archived_at != null &&
+            hit.archived_at != null &&
               "text-[var(--color-text-muted)] line-through",
           )}
         >
@@ -55,7 +54,7 @@ export function SearchResult({
             >
               <CustomHighlight hit={hit} attribute="name" />{" "}
             </span>
-            {recipe.author && (
+            {hit.author && (
               <span className="grow">
                 by{" "}
                 <span>
@@ -73,38 +72,30 @@ export function SearchResult({
       onClick={onClick}
       className="inline-grid w-full rounded-[5px] border border-solid border-[var(--color-border)] bg-[var(--color-background-card)] p-1"
     >
-      {!isLoading ? (
-        <>
-          {searchResults.length === 0 && (
-            <div className={styleSuggestionInfo}>No Results Found</div>
-          )}
-          {suggestions}
-          <div
-            className={clx(
-              "mt-2 flex justify-between border-[0] border-t border-solid border-[var(--color-border)]",
-              stylesSuggestion,
-            )}
-          >
-            <span className="text-[var(--color-text-muted)]">
-              matches: {searchResults.length}
-            </span>
-
-            <Link
-              to={{
-                pathname: pathRecipesList({}),
-                search: `search=${encodeURIComponent(
-                  indexUiState.query ?? "",
-                )}`,
-              }}
-              data-testid="search browse"
-            >
-              Browse
-            </Link>
-          </div>
-        </>
-      ) : (
-        <div className={styleSuggestionInfo}>Loading...</div>
+      {hits.length === 0 && (
+        <div className={styleSuggestionInfo}>No Results Found</div>
       )}
+      {suggestions}
+      <div
+        className={clx(
+          "mt-2 flex justify-between border-[0] border-t border-solid border-[var(--color-border)]",
+          stylesSuggestion,
+        )}
+      >
+        <span className="text-[var(--color-text-muted)]">
+          matches: {hits.length}
+        </span>
+
+        <Link
+          to={{
+            pathname: pathRecipesList({}),
+            search: `search=${encodeURIComponent(indexUiState.query ?? "")}`,
+          }}
+          data-testid="search browse"
+        >
+          Browse
+        </Link>
+      </div>
     </div>
   )
 }

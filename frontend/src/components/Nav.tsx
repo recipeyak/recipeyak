@@ -1,4 +1,3 @@
-import { Hit } from "instantsearch.js"
 import React from "react"
 import {
   Button,
@@ -33,7 +32,6 @@ import {
   pathTeamList,
 } from "@/paths"
 import { useAuthLogout } from "@/queries/authLogout"
-import { RecipeListItem, useRecipeList } from "@/queries/recipeList"
 import { useTeam } from "@/queries/teamFetch"
 import { useSearchClient } from "@/queries/useSearchClient"
 import { useGlobalEvent } from "@/useGlobalEvent"
@@ -214,11 +212,12 @@ function isInputFocused() {
  */
 function Search() {
   const history = useHistory()
-  const recipes = useRecipeList()
   const { query, refine } = useSearchBox()
   const { hits } = useHits<{
-    name: string
-    archived_at: string
+    readonly id: number
+    readonly name: string
+    readonly archived_at: string | null
+    readonly author: string | null
   }>()
 
   // If a user clicks outside of the dropdown, we want to hide the dropdown, but
@@ -251,41 +250,17 @@ function Search() {
     setIsClosed(false)
   }
 
-  const recipeMap = recipes.data?.reduce<Record<string, RecipeListItem>>(
-    (map, recipe) => {
-      map[recipe.id.toString()] = recipe
-      return map
-    },
-    {},
-  )
-
-  // @ts-expect-error ts(2322): Type 'undefined' is not assignable to type 'RecipeListItem'.
-  const filteredRecipes: {
-    readonly recipes: {
-      readonly recipe: RecipeListItem
-      readonly hit: Hit
-    }[]
-  } = recipes.isSuccess
-    ? {
-        recipes: hits
-          .map((hit) => ({ recipe: recipeMap?.[hit.objectID], hit }))
-          .filter((x) => x.recipe),
-      }
-    : { recipes: [] }
-
   const handleSearchKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     // We need to extract the key from the synthetic event before we lose the
     // event.
     const key = e.key
-    const suggestion = filteredRecipes.recipes[0]
+    const suggestion = hits[0]
     if (!suggestion) {
       return
     }
     if (key === "Enter") {
       resetForm()
-      history.push(
-        pathRecipeDetail({ recipeId: suggestion.recipe.id.toString() }),
-      )
+      history.push(pathRecipeDetail({ recipeId: suggestion.id.toString() }))
     }
   }
 
@@ -306,8 +281,7 @@ function Search() {
       {query && !isClosed && (
         <div className="absolute inset-x-0 top-[60px] z-10 w-full sm:inset-x-[unset] sm:max-w-[400px]">
           <SearchResult
-            isLoading={recipes.isLoading}
-            searchResults={filteredRecipes.recipes}
+            hits={hits}
             onClick={() => {
               resetForm()
             }}
