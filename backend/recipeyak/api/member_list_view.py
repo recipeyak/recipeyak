@@ -31,7 +31,7 @@ class TeamMemberResponse(pydantic.BaseModel):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def member_list_view(request: AuthedRequest, team_id: int) -> Response:
-    team = get_team_by_id(request=request, team_id=team_id)
+    team = get_team_by_id(user_id=request.user.id, team_id=team_id)
     with connection.cursor() as cursor:
         cursor.execute(
             """

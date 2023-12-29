@@ -73,7 +73,7 @@ def namedtuplefetchall(cursor: CursorWrapper) -> list[ListQueryResult]:
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def recipe_list_view(request: AuthedRequest) -> Response:
-    team = get_team(request)
+    team = get_team(request.user)
     list_items = list[RecipeListItem]()
     with connection.cursor() as cursor:
         cursor.execute(

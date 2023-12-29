@@ -28,7 +28,7 @@ class CreateNoteParams(RequestParams):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def note_create_view(request: AuthedRequest, recipe_id: int) -> Response:
-    team = get_team(request)
+    team = get_team(request.user)
     recipe = get_object_or_404(filter_recipes(team=team), pk=recipe_id)
     params = CreateNoteParams.parse_obj(request.data)
 

@@ -20,7 +20,7 @@ class StepPatchParams(RequestParams):
 def step_delete_view(
     request: AuthedRequest, step_id: int, recipe_id: object = ()
 ) -> Response:
-    team = get_team(request)
+    team = get_team(request.user)
     step = get_object_or_404(filter_steps(team=team), pk=step_id)
     RecipeChange.objects.create(
         recipe=step.recipe,

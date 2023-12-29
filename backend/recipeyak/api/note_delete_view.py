@@ -11,6 +11,6 @@ from recipeyak.models import filter_notes, get_team
 @api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
 def note_delete_view(request: AuthedRequest, note_id: str) -> Response:
-    team = get_team(request)
+    team = get_team(request.user)
     filter_notes(team=team).filter(pk=note_id, created_by=request.user).delete()
     return Response(status=204)

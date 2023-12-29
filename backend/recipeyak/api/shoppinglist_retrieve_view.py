@@ -38,7 +38,7 @@ class ShoppingListRecipe(pydantic.BaseModel):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def shoppinglist_retrieve_view(request: AuthedRequest, team_id: int = -1) -> Response:
-    team_id = get_team(request).id
+    team_id = get_team(request.user).id
     scheduled_recipes = get_scheduled_recipes(request=request, team_id=team_id)
     if scheduled_recipes is None:
         return Response(status=400)

@@ -16,7 +16,7 @@ from recipeyak.models import (
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def recipe_retrieve_view(request: AuthedRequest, recipe_id: str) -> Response:
-    team = get_team(request)
+    team = get_team(request.user)
     recipe = filter_recipe_or_404(recipe_id=recipe_id, team=team)
     with connection.cursor() as cursor:
         cursor.execute(

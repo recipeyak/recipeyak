@@ -15,7 +15,7 @@ from recipeyak.models import ChangeType, RecipeChange, filter_ingredients, get_t
 def ingredient_delete_view(
     request: AuthedRequest, ingredient_id: int, recipe_id: object = ()
 ) -> Response:
-    team = get_team(request)
+    team = get_team(request.user)
     ingredient = get_object_or_404(filter_ingredients(team=team), pk=ingredient_id)
     RecipeChange.objects.create(
         recipe=ingredient.recipe,

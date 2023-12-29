@@ -11,7 +11,7 @@ from recipeyak.models import RecipeView, get_team
 @api_view(["GET"])
 @permission_classes((IsAuthenticated,))
 def recipe_recently_viewed_view(request: AuthedRequest) -> Response:
-    team = get_team(request)
+    team = get_team(request.user)
     recipes = [
         {
             "id": rv.recipe.id,
