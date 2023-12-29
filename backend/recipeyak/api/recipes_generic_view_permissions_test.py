@@ -2,7 +2,7 @@ import pytest
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from recipeyak.models import Recipe, Step, User
+from recipeyak.models import Recipe, User
 from recipeyak.models.team import Team
 
 pytestmark = pytest.mark.django_db
