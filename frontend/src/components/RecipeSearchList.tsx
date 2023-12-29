@@ -13,12 +13,10 @@ import { clx } from "@/classnames"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { SearchInput } from "@/components/Forms"
-import { Loader } from "@/components/Loader"
 import RecipeItemDraggable, {
   RecipeListItem,
 } from "@/pages/recipe-list/RecipeItem"
 import { pathRecipeAdd } from "@/paths"
-import { useRecipeList } from "@/queries/recipeList"
 import { useSearchClient } from "@/queries/useSearchClient"
 import { RecipeYakHit } from "@/search-types"
 import { styled } from "@/theme"
@@ -91,12 +89,6 @@ function RecipeList(props: {
     indexUiState: { query },
   } = useInstantSearch()
 
-  const recipes = useRecipeList()
-
-  if (!recipes.isSuccess) {
-    return <Loader />
-  }
-
   const recipeItems = hits.map((hit, index) => {
     if (!props.drag) {
       return <RecipeListItem key={index} index={hit.id} hit={hit} {...hit} />
@@ -104,7 +96,7 @@ function RecipeList(props: {
     return <RecipeItemDraggable hit={hit} key={hit.id} />
   })
 
-  if (recipes.data.length === 0) {
+  if (recipeItems.length === 0) {
     return <AddRecipeCallToAction />
   }
 
