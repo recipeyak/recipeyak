@@ -2,7 +2,6 @@ import { orderBy } from "lodash-es"
 import { useState } from "react"
 import {
   InstantSearch,
-  useCurrentRefinements,
   useHits,
   useInstantSearch,
   useRefinementList,
