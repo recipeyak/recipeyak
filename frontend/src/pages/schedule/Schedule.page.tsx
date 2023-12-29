@@ -1,13 +1,13 @@
 import { Helmet } from "@/components/Helmet"
 import { NavPage } from "@/components/Page"
-import { RecipeSearchList } from "@/components/RecipeSearchList"
+import { RecipeSearchListSchedule } from "@/components/RecipeSearchList"
 import Calendar from "@/pages/schedule/Calendar"
 import HelpMenuModal from "@/pages/schedule/HelpMenuModal"
 
 function Sidebar() {
   return (
     <div className="mr-2 hidden w-[250px] min-w-[250px] shrink-0 auto-rows-min gap-2 sm:grid">
-      <RecipeSearchList scroll drag noPadding />
+      <RecipeSearchListSchedule />
     </div>
   )
 }

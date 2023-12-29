@@ -104,19 +104,11 @@ export function RecipeListItem({
         <div tabIndex={0} className="mb-1">
           {hit ? <CustomHighlight attribute="name" hit={hit} /> : name}
         </div>
-
-        {/* {ingredientMatch != null ? (
-        <small className="overflow-x-hidden text-ellipsis whitespace-nowrap font-bold">
-          {ingredientMatch.value}
-        </small>
-      ) : null} */}
         {author !== "" && hit && (
           <small className={clx("block")}>
             <CustomHighlight attribute="author" hit={hit} />
           </small>
         )}
-
-        {/* <div>{tagMatch != null ? <Tag>{tagMatch.value}</Tag> : null}</div> */}
       </div>
     </Card>
   )

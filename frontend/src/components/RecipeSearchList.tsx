@@ -1,7 +1,7 @@
 import { orderBy } from "lodash-es"
+import { useState } from "react"
 import {
   InstantSearch,
-  RefinementList,
   useHits,
   useInstantSearch,
   useRefinementList,
@@ -200,7 +200,7 @@ function RecipeList(props: {
         </div>
       </div>
       <RecipeGrid>
-        <Results recipes={recipeItems} query={"props.query"} />
+        <Results recipes={recipeItems} query={query ?? ""} />
       </RecipeGrid>
     </RecipeScroll>
   )
@@ -262,11 +262,6 @@ function CustomRefinement({
           )
         })}
       </div>
-      {/* <RefinementList
-        attribute={attribute}
-        searchable
-        classNames={{ label: "flex gap-1 items-center" }}
-      /> */}
     </div>
   )
 }
@@ -281,6 +276,7 @@ export function RecipeSearchList({
   readonly drag?: boolean
   readonly noPadding?: boolean
 }) {
+  const [showAdvanced, setAdvanced] = useState(false)
   const searchClient = useSearchClient()
 
   if (!searchClient) {
@@ -291,18 +287,47 @@ export function RecipeSearchList({
     <InstantSearch searchClient={searchClient} indexName="recipes">
       <div className={clx(noPadding ? "" : "ml-auto mr-auto max-w-[1000px]")}>
         <Search noPadding={noPadding} />
-        <div className="flex  gap-2">
-          <div className="flex min-w-60 max-w-60 flex-col gap-2">
-            <CustomRefinement
-              label="Ingredients"
-              attribute="ingredients.quantity_name"
-            />
-            <CustomRefinement label="Tags" attribute="tags" />
+        <div className="flex flex-col gap-2">
+          <div className="flex  gap-2 ">
+            {showAdvanced && (
+              <>
+                <CustomRefinement
+                  label="Ingredients"
+                  attribute="ingredients.quantity_name"
+                />
+                <CustomRefinement label="Tags" attribute="tags" />
+              </>
+            )}
+            <div className="ml-auto">
+              <Button
+                size="small"
+                onClick={() => {
+                  setAdvanced((s) => !s)
+                }}
+              >
+                {showAdvanced ? "hide advanced search" : "show advanced search"}
+              </Button>
+            </div>
           </div>
-
           <RecipeList drag={drag} scroll={scroll} className="w-full" />
         </div>
       </div>
+    </InstantSearch>
+  )
+}
+
+export function RecipeSearchListSchedule() {
+  const searchClient = useSearchClient()
+
+  if (!searchClient) {
+    return null
+  }
+
+  return (
+    <InstantSearch searchClient={searchClient} indexName="recipes">
+      <Search noPadding={true} />
+
+      <RecipeList drag={true} scroll={true} className="w-full" />
     </InstantSearch>
   )
 }
