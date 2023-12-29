@@ -7,9 +7,7 @@ from typing import TYPE_CHECKING
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
-    PermissionsMixin,
 )
-from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.postgres.fields import CIEmailField
 from django.db import models, transaction
 
@@ -39,16 +37,6 @@ class UserManager(BaseUserManager["User"]):
             logger.info("Created new user: %s", user)
             return user
 
-    def create_superuser(self, email: str, password: str) -> User:
-        """
-        Creates and saves a superuser with the given email and password.
-        """
-        user = self.create_user(email=email, password=password)
-        user.is_admin = True
-        user.is_superuser = True
-        user.save(using=self._db)
-        return user
-
 
 def get_avatar_url(email: str) -> str:
     md5_email = hashlib.md5(email.encode("utf-8")).hexdigest()
@@ -58,7 +46,7 @@ def get_avatar_url(email: str) -> str:
     return f"/avatar/{md5_email}?d=identicon&r=g"
 
 
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser):
     """Custom user model that only requires an email and password"""
 
     id = models.AutoField(primary_key=True)
@@ -66,37 +54,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = CIEmailField(unique=True)
     name = models.TextField(null=True)
 
-    # deprecated (previously used by Django Admin)
-    is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
-
     created = models.DateField(auto_now_add=True)
     last_updated = models.DateField(auto_now=True)
-
-    # deprecated
-    recipes = GenericRelation("Recipe", related_query_name="owner_user")
 
     theme_day = models.TextField(db_column="theme", default="light")
     theme_night = models.TextField(default="dark")
     theme_mode = models.TextField(default="single")
 
-    # deprecated
-    _deprecated_dark_mode_enabled = models.BooleanField(
-        default=False,
-        help_text="frontend darkmode setting",
-        db_column="dark_mode_enabled",
-    )
-    _deprecated_recipe_team = models.ForeignKey["Team"](
-        "Team",
-        null=True,
-        db_column="selected_team_id",
-        blank=True,
-        help_text="team currently focused on UI, null if personal items selected.",
-        on_delete=models.SET_NULL,
-        related_name="+",
-    )
-
-    # TODO: this shouldn't be null
+    # TODO: this shouldn't be null, need to update the data in prod first
     schedule_team = models.ForeignKey["Team"](
         "Team",
         null=True,
@@ -107,36 +72,16 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     schedule_team_id: int | None
 
+    # required by django.contrib.auth
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS: list[str] = []  # noqa: RUF012
 
     objects = UserManager()
 
     class Meta:
         db_table = "core_myuser"
 
-    def get_full_name(self) -> str:
-        return self.email
-
-    def get_short_name(self) -> str:
-        return self.email
-
     def get_display_name(self) -> str:
         return self.name or self.email
-
-    # deprecated
-    # required for admin
-    def has_perm(self, perm: object, obj: object = None) -> bool:
-        """Does the user have a specific permission?"""
-        # TODO: Add permissions
-        return True
-
-    # deprecated
-    # required for admin
-    def has_module_perms(self, app_label: object) -> bool:
-        """Does the user have permissions to view the app `app_label`?"""
-        # TODO: Add permissions
-        return True
 
     def has_invite(self, team: Team) -> bool:
         """
@@ -147,15 +92,6 @@ class User(AbstractBaseUser, PermissionsMixin):
             .exclude(invite=None)
             .exists()
         )
-
-    def has_team(self) -> bool:
-        return Membership.objects.filter(invite=None, user=self).exists()
-
-    # deprecated
-    # required for admin
-    @property
-    def is_staff(self) -> bool:
-        return self.is_admin
 
     @property
     def avatar_url(self) -> str:

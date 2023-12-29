@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from django.db import models
@@ -5,6 +7,8 @@ from django.db import models
 from recipeyak.models.base import CommonInfo
 
 if TYPE_CHECKING:
+    from django.db.models.manager import RelatedManager
+
     from recipeyak.models import Reaction, Recipe, Upload, User  # noqa: F401
 
 
@@ -26,8 +30,8 @@ class Note(CommonInfo):
         "Recipe", related_name="notes", on_delete=models.CASCADE
     )
 
-    uploads: "models.QuerySet[Upload]"
-    reactions: "models.QuerySet[Reaction]"
+    uploads: RelatedManager[Upload]
+    reactions: RelatedManager[Reaction]
 
     class Meta:
         ordering = ["-created"]  # noqa: RUF012

@@ -7,7 +7,6 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
-from django.db.models import QuerySet
 from django.db.models.manager import Manager
 
 from recipeyak.models.base import CommonInfo
@@ -83,8 +82,6 @@ class Recipe(CommonInfo):
     primary_image_id: int
     objects = Manager["Recipe"]()
 
-    notes: QuerySet[Note]
-
     class Meta:
         db_table = "core_recipe"
 
@@ -93,6 +90,7 @@ class Recipe(CommonInfo):
             recipe=self, on=on, user=user, team=team
         )
 
+    notes: RelatedManager[Note]
     ingredient_set: RelatedManager[Ingredient]
     scheduledrecipe_set: RelatedManager[ScheduledRecipe]
     timelineevent_set: RelatedManager[TimelineEvent]
