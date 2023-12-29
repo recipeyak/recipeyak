@@ -293,7 +293,7 @@ def test_adding_note_to_recipe(
     client.force_authenticate(user)
     data = {"text": "use a mixer to speed things along.", "attachment_upload_ids": []}
     res = client.post(f"/api/v1/recipes/{recipe.id}/notes/", data)
-    assert res.status_code == 200
+    assert res.status_code == 201
     assert res.json()["created_by"]["id"] == user.id
     assert res.json()["text"] == data["text"]
 
@@ -324,7 +324,7 @@ def test_delete_note(
     assert before_count > 0
     assert note is not None
     res = client.delete(f"/api/v1/notes/{note.id}/")
-    assert res.status_code == 200
+    assert res.status_code == 204
     assert recipe.notes.count() == before_count - 1
 
 
