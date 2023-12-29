@@ -23,6 +23,7 @@ def main() -> None:
         "--no-pager",
         "diff",
         "--name-only",
+        "--diff-filter=d",
         "origin/main...",
         MIGRATIONS_DIRECTORY,
     ]
