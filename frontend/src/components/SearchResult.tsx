@@ -38,7 +38,8 @@ export function SearchResult({
           className={clx(
             stylesSuggestion,
             index === 0 && "underline",
-            recipe.archived_at != null && "text-[var(--color-text-muted)]",
+            recipe.archived_at != null &&
+              "text-[var(--color-text-muted)] line-through",
           )}
         >
           <div className="flex">

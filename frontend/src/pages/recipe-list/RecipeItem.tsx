@@ -101,7 +101,10 @@ export function RecipeListItem({
         />
       </div>
       <div className="h-full p-2 leading-5">
-        <div tabIndex={0} className="mb-1">
+        <div
+          tabIndex={0}
+          className={clx("mb-1", props.archived_at != null && "line-through")}
+        >
           {hit ? <CustomHighlight attribute="name" hit={hit} /> : name}
         </div>
         {author !== "" && hit && (

@@ -87,19 +87,11 @@ const RecipeGrid = styled.div`
   }
 `
 
-function RecipeList(props: {
-  readonly drag?: boolean
-  readonly className?: string
-  readonly scroll?: boolean
-}) {
-  const { items } = useCurrentRefinements()
-  const { hits, results: algoliaResults } = useHits<{
+export function ResultInfo() {
+  const { results: algoliaResults } = useHits<{
     name: string
     archived_at: string
   }>()
-  const {
-    indexUiState: { query },
-  } = useInstantSearch()
   const {
     refine,
     value: {
@@ -111,6 +103,41 @@ function RecipeList(props: {
     on: [true, false],
     off: false,
   })
+  const archivedCount = (countOn ?? 0) - (countOff ?? 0)
+  return (
+    <div className="mb-2 flex flex-wrap justify-between">
+      <div className="mr-2 text-[14px]">
+        matches: {algoliaResults?.nbHits || 0}
+      </div>
+      <div className="text-[14px]">
+        <label>
+          include archived ({archivedCount}):
+          <CheckBox
+            onChange={(event) => {
+              refine({ isRefined: !event.target.checked })
+            }}
+            name="optional"
+            className="ml-1 mr-2"
+          />
+        </label>
+      </div>
+    </div>
+  )
+}
+
+function RecipeList(props: {
+  readonly drag?: boolean
+  readonly className?: string
+  readonly scroll?: boolean
+  readonly advancedSearch?: boolean
+}) {
+  const { hits } = useHits<{
+    name: string
+    archived_at: string
+  }>()
+  const {
+    indexUiState: { query },
+  } = useInstantSearch()
 
   const recipes = useRecipeList()
 
@@ -126,7 +153,7 @@ function RecipeList(props: {
   )
 
   const results =
-    query || items.length > 0
+    query || props.advancedSearch
       ? hits.map((hit) => {
           return { recipe: recipeMap[hit.objectID], hit }
         })
@@ -181,27 +208,8 @@ function RecipeList(props: {
     return <AddRecipeCallToAction />
   }
 
-  const archivedCount = (countOn ?? 0) - (countOff ?? 0)
-
   return (
     <RecipeScroll scroll={props.scroll} className={props.className}>
-      <div className="mb-2 flex flex-wrap justify-between">
-        <div className="mr-2 text-[14px]">
-          matches: {algoliaResults?.nbHits || 0}
-        </div>
-        <div className="text-[14px]">
-          <label>
-            include archived ({archivedCount}):
-            <CheckBox
-              onChange={(event) => {
-                refine({ isRefined: !event.target.checked })
-              }}
-              name="optional"
-              className="ml-1 mr-2"
-            />
-          </label>
-        </div>
-      </div>
       <RecipeGrid>
         <Results recipes={recipeItems} query={query ?? ""} />
       </RecipeGrid>
@@ -269,6 +277,49 @@ function CustomRefinement({
   )
 }
 
+function ArchivedToggle() {
+  const { refine } = useToggleRefinement({
+    attribute: "archived",
+    on: [true, false],
+    off: false,
+  })
+  return (
+    <div>
+      <div className="font-bold">Archived Recipes</div>
+      <div className="flex items-center gap-2">
+        <input
+          id="archived_recipes"
+          type="checkbox"
+          onChange={(event) => {
+            refine({ isRefined: !event.target.checked })
+          }}
+        />
+        <label htmlFor="archived_recipes">Show archived</label>
+      </div>
+    </div>
+  )
+}
+
+function Matches() {
+  const { results: algoliaResults } = useHits()
+  const {
+    value: {
+      onFacetValue: { count: countOn },
+    },
+  } = useToggleRefinement({
+    attribute: "archived",
+    on: [true, false],
+    off: false,
+  })
+
+  return (
+    <div>
+      matches: {algoliaResults?.nbHits || 0} (archived:{" "}
+      {(countOn ?? 0) - (algoliaResults?.nbHits ?? 0)})
+    </div>
+  )
+}
+
 // TODO(sbdchd): this really shouldn't be shared like it is
 export function RecipeSearchList({
   noPadding,
@@ -280,6 +331,7 @@ export function RecipeSearchList({
   readonly noPadding?: boolean
 }) {
   const [showAdvanced, setAdvanced] = useState(false)
+
   const searchClient = useSearchClient()
 
   if (!searchClient) {
@@ -292,15 +344,19 @@ export function RecipeSearchList({
         <Search noPadding={noPadding} />
         <div className="flex flex-col gap-2">
           <div className="flex  gap-2 ">
-            {showAdvanced && (
-              <>
-                <CustomRefinement
-                  label="Ingredients"
-                  attribute="ingredients.quantity_name"
-                />
-                <CustomRefinement label="Tags" attribute="tags" />
-              </>
-            )}
+            <div className="flex flex-col">
+              {showAdvanced && (
+                <div className="flex gap-2">
+                  <CustomRefinement
+                    label="Ingredients"
+                    attribute="ingredients.quantity_name"
+                  />
+                  <CustomRefinement label="Tags" attribute="tags" />
+                  <ArchivedToggle />
+                </div>
+              )}
+              <Matches />
+            </div>
             <div className="ml-auto">
               <Button
                 size="small"
@@ -312,7 +368,12 @@ export function RecipeSearchList({
               </Button>
             </div>
           </div>
-          <RecipeList drag={drag} scroll={scroll} className="w-full" />
+          <RecipeList
+            drag={drag}
+            scroll={scroll}
+            className="w-full"
+            advancedSearch={showAdvanced}
+          />
         </div>
       </div>
     </InstantSearch>
@@ -329,7 +390,7 @@ export function RecipeSearchListSchedule() {
   return (
     <InstantSearch searchClient={searchClient} indexName="recipes">
       <Search noPadding={true} />
-
+      <Matches />
       <RecipeList drag={true} scroll={true} className="w-full" />
     </InstantSearch>
   )

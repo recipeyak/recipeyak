@@ -11,6 +11,7 @@ const getAlgoliaApiKey = () =>
 export function useAlgoliaApiKey() {
   return useQuery({
     queryKey: ["algolia"],
+    staleTime: 24 * 60 * 60 * 1000,
     queryFn: async () => {
       const res = await getAlgoliaApiKey().then(unwrapResult)
       return res
