@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 class RecipeIndexQueue(CommonInfo):
     id = models.AutoField(primary_key=True)
-    recipe = models.ForeignKey["Recipe"]("Recipe", on_delete=models.CASCADE)
+    recipe_id = models.IntegerField()
 
     objects = Manager["RecipeIndexQueue"]()
 

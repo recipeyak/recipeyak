@@ -17,12 +17,10 @@ class Migration(migrations.Migration):
                 ("created", models.DateTimeField(default=django.utils.timezone.now)),
                 ("modified", models.DateTimeField(auto_now=True)),
                 ("id", models.AutoField(primary_key=True, serialize=False)),
+                ("deleted", models.BooleanField(default=False)),
                 (
-                    "recipe",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE,
-                        to="recipeyak.recipe",
-                    ),
+                    "recipe_id",
+                    models.IntegerField(),
                 ),
             ],
             options={
@@ -34,8 +32,13 @@ class Migration(migrations.Migration):
 CREATE OR REPLACE FUNCTION update_core_recipe_indexing()
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO recipe_index_queue (created, modified, recipe_id)
-    VALUES (now(), now(), OLD.id);
+    IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
+        INSERT INTO recipe_index_queue (created, modified, recipe_id, deleted)
+        VALUES (now(), now(), NEW.id, false);
+    ELSEIF TG_OP = 'DELETE' THEN
+        INSERT INTO recipe_index_queue (created, modified, recipe_id, deleted)
+        VALUES (now(), now(), OLD.id, true);
+    END IF;
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -55,8 +58,13 @@ DROP function update_core_recipe_indexing;
 CREATE OR REPLACE FUNCTION update_core_ingredient_indexing()
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO recipe_index_queue (created, modified, recipe_id)
-    VALUES (now(), now(), OLD.recipe_id);
+    IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
+        INSERT INTO recipe_index_queue (created, modified, recipe_id, deleted)
+        VALUES (now(), now(), NEW.recipe_id, false);
+    ELSEIF TG_OP = 'DELETE' THEN
+        INSERT INTO recipe_index_queue (created, modified, recipe_id, deleted)
+        VALUES (now(), now(), OLD.recipe_id, true);
+    END IF;
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
