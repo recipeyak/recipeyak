@@ -7,6 +7,7 @@ from django.contrib.auth import get_user_model
 from django.test.client import Client
 
 from recipeyak.models import Team, User
+from recipeyak.models.membership import Membership
 
 pytestmark = pytest.mark.django_db
 
@@ -20,7 +21,7 @@ def test_user_delete(client: Client, user: User, team: Team) -> None:
     client.force_login(user)
 
     assert team.is_member(user)
-    assert user.has_team()
+    assert Membership.objects.filter(invite=None, user=user).exists()
     res = client.delete("/api/v1/user/")
     assert res.status_code == 204
 
