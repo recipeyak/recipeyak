@@ -2,6 +2,7 @@ import { orderBy } from "lodash-es"
 import { useState } from "react"
 import {
   InstantSearch,
+  useCurrentRefinements,
   useHits,
   useInstantSearch,
   useRefinementList,
@@ -91,6 +92,7 @@ function RecipeList(props: {
   readonly className?: string
   readonly scroll?: boolean
 }) {
+  const { items } = useCurrentRefinements()
   const { hits, results: algoliaResults } = useHits<{
     name: string
     archived_at: string
@@ -123,36 +125,37 @@ function RecipeList(props: {
     {},
   )
 
-  const results = query
-    ? hits.map((hit) => {
-        return { recipe: recipeMap[hit.objectID], hit }
-      })
-    : // if not query, show everything.
-      orderBy(
-        recipes.data.map((recipe) => ({
-          recipe,
-          hit: {
-            __position: 0,
-            objectID: recipe.id.toString(),
-            _highlightResult: {
-              author: {
-                value: recipe.author ?? "",
-                matchedWords: [],
-                matchLevel: "none" as const,
-              },
-              name: {
-                value: recipe.name,
-                matchedWords: [],
-                matchLevel: "none" as const,
+  const results =
+    query || items.length > 0
+      ? hits.map((hit) => {
+          return { recipe: recipeMap[hit.objectID], hit }
+        })
+      : // if not query, show everything.
+        orderBy(
+          recipes.data.map((recipe) => ({
+            recipe,
+            hit: {
+              __position: 0,
+              objectID: recipe.id.toString(),
+              _highlightResult: {
+                author: {
+                  value: recipe.author ?? "",
+                  matchedWords: [],
+                  matchLevel: "none" as const,
+                },
+                name: {
+                  value: recipe.name,
+                  matchedWords: [],
+                  matchLevel: "none" as const,
+                },
               },
             },
-          },
-        })),
-        [
-          (x) => x.recipe.archived_at != null,
-          (x) => x.recipe.name.toUpperCase(),
-        ],
-      )
+          })),
+          [
+            (x) => x.recipe.archived_at != null,
+            (x) => x.recipe.name.toUpperCase(),
+          ],
+        )
 
   const recipeItems = results.map((result, index) => {
     if (!props.drag) {
