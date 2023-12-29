@@ -13,7 +13,6 @@ def test_updating_other_users_note(
     Prevent editing notes that other users own
     """
     recipe.team = team
-    recipe.owner = team
     recipe.save()
 
     note = Note.objects.create(text="some note text", created_by=user, recipe=recipe)

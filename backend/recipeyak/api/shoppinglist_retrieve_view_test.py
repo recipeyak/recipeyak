@@ -111,7 +111,7 @@ def test_scheduling_multiple_times_some_ingredient(
 
     name = "Recipe name"
     author = "Recipe author"
-    recipe = Recipe.objects.create(name=name, author=author, owner=user)
+    recipe = Recipe.objects.create(name=name, author=author, team=team)
 
     Ingredient.objects.create(
         quantity=quantity, name="black pepper", position=10.0, recipe=recipe
@@ -313,13 +313,14 @@ def test_combine_ingredients(
     assert combine_ingredients(ingres) == expected
 
 
-def test_combining_feta(
-    user: User, team: Team, client: Client, empty_recipe: Recipe
-) -> None:
+def test_combining_feta(user: User, team: Team, client: Client) -> None:
     """
     ensure the singularize function doesn't result in feta becoming fetum along
     with some other troublesome examples
     """
+
+    name = "empty recipe"
+    empty_recipe = Recipe.objects.create(name=name, team=team)
 
     position = 11.0
 

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from collections.abc import Iterator
 from datetime import date
-from typing import Any
 from unittest.mock import patch
 
 import pytest
@@ -27,12 +26,6 @@ def user() -> User:
     """
     email = "john@doe.org"
     return User.objects.create_user(email=email)
-
-
-@pytest.fixture
-def user_with_recipes(recipes: list[Recipe]) -> Any:
-    first_recipe, *_ = recipes
-    return first_recipe.owner
 
 
 @pytest.fixture
@@ -78,21 +71,12 @@ def recipes(user: User, team: Team) -> list[Recipe]:
     author = "Recipe author"
 
     return Recipe.objects.bulk_create(
-        [Recipe(name=name, author=author, owner=user, team=team) for n in range(15)]
+        [Recipe(name=name, author=author, team=team) for n in range(15)]
     )
 
 
 @pytest.fixture
-def empty_recipe(user: User) -> Recipe:
-    """
-    Empty recipe owned by `user`
-    """
-    name = "empty recipe"
-    return Recipe.objects.create(name=name, owner=user)
-
-
-@pytest.fixture
-def recipe(user: User) -> Recipe:
+def recipe(user: User, team: Team) -> Recipe:
     """
     Recipe with metadata, Ingredient, Step owned by `user`
     """
@@ -103,7 +87,7 @@ def recipe(user: User) -> Recipe:
     time = "1 hour"
 
     recipe = Recipe.objects.create(
-        name=name, author=author, source=source, time=time, owner=user
+        name=name, author=author, source=source, time=time, team=team
     )
 
     Ingredient.objects.create(
@@ -138,7 +122,7 @@ def recipe(user: User) -> Recipe:
     return recipe
 
 
-def recipe_pie_factory(user: User) -> Recipe:
+def recipe_pie_factory(user: User, team: Team) -> Recipe:
     """
     Recipe with metadata, Ingredient, Step owned by `user`.
     Contains the word "pie" in name and source.
@@ -149,7 +133,7 @@ def recipe_pie_factory(user: User) -> Recipe:
     time = "4 hours"
 
     recipe = Recipe.objects.create(
-        name=name, author=author, source=source, time=time, owner=user
+        name=name, author=author, source=source, time=time, team=team
     )
 
     Ingredient.objects.create(
@@ -170,16 +154,16 @@ def recipe_pie_factory(user: User) -> Recipe:
 
 
 @pytest.fixture
-def recipe_pie(user: User) -> Recipe:
-    return recipe_pie_factory(user)
+def recipe_pie(user: User, team: Team) -> Recipe:
+    return recipe_pie_factory(user, team)
 
 
 @pytest.fixture
-def recipe2(user: User) -> Recipe:
+def recipe2(user: User, team: Team) -> Recipe:
     """
     Pie recipe owned by `user`
     """
-    return recipe_pie_factory(user)
+    return recipe_pie_factory(user, team)
 
 
 @pytest.fixture
@@ -198,22 +182,22 @@ def empty_team() -> Team:
 
 @pytest.fixture
 def team_with_recipes(team: Team, recipe: Recipe, recipe_pie: Recipe) -> Team:
-    team.recipes.add(recipe)
-    team.recipes.add(recipe_pie)
+    team.recipe_set.add(recipe)
+    team.recipe_set.add(recipe_pie)
     return team
 
 
 @pytest.fixture
 def team_with_recipes_no_members(recipe: Recipe, recipe_pie: Recipe) -> Team:
     t = Team.objects.create(name="A Team with No Name")
-    t.recipes.add(recipe)
-    t.recipes.add(recipe_pie)
+    t.recipe_set.add(recipe)
+    t.recipe_set.add(recipe_pie)
     return t
 
 
 @pytest.fixture
-def scheduled_recipe(recipe: Recipe, user: User) -> ScheduledRecipe:
-    return ScheduledRecipe.objects.create(recipe=recipe, user=user, on=date(1976, 7, 6))
+def scheduled_recipe(recipe: Recipe, team: Team) -> ScheduledRecipe:
+    return ScheduledRecipe.objects.create(recipe=recipe, team=team, on=date(1976, 7, 6))
 
 
 @pytest.fixture(scope="session", autouse=True)

@@ -77,6 +77,3 @@ class Membership(CommonInfo):
         if last_member:
             raise DemoteLastAdminError("cannot delete last member of team")
         super().delete()
-
-    def __str__(self) -> str:
-        return f"<Membership • user_email: {self.user.email}, team: {self.team.id} level: {self.level}>"

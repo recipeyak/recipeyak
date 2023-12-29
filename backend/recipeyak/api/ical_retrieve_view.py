@@ -10,7 +10,7 @@ from django.utils.text import slugify
 from django.views.decorators.http import require_http_methods
 from icalendar import Calendar, Event, vDate, vDatetime
 
-from recipeyak.models import Membership, ScheduledRecipe, Team
+from recipeyak.models import Membership, ScheduledRecipe
 
 
 def create_event(
@@ -65,14 +65,14 @@ def ical_retrieve_view(
     We limit the recipes to the last year to avoid having the response size
     gradually increasing & time.
     """
-    membership = Membership.objects.filter(
-        team_id=team_id, calendar_secret_key=ical_id, calendar_sync_enabled=True
-    ).first()
-    if membership is not None:
-        team = membership.team
-    else:
-        # deprecated url
-        team = get_object_or_404(Team, id=team_id, ical_id=ical_id)
+    membership = get_object_or_404(
+        Membership.objects.filter(
+            calendar_sync_enabled=True,
+            team_id=team_id,
+            calendar_secret_key=ical_id,
+        )
+    )
+    team = membership.team
 
     scheduled_recipes = (
         ScheduledRecipe.objects.filter(team=team)

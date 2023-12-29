@@ -100,6 +100,3 @@ class User(AbstractBaseUser):
     scheduled_recipes: RelatedManager[ScheduledRecipe]
     membership_set: RelatedManager[Membership]
     session_set: RelatedManager[Session]
-
-    def __str__(self) -> str:
-        return self.email

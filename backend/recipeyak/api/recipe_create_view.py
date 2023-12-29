@@ -45,7 +45,6 @@ def create_recipe_from_scrape(*, scrape: ScrapeResult, team: Team) -> Recipe:
     recipe = Recipe.objects.create(
         team=team,
         scrape_id=scrape.id,
-        owner=team,
         name=normalize_title(scrape.title),
         author=scrape.author,
         servings=scrape.yields,
@@ -125,7 +124,7 @@ def recipe_create_view(request: AuthedHttpRequest) -> JsonResponse:
         if scrape_result is not None:
             recipe = create_recipe_from_scrape(scrape=scrape_result, team=team)
         else:
-            recipe = Recipe.objects.create(owner=team, team=team, name=params.name)
+            recipe = Recipe.objects.create(team=team, name=params.name)
         TimelineEvent(
             action="created",
             created_by=request.user,

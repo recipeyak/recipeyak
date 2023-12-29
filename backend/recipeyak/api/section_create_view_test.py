@@ -92,7 +92,7 @@ def test_fetching_sections_for_recipe(
         assert isinstance(s["title"], str)
         assert isinstance(s["position"], str)
 
-    team.recipes.add(recipe)
+    team.recipe_set.add(recipe)
 
 
 def test_updating_section(client: Client, user: User, recipe: Recipe) -> None:

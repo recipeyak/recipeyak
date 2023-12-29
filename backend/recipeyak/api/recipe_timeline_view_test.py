@@ -18,8 +18,6 @@ def test_get_recipe_timeline(
     own endpoint is eaiser.
     """
 
-    assert recipe.owner == user
-
     url = f"/api/v1/recipes/{recipe.id}/timeline"
     res = client.get(url)
     assert res.status_code == 403, "Endpoint requires auth."
