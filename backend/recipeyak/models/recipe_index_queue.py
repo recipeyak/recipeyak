@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 class RecipeIndexQueue(CommonInfo):
     id = models.AutoField(primary_key=True)
     recipe_id = models.IntegerField()
+    deleted = models.BooleanField(default=False)
 
     objects = Manager["RecipeIndexQueue"]()
 
