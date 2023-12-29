@@ -47,10 +47,10 @@ GIT_SHA = "<%=GIT_SHA=%>"
 
 INSTALLED_APPS = [
     "django.contrib.auth",
+    # django.contrib.auth requires we also have django.contrib.contenttypes :/
     "django.contrib.contenttypes",
     "user_sessions",
     "recipeyak.django.app.CoreConfig",
-    "django.contrib.sites",
     "django.contrib.postgres",
 ]
 

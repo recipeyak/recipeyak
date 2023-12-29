@@ -7,7 +7,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("recipeyak", "0125_auto_20231229_1805"),
+        ("recipeyak", "0001_initial"),
     ]
 
     operations = [
