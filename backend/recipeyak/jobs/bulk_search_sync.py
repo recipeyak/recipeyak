@@ -66,6 +66,8 @@ async def job(config: Config) -> None:
                         json_build_object(
                             'id', id,
                             'description', "description",
+                            'quantity_name', "quantity" || ' ' || "name",
+                            'quantity_name_description', "quantity" || ' ' || "name" || ', ' || "description",
                             'recipe_id', "recipe_id",
                             'quantity', "quantity",
                             'name', "name",

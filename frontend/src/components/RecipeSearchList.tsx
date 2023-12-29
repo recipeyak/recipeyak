@@ -1,8 +1,10 @@
 import { orderBy } from "lodash-es"
 import {
   InstantSearch,
+  RefinementList,
   useHits,
   useInstantSearch,
+  useRefinementList,
   useSearchBox,
   useToggleRefinement,
 } from "react-instantsearch"
@@ -86,6 +88,7 @@ const RecipeGrid = styled.div`
 
 function RecipeList(props: {
   readonly drag?: boolean
+  readonly className?: string
   readonly scroll?: boolean
 }) {
   const { hits, results: algoliaResults } = useHits<{
@@ -178,7 +181,7 @@ function RecipeList(props: {
   const archivedCount = (countOn ?? 0) - (countOff ?? 0)
 
   return (
-    <RecipeScroll scroll={props.scroll}>
+    <RecipeScroll scroll={props.scroll} className={props.className}>
       <div className="mb-2 flex flex-wrap justify-between">
         <div className="mr-2 text-[14px]">
           matches: {algoliaResults?.nbHits || 0}
@@ -217,6 +220,57 @@ function Search({ noPadding }: { noPadding: boolean | undefined }) {
   )
 }
 
+function CustomRefinement({
+  attribute,
+  label,
+}: {
+  attribute: string
+  label: string
+}) {
+  const { searchForItems, items, refine } = useRefinementList({
+    attribute,
+    limit: 5,
+  })
+  return (
+    <div className="flex  max-h-48 min-h-48 flex-col">
+      <div className="font-bold">{label}</div>
+      <SearchInput
+        placeholder="search..."
+        onChange={(e) => {
+          searchForItems(e.target.value)
+        }}
+      />
+      <div>
+        {items.map((item) => {
+          return (
+            <div key={item.value} className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id={label + item.value}
+                checked={item.isRefined}
+                onChange={() => {
+                  refine(item.value)
+                }}
+              />
+              <label
+                htmlFor={label + item.value}
+                className="overflow-x-hidden text-ellipsis whitespace-nowrap"
+              >
+                {item.label}
+              </label>
+            </div>
+          )
+        })}
+      </div>
+      {/* <RefinementList
+        attribute={attribute}
+        searchable
+        classNames={{ label: "flex gap-1 items-center" }}
+      /> */}
+    </div>
+  )
+}
+
 // TODO(sbdchd): this really shouldn't be shared like it is
 export function RecipeSearchList({
   noPadding,
@@ -237,7 +291,17 @@ export function RecipeSearchList({
     <InstantSearch searchClient={searchClient} indexName="recipes">
       <div className={clx(noPadding ? "" : "ml-auto mr-auto max-w-[1000px]")}>
         <Search noPadding={noPadding} />
-        <RecipeList drag={drag} scroll={scroll} />
+        <div className="flex  gap-2">
+          <div className="flex min-w-60 max-w-60 flex-col gap-2">
+            <CustomRefinement
+              label="Ingredients"
+              attribute="ingredients.quantity_name"
+            />
+            <CustomRefinement label="Tags" attribute="tags" />
+          </div>
+
+          <RecipeList drag={drag} scroll={scroll} className="w-full" />
+        </div>
       </div>
     </InstantSearch>
   )

@@ -4,7 +4,6 @@ import { Link } from "react-router-dom"
 
 import { clx } from "@/classnames"
 import { CustomHighlight } from "@/components/CustomHighlight"
-import { Tag } from "@/components/Tag"
 import { pathRecipeDetail, pathRecipesList } from "@/paths"
 import { RecipeListItem } from "@/queries/recipeList"
 
@@ -59,28 +58,6 @@ export function SearchResult({
               </span>
             )}
           </div>
-          {hit._highlightResult?.["ingredients"]?.map(
-            (ingredientHit, index) => {
-              if (ingredientHit.name.matchLevel === "none") {
-                return null
-              }
-
-              return (
-                <div className="ml-4" key={index}>
-                  <CustomHighlight
-                    hit={hit}
-                    attribute={`ingredients.${index}.name`}
-                  />
-                </div>
-              )
-            },
-          )}
-          {hit._highlightResult?.["tag"] != null &&
-            hit._highlightResult["tag"].matchLevel !== "none" && (
-              <Tag>
-                <CustomHighlight hit={hit} attribute="tag" />
-              </Tag>
-            )}
         </Link>
       )
     })
