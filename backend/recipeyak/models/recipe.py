@@ -7,7 +7,6 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
-from django.db.models import QuerySet
 from django.db.models.manager import Manager
 
 from recipeyak.models.base import CommonInfo
