@@ -30,7 +30,10 @@ def team_member_delete_view(
 ) -> Response:
     team = get_team_by_id(request=request, team_id=team_id)
     membership = get_object_or_404(get_memberships(request.user), pk=member_id)
-    if not is_team_admin(team, request.user) and membership.user != request.user:
+    if (
+        not is_team_admin(team_id=team.id, user_id=request.user.id)
+        and membership.user != request.user
+    ):
         return Response(status=403)
     try:
         membership.delete()

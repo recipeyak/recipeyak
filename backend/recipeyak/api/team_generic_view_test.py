@@ -197,7 +197,7 @@ def test_destory_team_member(
     client.force_authenticate(user2)
     assert (
         client.delete(f"/api/v1/t/{team.pk}/members/{user_membership.id}/").status_code
-        == status.HTTP_403_FORBIDDEN
+        == status.HTTP_404_NOT_FOUND
     ), "non-member should not be able to delete member"
 
     # non-admins cannot delete team members
@@ -239,7 +239,7 @@ def test_destory_team_member(
         client.delete(
             f"/api/v1/t/{empty_team.pk}/members/{user.membership_set.get(team=empty_team).id}/"
         ).status_code
-        == status.HTTP_403_FORBIDDEN
+        == status.HTTP_404_NOT_FOUND
     ), "Admin users cannot remove member of another team"
 
     # members can remove their own membership

@@ -13,6 +13,7 @@ from rest_framework.response import Response
 
 from recipeyak.api.base.request import AuthedRequest
 from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.team_delete_view import is_team_admin
 from recipeyak.models import Membership, Team
 from recipeyak.models.membership import DemoteLastAdminError
 from recipeyak.models.user import User, get_avatar_url
@@ -51,6 +52,8 @@ def team_member_update_view(
     request: AuthedRequest, *, team_id: int = -1, member_id: int
 ) -> Response:
     params = UpdateMembershipParams.parse_obj(request.data)
+    if not is_team_admin(team_id=team_id, user_id=request.user.id):
+        return Response(status=403)
     membership = get_object_or_404(get_memberships(request.user), pk=member_id)
     membership.level = params.level
     try:
