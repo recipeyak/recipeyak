@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
   Configure,
   InstantSearch,
@@ -86,18 +86,32 @@ function RecipeList(props: {
   readonly advancedSearch?: boolean
 }) {
   const { hits } = useHits<RecipeYakHit>()
+  const [initialLimit, setLimit] = useState(20)
   const {
     indexUiState: { query },
     status,
     results,
   } = useInstantSearch()
 
-  const recipeItems = hits.map((hit, index) => {
-    if (!props.drag) {
-      return <RecipeListItem key={index} index={hit.id} hit={hit} {...hit} />
+  const recipeItems = hits
+    .map((hit, index) => {
+      if (!props.drag) {
+        return <RecipeListItem key={index} index={hit.id} hit={hit} {...hit} />
+      }
+      return <RecipeItemDraggable hit={hit} key={hit.id} />
+    })
+    .slice(0, initialLimit)
+
+  // HACK(cdignam): We initially render only 20 items, then we render the remaining items.
+  //
+  // Ideally we'd use windowing to fix this.
+  useEffect(() => {
+    if (recipeItems.length === 20) {
+      setTimeout(() => {
+        setLimit(Infinity)
+      }, 1)
     }
-    return <RecipeItemDraggable hit={hit} key={hit.id} />
-  })
+  }, [recipeItems.length])
 
   // @ts-expect-error ts(2339): Property 'serverTimeMS' does not exist on type 'SearchResults<any>'.
   const hasServerResults = results.serverTimeMS != null
