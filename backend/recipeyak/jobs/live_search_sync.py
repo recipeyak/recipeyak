@@ -71,6 +71,9 @@ from recipe_index_queue
                         core_scheduledrecipe
                     WHERE
                         core_scheduledrecipe.recipe_id = core_recipe.id
+                        and core_scheduledrecipe.on > (now() - '1.5 years'::interval)
+                        and core_scheduledrecipe.on < now()
+                        and core_scheduledrecipe.recipe_id = core_recipe.id
                 ),
                 'ingredients', (
                     SELECT
