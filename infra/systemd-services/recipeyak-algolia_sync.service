@@ -8,6 +8,7 @@ ExecStart=/usr/bin/docker run \
         --env-file=/root/.env-production \
         recipeyak/django:{{GIT_SHA}} \
         ./.venv/bin/python -m recipeyak.jobs.live_search_sync --single-run
+KillSignal=SIGINT
 # kill after 2 minutes
 TimeoutSec=120
 [Install]

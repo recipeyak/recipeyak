@@ -9,5 +9,6 @@ ExecStart=/usr/bin/docker run \
         --env-file=/root/.env-production \
         recipeyak/django:{{GIT_SHA}} \
         ./.venv/bin/python -m recipeyak.jobs.live_search_sync --no-single-run
+KillSignal=SIGINT
 [Install]
 WantedBy=multi-user.target

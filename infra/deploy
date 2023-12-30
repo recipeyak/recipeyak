@@ -35,6 +35,8 @@ main() {
         sed -i "s/{{GIT_SHA}}/$SHA/g" /etc/systemd/system/recipeyak-*.service
         systemctl daemon-reload
 
+        systemctl restart 'recipeyak-*.service'
+
         # enable timers
         find infra/systemd-services/ -name '*.timer' -printf '%f\n' | xargs systemctl enable --now
         # no need to restart anything since they're running on timers, which

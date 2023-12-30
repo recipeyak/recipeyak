@@ -3,6 +3,7 @@ Description=Runs backup of postgres database
 [Service]
 EnvironmentFile=/root/.env-production
 ExecStart=/usr/local/bin/sentry-cli monitors run backup-postgres -- /etc/recipeyak/backup-postgres
+KillSignal=SIGINT
 # kill after 10 minutes
 TimeoutSec=600
 [Install]
