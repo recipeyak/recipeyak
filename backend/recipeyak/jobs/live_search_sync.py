@@ -139,8 +139,7 @@ async def job(config: Config, single_run: bool) -> None:
         channel: str,
         payload: object,
     ) -> None:
-        count = await process_queue(conn, config=config)
-        logger.info("processed rows", count=count)
+        await process_queue(conn, config=config)
 
     await pg.add_listener("recipe_enqueued_for_indexing", callback)  # type: ignore[arg-type]
 
