@@ -1,32 +1,16 @@
 from __future__ import annotations
 
-from collections import OrderedDict
-from logging import getLogger
-from typing import Any
+from collections.abc import Container
 
 import pydantic
-import yaml
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
+from recipeyak.api.base.response import YamlResponse
 from recipeyak.models import Recipe, filter_recipes, get_team
 from recipeyak.models.team import Team
-
-log = getLogger(__name__)
-
-
-def represent_ordereddict(dumper: yaml.Dumper, data: dict[str, object]) -> yaml.Node:
-    value = []
-    for item_key, item_value in data.items():
-        node_key = dumper.represent_data(item_key)
-        node_value = dumper.represent_data(item_value)
-        value.append((node_key, node_value))
-    return yaml.nodes.MappingNode("tag:yaml.org,2002:map", value)
-
-
-yaml.add_representer(OrderedDict, represent_ordereddict)
 
 
 class ExportIngredient(pydantic.BaseModel):
@@ -93,7 +77,7 @@ def serialize_export_recipe(recipe: Recipe) -> ExportRecipe:
     )
 
 
-IGNORED_VALUES: tuple[object, ...] = ([], "", False, None)
+IGNORED_VALUES: Container[object] = ([], "", False, None)
 
 
 def fmt_dict(obj: dict[str, object]) -> dict[str, object]:
@@ -102,8 +86,7 @@ def fmt_dict(obj: dict[str, object]) -> dict[str, object]:
         if v in IGNORED_VALUES:
             continue
         out[k] = v
-    # avoid pyyaml sorting non-sense
-    return OrderedDict(out)
+    return out
 
 
 def pydantic_to_dict(obj: object) -> object:
@@ -136,28 +119,6 @@ def export_recipes(team: Team, pk: str | None) -> list[ExportRecipe] | ExportRec
         recipes_out.append(serialize_export_recipe(recipe))
 
     return recipes_out
-
-
-class YamlResponse(HttpResponse):
-    """
-    An HTTP response class that consumes data to be serialized to YAML.
-    :param data: Data to be dumped into yaml.
-    """
-
-    def __init__(self, data: Any, **kwargs: Any) -> None:
-        # TODO: this doesn't handle unicode correctly:
-        #   - name: salt
-        #     quantity: Â½ teaspoon
-        kwargs.setdefault("content_type", "text/x-yaml")
-        if isinstance(data, list):
-            data = yaml.dump_all(data, default_flow_style=False, allow_unicode=True)
-        else:
-            # we wrap in an OrderedDict since PyYaml sorts dict keys for some odd reason!
-            data = yaml.dump(
-                OrderedDict(data), default_flow_style=False, allow_unicode=True
-            )
-
-        super().__init__(content=data, **kwargs)
 
 
 @endpoint(redirect_to_login=True)
