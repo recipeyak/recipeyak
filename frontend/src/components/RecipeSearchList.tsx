@@ -20,6 +20,7 @@ import { pathRecipeAdd } from "@/paths"
 import { useSearchClient } from "@/queries/useSearchClient"
 import { RecipeYakHit } from "@/search-types"
 import { styled } from "@/theme"
+import { useTeamId } from "@/useTeamId"
 
 interface IResultsProps {
   readonly recipes: JSX.Element[]
@@ -87,6 +88,8 @@ function RecipeList(props: {
   const { hits } = useHits<RecipeYakHit>()
   const {
     indexUiState: { query },
+    status,
+    results,
   } = useInstantSearch()
 
   const recipeItems = hits.map((hit, index) => {
@@ -96,7 +99,14 @@ function RecipeList(props: {
     return <RecipeItemDraggable hit={hit} key={hit.id} />
   })
 
-  if (!query && recipeItems.length === 0) {
+  // @ts-expect-error ts(2339): Property 'serverTimeMS' does not exist on type 'SearchResults<any>'.
+  const hasServerResults = results.serverTimeMS != null
+  if (
+    !query &&
+    recipeItems.length === 0 &&
+    hasServerResults &&
+    status === "idle"
+  ) {
     return <AddRecipeCallToAction />
   }
 
@@ -223,6 +233,7 @@ export function RecipeSearchList({
   readonly noPadding?: boolean
 }) {
   const [showAdvanced, setAdvanced] = useState(false)
+  const teamId = useTeamId()
 
   const searchClient = useSearchClient()
 
@@ -254,7 +265,7 @@ export function RecipeSearchList({
     >
       <div className={clx(noPadding ? "" : "ml-auto mr-auto max-w-[1000px]")}>
         <Search noPadding={noPadding} />
-        <Configure hitsPerPage={1000} />
+        <Configure hitsPerPage={1000} filters={`team_id:${teamId}`} />
         <div className="flex flex-col gap-2">
           <div className="flex gap-1">
             <div className="flex flex-col">
@@ -295,6 +306,7 @@ export function RecipeSearchList({
 
 export function RecipeSearchListSchedule() {
   const searchClient = useSearchClient()
+  const teamId = useTeamId()
 
   if (!searchClient) {
     return null
@@ -303,7 +315,7 @@ export function RecipeSearchListSchedule() {
   return (
     <InstantSearch searchClient={searchClient} indexName="recipes">
       <Search noPadding={true} />
-      <Configure hitsPerPage={1000} />
+      <Configure hitsPerPage={1000} filters={`team_id:${teamId}`} />
       <Matches />
       <RecipeList drag={true} scroll={true} className="w-full" />
     </InstantSearch>
