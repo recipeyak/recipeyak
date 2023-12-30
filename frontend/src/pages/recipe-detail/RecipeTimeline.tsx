@@ -5,7 +5,6 @@ import { formatHumanDate } from "@/date"
 import { SectionTitle } from "@/pages/recipe-detail/RecipeHelpers"
 import { pathSchedule } from "@/paths"
 import { useTimelineList } from "@/queries/timelineList"
-import { useTeamId } from "@/useTeamId"
 
 interface ITimeProps {
   readonly dateTime: Date | string
@@ -43,7 +42,6 @@ interface IRecipeTimelineProps {
 
 export function RecipeTimeline({ createdAt, recipeId }: IRecipeTimelineProps) {
   const res = useTimelineList(recipeId)
-  const teamId = useTeamId()
   if (res.data == null) {
     return null
   }
@@ -65,7 +63,7 @@ export function RecipeTimeline({ createdAt, recipeId }: IRecipeTimelineProps) {
                   📅 Scheduled for{" "}
                   <Link
                     to={{
-                      pathname: pathSchedule({ teamId: teamId.toString() }),
+                      pathname: pathSchedule({}),
                       search: `week=${e.date}`,
                     }}
                   >

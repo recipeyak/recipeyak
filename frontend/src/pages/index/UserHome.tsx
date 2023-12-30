@@ -18,7 +18,6 @@ import { useRecentlyCreatedRecipesList } from "@/queries/recentlyCreatedRecipesL
 import { useRecentlyViewedRecipesList } from "@/queries/recentlyViewedRecipesList"
 import { useSchedulePreviewList } from "@/queries/schedulePreviewList"
 import { imgixFmt } from "@/url"
-import { useTeamId } from "@/useTeamId"
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return <div className="pb-1 text-base font-medium">{children}</div>
@@ -129,10 +128,9 @@ function useSchedulePreview() {
 
 function SchedulePreview() {
   const scheduledRecipes = useSchedulePreview()
-  const teamId = useTeamId()
   return (
     <ScheduleContainer>
-      <Link to={pathSchedule({ teamId: teamId.toString() })}>
+      <Link to={pathSchedule({})}>
         <SectionTitle>Schedule</SectionTitle>
       </Link>
       <Box gap={2} dir="col">

@@ -12,7 +12,6 @@ import { pathSchedule } from "@/paths"
 import { RecipeFetchResponse as Recipe } from "@/queries/recipeFetch"
 import { useScheduleRecipeCreate } from "@/queries/scheduledRecipeCreate"
 import { addQueryParams } from "@/querystring"
-import { useTeamId } from "@/useTeamId"
 
 type RecentSchedule = Recipe["recentSchedules"][number]
 
@@ -48,11 +47,10 @@ export function ScheduleModal({
     )
   }
 
-  const teamId = useTeamId()
   const params = new URLSearchParams(location.search)
   params.set("search", `recipeId:${recipeId.toString()}`)
   const openInCalendarUrl = {
-    pathname: pathSchedule({ teamId: teamId.toString() }),
+    pathname: pathSchedule({}),
     search: params.toString(),
   }
 
@@ -88,7 +86,7 @@ export function ScheduleModal({
                     const on = parseISO(x.on)
                     const week = toISODateString(startOfWeek(on))
                     const to = {
-                      pathname: pathSchedule({ teamId: teamId.toString() }),
+                      pathname: pathSchedule({}),
                       search: addQueryParams(location.search, { week }),
                     }
                     return (
