@@ -102,11 +102,14 @@ function RecipeList(props: {
     })
     .slice(0, initialLimit)
 
+  // HACK(cdignam): We initially render only 20 items, then we render the remaining items.
+  //
+  // Ideally we'd use windowing to fix this.
   useEffect(() => {
     if (recipeItems.length === 20) {
       setTimeout(() => {
         setLimit(Infinity)
-      }, 50)
+      }, 1)
     }
   }, [recipeItems.length])
 
