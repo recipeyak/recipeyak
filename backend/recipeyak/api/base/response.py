@@ -1,9 +1,9 @@
 from typing import Any
 
-import orjson
 from django.http import HttpResponse
 
-from recipeyak.api.base.json import default
+from recipeyak.api.base.json import json_dumps
+from recipeyak.api.base.yaml import yaml_dumps
 
 
 class JsonResponse(HttpResponse):
@@ -13,10 +13,17 @@ class JsonResponse(HttpResponse):
         **kwargs: Any,
     ) -> None:
         kwargs.setdefault("content_type", "application/json")
-        if data is None:
-            content = b""
-        else:
-            content = orjson.dumps(
-                data, default=default, option=orjson.OPT_NON_STR_KEYS
-            )
+        content = json_dumps(data)
+        super().__init__(content=content, **kwargs)
+
+
+class YamlResponse(HttpResponse):
+    """
+    An HTTP response class that consumes data to be serialized to YAML.
+    :param data: Data to be dumped into yaml.
+    """
+
+    def __init__(self, data: Any, **kwargs: Any) -> None:
+        kwargs.setdefault("content_type", "text/x-yaml")
+        content = yaml_dumps(data)
         super().__init__(content=content, **kwargs)
