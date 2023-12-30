@@ -8,7 +8,12 @@ import {
   Popover,
   Separator,
 } from "react-aria-components"
-import { InstantSearch, useHits, useSearchBox } from "react-instantsearch"
+import {
+  Configure,
+  InstantSearch,
+  useHits,
+  useSearchBox,
+} from "react-instantsearch"
 import { Link, useHistory } from "react-router-dom"
 import useOnClickOutside from "use-onclickoutside"
 
@@ -293,6 +298,7 @@ function Search() {
 
 export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
   const isLoggedIn = useIsLoggedIn()
+  const teamId = useTeamId()
   const searchClient = useSearchClient()
   return (
     <nav className="flex h-[3.5rem] shrink-0 justify-between gap-1 px-3 pb-1 print:!hidden md:grid md:grid-cols-3">
@@ -337,6 +343,7 @@ export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
             }}
           >
             <Search />
+            <Configure hitsPerPage={1000} filters={`team_id:${teamId}`} />
           </InstantSearch>
         )}
       </div>
