@@ -277,7 +277,7 @@ export function RecipeSearchList({
                   setAdvanced((s) => !s)
                 }}
               >
-                {showAdvanced ? "hide advanced search" : "show advanced search"}
+                {showAdvanced ? "hide search tools" : "search tools"}
               </Button>
             </div>
           </div>
