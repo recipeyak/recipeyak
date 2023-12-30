@@ -29,15 +29,15 @@ class Config(BaseSettings):
     ALGOLIA_ADMIN_API_KEY: str
 
 
-async def process_queue(connection: asyncpg.Connection[Any], config: Config) -> int:
+async def process_queue(connection: asyncpg.Connection[Any], config: Config) -> None:
     async with SearchClient.create(
         app_id=config.ALGOLIA_APPLICATION_ID, api_key=config.ALGOLIA_ADMIN_API_KEY
     ) as client:
         index = client.init_index("recipes")
         async with connection.transaction():
-            recipes_to_update = await connection.fetch(
+            recipes_to_index = await connection.fetch(
                 """
-select id, recipe_id
+select id, recipe_id, deleted
 from recipe_index_queue
 """
             )
@@ -102,26 +102,35 @@ from recipe_index_queue
             team_id IS NOT NULL
             and core_recipe.id = ANY($1);
         """,
-                [x["recipe_id"] for x in recipes_to_update],
+                [x["recipe_id"] for x in recipes_to_index],
             )
-            objects = [json.loads(row["recipe"]) for row in res]
-            await index.save_objects_async(objects)
-            ids_to_delete = [x["id"] for x in recipes_to_update]
-            recipes_to_update = await connection.fetch(
+            updated_recipes = [json.loads(row["recipe"]) for row in res]
+            await index.save_objects_async(updated_recipes)
+
+            deleted_recipe_ids = [
+                x["recipe_id"] for x in recipes_to_index if x["deleted"]
+            ]
+            await index.delete_objects_async(deleted_recipe_ids)
+
+            ids_to_delete = [x["id"] for x in recipes_to_index]
+            recipes_to_index = await connection.fetch(
                 """
 delete from recipe_index_queue where id = ANY($1)
 """,
                 ids_to_delete,
             )
-            return len(ids_to_delete)
+            logger.info(
+                "indexed",
+                deleted=len(deleted_recipe_ids),
+                upserted=len(updated_recipes),
+            )
 
 
 async def job(config: Config, single_run: bool) -> None:
     pg = await asyncpg.connect(dsn=config.DATABASE_URL)
 
     if single_run:
-        count = await process_queue(pg, config=config)
-        logger.info("processed rows", count=count)
+        await process_queue(pg, config=config)
         return
 
     async def callback(
