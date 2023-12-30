@@ -23,6 +23,10 @@ export function useUserFetch() {
   const queryClient = useQueryClient()
   return useQuery({
     queryKey: getQueryKey(),
+    // only fetch on page load.
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
     queryFn: async () => {
       const res = await getUser().then(unwrapResult)
       login(res, queryClient)
