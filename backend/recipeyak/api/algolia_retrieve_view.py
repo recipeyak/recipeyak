@@ -14,7 +14,6 @@ def get_token(team_ids: list[int]) -> str:
     return SearchClient.generate_secured_api_key(
         config.ALGOLIA_SEARCH_ONLY_API_KEY,
         {
-            "restrictIndices": "recipes",
             "filters": " OR ".join(f"team_id:{team_id}" for team_id in team_ids),
         },
     )
