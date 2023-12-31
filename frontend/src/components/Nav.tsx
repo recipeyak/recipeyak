@@ -1,4 +1,3 @@
-import React from "react"
 import {
   Button,
   Menu,
@@ -8,28 +7,20 @@ import {
   Popover,
   Separator,
 } from "react-aria-components"
-import {
-  Configure,
-  InstantSearch,
-  useHits,
-  useSearchBox,
-} from "react-instantsearch"
-import { Link, useHistory } from "react-router-dom"
-import useOnClickOutside from "use-onclickoutside"
+import { Configure, InstantSearch } from "react-instantsearch"
+import { Link } from "react-router-dom"
 
 import { useIsLoggedIn } from "@/auth"
 import { clx } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
-import { SearchInput } from "@/components/Forms"
 import Logo from "@/components/Logo"
+import { Search } from "@/components/NavRecipeSearch"
 import { NavLink } from "@/components/Routing"
-import { SearchResult } from "@/components/SearchResult"
 import {
   pathHome,
   pathLogin,
   pathProfileById,
   pathRecipeAdd,
-  pathRecipeDetail,
   pathRecipesList,
   pathSchedule,
   pathSettings,
@@ -39,7 +30,6 @@ import {
 import { useAuthLogout } from "@/queries/authLogout"
 import { useTeam } from "@/queries/teamFetch"
 import { useSearchClient } from "@/queries/useSearchClient"
-import { useGlobalEvent } from "@/useGlobalEvent"
 import { useTeamId } from "@/useTeamId"
 import { useUser } from "@/useUser"
 
@@ -201,101 +191,6 @@ const navItemCss =
   "flex shrink-0 grow-0 cursor-pointer items-center justify-center rounded-md px-2 py-1 text-[14px] font-medium leading-[1.5] text-[var(--color-text)] transition-all [transition:background_.12s_ease-out] hover:bg-[var(--color-background-calendar-day)] hover:text-[var(--color-link-hover)] active:bg-[var(--color-border)]"
 const activeNavItemCss = "bg-[var(--color-background-calendar-day)]"
 
-function isInputFocused() {
-  const activeElement = document.activeElement
-  return (
-    activeElement !== document.body &&
-    activeElement !== null &&
-    (activeElement.tagName === "INPUT" || activeElement.tagName === "TEXTAREA")
-  )
-}
-
-/**
- *
- * Implementation is very similar to "Search" in UserHome.tsx.
- */
-function Search() {
-  const history = useHistory()
-  const { query, refine } = useSearchBox()
-  const { hits } = useHits<{
-    readonly id: number
-    readonly name: string
-    readonly archived_at: string | null
-    readonly author: string | null
-  }>()
-
-  // If a user clicks outside of the dropdown, we want to hide the dropdown, but
-  // keep their search query.
-  //
-  // The alternative would be to clear the search query when clicking outside,
-  // but I'm not sure that's desirable.
-  const [isClosed, setIsClosed] = React.useState(false)
-  const searchInputRef = React.useRef<HTMLInputElement>(null)
-
-  const ref = React.useRef(null)
-  useOnClickOutside(ref, () => {
-    setIsClosed(true)
-  })
-
-  useGlobalEvent({
-    keyDown(e) {
-      if (
-        (e.key === "k" && e.metaKey) ||
-        (e.key === "/" && !isInputFocused())
-      ) {
-        searchInputRef.current?.focus()
-        e.preventDefault()
-      }
-    },
-  })
-
-  const resetForm = () => {
-    refine("")
-    setIsClosed(false)
-  }
-
-  const handleSearchKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // We need to extract the key from the synthetic event before we lose the
-    // event.
-    const key = e.key
-    const suggestion = hits[0]
-    if (!suggestion) {
-      return
-    }
-    if (key === "Enter") {
-      resetForm()
-      history.push(pathRecipeDetail({ recipeId: suggestion.id.toString() }))
-    }
-  }
-
-  return (
-    <div ref={ref} className="flex w-full">
-      <SearchInput
-        ref={searchInputRef}
-        value={query}
-        placeholder="Press / to search"
-        onChange={(e) => {
-          refine(e.target.value)
-        }}
-        onKeyDown={handleSearchKeydown}
-        onFocus={() => {
-          setIsClosed(false)
-        }}
-      />
-      {query && !isClosed && (
-        <div className="absolute inset-x-0 top-[60px] z-10 w-full sm:inset-x-[unset] sm:max-w-[400px]">
-          <SearchResult
-            hits={hits}
-            onClick={() => {
-              resetForm()
-            }}
-          />
-        </div>
-      )}
-    </div>
-  )
-}
-
 export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
   const isLoggedIn = useIsLoggedIn()
   const teamId = useTeamId()
@@ -321,27 +216,7 @@ export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
       </div>
       <div className="flex grow items-center">
         {includeSearch && searchClient && (
-          <InstantSearch
-            searchClient={searchClient}
-            indexName="recipes"
-            // use custom routing config so we can have `search` be our query parameter.
-            // https://www.algolia.com/doc/guides/building-search-ui/going-further/routing-urls/react-hooks/
-            routing={{
-              stateMapping: {
-                stateToRoute(uiState) {
-                  const indexUiState = uiState["recipes"]
-                  return { search: indexUiState.query }
-                },
-                routeToState(routeState) {
-                  return {
-                    ["recipes"]: {
-                      query: routeState.search,
-                    },
-                  }
-                },
-              },
-            }}
-          >
+          <InstantSearch searchClient={searchClient} indexName="recipes">
             <Search />
             <Configure hitsPerPage={1000} filters={`team_id:${teamId}`} />
           </InstantSearch>

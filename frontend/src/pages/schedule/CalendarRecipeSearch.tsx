@@ -13,7 +13,27 @@ export function RecipeSearchListSchedule() {
   }
 
   return (
-    <InstantSearch searchClient={searchClient} indexName="recipes">
+    <InstantSearch
+      searchClient={searchClient}
+      indexName="recipes"
+      // use custom routing config so we can have `search` be our query parameter.
+      // https://www.algolia.com/doc/guides/building-search-ui/going-further/routing-urls/react-hooks/
+      routing={{
+        stateMapping: {
+          stateToRoute(uiState) {
+            const indexUiState = uiState["recipes"]
+            return { search: indexUiState.query }
+          },
+          routeToState(routeState) {
+            return {
+              ["recipes"]: {
+                query: routeState.search,
+              },
+            }
+          },
+        },
+      }}
+    >
       <Search noPadding={true} />
       <Configure hitsPerPage={1000} filters={`team_id:${teamId}`} />
       <Matches />
