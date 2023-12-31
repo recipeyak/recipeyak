@@ -92,7 +92,7 @@ export function RecipeList(props: {
   const recipeItems = hits
     .map((hit, index) => {
       if (!props.drag) {
-        return <RecipeListItem key={index} index={hit.id} hit={hit} {...hit} />
+        return <RecipeListItem key={index} index={index} hit={hit} {...hit} />
       }
       return <RecipeItemDraggable hit={hit} key={hit.id} />
     })
