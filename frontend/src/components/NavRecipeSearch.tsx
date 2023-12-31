@@ -1,5 +1,9 @@
 import React from "react"
-import { useHits, useInstantSearch, useSearchBox } from "react-instantsearch"
+import {
+  useHits,
+  useInstantSearch,
+  useSearchBox,
+} from "react-instantsearch-core"
 import { Link, useHistory } from "react-router-dom"
 import useOnClickOutside from "use-onclickoutside"
 

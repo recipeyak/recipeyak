@@ -4,7 +4,7 @@ import {
   useInstantSearch,
   useSearchBox,
   useToggleRefinement,
-} from "react-instantsearch"
+} from "react-instantsearch-core"
 
 import { clx } from "@/classnames"
 import { Box } from "@/components/Box"

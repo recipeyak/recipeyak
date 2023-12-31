@@ -1,4 +1,4 @@
-import { Configure, InstantSearch } from "react-instantsearch"
+import { Configure, InstantSearch } from "react-instantsearch-core"
 
 import { Matches, RecipeList, Search } from "@/components/RecipeSearchList"
 import { useSearchClient } from "@/queries/useSearchClient"
