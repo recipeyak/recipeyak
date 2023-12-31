@@ -1,3 +1,7 @@
+import {
+  HitAttributeHighlightResult,
+  HitHighlightResult,
+} from "instantsearch.js"
 import { ForwardedRef, forwardRef } from "react"
 import { useDrag } from "react-dnd"
 import { Link } from "react-router-dom"
@@ -54,6 +58,34 @@ const Card = forwardRef(
   },
 )
 
+function HighlightIngredients({ hit }: { hit: RecipeYakHit }) {
+  const ingredientHighlights =
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    (hit._highlightResult?.ingredients ?? []) as HitHighlightResult[]
+  if ((ingredientHighlights.length ?? 0) === 0) {
+    return null
+  }
+  return (
+    <div className="flex flex-col gap-1">
+      {ingredientHighlights.map((x, index) => {
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        const name = x?.name as HitAttributeHighlightResult | null
+        if (!name || name.matchLevel === "none") {
+          return null
+        }
+
+        return (
+          <CustomHighlight
+            key={index}
+            attribute={`ingredients.${index}.name`}
+            hit={hit}
+          />
+        )
+      })}
+    </div>
+  )
+}
+
 export function RecipeListItem({
   index,
   hit,
@@ -98,6 +130,7 @@ export function RecipeListItem({
             <CustomHighlight attribute="author" hit={hit} />
           </small>
         )}
+        <HighlightIngredients hit={hit} />
       </div>
     </Card>
   )

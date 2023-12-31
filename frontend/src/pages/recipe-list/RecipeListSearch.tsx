@@ -8,7 +8,7 @@ import {
 
 import { clx } from "@/classnames"
 import { Button } from "@/components/Buttons"
-import { SearchInput } from "@/components/Forms"
+import { SearchInput, Select } from "@/components/Forms"
 import { Matches, RecipeList, Search } from "@/components/RecipeSearchList"
 import { useSearchClient } from "@/queries/useSearchClient"
 import { useTeamId } from "@/useTeamId"
@@ -82,6 +82,8 @@ function ArchivedToggle() {
   )
 }
 
+type SearchFieldOptions = "name_author" | "ingredient_name"
+
 export function RecipeSearchList({
   noPadding,
   drag,
@@ -92,6 +94,7 @@ export function RecipeSearchList({
   readonly noPadding?: boolean
 }) {
   const [showAdvanced, setAdvanced] = useState(false)
+  const [searchBy, setSearchBy] = useState<SearchFieldOptions>("name_author")
   const teamId = useTeamId()
 
   const searchClient = useSearchClient()
@@ -99,11 +102,12 @@ export function RecipeSearchList({
   if (!searchClient) {
     return null
   }
+  const indexName = searchBy === "name_author" ? "recipes" : "ingredients"
 
   return (
     <InstantSearch
       searchClient={searchClient}
-      indexName="recipes"
+      indexName={indexName}
       // use custom routing config so we can have `search` be our query parameter.
       // https://www.algolia.com/doc/guides/building-search-ui/going-further/routing-urls/react-hooks/
       routing={{
@@ -130,10 +134,19 @@ export function RecipeSearchList({
             <div className="flex flex-col">
               {showAdvanced && (
                 <div className="flex flex-wrap gap-2">
-                  <CustomRefinement
-                    label="Ingredients"
-                    attribute="ingredients.name"
-                  />
+                  <div className="flex flex-col">
+                    <label>Search</label>
+                    <Select
+                      value={searchBy}
+                      onChange={(e) => {
+                        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+                        setSearchBy(e.target.value as SearchFieldOptions)
+                      }}
+                    >
+                      <option value="name_author">name & author</option>
+                      <option value="ingredient_name">ingredient name</option>
+                    </Select>
+                  </div>
                   <CustomRefinement label="Tags" attribute="tags" />
                   <ArchivedToggle />
                 </div>
