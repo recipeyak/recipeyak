@@ -7,7 +7,7 @@ import {
   Popover,
   Separator,
 } from "react-aria-components"
-import { Configure, InstantSearch } from "react-instantsearch"
+import { Configure, InstantSearch } from "react-instantsearch-core"
 import { Link } from "react-router-dom"
 
 import { useIsLoggedIn } from "@/auth"

@@ -4,7 +4,7 @@ import {
   InstantSearch,
   useRefinementList,
   useToggleRefinement,
-} from "react-instantsearch"
+} from "react-instantsearch-core"
 
 import { clx } from "@/classnames"
 import { Button } from "@/components/Buttons"
