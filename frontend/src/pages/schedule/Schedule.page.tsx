@@ -1,7 +1,7 @@
 import { Helmet } from "@/components/Helmet"
 import { NavPage } from "@/components/Page"
-import { RecipeSearchListSchedule } from "@/components/RecipeSearchList"
 import Calendar from "@/pages/schedule/Calendar"
+import { RecipeSearchListSchedule } from "@/pages/schedule/CalendarRecipeSearch"
 import HelpMenuModal from "@/pages/schedule/HelpMenuModal"
 
 function Sidebar() {
