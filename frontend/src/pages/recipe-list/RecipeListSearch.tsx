@@ -25,7 +25,7 @@ function CustomRefinement({
     limit: 5,
   })
   return (
-    <div className="flex max-h-48 min-h-48 flex-col">
+    <div className="flex max-h-48 min-h-48 min-w-48 max-w-48 flex-col">
       <div className="font-medium">{label}</div>
       <SearchInput
         placeholder="search..."
@@ -67,7 +67,7 @@ function ArchivedToggle() {
   })
   return (
     <div>
-      <div className="font-medium">Archived Recipes</div>
+      <div className="font-medium">Recipes</div>
       <div className="flex items-center gap-2">
         <input
           id="archived_recipes"
@@ -129,7 +129,7 @@ export function RecipeSearchList({
           <div className="flex gap-1">
             <div className="flex flex-col">
               {showAdvanced && (
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <CustomRefinement
                     label="Ingredients"
                     attribute="ingredients.name"
