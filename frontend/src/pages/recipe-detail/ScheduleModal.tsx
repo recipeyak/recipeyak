@@ -48,7 +48,7 @@ export function ScheduleModal({
   }
 
   const params = new URLSearchParams(location.search)
-  params.set("search", `recipeId:${recipeId.toString()}`)
+  params.set("search", `"${recipeName}"`)
   const openInCalendarUrl = {
     pathname: pathSchedule({}),
     search: params.toString(),
