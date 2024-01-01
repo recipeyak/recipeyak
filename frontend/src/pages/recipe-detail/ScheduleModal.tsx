@@ -5,6 +5,7 @@ import { Link } from "react-router-dom"
 
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
+import { DateInput } from "@/components/Forms"
 import Clock from "@/components/icons"
 import { Modal } from "@/components/Modal"
 import { formatDistanceToNow, formatHumanDate, toISODateString } from "@/date"
@@ -47,13 +48,6 @@ export function ScheduleModal({
     )
   }
 
-  const params = new URLSearchParams(location.search)
-  params.set("search", `"${recipeName}"`)
-  const openInCalendarUrl = {
-    pathname: pathSchedule({}),
-    search: params.toString(),
-  }
-
   return (
     <Modal
       show
@@ -61,16 +55,10 @@ export function ScheduleModal({
       title={`Schedule: ${recipeName}`}
       content={
         <div className="flex h-full flex-col gap-2">
-          <input
+          <DateInput
+            id="schedule-data"
             value={toISODateString(isoDate)}
             onChange={handleDateChange}
-            type="date"
-            className="mt-2 w-full"
-            style={{
-              border: "1px solid var(--color-border)",
-              borderRadius: 5,
-              padding: "0.25rem",
-            }}
           />
 
           {/* we intentionally hide from view when there are no scheduled
@@ -78,9 +66,8 @@ export function ScheduleModal({
           */}
           {scheduleHistory.length > 0 && (
             <>
-              <hr className="my-0" />
               <div className="flex flex-col">
-                <div className="font-bold">Recent Schedules</div>
+                <div className="font-medium">Recent Schedules</div>
                 <div className="flex flex-col gap-2">
                   {orderBy(scheduleHistory, (x) => x.on).map((x, i) => {
                     const on = parseISO(x.on)
@@ -124,11 +111,6 @@ export function ScheduleModal({
           )}
 
           <div className="mt-auto flex flex-col gap-2">
-            <div className="hidden w-full sm:block">
-              <Button size="normal" className="w-full" to={openInCalendarUrl}>
-                open in calendar
-              </Button>
-            </div>
             <Button
               size="normal"
               variant="primary"

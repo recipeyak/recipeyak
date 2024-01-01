@@ -104,7 +104,7 @@ function RecipeSelect({
 }) {
   return (
     <div className="flex w-full flex-col gap-1">
-      <div className="text-sm">Recipe</div>
+      <div className="font-medium">Recipe</div>
       {value != null ? (
         <div className="flex w-full items-center justify-between gap-4">
           <RecipeItem
@@ -147,13 +147,17 @@ export function ScheduleRecipeModal({
   const [isoDate, setIsoDate] = useState(
     defaultValue ?? toISODateString(new Date()),
   )
+  const [formError, setFormError] = useState("")
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormError("")
     setIsoDate(e.target.value)
   }
   const [selectedItem, setSelectedItem] = useState<RecipeSearchItem>()
   const scheduledRecipeCreate = useScheduleRecipeCreate()
+
   const handleSubmit = () => {
     if (selectedItem == null) {
+      setFormError("Please select a recipe to schedule.")
       return
     }
     scheduledRecipeCreate.mutate({
@@ -170,29 +174,37 @@ export function ScheduleRecipeModal({
       title="Schedule a Recipe"
       content={
         <form
-          className="flex flex-col items-start gap-2"
+          className="flex h-full flex-col items-start gap-2"
           onSubmit={(e) => {
             e.preventDefault()
             handleSubmit()
           }}
         >
-          <RecipeSelect onSelect={setSelectedItem} value={selectedItem} />
+          <RecipeSelect
+            onSelect={(e) => {
+              setFormError("")
+              setSelectedItem(e)
+            }}
+            value={selectedItem}
+          />
 
           <label className="flex w-full flex-col gap-1">
-            <div className="text-sm">Date</div>
-            <DateInput value={isoDate} onChange={handleDateChange} />
+            <label className="font-medium" htmlFor="schedule-data">
+              Date
+            </label>
+            <DateInput
+              id="schedule-data"
+              value={isoDate}
+              onChange={handleDateChange}
+            />
           </label>
 
-          <div className="flex w-full items-center gap-2">
-            <Button
-              size="small"
-              className="grow "
-              type="submit"
-              disabled={selectedItem == null}
-            >
+          <div className="mt-auto flex w-full items-center gap-2">
+            <Button className="grow " variant="primary" type="submit">
               Schedule
             </Button>
           </div>
+          {formError && <div className="text-rose-400">{formError}</div>}
         </form>
       }
     />
