@@ -3,14 +3,11 @@ import {
   HitHighlightResult,
 } from "instantsearch.js"
 import { ForwardedRef, forwardRef } from "react"
-import { useDrag } from "react-dnd"
 import { Link } from "react-router-dom"
 
 import { clx } from "@/classnames"
 import { CustomHighlight } from "@/components/CustomHighlight"
-import { DragIcon } from "@/components/icons"
 import { Image } from "@/components/Image"
-import { DragDrop } from "@/dragDrop"
 import { RecipeYakHit } from "@/search-types"
 import { imgixFmt } from "@/url"
 import { recipeURL } from "@/urls"
@@ -135,49 +132,3 @@ export function RecipeListItem({
     </Card>
   )
 }
-export function RecipeItemDraggable({ hit }: { hit: RecipeYakHit }) {
-  const url = recipeURL(hit.id, hit.name)
-
-  const item: IRecipeItemDrag = {
-    type: DragDrop.RECIPE,
-    recipeID: hit.id,
-    recipeName: hit.name,
-  }
-
-  const [{ isDragging }, drag] = useDrag({
-    type: DragDrop.RECIPE,
-    item,
-    canDrag: true,
-    collect: (monitor) => {
-      return {
-        isDragging: monitor.isDragging(),
-      }
-    },
-  })
-
-  return (
-    <Card ref={drag} isDragging={isDragging}>
-      <div className="flex h-full flex-col p-2">
-        <div className="flex grow justify-between">
-          <Link
-            tabIndex={0}
-            to={url}
-            className="mb-1 grow self-start leading-5"
-          >
-            <CustomHighlight hit={hit} attribute="name" />
-          </Link>
-          <DragIcon />
-        </div>
-        {hit.author && <CustomHighlight hit={hit} attribute="author" />}
-      </div>
-    </Card>
-  )
-}
-
-export interface IRecipeItemDrag {
-  readonly recipeID: number
-  readonly recipeName: string
-  readonly type: DragDrop.RECIPE
-}
-
-export default RecipeItemDraggable

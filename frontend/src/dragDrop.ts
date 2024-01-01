@@ -2,7 +2,6 @@ import { DropTargetMonitor } from "react-dnd"
 
 // eslint-disable-next-line no-restricted-syntax
 export const enum DragDrop {
-  RECIPE = "RECIPE",
   CAL_RECIPE = "CAL_RECIPE",
   STEP = "STEP",
   INGREDIENT = "INGREDIENT",

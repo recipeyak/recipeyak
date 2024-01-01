@@ -110,7 +110,7 @@ function isInputFocused() {
   )
 }
 
-export function Search() {
+export function NavRecipeSearch() {
   const history = useHistory()
   const { query, refine } = useSearchBox()
   const { hits } = useHits<{

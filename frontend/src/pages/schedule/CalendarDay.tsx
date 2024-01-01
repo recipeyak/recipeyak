@@ -5,21 +5,19 @@ import isFirstDayOfMonth from "date-fns/isFirstDayOfMonth"
 import isWithinInterval from "date-fns/isWithinInterval"
 import startOfDay from "date-fns/startOfDay"
 import { sortBy } from "lodash-es"
+import { useState } from "react"
 import { useDrop } from "react-dnd"
 import { useLocation } from "react-router"
 
 import { assertNever } from "@/assert"
 import { isInsideChangeWindow, toISODateString } from "@/date"
 import { DragDrop } from "@/dragDrop"
-import { IRecipeItemDrag } from "@/pages/recipe-list/RecipeItem"
 import {
   CalendarItem,
   ICalendarDragItem,
 } from "@/pages/schedule/CalendarDayItem"
-import {
-  ICalRecipe,
-  useScheduleRecipeCreate,
-} from "@/queries/scheduledRecipeCreate"
+import { ScheduleRecipeModal } from "@/pages/schedule/ScheduleRecipeModal"
+import { ICalRecipe } from "@/queries/scheduledRecipeCreate"
 import { useScheduledRecipeDelete } from "@/queries/scheduledRecipeDelete"
 import { useScheduledRecipeUpdate } from "@/queries/scheduledRecipeUpdate"
 import { css, styled } from "@/theme"
@@ -92,12 +90,13 @@ const CalendarDayContainer = styled.div<ICalendarDayContainerProps>`
   }
 `
 
-interface ICalendarDayProps {
+export function CalendarDay({
+  date,
+  scheduledRecipes,
+}: {
   readonly date: Date
   readonly scheduledRecipes: ICalRecipe[]
-}
-
-function CalendarDay({ date, scheduledRecipes }: ICalendarDayProps) {
+}) {
   const today = useCurrentDay()
   const isToday = isSameDay(date, today)
 
@@ -115,18 +114,17 @@ function CalendarDay({ date, scheduledRecipes }: ICalendarDayProps) {
       end: endOfDay(endParsed),
     })
 
-  const scheduledRecipeCreate = useScheduleRecipeCreate()
   const scheduledRecipeDelete = useScheduledRecipeDelete()
   const scheduledRecipeUpdate = useScheduledRecipeUpdate()
 
   const [{ isOver, canDrop }, drop] = useDrop({
-    accept: [DragDrop.RECIPE, DragDrop.CAL_RECIPE],
+    accept: [DragDrop.CAL_RECIPE],
     canDrop: () => {
       return isInsideChangeWindow(date)
     },
     drop: (dropped) => {
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      const item = dropped as ICalendarDragItem | IRecipeItemDrag
+      const item = dropped as ICalendarDragItem
       if (item.type === DragDrop.CAL_RECIPE) {
         scheduledRecipeUpdate.mutate({
           scheduledRecipeId: item.scheduledId,
@@ -134,14 +132,8 @@ function CalendarDay({ date, scheduledRecipes }: ICalendarDayProps) {
             on: toISODateString(date),
           },
         })
-      } else if (item.type === DragDrop.RECIPE) {
-        scheduledRecipeCreate.mutate({
-          recipeID: item.recipeID,
-          recipeName: item.recipeName,
-          on: date,
-        })
       } else {
-        assertNever(item)
+        assertNever(item.type)
       }
     },
     collect: (monitor) => {
@@ -157,6 +149,7 @@ function CalendarDay({ date, scheduledRecipes }: ICalendarDayProps) {
   const isDroppable = isOver && canDrop
 
   const isSelectedDay = isSelected || isDroppable
+  const [showScheduleRecipeModal, setShowScheduleRecipeModal] = useState(false)
 
   return (
     <CalendarDayContainer
@@ -164,8 +157,19 @@ function CalendarDay({ date, scheduledRecipes }: ICalendarDayProps) {
       isDroppable={isDroppable}
       isToday={isToday}
       isSelectedDay={isSelectedDay}
+      onDoubleClick={() => {
+        setShowScheduleRecipeModal(true)
+      }}
     >
       <Title date={date} />
+      {showScheduleRecipeModal && (
+        <ScheduleRecipeModal
+          onClose={() => {
+            setShowScheduleRecipeModal(false)
+          }}
+          defaultValue={toISODateString(date)}
+        />
+      )}
       <ul className="flex h-full flex-col gap-3 overflow-y-auto px-1">
         {scheduled.map((x) => (
           <CalendarItem
@@ -187,5 +191,3 @@ function CalendarDay({ date, scheduledRecipes }: ICalendarDayProps) {
     </CalendarDayContainer>
   )
 }
-
-export default CalendarDay
