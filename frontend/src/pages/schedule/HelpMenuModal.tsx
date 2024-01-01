@@ -1,26 +1,27 @@
-import React, { useState } from "react"
+import React from "react"
 
-import { Box } from "@/components/Box"
 import { Modal } from "@/components/Modal"
 import { Kbd } from "@/pages/schedule/Kbd"
-import { useGlobalEvent } from "@/useGlobalEvent"
 
 const keybinds = [
   {
     key: ["Delete", "#"],
-    description: "delete scheduled recipe",
+    description: "Delete scheduled recipe",
   },
   {
     key: "?",
-    description: "toggle help menu",
+    description: "Toggle help menu",
+  },
+]
+
+const hints = [
+  {
+    title: "Schedule a recipe",
+    description: "Double-click on a day, or press the 'schedule' button.",
   },
   {
-    key: ["+", "A"],
-    description: "increment scheduled recipe amount",
-  },
-  {
-    key: ["-", "X"],
-    description: "decrement scheduled recipe amount",
+    title: "Delete a recipe",
+    description: "Click calendar recipe > Reschedule > Delete.",
   },
 ]
 
@@ -45,42 +46,36 @@ function KeyBind({ bind }: IKeyBindProps) {
   )
 }
 
-export default function HelpMenuModal() {
-  const [show, setShow] = useState(false)
-
-  useGlobalEvent({
-    keyUp: (e: KeyboardEvent) => {
-      const el = document.activeElement
-      if (el == null || el.tagName !== "BODY") {
-        return
-      }
-      if (e.key === "?") {
-        setShow(true)
-      }
-    },
-  })
+export default function HelpMenuModal({
+  show,
+  close,
+}: {
+  show: boolean
+  close: () => void
+}) {
   return (
     <Modal
       show={show}
-      onClose={() => {
-        setShow(false)
-      }}
-      title="Keybinds"
+      onClose={close}
+      title="Tips"
       content={
-        <Box>
-          <div className="mr-4">
-            {keybinds.map((b) => (
-              <div className="mb-1" key={b.description}>
-                {b.description}
+        <div className="flex flex-col gap-2">
+          {keybinds.map((keybind) => (
+            <div key={keybind.description}>
+              <div className="font-medium">{keybind.description}</div>
+              <div className="flex gap-1">
+                <span>Press</span>
+                <KeyBind bind={keybind.key} key={keybind.description} />
               </div>
-            ))}
-          </div>
-          <div>
-            {keybinds.map((b) => (
-              <KeyBind bind={b.key} key={b.description} />
-            ))}
-          </div>
-        </Box>
+            </div>
+          ))}
+          {hints.map((hint) => (
+            <div key={hint.title}>
+              <div className="font-medium">{hint.title}</div>
+              <div>{hint.description}</div>
+            </div>
+          ))}
+        </div>
       }
     />
   )
