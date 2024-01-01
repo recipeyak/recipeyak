@@ -26,6 +26,7 @@ export function useSearchQuery(query: string) {
       const data = result.results[0]
       if ("hits" in data) {
         return {
+          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
           result: data as SearchResponse,
           hits: data.hits.map((h) => {
             return {
