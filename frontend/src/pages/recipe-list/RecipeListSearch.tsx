@@ -6,7 +6,6 @@ import {
   useToggleRefinement,
 } from "react-instantsearch-core"
 
-import { clx } from "@/classnames"
 import { Button } from "@/components/Buttons"
 import { SearchInput, Select } from "@/components/Forms"
 import { Matches, RecipeList, Search } from "@/components/RecipeSearchList"
@@ -84,15 +83,7 @@ function ArchivedToggle() {
 
 type SearchFieldOptions = "name_author" | "ingredient_name"
 
-export function RecipeSearchList({
-  noPadding,
-  drag,
-  scroll,
-}: {
-  readonly scroll?: boolean
-  readonly drag?: boolean
-  readonly noPadding?: boolean
-}) {
+export function RecipeSearchList() {
   const [showAdvanced, setAdvanced] = useState(false)
   const [searchBy, setSearchBy] = useState<SearchFieldOptions>("name_author")
   const teamId = useTeamId()
@@ -126,8 +117,8 @@ export function RecipeSearchList({
         },
       }}
     >
-      <div className={clx(noPadding ? "" : "ml-auto mr-auto max-w-[1000px]")}>
-        <Search noPadding={noPadding} />
+      <div className="mx-auto flex max-w-[1000px] flex-col gap-2">
+        <Search />
         <Configure hitsPerPage={1000} filters={`team_id:${teamId}`} />
         <div className="flex flex-col gap-2">
           <div className="flex gap-1">
@@ -164,12 +155,7 @@ export function RecipeSearchList({
               </Button>
             </div>
           </div>
-          <RecipeList
-            drag={drag}
-            scroll={scroll}
-            className="w-full"
-            advancedSearch={showAdvanced}
-          />
+          <RecipeList className="w-full" advancedSearch={showAdvanced} />
         </div>
       </div>
     </InstantSearch>

@@ -14,7 +14,7 @@ import { useIsLoggedIn } from "@/auth"
 import { clx } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
 import Logo from "@/components/Logo"
-import { Search } from "@/components/NavRecipeSearch"
+import { NavRecipeSearch } from "@/components/NavRecipeSearch"
 import { NavLink } from "@/components/Routing"
 import {
   pathHome,
@@ -217,7 +217,7 @@ export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
       <div className="flex grow items-center">
         {includeSearch && searchClient && (
           <InstantSearch searchClient={searchClient} indexName="recipes">
-            <Search />
+            <NavRecipeSearch />
             <Configure hitsPerPage={1000} filters={`team_id:${teamId}`} />
           </InstantSearch>
         )}

@@ -11,14 +11,12 @@ import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { Modal } from "@/components/Modal"
 import { toISODateString } from "@/date"
-import CalendarDay from "@/pages/schedule/CalendarDay"
-import { ICalConfig } from "@/pages/schedule/CalendarMoreDropdown"
-import { IconSettings } from "@/pages/schedule/IconSettings"
+import { CalendarDay } from "@/pages/schedule/CalendarDay"
 import { Kbd } from "@/pages/schedule/Kbd"
+import { ScheduleRecipeModal } from "@/pages/schedule/ScheduleRecipeModal"
 import ShoppingList from "@/pages/schedule/ShoppingList"
 import { ICalRecipe } from "@/queries/scheduledRecipeCreate"
 import { useScheduledRecipeList } from "@/queries/scheduledRecipeList"
-import { useScheduledRecipeSettingsFetch } from "@/queries/scheduledRecipeSettingsFetch"
 import { removeQueryParams, setQueryParams } from "@/querystring"
 import { styled } from "@/theme"
 
@@ -89,9 +87,7 @@ interface IDaysProps {
 
 function Days({ start, end, isError, days }: IDaysProps) {
   if (isError) {
-    // TODO: Fix this the next time the file is edited.
-    // eslint-disable-next-line react/forbid-elements
-    return <p className="m-auto">error fetching calendar</p>
+    return <div className="m-auto">error fetching calendar</div>
   }
 
   return (
@@ -121,6 +117,42 @@ function Days({ start, end, isError, days }: IDaysProps) {
   )
 }
 
+const ShopIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="m3 17 2 2 4-4" />
+    <path d="m3 7 2 2 4-4" />
+    <path d="M13 6h8" />
+    <path d="M13 12h8" />
+    <path d="M13 18h8" />
+  </svg>
+)
+
+const Plus = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M5 12h14" />
+    <path d="M12 5v14" />
+  </svg>
+)
 interface INavProps {
   readonly dayTs: number
   readonly onPrev: () => void
@@ -129,25 +161,11 @@ interface INavProps {
 }
 
 function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
-  const [showSettings, setShowSettings] = useState(false)
   const [showShopping, setShowShopping] = useState(false)
-
-  const settings = useScheduledRecipeSettingsFetch()
+  const [showSchedule, setShowSchedule] = useState(false)
 
   return (
     <Box space="between" align="center" shrink={0}>
-      <Modal
-        show={showSettings}
-        onClose={() => {
-          setShowSettings(false)
-        }}
-        title="Calendar Settings"
-        content={
-          <Box gap={2} dir="col">
-            <ICalConfig settings={settings} />
-          </Box>
-        }
-      />
       <Modal
         show={showShopping}
         onClose={() => {
@@ -161,26 +179,36 @@ function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
         }
       />
 
-      <Box gap={1}>
-        <CalTitle dayTs={dayTs} />
-        <Button
-          size="small"
-          className="p-1"
-          data-testid="show calendar settings"
-          onClick={() => {
-            setShowSettings(true)
+      {showSchedule && (
+        <ScheduleRecipeModal
+          onClose={() => {
+            setShowSchedule(false)
           }}
-        >
-          <IconSettings />
-        </Button>
+        />
+      )}
+
+      <Box gap={1} className="items-center">
+        <CalTitle dayTs={dayTs} />
         <Button
           size="small"
           data-testid="open shopping list modal"
           onClick={() => {
             setShowShopping(true)
           }}
+          className="gap-2"
         >
-          Shop
+          <span>Shop</span>
+          <ShopIcon />
+        </Button>
+        <Button
+          size="small"
+          className="gap-2"
+          onClick={() => {
+            setShowSchedule(true)
+          }}
+        >
+          <span>Schedule</span>
+          <Plus />
         </Button>
       </Box>
       <Box gap={1}>
@@ -200,11 +228,9 @@ function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
 
 function HelpPrompt() {
   return (
-    // TODO: Fix this the next time the file is edited.
-    // eslint-disable-next-line react/forbid-elements
-    <p className="mb-1 mt-2 hidden md:block">
+    <div className="mb-1 mt-2 hidden md:block">
       press<Kbd>?</Kbd>for help
-    </p>
+    </div>
   )
 }
 
