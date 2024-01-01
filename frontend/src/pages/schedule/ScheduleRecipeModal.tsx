@@ -15,7 +15,12 @@ function RecipeSelectInput({
   onSelect: (_: RecipeSearchItem) => void
 }) {
   const [query, setQuery] = useState("")
-  const data = useSearchQuery(query)
+  const { data } = useSearchQuery(query)
+
+  const hits = data?.hits ?? []
+  const resultsNotShown =
+    (data?.result.nbHits ?? 0) - (data?.result.hitsPerPage ?? 0)
+
   return (
     <div className="flex flex-col gap-2">
       <SearchInput
@@ -26,10 +31,10 @@ function RecipeSelectInput({
         }}
       />
       <div className="flex max-h-[300px] flex-col gap-1 overflow-auto">
-        {data.data?.length === 0 && query.length !== 0 ? (
+        {hits.length === 0 && query.length !== 0 ? (
           <div className="text-center">no results</div>
         ) : (
-          data.data?.map((item) => {
+          hits.map((item) => {
             return (
               <RecipeItem
                 key={item.id}
@@ -46,6 +51,11 @@ function RecipeSelectInput({
               />
             )
           })
+        )}
+        {resultsNotShown > 0 && (
+          <div className="text-center">
+            ({resultsNotShown} results not shown)
+          </div>
         )}
       </div>
     </div>

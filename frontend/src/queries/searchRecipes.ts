@@ -1,3 +1,4 @@
+import { SearchResponse } from "@algolia/client-search"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
 import { useSearchClient } from "@/queries/useSearchClient"
@@ -24,16 +25,19 @@ export function useSearchQuery(query: string) {
       }
       const data = result.results[0]
       if ("hits" in data) {
-        return data.hits.map((h) => {
-          return {
-            id: h.id,
-            name: h.name,
-            author: h.author,
-            primary_image: h.primary_image,
-          }
-        })
+        return {
+          result: data as SearchResponse,
+          hits: data.hits.map((h) => {
+            return {
+              id: h.id,
+              name: h.name,
+              author: h.author,
+              primary_image: h.primary_image,
+            }
+          }),
+        }
       } else {
-        return []
+        return null
       }
     },
   })
