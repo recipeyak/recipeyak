@@ -14,6 +14,7 @@ import { Image } from "@/components/Image"
 import { Loader } from "@/components/Loader"
 import { NavPage } from "@/components/Page"
 import { pathRecipeDetail, pathSchedule } from "@/paths"
+import { ResponseFromUse } from "@/queries/queryUtilTypes"
 import { useRecentlyCreatedRecipesList } from "@/queries/recentlyCreatedRecipesList"
 import { useRecentlyViewedRecipesList } from "@/queries/recentlyViewedRecipesList"
 import { useSchedulePreviewList } from "@/queries/schedulePreviewList"
@@ -142,10 +143,31 @@ function SchedulePreview() {
   )
 }
 
-function RecipeSlide({ recipe: r }: { recipe: Recipe }) {
+function CreatedBy({ createdBy }: { createdBy: NonNullable<CreatedBy> }) {
+  const imageCss =
+    "w-[20px] rounded-full bg-[var(--color-background-empty-image)]"
+  return (
+    <div className="flex gap-1">
+      {createdBy.avatarUrl ? (
+        <img src={createdBy.avatarUrl} className={imageCss} />
+      ) : (
+        <div className={imageCss} />
+      )}
+      <div>{createdBy.name}</div>
+    </div>
+  )
+}
+
+function RecipeSlide({
+  recipe: r,
+  createdBy,
+}: {
+  recipe: Recipe
+  createdBy?: CreatedBy | null
+}) {
   return (
     <Link key={r.id} to={pathRecipeDetail({ recipeId: r.id.toString() })}>
-      <Box key={r.id} gap={2}>
+      <Box key={r.id} gap={2} className="items-center">
         <Image
           width={48}
           height={48}
@@ -161,6 +183,7 @@ function RecipeSlide({ recipe: r }: { recipe: Recipe }) {
         <Box dir="col" w={100}>
           <div className="line-clamp-1 text-ellipsis">{r.name}</div>
           <small className="line-clamp-1 text-ellipsis">{r.author}</small>
+          {createdBy && <CreatedBy createdBy={createdBy} />}
         </Box>
       </Box>
     </Link>
@@ -188,6 +211,10 @@ function RecentlyViewed() {
   )
 }
 
+type CreatedBy = ResponseFromUse<
+  typeof useRecentlyCreatedRecipesList
+>[number]["createdBy"]
+
 function RecentlyCreated() {
   const recipes = useRecentlyCreatedRecipesList()
 
@@ -202,7 +229,9 @@ function RecentlyCreated() {
         ) : recipes.data.length === 0 ? (
           <div>no recipes viewed</div>
         ) : (
-          recipes.data.map((r) => <RecipeSlide key={r.id} recipe={r} />)
+          recipes.data.map((r) => (
+            <RecipeSlide key={r.id} recipe={r} createdBy={r.createdBy} />
+          ))
         )}
       </Box>
     </ScheduleContainer>
