@@ -79,6 +79,12 @@ module.exports = {
               "Please import from '@/theme' for type safe versions of 'styled-components' instead.",
           },
         ],
+        patterns: [
+          {
+            group: [".*"],
+            message: "Relative imports are not allowed.",
+          },
+        ],
       },
     ],
     "react/self-closing-comp": [

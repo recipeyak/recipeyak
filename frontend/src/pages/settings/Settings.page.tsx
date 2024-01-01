@@ -4,15 +4,14 @@ import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
 import { NavPage } from "@/components/Page"
 import { ChangeEmail } from "@/pages/settings/ChangeEmail"
+import { ChangeName } from "@/pages/settings/ChangeName"
+import { ChangePassword } from "@/pages/settings/ChangePassword"
+import { ChangeTeam } from "@/pages/settings/ChangeTeam"
+import { DangerZone } from "@/pages/settings/DangerZone"
 import { Export } from "@/pages/settings/Export"
 import Sessions from "@/pages/settings/Sessions"
 import { ThemePicker } from "@/pages/settings/ThemePicker"
 import { useUserFetch } from "@/queries/userFetch"
-
-import { ChangeName } from "./ChangeName"
-import { ChangePassword } from "./ChangePassword"
-import { ChangeTeam } from "./ChangeTeam"
-import { DangerZone } from "./DangerZone"
 
 export function SettingsPage() {
   const userInfo = useUserFetch()
