@@ -64,6 +64,10 @@ function ArchivedToggle() {
     on: [true, false],
     off: false,
   })
+  const { refine: refineScheduled } = useToggleRefinement({
+    attribute: "scheduled_count_all_time",
+    on: 0,
+  })
   return (
     <div>
       <div className="font-medium">Recipes</div>
@@ -75,7 +79,19 @@ function ArchivedToggle() {
             refine({ isRefined: !event.target.checked })
           }}
         />
-        <label htmlFor="archived_recipes">Show archived</label>
+        <label htmlFor="archived_recipes">Include archived recipes</label>
+      </div>
+      <div className="flex items-center gap-2">
+        <input
+          id="never_scheduled"
+          type="checkbox"
+          onChange={(event) => {
+            refineScheduled({ isRefined: !event.target.checked })
+          }}
+        />
+        <label htmlFor="never_scheduled">
+          Limit to never scheduled recipes
+        </label>
       </div>
     </div>
   )
@@ -126,7 +142,7 @@ export function RecipeSearchList() {
               {showAdvanced && (
                 <div className="flex flex-wrap gap-2">
                   <div className="flex flex-col">
-                    <label>Search</label>
+                    <label>Search by</label>
                     <Select
                       value={searchBy}
                       onChange={(e) => {
