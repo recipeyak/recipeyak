@@ -1,0 +1,1997 @@
+{
+  "results": [
+    {
+      "hits": [
+        {
+          "id": 464,
+          "name": "Apple Snacking Spice Cake",
+          "author": "Flour Bakery",
+          "source": "Flour",
+          "time": "2 hours",
+          "servings": "1 10-inch round cake",
+          "archived": false,
+          "archived_at": null,
+          "tags": [],
+          "team_id": 2,
+          "primary_image": {
+            "url": "https://images-cdn.recipeyak.com/1/9a0f44d379ae4b248d0fc0630b6ccdbf/BCAB614F-26FB-430C-AFE3-74223ECE850B_1_105_c.jpeg",
+            "background_url": "data:image/jpg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAgACoDASIAAhEBAxEB/8QAGgAAAgMBAQAAAAAAAAAAAAAABAUCAwYHAf/EACoQAAIBAwMEAAYDAQAAAAAAAAECAwAEEQUSIQYxQVETIiNhcdFCkaHB/8QAFwEAAwEAAAAAAAAAAAAAAAAAAgQFAf/EACIRAAICAQQBBQAAAAAAAAAAAAECAAMhBBESEzEFIlFh8P/aAAwDAQACEQMRAD8AxUc8LRrFHLHI7DGyK23N/tOU6HnnjQm/jiJTfIrRjKj+6sk0u26bhi0w4nkuSZZHYAOFxgYI5GPVIGbVFvDcR3yBvicOmSxHiobg7kJiW0bG7ZmmtOh7CIvLPJJdJGdpR1O1yR347j8GgOoejtNk0qS60S1jSZAPojIDDsSMnvXovtY0wS3ZKXkc5w4jfac+sEceeKM6T1K2v+qYElLQRyh9wcHl9vA57DvQVm0Ny5Ym2isqcZmYj0m6s1jaW0+CFAMmw8EHzVL7d7bbmPGTj6y/uuh3CyXdxIZdr8kDjHA9Y/5SZtC0xmLG0t8k5OQn6qn1N8wa/Uq0UDrG/wC+oX1Lp1zLOs8Ko0kY43diPVZ+4mt1l3TJLazuQXzgqT7B7V0GWMvJuyM/fzSzWLfTjYObyHcjELsReWJ8AUd2nV/d4kqnUsgC+YnvbqS107kI8XLB4gQVAP8ALwc/bFD6TGuqau9+oOFChflwd23k1A9LXNzaxtp05ltXPMcj/Mo84/FPoenL610f4GnyrDdLglz5PnxS1Gm4NyMZu1IdOAMPEO1cNwfdS3Dyik+SQKIW3lhtkNw6tMFAdl4BND7X9GngYptP/9k="
+          },
+          "scheduled_count": 1,
+          "scheduled_count_all_time": 4,
+          "ingredients": [
+            {
+              "id": 5165,
+              "description": "",
+              "quantity_name": "140 grams unbleached all-purpose flour",
+              "quantity_name_description": "140 grams unbleached all-purpose flour, ",
+              "recipe_id": 464,
+              "quantity": "140 grams",
+              "name": "unbleached all-purpose flour",
+              "optional": false
+            },
+            {
+              "id": 5166,
+              "description": "",
+              "quantity_name": "90 grams cake flour",
+              "quantity_name_description": "90 grams cake flour, ",
+              "recipe_id": 464,
+              "quantity": "90 grams",
+              "name": "cake flour",
+              "optional": false
+            },
+            {
+              "id": 5167,
+              "description": "",
+              "quantity_name": "1.5 teaspoons baking soda",
+              "quantity_name_description": "1.5 teaspoons baking soda, ",
+              "recipe_id": 464,
+              "quantity": "1.5 teaspoons",
+              "name": "baking soda",
+              "optional": false
+            },
+            {
+              "id": 5168,
+              "description": "",
+              "quantity_name": "½ teaspoon kosher salt",
+              "quantity_name_description": "½ teaspoon kosher salt, ",
+              "recipe_id": 464,
+              "quantity": "½ teaspoon",
+              "name": "kosher salt",
+              "optional": false
+            },
+            {
+              "id": 5169,
+              "description": "",
+              "quantity_name": "¼ teaspoon ground cinnamon",
+              "quantity_name_description": "¼ teaspoon ground cinnamon, ",
+              "recipe_id": 464,
+              "quantity": "¼ teaspoon",
+              "name": "ground cinnamon",
+              "optional": false
+            },
+            {
+              "id": 5170,
+              "description": "",
+              "quantity_name": "¼ teaspoon ground ginger",
+              "quantity_name_description": "¼ teaspoon ground ginger, ",
+              "recipe_id": 464,
+              "quantity": "¼ teaspoon",
+              "name": "ground ginger",
+              "optional": false
+            },
+            {
+              "id": 5171,
+              "description": "",
+              "quantity_name": "¼ teaspoon ground cloves",
+              "quantity_name_description": "¼ teaspoon ground cloves, ",
+              "recipe_id": 464,
+              "quantity": "¼ teaspoon",
+              "name": "ground cloves",
+              "optional": false
+            },
+            {
+              "id": 5172,
+              "description": "",
+              "quantity_name": "300 grams granulated sugar",
+              "quantity_name_description": "300 grams granulated sugar, ",
+              "recipe_id": 464,
+              "quantity": "300 grams",
+              "name": "granulated sugar",
+              "optional": false
+            },
+            {
+              "id": 5173,
+              "description": "",
+              "quantity_name": "1.5 sticks unsalted butter, at room temperature",
+              "quantity_name_description": "1.5 sticks unsalted butter, at room temperature, ",
+              "recipe_id": 464,
+              "quantity": "1.5 sticks",
+              "name": "unsalted butter, at room temperature",
+              "optional": false
+            },
+            {
+              "id": 5174,
+              "description": "",
+              "quantity_name": "2 eggs",
+              "quantity_name_description": "2 eggs, ",
+              "recipe_id": 464,
+              "quantity": "2",
+              "name": "eggs",
+              "optional": false
+            },
+            {
+              "id": 5175,
+              "description": "quartered and halved",
+              "quantity_name": "450 grams peeled, cored Granny Smith apples",
+              "quantity_name_description": "450 grams peeled, cored Granny Smith apples, quartered and halved",
+              "recipe_id": 464,
+              "quantity": "450 grams",
+              "name": "peeled, cored Granny Smith apples",
+              "optional": false
+            },
+            {
+              "id": 5176,
+              "description": "",
+              "quantity_name": "80 grams raisins",
+              "quantity_name_description": "80 grams raisins, ",
+              "recipe_id": 464,
+              "quantity": "80 grams",
+              "name": "raisins",
+              "optional": false
+            },
+            {
+              "id": 5177,
+              "description": "",
+              "quantity_name": "100 grams pecan halves",
+              "quantity_name_description": "100 grams pecan halves, ",
+              "recipe_id": 464,
+              "quantity": "100 grams",
+              "name": "pecan halves",
+              "optional": false
+            },
+            {
+              "id": 5178,
+              "description": "for dusting",
+              "quantity_name": "some confectioners' sugar",
+              "quantity_name_description": "some confectioners' sugar, for dusting",
+              "recipe_id": 464,
+              "quantity": "some",
+              "name": "confectioners' sugar",
+              "optional": false
+            }
+          ],
+          "objectID": "464",
+          "_highlightResult": {
+            "name": {
+              "value": "<em>Apple</em> Snacking Spice Cake",
+              "matchLevel": "full",
+              "fullyHighlighted": false,
+              "matchedWords": ["apple"]
+            },
+            "author": {
+              "value": "Flour Bakery",
+              "matchLevel": "none",
+              "matchedWords": []
+            }
+          }
+        },
+        {
+          "id": 246,
+          "name": "Apple Pie Bars",
+          "author": "Genevieve Ko",
+          "source": "https://cooking.nytimes.com/recipes/1019543-apple-pie-bars",
+          "time": "3 hours, plus cooling",
+          "servings": "2 dozen bars",
+          "archived": false,
+          "archived_at": null,
+          "tags": [],
+          "team_id": 2,
+          "primary_image": {
+            "url": "https://images-cdn.recipeyak.com/1/7c3b543a50fc475987f00cc64ea49a41/C86A907F-518F-4635-AB6E-CBB37EA1FD89.jpeg",
+            "background_url": "data:image/jpg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAeACoDASIAAhEBAxEB/8QAGQAAAgMBAAAAAAAAAAAAAAAABQcCAwYE/8QALhAAAgECBQIEBQUBAAAAAAAAAQIDBBEABRIhMRNBBiJRYQcUMoHhUnFyocHR/8QAGAEBAAMBAAAAAAAAAAAAAAAAAwECBQD/xAAdEQACAgMAAwAAAAAAAAAAAAAAAQIRAxIhBDFB/9oADAMBAAIRAxEAPwAZlWUR5llCvNSwtJsQWFzbVsQN+f8AMHWyvLIIhCYQwVReLfSb3vzzgZlLOuWQiKUFgtnGnYncm57W7AYIzZgyQmKJdUeoFWTy21bnYXJ498Yck9n0101RGHLqSGo6iUsDRQjuDb8/jFhoaSV2ULKNILMASFJttuDt+O+J0ktVXPpLFo1+m6WC2PJ25/rE43dmIpVkZLW6twbEcdu9rbYr36yeMqqcsy9aMIE6RKXD6yTv6j7d/XCqqcyy5KqZTrJV2H0H1w1ayFKmjCVClwFAkdRuzL5trb225ItvzhTVTQNVzH5GZbyMbEC43/bD+PduwstUhhZVVN01EE0yXiukRtpvfe5t7et8dPQmUkFwsjnU8tzt/Hb/AJhd5V4kmjYI8CyR38qM5IHrg5F42lSVmFMTpFjqlLXA7e2JnCSfEdGSaNnSpI+olpHp0AVeoANX6iSMdXXWLWsaMLhWE12ZNG1rbc82GMdT+PNA3ozIoN9Mj3t97YhF8R4xLNJJQs+hvKb2seNhwNsFpJv0XtGw0Rj5zqENIynyOp8nsB2OFjVzCSsnd4UDNIxI1Xsb4PD4gXOmKiEakb2NyovfYnjnnGPerRnZjHuTfDYoNN2HkfEf/9k="
+          },
+          "scheduled_count": 1,
+          "scheduled_count_all_time": 3,
+          "ingredients": [
+            {
+              "id": 2377,
+              "description": "for greasing pan",
+              "quantity_name": "some softened butter",
+              "quantity_name_description": "some softened butter, for greasing pan",
+              "recipe_id": 246,
+              "quantity": "some",
+              "name": "softened butter",
+              "optional": false
+            },
+            {
+              "id": 2378,
+              "description": "",
+              "quantity_name": "385 grams all-purpose flour",
+              "quantity_name_description": "385 grams all-purpose flour, ",
+              "recipe_id": 246,
+              "quantity": "385 grams",
+              "name": "all-purpose flour",
+              "optional": false
+            },
+            {
+              "id": 2379,
+              "description": "",
+              "quantity_name": "200 grams sugar",
+              "quantity_name_description": "200 grams sugar, ",
+              "recipe_id": 246,
+              "quantity": "200 grams",
+              "name": "sugar",
+              "optional": false
+            },
+            {
+              "id": 2380,
+              "description": "",
+              "quantity_name": "1 teaspoon fine sea salt",
+              "quantity_name_description": "1 teaspoon fine sea salt, ",
+              "recipe_id": 246,
+              "quantity": "1 teaspoon",
+              "name": "fine sea salt",
+              "optional": false
+            },
+            {
+              "id": 2381,
+              "description": "cut into cubes",
+              "quantity_name": "3 sticks cold unsalted butter",
+              "quantity_name_description": "3 sticks cold unsalted butter, cut into cubes",
+              "recipe_id": 246,
+              "quantity": "3 sticks",
+              "name": "cold unsalted butter",
+              "optional": false
+            },
+            {
+              "id": 2382,
+              "description": "toasted and chopped",
+              "quantity_name": "75 grams walnuts",
+              "quantity_name_description": "75 grams walnuts, toasted and chopped",
+              "recipe_id": 246,
+              "quantity": "75 grams",
+              "name": "walnuts",
+              "optional": false
+            },
+            {
+              "id": 2383,
+              "description": "",
+              "quantity_name": "½ teaspoon ground cinnamon",
+              "quantity_name_description": "½ teaspoon ground cinnamon, ",
+              "recipe_id": 246,
+              "quantity": "½ teaspoon",
+              "name": "ground cinnamon",
+              "optional": false
+            },
+            {
+              "id": 2384,
+              "description": "",
+              "quantity_name": "½ teaspoon ground cardamom",
+              "quantity_name_description": "½ teaspoon ground cardamom, ",
+              "recipe_id": 246,
+              "quantity": "½ teaspoon",
+              "name": "ground cardamom",
+              "optional": false
+            },
+            {
+              "id": 2385,
+              "description": "peeled, cored and cut into ⅛-inch slices",
+              "quantity_name": "1 ½ pounds tart apples such as Granny Smith",
+              "quantity_name_description": "1 ½ pounds tart apples such as Granny Smith, peeled, cored and cut into ⅛-inch slices",
+              "recipe_id": 246,
+              "quantity": "1 ½ pounds",
+              "name": "tart apples such as Granny Smith",
+              "optional": false
+            },
+            {
+              "id": 2386,
+              "description": "peeled, cored and cut into ⅛-inch slices",
+              "quantity_name": "1 ½ pounds sweet-tart apples, such as Fuji, Pink Lady or Gala",
+              "quantity_name_description": "1 ½ pounds sweet-tart apples, such as Fuji, Pink Lady or Gala, peeled, cored and cut into ⅛-inch slices",
+              "recipe_id": 246,
+              "quantity": "1 ½ pounds",
+              "name": "sweet-tart apples, such as Fuji, Pink Lady or Gala",
+              "optional": false
+            },
+            {
+              "id": 2387,
+              "description": "",
+              "quantity_name": "3 tablespoons lemon juice",
+              "quantity_name_description": "3 tablespoons lemon juice, ",
+              "recipe_id": 246,
+              "quantity": "3 tablespoons",
+              "name": "lemon juice",
+              "optional": false
+            },
+            {
+              "id": 2388,
+              "description": "",
+              "quantity_name": "¼ cup unsalted butter",
+              "quantity_name_description": "¼ cup unsalted butter, ",
+              "recipe_id": 246,
+              "quantity": "¼ cup",
+              "name": "unsalted butter",
+              "optional": false
+            },
+            {
+              "id": 2389,
+              "description": "",
+              "quantity_name": "1 teaspoon ground cinnamon",
+              "quantity_name_description": "1 teaspoon ground cinnamon, ",
+              "recipe_id": 246,
+              "quantity": "1 teaspoon",
+              "name": "ground cinnamon",
+              "optional": false
+            },
+            {
+              "id": 2390,
+              "description": "",
+              "quantity_name": "1 teaspoon freshly grated nutmeg",
+              "quantity_name_description": "1 teaspoon freshly grated nutmeg, ",
+              "recipe_id": 246,
+              "quantity": "1 teaspoon",
+              "name": "freshly grated nutmeg",
+              "optional": false
+            },
+            {
+              "id": 2391,
+              "description": "",
+              "quantity_name": "½ teaspoon ground cardamom",
+              "quantity_name_description": "½ teaspoon ground cardamom, ",
+              "recipe_id": 246,
+              "quantity": "½ teaspoon",
+              "name": "ground cardamom",
+              "optional": false
+            },
+            {
+              "id": 2392,
+              "description": "",
+              "quantity_name": "125 grams sugar",
+              "quantity_name_description": "125 grams sugar, ",
+              "recipe_id": 246,
+              "quantity": "125 grams",
+              "name": "sugar",
+              "optional": false
+            }
+          ],
+          "objectID": "246",
+          "_highlightResult": {
+            "name": {
+              "value": "<em>Apple</em> Pie Bars",
+              "matchLevel": "full",
+              "fullyHighlighted": false,
+              "matchedWords": ["apple"]
+            },
+            "author": {
+              "value": "Genevieve Ko",
+              "matchLevel": "none",
+              "matchedWords": []
+            }
+          }
+        },
+        {
+          "id": 476,
+          "name": "Classic Apple Pie",
+          "author": "Melissa Clark",
+          "source": "https://cooking.nytimes.com/recipes/1022727-classic-apple-pie",
+          "time": "1.5 hours, plus cooling",
+          "servings": "8 servings",
+          "archived": false,
+          "archived_at": null,
+          "tags": [],
+          "team_id": 2,
+          "primary_image": {
+            "url": "https://images-cdn.recipeyak.com/14/ed8b9dc407cc4f398670cac4f9cdd722/image.jpg",
+            "background_url": "data:image/jpg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAgACoDASIAAhEBAxEB/8QAGQAAAwEBAQAAAAAAAAAAAAAAAwQFBgEC/8QALRAAAgEDAgQEBQUAAAAAAAAAAQIDAAQREiEFBiIxExQyQVGRscHRI0KB4fH/xAAXAQEBAQEAAAAAAAAAAAAAAAADBAUC/8QAIBEBAAICAQQDAAAAAAAAAAAAAQACAyEEERJBURMiMf/aAAwDAQACEQMRAD8Ak8N5Us4JY/MyNMoO5aJRge+Nqow8r8Eg4iJZIC0QkzqLHJXNOm8it1ZixfA3ztRLBUu3W4nPUfSnsB8AKycnIaE0KYu6dt+H2OSVEI391G1VreFBGVQxeHjcKe9DSPEvSuwOPlXiVclgMxnPSwPepzlvkifCP4xqa1t44SzFUGM9YqX5rgw2Z7fI77VIvvNNDKgZ8knS5Pf8VgZYLrxX/Xl9R+NWV+xpgOnZNTdzOhJd1KuMaRvQrHmGXh0oguE1BfSff+6Ynt9UKYOllbIBPeg3PC47qNVlXUf2su2Nv8+VFkx1udGd47tXUv2/Ntg6AtKysO4IwaDNzPDIxjtlJJPc/as4OWLg5MdxIFAz1fCrvA+ApEgfV4h3xIw6SR9fpQHEqbWM5/RK1kpkt1WZdQk30+4zRTy6pOQV/kj8Vcj4Q9nb+KVGmUbFtzn7Ck2jvdRw64zTieICe5//2Q=="
+          },
+          "scheduled_count": 1,
+          "scheduled_count_all_time": 1,
+          "ingredients": [
+            {
+              "id": 5333,
+              "description": "",
+              "quantity_name": "2 tablespoons unsalted butter",
+              "quantity_name_description": "2 tablespoons unsalted butter, ",
+              "recipe_id": 476,
+              "quantity": "2 tablespoons",
+              "name": "unsalted butter",
+              "optional": false
+            },
+            {
+              "id": 5334,
+              "description": "peeled, cored and cut into ¼-inch wedges",
+              "quantity_name": "3.5 pounds firm, crisp apples (see tip)",
+              "quantity_name_description": "3.5 pounds firm, crisp apples (see tip), peeled, cored and cut into ¼-inch wedges",
+              "recipe_id": 476,
+              "quantity": "3.5 pounds",
+              "name": "firm, crisp apples (see tip)",
+              "optional": false
+            },
+            {
+              "id": 5335,
+              "description": "",
+              "quantity_name": "110 grams light brown sugar",
+              "quantity_name_description": "110 grams light brown sugar, ",
+              "recipe_id": 476,
+              "quantity": "110 grams",
+              "name": "light brown sugar",
+              "optional": false
+            },
+            {
+              "id": 5336,
+              "description": "",
+              "quantity_name": "2 tablespoons granulated sugar",
+              "quantity_name_description": "2 tablespoons granulated sugar, ",
+              "recipe_id": 476,
+              "quantity": "2 tablespoons",
+              "name": "granulated sugar",
+              "optional": false
+            },
+            {
+              "id": 5337,
+              "description": "",
+              "quantity_name": "1 teaspoon ground cinnamon",
+              "quantity_name_description": "1 teaspoon ground cinnamon, ",
+              "recipe_id": 476,
+              "quantity": "1 teaspoon",
+              "name": "ground cinnamon",
+              "optional": false
+            },
+            {
+              "id": 5338,
+              "description": "",
+              "quantity_name": "½ teaspoon ground ginger",
+              "quantity_name_description": "½ teaspoon ground ginger, ",
+              "recipe_id": 476,
+              "quantity": "½ teaspoon",
+              "name": "ground ginger",
+              "optional": false
+            },
+            {
+              "id": 5339,
+              "description": "",
+              "quantity_name": "½ teaspoon grated nutmeg",
+              "quantity_name_description": "½ teaspoon grated nutmeg, ",
+              "recipe_id": 476,
+              "quantity": "½ teaspoon",
+              "name": "grated nutmeg",
+              "optional": false
+            },
+            {
+              "id": 5340,
+              "description": "",
+              "quantity_name": "pinch ground cloves",
+              "quantity_name_description": "pinch ground cloves, ",
+              "recipe_id": 476,
+              "quantity": "pinch",
+              "name": "ground cloves",
+              "optional": false
+            },
+            {
+              "id": 5341,
+              "description": "",
+              "quantity_name": "¼ teaspoon fine sea salt",
+              "quantity_name_description": "¼ teaspoon fine sea salt, ",
+              "recipe_id": 476,
+              "quantity": "¼ teaspoon",
+              "name": "fine sea salt",
+              "optional": false
+            },
+            {
+              "id": 5342,
+              "description": "",
+              "quantity_name": "2 tablespoons cornstarch",
+              "quantity_name_description": "2 tablespoons cornstarch, ",
+              "recipe_id": 476,
+              "quantity": "2 tablespoons",
+              "name": "cornstarch",
+              "optional": false
+            },
+            {
+              "id": 5343,
+              "description": "more if your apples are very sweet",
+              "quantity_name": "1.5 teaspoons fresh lemon juice",
+              "quantity_name_description": "1.5 teaspoons fresh lemon juice, more if your apples are very sweet",
+              "recipe_id": 476,
+              "quantity": "1.5 teaspoons",
+              "name": "fresh lemon juice",
+              "optional": false
+            },
+            {
+              "id": 5344,
+              "description": "",
+              "quantity_name": "½ teaspoon grated lemon zest",
+              "quantity_name_description": "½ teaspoon grated lemon zest, ",
+              "recipe_id": 476,
+              "quantity": "½ teaspoon",
+              "name": "grated lemon zest",
+              "optional": false
+            },
+            {
+              "id": 5345,
+              "description": "for rolling out the dough",
+              "quantity_name": "some all-purpose flour",
+              "quantity_name_description": "some all-purpose flour, for rolling out the dough",
+              "recipe_id": 476,
+              "quantity": "some",
+              "name": "all-purpose flour",
+              "optional": false
+            },
+            {
+              "id": 5346,
+              "description": "",
+              "quantity_name": "dough for a 9-inch double crust pie (see other recipe)",
+              "quantity_name_description": "dough for a 9-inch double crust pie (see other recipe), ",
+              "recipe_id": 476,
+              "quantity": "dough",
+              "name": "for a 9-inch double crust pie (see other recipe)",
+              "optional": false
+            },
+            {
+              "id": 5347,
+              "description": "for glazing",
+              "quantity_name": "some heavy cream",
+              "quantity_name_description": "some heavy cream, for glazing",
+              "recipe_id": 476,
+              "quantity": "some",
+              "name": "heavy cream",
+              "optional": true
+            },
+            {
+              "id": 5348,
+              "description": "for glazing",
+              "quantity_name": "some Demerara sugar",
+              "quantity_name_description": "some Demerara sugar, for glazing",
+              "recipe_id": 476,
+              "quantity": "some",
+              "name": "Demerara sugar",
+              "optional": true
+            }
+          ],
+          "objectID": "476",
+          "_highlightResult": {
+            "name": {
+              "value": "Classic <em>Apple</em> Pie",
+              "matchLevel": "full",
+              "fullyHighlighted": false,
+              "matchedWords": ["apple"]
+            },
+            "author": {
+              "value": "Melissa Clark",
+              "matchLevel": "none",
+              "matchedWords": []
+            }
+          }
+        },
+        {
+          "id": 427,
+          "name": "Blue Ribbon Caramel-Apple Pie",
+          "author": "King Arthur Flour",
+          "source": "https://www.kingarthurbaking.com/recipes/blue-ribbon-caramel-apple-pie-recipe",
+          "time": "5 hours",
+          "servings": "one 9\" pie",
+          "archived": false,
+          "archived_at": null,
+          "tags": [],
+          "team_id": 2,
+          "primary_image": {
+            "url": "https://images-cdn.recipeyak.com/scraper/02aa1f1b5ced4daca822c03ebcc5f018.jpg",
+            "background_url": "data:image/jpg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAcACoDASIAAhEBAxEB/8QAGQAAAwEBAQAAAAAAAAAAAAAABQYHAwIE/8QAKRAAAgIBAwMEAgIDAAAAAAAAAQIDBBEABSESMUEGEyJhFCNRgpGx0f/EABYBAAMAAAAAAAAAAAAAAAAAAAMEBf/EAB8RAAEEAgIDAAAAAAAAAAAAAAEAAgMRBCESQRMxcf/aAAwDAQACEQMRAD8Apzbs4oySLH+4D4DwTpae69S5QgjkktSWLTNPMqhvPGcZ46SP9613yKePbKcgVGLXYgVZeCCwHPf71vvsaRVpTVnVbcUYMCxBQ4B/nOc5OOABqZlkmSugqeOAGfUv71s6fkW9zkNiS9X/AGOnvMUYkkKoI4A4yQNCNyltTxQtG8MDTftpyE59t1RT7ffHOO2M8aZ93vVhutOvOvQLcPuOEzlmVerx/YZ0r73PXrelappRis9e/k9b5LOW58En4nGgNuxXtMiq2NIBHalWUbvy+37hkTRDLD8gj5DH3zyNFl2ik6B49i3tEYZVQ3YeBoP6X3G9apbhDLWgn2FrTl4ycGuGOcq3GNOq+nPUaKFr7xKYVGIyQrHp8c+ePOrrTYBKknRVCv7fHuW1T0ZAg9xcAsvUM+DjSu1y7Huoq2asSNAhjM5YgsxUkdAx8hx4PnTiCQcZ1xYghtw9FiJJFHbqHb7H8HSk2OJd9osU/j0dhSqm8UVhd13J7Em7MrBYo0JIjxgBhg4ODk9uNT71Jv1q4xhnMjSKfcKGTIEpUAtx27cDVP8AXvp6lFAssTWI/cOGVZmweMefoDU7rbNUE65DHkjBOhx43E27aM+fkKavL6O3J9pW1RmjazSup0TCNSTHnjq+yNVePf7cEaQwwxtFGAqHPdRwNLlGhXrD24o8KVwf8aLDbIekfN+31/zTzbStL//Z"
+          },
+          "scheduled_count": 1,
+          "scheduled_count_all_time": 1,
+          "ingredients": [
+            {
+              "id": 4693,
+              "description": "",
+              "quantity_name": "298 grams all-purpose flour",
+              "quantity_name_description": "298 grams all-purpose flour, ",
+              "recipe_id": 427,
+              "quantity": "298 grams",
+              "name": "all-purpose flour",
+              "optional": false
+            },
+            {
+              "id": 4694,
+              "description": "",
+              "quantity_name": "1/2 teaspoon salt",
+              "quantity_name_description": "1/2 teaspoon salt, ",
+              "recipe_id": 427,
+              "quantity": "1/2 teaspoon",
+              "name": "salt",
+              "optional": false
+            },
+            {
+              "id": 4695,
+              "description": "cold",
+              "quantity_name": "16 tablespoons unsalted butter",
+              "quantity_name_description": "16 tablespoons unsalted butter, cold",
+              "recipe_id": 427,
+              "quantity": "16 tablespoons",
+              "name": "unsalted butter",
+              "optional": false
+            },
+            {
+              "id": 4696,
+              "description": "",
+              "quantity_name": "1/2 cup ice water",
+              "quantity_name_description": "1/2 cup ice water, ",
+              "recipe_id": 427,
+              "quantity": "1/2 cup",
+              "name": "ice water",
+              "optional": false
+            },
+            {
+              "id": 4697,
+              "description": "",
+              "quantity_name": "1 cup sugar",
+              "quantity_name_description": "1 cup sugar, ",
+              "recipe_id": 427,
+              "quantity": "1 cup",
+              "name": "sugar",
+              "optional": false
+            },
+            {
+              "id": 4698,
+              "description": "",
+              "quantity_name": "1/4 cup all-purpose flour",
+              "quantity_name_description": "1/4 cup all-purpose flour, ",
+              "recipe_id": 427,
+              "quantity": "1/4 cup",
+              "name": "all-purpose flour",
+              "optional": false
+            },
+            {
+              "id": 4699,
+              "description": "",
+              "quantity_name": "1 teaspoon cinnamon",
+              "quantity_name_description": "1 teaspoon cinnamon, ",
+              "recipe_id": 427,
+              "quantity": "1 teaspoon",
+              "name": "cinnamon",
+              "optional": false
+            },
+            {
+              "id": 4700,
+              "description": "",
+              "quantity_name": "680 grams peeled, cored, and sliced apples",
+              "quantity_name_description": "680 grams peeled, cored, and sliced apples, ",
+              "recipe_id": 427,
+              "quantity": "680 grams",
+              "name": "peeled, cored, and sliced apples",
+              "optional": false
+            },
+            {
+              "id": 4701,
+              "description": "",
+              "quantity_name": "142 grams caramel apple dip, caramel sauce, or melted caramel",
+              "quantity_name_description": "142 grams caramel apple dip, caramel sauce, or melted caramel, ",
+              "recipe_id": 427,
+              "quantity": "142 grams",
+              "name": "caramel apple dip, caramel sauce, or melted caramel",
+              "optional": false
+            },
+            {
+              "id": 4702,
+              "description": "",
+              "quantity_name": "2 tablespoons milk or cream",
+              "quantity_name_description": "2 tablespoons milk or cream, ",
+              "recipe_id": 427,
+              "quantity": "2 tablespoons",
+              "name": "milk or cream",
+              "optional": false
+            },
+            {
+              "id": 4703,
+              "description": "",
+              "quantity_name": "120 grams all-purpose flour",
+              "quantity_name_description": "120 grams all-purpose flour, ",
+              "recipe_id": 427,
+              "quantity": "120 grams",
+              "name": "all-purpose flour",
+              "optional": false
+            },
+            {
+              "id": 4704,
+              "description": "",
+              "quantity_name": "106g brown sugar",
+              "quantity_name_description": "106g brown sugar, ",
+              "recipe_id": 427,
+              "quantity": "106g",
+              "name": "brown sugar",
+              "optional": false
+            },
+            {
+              "id": 4705,
+              "description": "cold",
+              "quantity_name": "8 tablespoons unsalted butter",
+              "quantity_name_description": "8 tablespoons unsalted butter, cold",
+              "recipe_id": 427,
+              "quantity": "8 tablespoons",
+              "name": "unsalted butter",
+              "optional": false
+            }
+          ],
+          "objectID": "427",
+          "_highlightResult": {
+            "name": {
+              "value": "Blue Ribbon Caramel-<em>Apple</em> Pie",
+              "matchLevel": "full",
+              "fullyHighlighted": false,
+              "matchedWords": ["apple"]
+            },
+            "author": {
+              "value": "King Arthur Flour",
+              "matchLevel": "none",
+              "matchedWords": []
+            }
+          }
+        },
+        {
+          "id": 392,
+          "name": "Gâteau Invisible (Invisible Apple Cake)",
+          "author": "Tim Chin",
+          "source": "https://www.seriouseats.com/gateau-invisible",
+          "time": "4 hours 30 minutes",
+          "servings": "1 loaf",
+          "archived": false,
+          "archived_at": null,
+          "tags": [],
+          "team_id": 2,
+          "primary_image": {
+            "url": "https://images-cdn.recipeyak.com/scraper/6f0b52742ef44b3dabd4633fbbf252f4.jpg",
+            "background_url": "data:image/jpg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAgACoDASIAAhEBAxEB/8QAGgABAQACAwAAAAAAAAAAAAAABgUDBAACB//EACwQAAIBAwIFAgUFAAAAAAAAAAECAwQFEQAhBhIxQVETIhQkYXGRMjNSsdH/xAAXAQEBAQEAAAAAAAAAAAAAAAAEBgUD/8QAJBEAAgEDAwMFAAAAAAAAAAAAAQIDAAQxESFBBRITIlFhgbH/2gAMAwEAAhEDEQA/AJdkqkrJpamcJGvpB3dRjGQAR9+v4Gl8tSkwWBKYomFadmGeRM+2MeScZIGw6nQnim01fDNbLJAZPSJDYXbGDnI0ltl/WeGSVBzNKATzYIDMADjUn1C2aBteDj4xVBFKJl7hnmtipsjXCX4ypYrG49sQbYLjOWPnfJ7DON9JuDa0tT1VGoM1JTxhoJic4HdftnprQoKOpu0ssjkx0ZAjV2PUDqQPJPfxpNCI7fQimoIVjiHX25La7WRe2HllOi8D3+qNcSiRfGBqfygMtxrrpVy1bvMyrKYsIM+mB0GNUk4kukcaoa4qVAGC+41fpeEaGetkuELyRiT9yNJCoz3BxpGltpI0VFp4gFGAOQa00tmf1q+xo7XCgBSuKgcbWGO429wFAfGxPbQzhrg2Ox0pq7pLzqz5jjOyjOwzr1Cu+drUpk3Rd5T2x4/OsN8tEdztUtIw2ZdiOx1oyRq43FESRk2BzUyDJTLIFAHtUdFGu8kyRJ6juFUbknoNHLXcK+NZaGqilmrad/TBC7SDs2eg+ur9DZ5Z5FqLm6uVbmSBP0Kfr5OpxbG5mlPfxkmlmVFWs9ijqJaiWucPDTsOSKIjBcfzYf0P91dzrGGA21zn1QwwLCgRcChO5c6mv//Z"
+          },
+          "scheduled_count": 1,
+          "scheduled_count_all_time": 1,
+          "ingredients": [
+            {
+              "id": 4173,
+              "description": "for greasing the pan",
+              "quantity_name": "some vegetable oil",
+              "quantity_name_description": "some vegetable oil, for greasing the pan",
+              "recipe_id": 392,
+              "quantity": "some",
+              "name": "vegetable oil",
+              "optional": false
+            },
+            {
+              "id": 4174,
+              "description": "more for dusting",
+              "quantity_name": "142g all-purpose flour",
+              "quantity_name_description": "142g all-purpose flour, more for dusting",
+              "recipe_id": 392,
+              "quantity": "142g",
+              "name": "all-purpose flour",
+              "optional": false
+            },
+            {
+              "id": 4175,
+              "description": "",
+              "quantity_name": "¼ cup water",
+              "quantity_name_description": "¼ cup water, ",
+              "recipe_id": 392,
+              "quantity": "¼ cup",
+              "name": "water",
+              "optional": false
+            },
+            {
+              "id": 4179,
+              "description": "",
+              "quantity_name": "3 tablespoons white miso",
+              "quantity_name_description": "3 tablespoons white miso, ",
+              "recipe_id": 392,
+              "quantity": "3 tablespoons",
+              "name": "white miso",
+              "optional": false
+            },
+            {
+              "id": 4180,
+              "description": "melted",
+              "quantity_name": "2 tablespoons unsalted butter",
+              "quantity_name_description": "2 tablespoons unsalted butter, melted",
+              "recipe_id": 392,
+              "quantity": "2 tablespoons",
+              "name": "unsalted butter",
+              "optional": false
+            },
+            {
+              "id": 4181,
+              "description": "",
+              "quantity_name": "½ cup whole milk",
+              "quantity_name_description": "½ cup whole milk, ",
+              "recipe_id": 392,
+              "quantity": "½ cup",
+              "name": "whole milk",
+              "optional": false
+            },
+            {
+              "id": 4182,
+              "description": "",
+              "quantity_name": "3 large eggs",
+              "quantity_name_description": "3 large eggs, ",
+              "recipe_id": 392,
+              "quantity": "3",
+              "name": "large eggs",
+              "optional": false
+            },
+            {
+              "id": 4183,
+              "description": "",
+              "quantity_name": "133g sugar",
+              "quantity_name_description": "133g sugar, ",
+              "recipe_id": 392,
+              "quantity": "133g",
+              "name": "sugar",
+              "optional": false
+            },
+            {
+              "id": 4184,
+              "description": "peeled, cored, and cut into 1/16- to ⅛-inch thick slices",
+              "quantity_name": "2.5 pounds apples (like Fuji or Pink Lady)",
+              "quantity_name_description": "2.5 pounds apples (like Fuji or Pink Lady), peeled, cored, and cut into 1/16- to ⅛-inch thick slices",
+              "recipe_id": 392,
+              "quantity": "2.5 pounds",
+              "name": "apples (like Fuji or Pink Lady)",
+              "optional": false
+            },
+            {
+              "id": 4176,
+              "description": "",
+              "quantity_name": "120g sugar",
+              "quantity_name_description": "120g sugar, ",
+              "recipe_id": 392,
+              "quantity": "120g",
+              "name": "sugar",
+              "optional": false
+            },
+            {
+              "id": 4177,
+              "description": "",
+              "quantity_name": "¾ cup heavy cream",
+              "quantity_name_description": "¾ cup heavy cream, ",
+              "recipe_id": 392,
+              "quantity": "¾ cup",
+              "name": "heavy cream",
+              "optional": false
+            },
+            {
+              "id": 4178,
+              "description": "",
+              "quantity_name": "2 tablespoons white miso",
+              "quantity_name_description": "2 tablespoons white miso, ",
+              "recipe_id": 392,
+              "quantity": "2 tablespoons",
+              "name": "white miso",
+              "optional": false
+            }
+          ],
+          "objectID": "392",
+          "_highlightResult": {
+            "name": {
+              "value": "Gâteau Invisible (Invisible <em>Apple</em> Cake)",
+              "matchLevel": "full",
+              "fullyHighlighted": false,
+              "matchedWords": ["apple"]
+            },
+            "author": {
+              "value": "Tim Chin",
+              "matchLevel": "none",
+              "matchedWords": []
+            }
+          }
+        },
+        {
+          "id": 243,
+          "name": "Double Apple Pie",
+          "author": "Melissa Clark",
+          "source": "https://cooking.nytimes.com/recipes/1016924-double-apple-pie",
+          "time": "2 ½ hours plus chilliing",
+          "servings": "8 servings",
+          "archived": false,
+          "archived_at": null,
+          "tags": [],
+          "team_id": 2,
+          "primary_image": {
+            "url": "https://images-cdn.recipeyak.com/scraper/0ac963205afe424488bf4b505e6dfdb6.jpg",
+            "background_url": "data:image/jpg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAcACoDASIAAhEBAxEB/8QAGQAAAwEBAQAAAAAAAAAAAAAAAgUGAwQA/8QALRAAAgIBAwMCBQMFAAAAAAAAAQIDBBEABSESMUETYQYiI1GRcaGxFjI0UuH/xAAVAQEBAAAAAAAAAAAAAAAAAAAEBf/EAB4RAAEEAgMBAAAAAAAAAAAAAAEAAgMRBBITIUEx/9oADAMBAAIRAxEAPwC3Rh0kMDz2Osr281tngl9Wb+xeX6h8pPA488/xpfuO709qMb2HOJsoFUFiePAGkl/cBuMiTrtUsbQL/kSRE9CjsCPPcfnQMqdzToxMx4WkbvT/APrVDYkhjR5kU9PWAFH2JB8nWtf4v2a9DIyySqySemVcfMT98d8e+kSb2XoKWgkSBuPVEBUN+hIwNFDdqVkASlAQ/JmdVZSPJDDHfvjGhCaVvYJSzFGeqCqalmC7ALFWVXQngg5wfIOun1x/rqZq34Ku4w+inTDZy0sjMQhJ4XAPntp71+/7aq483Ky/VOmj43UPilNzlZb1NxExCLIVKIXySBgYGgf4is0CkNhLUcfH1JYTjn217fJZKZqWYHKSpMApH2bgj8HXXStzySSRmRgodjx7A6nZw1ls+p2IbioeIZd9ozuwWwy+phSrP0g57kjwMa1sXdpSM140ozIvAjSMdv1/5rC0Yr+5R0rdaCWKQ4YsmG/I50dnbqNyJ6704EUpgPHGFZew4OjlwqkjVJdyigrwwy15Jqzl1+gJTIijOThTnn3GqYWGIB6v31Lbrslbap6rwSTszISTJJ1Z5A/g6eKvyDk9tUsEU0oGaewF/9k="
+          },
+          "scheduled_count": 1,
+          "scheduled_count_all_time": 1,
+          "ingredients": [
+            {
+              "id": 2325,
+              "description": "",
+              "quantity_name": "300 grams all-purpose flour",
+              "quantity_name_description": "300 grams all-purpose flour, ",
+              "recipe_id": 243,
+              "quantity": "300 grams",
+              "name": "all-purpose flour",
+              "optional": false
+            },
+            {
+              "id": 2326,
+              "description": "",
+              "quantity_name": "½ teaspoon kosher salt",
+              "quantity_name_description": "½ teaspoon kosher salt, ",
+              "recipe_id": 243,
+              "quantity": "½ teaspoon",
+              "name": "kosher salt",
+              "optional": false
+            },
+            {
+              "id": 2327,
+              "description": "chilled and cubed",
+              "quantity_name": "2 ½ sticks unsalted butter",
+              "quantity_name_description": "2 ½ sticks unsalted butter, chilled and cubed",
+              "recipe_id": 243,
+              "quantity": "2 ½ sticks",
+              "name": "unsalted butter",
+              "optional": false
+            },
+            {
+              "id": 2328,
+              "description": "",
+              "quantity_name": "4 tablespoons vodka",
+              "quantity_name_description": "4 tablespoons vodka, ",
+              "recipe_id": 243,
+              "quantity": "4 tablespoons",
+              "name": "vodka",
+              "optional": false
+            },
+            {
+              "id": 2329,
+              "description": "",
+              "quantity_name": "¼ to ½ cup ice water",
+              "quantity_name_description": "¼ to ½ cup ice water, ",
+              "recipe_id": 243,
+              "quantity": "¼ to ½ cup",
+              "name": "ice water",
+              "optional": false
+            },
+            {
+              "id": 2330,
+              "description": "peeled, cored and thinly sliced crosswise (⅛-inch)",
+              "quantity_name": "3 pounds apples",
+              "quantity_name_description": "3 pounds apples, peeled, cored and thinly sliced crosswise (⅛-inch)",
+              "recipe_id": 243,
+              "quantity": "3 pounds",
+              "name": "apples",
+              "optional": false
+            },
+            {
+              "id": 2331,
+              "description": "more as needed",
+              "quantity_name": "99 grams sugar",
+              "quantity_name_description": "99 grams sugar, more as needed",
+              "recipe_id": 243,
+              "quantity": "99 grams",
+              "name": "sugar",
+              "optional": false
+            },
+            {
+              "id": 2332,
+              "description": "",
+              "quantity_name": "30 grams dark brown sugar",
+              "quantity_name_description": "30 grams dark brown sugar, ",
+              "recipe_id": 243,
+              "quantity": "30 grams",
+              "name": "dark brown sugar",
+              "optional": false
+            },
+            {
+              "id": 2333,
+              "description": "",
+              "quantity_name": "30 grams quick-cooking tapioca",
+              "quantity_name_description": "30 grams quick-cooking tapioca, ",
+              "recipe_id": 243,
+              "quantity": "30 grams",
+              "name": "quick-cooking tapioca",
+              "optional": false
+            },
+            {
+              "id": 2334,
+              "description": "",
+              "quantity_name": "1 ½ teaspoons cinnamon",
+              "quantity_name_description": "1 ½ teaspoons cinnamon, ",
+              "recipe_id": 243,
+              "quantity": "1 ½ teaspoons",
+              "name": "cinnamon",
+              "optional": false
+            },
+            {
+              "id": 2335,
+              "description": "",
+              "quantity_name": "1 teaspoon ginger",
+              "quantity_name_description": "1 teaspoon ginger, ",
+              "recipe_id": 243,
+              "quantity": "1 teaspoon",
+              "name": "ginger",
+              "optional": false
+            },
+            {
+              "id": 2336,
+              "description": "",
+              "quantity_name": "¼ teaspoon nutmeg",
+              "quantity_name_description": "¼ teaspoon nutmeg, ",
+              "recipe_id": 243,
+              "quantity": "¼ teaspoon",
+              "name": "nutmeg",
+              "optional": false
+            },
+            {
+              "id": 2337,
+              "description": "",
+              "quantity_name": "pinch ground cloves",
+              "quantity_name_description": "pinch ground cloves, ",
+              "recipe_id": 243,
+              "quantity": "pinch",
+              "name": "ground cloves",
+              "optional": false
+            },
+            {
+              "id": 2338,
+              "description": "",
+              "quantity_name": "1 ½ tablespooons lemon juice",
+              "quantity_name_description": "1 ½ tablespooons lemon juice, ",
+              "recipe_id": 243,
+              "quantity": "1 ½ tablespooons",
+              "name": "lemon juice",
+              "optional": false
+            },
+            {
+              "id": 2339,
+              "description": "",
+              "quantity_name": "3 tablespoons apple butter",
+              "quantity_name_description": "3 tablespoons apple butter, ",
+              "recipe_id": 243,
+              "quantity": "3 tablespoons",
+              "name": "apple butter",
+              "optional": false
+            },
+            {
+              "id": 2340,
+              "description": "as needed",
+              "quantity_name": "some heavy cream",
+              "quantity_name_description": "some heavy cream, as needed",
+              "recipe_id": 243,
+              "quantity": "some",
+              "name": "heavy cream",
+              "optional": false
+            },
+            {
+              "id": 2341,
+              "description": "for serving",
+              "quantity_name": "some whipped cream",
+              "quantity_name_description": "some whipped cream, for serving",
+              "recipe_id": 243,
+              "quantity": "some",
+              "name": "whipped cream",
+              "optional": false
+            }
+          ],
+          "objectID": "243",
+          "_highlightResult": {
+            "name": {
+              "value": "Double <em>Apple</em> Pie",
+              "matchLevel": "full",
+              "fullyHighlighted": false,
+              "matchedWords": ["apple"]
+            },
+            "author": {
+              "value": "Melissa Clark",
+              "matchLevel": "none",
+              "matchedWords": []
+            }
+          }
+        },
+        {
+          "id": 98,
+          "name": "Apple Crisp",
+          "author": "Mark Bittman",
+          "source": "https://cooking.nytimes.com/recipes/11752-mark-bittmans-apple-crisp",
+          "time": "1 hour",
+          "servings": "6 to 8 servings",
+          "archived": false,
+          "archived_at": null,
+          "tags": [],
+          "team_id": 2,
+          "primary_image": {
+            "url": "https://images-cdn.recipeyak.com/14/910fdcb5adfe4b80adc8a8202bc74443/IMG_4784.jpeg",
+            "background_url": "data:image/jpg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAgACoDASIAAhEBAxEB/8QAGQAAAgMBAAAAAAAAAAAAAAAABQYCAwQB/8QALhAAAgECBAMGBwEBAAAAAAAAAQIDBBEABRIhBlFhExQiMUHwFTJCUnGRsTNT/8QAFwEAAwEAAAAAAAAAAAAAAAAAAQMEAv/EABoRAAMBAQEBAAAAAAAAAAAAAAABAhEDMRL/2gAMAwEAAhEDEQA/AGbNeKssycIJ+0Z3+QBD4sAsx41zU6UoaCKAONpJzqIHOwxHiKMtMaaaPVNTvqRm8rjkOuA1G/e3R1iVHVrSJqJsbfcNsR9bqPCrnKr0hmMlfmMQXMKmrnEm9kfQLX5AWwSy/iQxUD5Nm9TM2XyAJFVxyESwcgSNyBjsy6XQIWCSEDUpBC7b7HngPXxxO91kR1tZlCk79cJnrSeja5y1hbxTwJKtHI1Bl8FX2zI1NXRTsroxIB1LezX3Nxzw90fDclPQ08Mmb5gXjjVGKymxIFjbCpwzm9bSVUFHQoaqgkvqRn/zPNSfTph/7wfuxWr+lpJU48FOrqfjOQUWbKNc+nsZwvn2i/y43wBVHgcyKkSs5Aa4JHS/PEOBszL1dTlDm0dUuuK//Vdx+xcfrG7MIezaSMr4SNh5bH+e/PAqVc4bTcvTPVzy6NKxFgDdWVd9t7YXp66Ser7pl6NVVH2jaOPnqPr+Btg3R5HU1YCySSRwW8bsbu46n0HvrhufL8mynK41y6ECa3jA+Zup5YxHFT6G+rfgGyOlkyzLBHVyo8t7syIFA6C3L3bBH4pW/TTMV9CfUYywhXYySWZ/pA8l/A5+zi/to/UpfrqOHCj/2Q=="
+          },
+          "scheduled_count": 0,
+          "scheduled_count_all_time": 13,
+          "ingredients": [
+            {
+              "id": 959,
+              "description": "peeled, cored, and sliced (2 to 3 pounds)",
+              "quantity_name": "6 cups apples or pears",
+              "quantity_name_description": "6 cups apples or pears, peeled, cored, and sliced (2 to 3 pounds)",
+              "recipe_id": 98,
+              "quantity": "6 cups",
+              "name": "apples or pears",
+              "optional": false
+            },
+            {
+              "id": 960,
+              "description": "more to taste",
+              "quantity_name": "1/4 teaspoon cinnamon",
+              "quantity_name_description": "1/4 teaspoon cinnamon, more to taste",
+              "recipe_id": 98,
+              "quantity": "1/4 teaspoon",
+              "name": "cinnamon",
+              "optional": false
+            },
+            {
+              "id": 5885,
+              "description": "",
+              "quantity_name": "2 Tablespoons sugar",
+              "quantity_name_description": "2 Tablespoons sugar, ",
+              "recipe_id": 98,
+              "quantity": "2 Tablespoons",
+              "name": "sugar",
+              "optional": false
+            },
+            {
+              "id": 5886,
+              "description": "more to taste",
+              "quantity_name": "1/4 teaspoon cinnamon",
+              "quantity_name_description": "1/4 teaspoon cinnamon, more to taste",
+              "recipe_id": 98,
+              "quantity": "1/4 teaspoon",
+              "name": "cinnamon",
+              "optional": false
+            },
+            {
+              "id": 962,
+              "description": "",
+              "quantity_name": "5 tablespoons butter",
+              "quantity_name_description": "5 tablespoons butter, ",
+              "recipe_id": 98,
+              "quantity": "5 tablespoons",
+              "name": "butter",
+              "optional": false
+            },
+            {
+              "id": 961,
+              "description": "",
+              "quantity_name": "1/2 cup sugar",
+              "quantity_name_description": "1/2 cup sugar, ",
+              "recipe_id": 98,
+              "quantity": "1/2 cup",
+              "name": "sugar",
+              "optional": false
+            },
+            {
+              "id": 963,
+              "description": "",
+              "quantity_name": "3/4 cup oats",
+              "quantity_name_description": "3/4 cup oats, ",
+              "recipe_id": 98,
+              "quantity": "3/4 cup",
+              "name": "oats",
+              "optional": false
+            },
+            {
+              "id": 964,
+              "description": "",
+              "quantity_name": "1/2 cup walnuts or pecans",
+              "quantity_name_description": "1/2 cup walnuts or pecans, ",
+              "recipe_id": 98,
+              "quantity": "1/2 cup",
+              "name": "walnuts or pecans",
+              "optional": false
+            }
+          ],
+          "objectID": "98",
+          "_highlightResult": {
+            "name": {
+              "value": "<em>Apple</em> Crisp",
+              "matchLevel": "full",
+              "fullyHighlighted": false,
+              "matchedWords": ["apple"]
+            },
+            "author": {
+              "value": "Mark Bittman",
+              "matchLevel": "none",
+              "matchedWords": []
+            }
+          }
+        },
+        {
+          "id": 252,
+          "name": "Apple (Hand) Pie",
+          "author": "Sohla El-Wayly",
+          "source": "https://www.npr.org/2020/11/23/937201604/3-recipes-for-cooking-up-a-scaled-down-low-key-thanksgiving-meal",
+          "time": "",
+          "servings": "4 hand pies",
+          "archived": false,
+          "archived_at": null,
+          "tags": [],
+          "team_id": 2,
+          "primary_image": {
+            "url": "https://images-cdn.recipeyak.com/14/ad7730628b1749c796d64aa6ab0653d6/IMG_2952.jpeg",
+            "background_url": "data:image/jpg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAgACoDASIAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAABAUGBwP/xAAxEAACAQIEAwYDCQAAAAAAAAABAgMEEQAFITEGEkETIlFhgdEUocEVIzJCVHGRkpP/xAAYAQEBAAMAAAAAAAAAAAAAAAADAgEEBf/EABwRAAIDAAMBAAAAAAAAAAAAAAABAhEhEjFBUf/aAAwDAQACEQMRAD8AacQZtmeW1PawSstLLpH3Row3G3rhM+b5kwWVayTmPna+LqspIcxy2WhkXk6XtqhGxGM6kp5aWeSCawaN7EfX9sc2ad2mb0GuqOkfE2ZmqRROzoh7zMe6fTrjtLn0s9TYACS1jyLovmfDAEiolyx5Ftuo1t5eGEc+ZB5zBRhkCC5kbYe5xHYmDrNZszSEOE7ZBv2TXP8AGEH2pN+mqf8ANvbBVPm0sNIfvTMsZuXb87dB6m2HUOR8YSwxyNVUcbMoYoVF1JG22Mxv1EOvpqUiWcODoRqMS3F1NGpp6xEvujW69R9cVZZjGVVbk+OFfEUUJyWeSdwqxgEHoNRhpxxhQeozWrPNFJ2mgI1sbYmaiop0RkQrHGNyT8z4nB2YVXxFR8PRFqyol0WOJScH0PDC5Y8OYcQqkkm8VCh/D1u3ifLBxjlsWUtpAuSUUbZlQyVssoYsJIKNYecKALhnFwb218saQwzYsSgi5SdLw62/thNRcwkllpXLutbdgNwOVe78iMVI5WAPazm+tw7e+KS5EyfE/9k="
+          },
+          "scheduled_count": 0,
+          "scheduled_count_all_time": 3,
+          "ingredients": [
+            {
+              "id": 2466,
+              "description": "",
+              "quantity_name": "1 pound granny smith apples",
+              "quantity_name_description": "1 pound granny smith apples, ",
+              "recipe_id": 252,
+              "quantity": "1 pound",
+              "name": "granny smith apples",
+              "optional": false
+            },
+            {
+              "id": 2467,
+              "description": "",
+              "quantity_name": "1 cup apple cider",
+              "quantity_name_description": "1 cup apple cider, ",
+              "recipe_id": 252,
+              "quantity": "1 cup",
+              "name": "apple cider",
+              "optional": false
+            },
+            {
+              "id": 2468,
+              "description": "",
+              "quantity_name": "6 tablespoons light brown sugar",
+              "quantity_name_description": "6 tablespoons light brown sugar, ",
+              "recipe_id": 252,
+              "quantity": "6 tablespoons",
+              "name": "light brown sugar",
+              "optional": false
+            },
+            {
+              "id": 2469,
+              "description": "",
+              "quantity_name": "2 teaspoons tapioca starch or cornstarch",
+              "quantity_name_description": "2 teaspoons tapioca starch or cornstarch, ",
+              "recipe_id": 252,
+              "quantity": "2 teaspoons",
+              "name": "tapioca starch or cornstarch",
+              "optional": false
+            },
+            {
+              "id": 2470,
+              "description": "",
+              "quantity_name": "½ teaspoon cinnamon",
+              "quantity_name_description": "½ teaspoon cinnamon, ",
+              "recipe_id": 252,
+              "quantity": "½ teaspoon",
+              "name": "cinnamon",
+              "optional": false
+            },
+            {
+              "id": 2471,
+              "description": "",
+              "quantity_name": "pinch ground nutmeg",
+              "quantity_name_description": "pinch ground nutmeg, ",
+              "recipe_id": 252,
+              "quantity": "pinch",
+              "name": "ground nutmeg",
+              "optional": false
+            },
+            {
+              "id": 2472,
+              "description": "",
+              "quantity_name": "pinch kosher salt",
+              "quantity_name_description": "pinch kosher salt, ",
+              "recipe_id": 252,
+              "quantity": "pinch",
+              "name": "kosher salt",
+              "optional": false
+            },
+            {
+              "id": 2473,
+              "description": "",
+              "quantity_name": "1 tablespoon butter",
+              "quantity_name_description": "1 tablespoon butter, ",
+              "recipe_id": 252,
+              "quantity": "1 tablespoon",
+              "name": "butter",
+              "optional": false
+            },
+            {
+              "id": 2474,
+              "description": "for dusting",
+              "quantity_name": "some flour",
+              "quantity_name_description": "some flour, for dusting",
+              "recipe_id": 252,
+              "quantity": "some",
+              "name": "flour",
+              "optional": false
+            },
+            {
+              "id": 2475,
+              "description": "thawed",
+              "quantity_name": "1 ready-to-bake pie crust",
+              "quantity_name_description": "1 ready-to-bake pie crust, thawed",
+              "recipe_id": 252,
+              "quantity": "1",
+              "name": "ready-to-bake pie crust",
+              "optional": false
+            },
+            {
+              "id": 2476,
+              "description": "",
+              "quantity_name": "1 egg",
+              "quantity_name_description": "1 egg, ",
+              "recipe_id": 252,
+              "quantity": "1",
+              "name": "egg",
+              "optional": false
+            },
+            {
+              "id": 2477,
+              "description": "",
+              "quantity_name": "1 tablespoon sugar",
+              "quantity_name_description": "1 tablespoon sugar, ",
+              "recipe_id": 252,
+              "quantity": "1 tablespoon",
+              "name": "sugar",
+              "optional": false
+            },
+            {
+              "id": 2478,
+              "description": "",
+              "quantity_name": "¼ teaspoon cinnamon",
+              "quantity_name_description": "¼ teaspoon cinnamon, ",
+              "recipe_id": 252,
+              "quantity": "¼ teaspoon",
+              "name": "cinnamon",
+              "optional": false
+            }
+          ],
+          "objectID": "252",
+          "_highlightResult": {
+            "name": {
+              "value": "<em>Apple</em> (Hand) Pie",
+              "matchLevel": "full",
+              "fullyHighlighted": false,
+              "matchedWords": ["apple"]
+            },
+            "author": {
+              "value": "Sohla El-Wayly",
+              "matchLevel": "none",
+              "matchedWords": []
+            }
+          }
+        },
+        {
+          "id": 245,
+          "name": "Apple Cider Whoopie Pies",
+          "author": "Samantha Seneviratne",
+          "source": "https://cooking.nytimes.com/recipes/1019674-apple-cider-whoopie-pies",
+          "time": "1 hour, plus chilling",
+          "servings": "8 to 10 sandwich cookies",
+          "archived": false,
+          "archived_at": null,
+          "tags": [],
+          "team_id": 2,
+          "primary_image": {
+            "url": "https://images-cdn.recipeyak.com/14/04d660b21638435c8a771c69e4193f7d/IMG_2898.jpeg",
+            "background_url": "data:image/jpg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAgACoDASIAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAAAwQGBQf/xAAuEAACAQIEBAUDBQEAAAAAAAABAgMEEQAFEiETMUFRBiJhcYEysdEVFiNCkeH/xAAYAQADAQEAAAAAAAAAAAAAAAAAAQMEAv/EABsRAAIDAQEBAAAAAAAAAAAAAAECABESMUIh/9oADAMBAAIRAxEAPwCEg8IVEebRZnIwpaQMNTEc232Hvi3p+Hpe0zVGhC5DKNlG3lC26++MqCWrz6hrIYdDPZboT69+V8HyLJ6/Jao1FVp8wIESm5J9+lsYjb0TNQpAVEDl+ZJIUiqYqjQjfySSWCHsOXM++Gc1hXOjTx0dXGrx3tF6deX4w14ho6zNqFY4pEDF7skmyjsAeXPAfDWS1eUVbVFfwVTQdCo1yT32+cBWuH5GGvvZSZJUUOSUccErCSoRLAJva/Njfff7e+HP3ATvqhF+mg/nHMs/XMlzSbM0pTGj2u0L6gLbX9P8thVa7M2UNeQ3F+v4wrbzCl9dlsDT5WWpMujVAhs7gbk9sAWvmp5xIXLEdGN/+jGPWV4y3NamneTiknVqX13IN+owsczp5Y5TJWETHyxwImp3J2HoB83xw2yZRSgE6FS8GqhWYBSJEDWXn89fmxxIVOdQRZnMjyhohIdEifSw+MULxSfo3AWQI7QlVci6XI3YW+nt2xymqhraOokS0ibm9trgdSMVZNCSV8mxL+lqafMKvQjApJbiOT5QvW/2xuEyOS0JjWI7oAo2HTEv4Poqh0nqaqEqDaOHUf7k2Jty2GLcvBGSggQhdhuMCJmJ30Z//9k="
+          },
+          "scheduled_count": 0,
+          "scheduled_count_all_time": 1,
+          "ingredients": [
+            {
+              "id": 2360,
+              "description": "1 ¼ cup",
+              "quantity_name": "300 millilters apple cider",
+              "quantity_name_description": "300 millilters apple cider, 1 ¼ cup",
+              "recipe_id": 245,
+              "quantity": "300 millilters",
+              "name": "apple cider",
+              "optional": false
+            },
+            {
+              "id": 2361,
+              "description": "",
+              "quantity_name": "190 grams all-purpose flour",
+              "quantity_name_description": "190 grams all-purpose flour, ",
+              "recipe_id": 245,
+              "quantity": "190 grams",
+              "name": "all-purpose flour",
+              "optional": false
+            },
+            {
+              "id": 2362,
+              "description": "",
+              "quantity_name": "1 teaspoon baking powder",
+              "quantity_name_description": "1 teaspoon baking powder, ",
+              "recipe_id": 245,
+              "quantity": "1 teaspoon",
+              "name": "baking powder",
+              "optional": false
+            },
+            {
+              "id": 2363,
+              "description": "",
+              "quantity_name": "½ teaspoon kosher salt",
+              "quantity_name_description": "½ teaspoon kosher salt, ",
+              "recipe_id": 245,
+              "quantity": "½ teaspoon",
+              "name": "kosher salt",
+              "optional": false
+            },
+            {
+              "id": 2364,
+              "description": "",
+              "quantity_name": "¼ teaspoon baking soda",
+              "quantity_name_description": "¼ teaspoon baking soda, ",
+              "recipe_id": 245,
+              "quantity": "¼ teaspoon",
+              "name": "baking soda",
+              "optional": false
+            },
+            {
+              "id": 2365,
+              "description": "",
+              "quantity_name": "1 ½ teaspoon ground cinnamon",
+              "quantity_name_description": "1 ½ teaspoon ground cinnamon, ",
+              "recipe_id": 245,
+              "quantity": "1 ½ teaspoon",
+              "name": "ground cinnamon",
+              "optional": false
+            },
+            {
+              "id": 2366,
+              "description": "",
+              "quantity_name": "½ teaspoon ground ginger",
+              "quantity_name_description": "½ teaspoon ground ginger, ",
+              "recipe_id": 245,
+              "quantity": "½ teaspoon",
+              "name": "ground ginger",
+              "optional": false
+            },
+            {
+              "id": 2367,
+              "description": "",
+              "quantity_name": "½ teaspoon freshly ground nutmeg",
+              "quantity_name_description": "½ teaspoon freshly ground nutmeg, ",
+              "recipe_id": 245,
+              "quantity": "½ teaspoon",
+              "name": "freshly ground nutmeg",
+              "optional": false
+            },
+            {
+              "id": 2368,
+              "description": "at room temperature",
+              "quantity_name": "6 tablespoons unsalted butter",
+              "quantity_name_description": "6 tablespoons unsalted butter, at room temperature",
+              "recipe_id": 245,
+              "quantity": "6 tablespoons",
+              "name": "unsalted butter",
+              "optional": false
+            },
+            {
+              "id": 2369,
+              "description": "melted",
+              "quantity_name": "2 tablespoons unsalted butter",
+              "quantity_name_description": "2 tablespoons unsalted butter, melted",
+              "recipe_id": 245,
+              "quantity": "2 tablespoons",
+              "name": "unsalted butter",
+              "optional": false
+            },
+            {
+              "id": 2370,
+              "description": "",
+              "quantity_name": "110 grams dark brown sugar",
+              "quantity_name_description": "110 grams dark brown sugar, ",
+              "recipe_id": 245,
+              "quantity": "110 grams",
+              "name": "dark brown sugar",
+              "optional": false
+            },
+            {
+              "id": 2371,
+              "description": "",
+              "quantity_name": "1 large egg",
+              "quantity_name_description": "1 large egg, ",
+              "recipe_id": 245,
+              "quantity": "1",
+              "name": "large egg",
+              "optional": false
+            },
+            {
+              "id": 2372,
+              "description": "",
+              "quantity_name": "¼ cup apple butter",
+              "quantity_name_description": "¼ cup apple butter, ",
+              "recipe_id": 245,
+              "quantity": "¼ cup",
+              "name": "apple butter",
+              "optional": false
+            },
+            {
+              "id": 2373,
+              "description": "",
+              "quantity_name": "50 grams sugar",
+              "quantity_name_description": "50 grams sugar, ",
+              "recipe_id": 245,
+              "quantity": "50 grams",
+              "name": "sugar",
+              "optional": false
+            },
+            {
+              "id": 2374,
+              "description": "at room temperature",
+              "quantity_name": "6 ounces cream cheese",
+              "quantity_name_description": "6 ounces cream cheese, at room temperature",
+              "recipe_id": 245,
+              "quantity": "6 ounces",
+              "name": "cream cheese",
+              "optional": false
+            },
+            {
+              "id": 3193,
+              "description": "at room temperature",
+              "quantity_name": "3 tablespoons unsatled butter",
+              "quantity_name_description": "3 tablespoons unsatled butter, at room temperature",
+              "recipe_id": 245,
+              "quantity": "3 tablespoons",
+              "name": "unsatled butter",
+              "optional": false
+            },
+            {
+              "id": 2375,
+              "description": "",
+              "quantity_name": "3 tablespoons confectioiners' sugar",
+              "quantity_name_description": "3 tablespoons confectioiners' sugar, ",
+              "recipe_id": 245,
+              "quantity": "3 tablespoons",
+              "name": "confectioiners' sugar",
+              "optional": false
+            },
+            {
+              "id": 2376,
+              "description": "",
+              "quantity_name": "½ teaspoon vanilla extract",
+              "quantity_name_description": "½ teaspoon vanilla extract, ",
+              "recipe_id": 245,
+              "quantity": "½ teaspoon",
+              "name": "vanilla extract",
+              "optional": false
+            }
+          ],
+          "objectID": "245",
+          "_highlightResult": {
+            "name": {
+              "value": "<em>Apple</em> Cider Whoopie Pies",
+              "matchLevel": "full",
+              "fullyHighlighted": false,
+              "matchedWords": ["apple"]
+            },
+            "author": {
+              "value": "Samantha Seneviratne",
+              "matchLevel": "none",
+              "matchedWords": []
+            }
+          }
+        },
+        {
+          "id": 207,
+          "name": "French Apple Cake",
+          "author": "Marcella Dilondardo",
+          "source": "https://www.thekitchn.com/french-apple-cake-22943649",
+          "time": "1 hour",
+          "servings": "8 servings",
+          "archived": false,
+          "archived_at": null,
+          "tags": [],
+          "team_id": 2,
+          "primary_image": {
+            "url": "https://images-cdn.recipeyak.com/scraper/471be419e083451384d3fca06038dd82",
+            "background_url": "data:image/jpg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAYACoDASIAAhEBAxEB/8QAGgAAAwEAAwAAAAAAAAAAAAAAAAYHAwEEBf/EACkQAAIBBAEEAAUFAAAAAAAAAAECAwAEBREhBhIxURMyQWFxFBUiobH/xAAXAQADAQAAAAAAAAAAAAAAAAACAwQF/8QAIBEAAgEEAgMBAAAAAAAAAAAAAQIAAwQSMRFBExRCUv/aAAwDAQACEQMRAD8Ae8ReplbKK8eOSBJgSkZH8xo623qvSgt7eFngfINLKeSD2poeuOdVJ81ftYZ1Xu4PisyqJI2JGl+2j/dUDCZrF3o3ZvCQ/aFGgGUAa8Gsn23VyGmi1moQOvYjA1jZK+whJXn5j5rOfI2VlC8kjKQvGhzzvx+a6tzkbSOCWWVo3RdKVU/MfQpFzPUEd0dkRoittUT6c/7RVbr8bi0oD6EoOJuZcmk0sqIIu7tVNb4+9ct05iWYsbCLZOz5FKvS/VTWura7hCxO2w48j807jKWZGxKuj96stgfGMtySsRmcdRI636VfM2X6iyAF7EpHb4+IvrfuosEuMbev3GaC5RtEHYZdeKKKVc01AyHctsKzk4HQjd++TpZW0TKZZioJKnWyfqa2sMb3AzSuSxbYAPC0UUq2pLxzxAuqjZlY0YzHT3ZWIJtAfmPqmtMEgRRzwKKKvUSAmf/Z"
+          },
+          "scheduled_count": 0,
+          "scheduled_count_all_time": 0,
+          "ingredients": [
+            {
+              "id": 1902,
+              "description": "plus more for greasing pan",
+              "quantity_name": "8 tablespoons butter",
+              "quantity_name_description": "8 tablespoons butter, plus more for greasing pan",
+              "recipe_id": 207,
+              "quantity": "8 tablespoons",
+              "name": "butter",
+              "optional": false
+            },
+            {
+              "id": 1903,
+              "description": "honey crisp, fuji, etc.",
+              "quantity_name": "3 medium apples",
+              "quantity_name_description": "3 medium apples, honey crisp, fuji, etc.",
+              "recipe_id": 207,
+              "quantity": "3",
+              "name": "medium apples",
+              "optional": false
+            },
+            {
+              "id": 1904,
+              "description": "",
+              "quantity_name": "1 cup all-purpose flour",
+              "quantity_name_description": "1 cup all-purpose flour, ",
+              "recipe_id": 207,
+              "quantity": "1 cup",
+              "name": "all-purpose flour",
+              "optional": false
+            },
+            {
+              "id": 1905,
+              "description": "",
+              "quantity_name": "1 teaspoon baking powder",
+              "quantity_name_description": "1 teaspoon baking powder, ",
+              "recipe_id": 207,
+              "quantity": "1 teaspoon",
+              "name": "baking powder",
+              "optional": false
+            },
+            {
+              "id": 1906,
+              "description": "",
+              "quantity_name": "¼ teaspoon fine sea salt",
+              "quantity_name_description": "¼ teaspoon fine sea salt, ",
+              "recipe_id": 207,
+              "quantity": "¼ teaspoon",
+              "name": "fine sea salt",
+              "optional": false
+            },
+            {
+              "id": 1907,
+              "description": "at room temperature",
+              "quantity_name": "2 large eggs",
+              "quantity_name_description": "2 large eggs, at room temperature",
+              "recipe_id": 207,
+              "quantity": "2",
+              "name": "large eggs",
+              "optional": false
+            },
+            {
+              "id": 1908,
+              "description": "packed",
+              "quantity_name": "¾ cup light brown sugar",
+              "quantity_name_description": "¾ cup light brown sugar, packed",
+              "recipe_id": 207,
+              "quantity": "¾ cup",
+              "name": "light brown sugar",
+              "optional": false
+            },
+            {
+              "id": 1909,
+              "description": "",
+              "quantity_name": "¼ cup spiced rum",
+              "quantity_name_description": "¼ cup spiced rum, ",
+              "recipe_id": 207,
+              "quantity": "¼ cup",
+              "name": "spiced rum",
+              "optional": false
+            },
+            {
+              "id": 1910,
+              "description": "",
+              "quantity_name": "1 teaspoon vanilla extract",
+              "quantity_name_description": "1 teaspoon vanilla extract, ",
+              "recipe_id": 207,
+              "quantity": "1 teaspoon",
+              "name": "vanilla extract",
+              "optional": false
+            },
+            {
+              "id": 1911,
+              "description": "for serving",
+              "quantity_name": "some powdered sugar",
+              "quantity_name_description": "some powdered sugar, for serving",
+              "recipe_id": 207,
+              "quantity": "some",
+              "name": "powdered sugar",
+              "optional": false
+            }
+          ],
+          "objectID": "207",
+          "_highlightResult": {
+            "name": {
+              "value": "French <em>Apple</em> Cake",
+              "matchLevel": "full",
+              "fullyHighlighted": false,
+              "matchedWords": ["apple"]
+            },
+            "author": {
+              "value": "Marcella Dilondardo",
+              "matchLevel": "none",
+              "matchedWords": []
+            }
+          }
+        },
+        {
+          "id": 331,
+          "name": "Sheet-Pan Sausages With Caramelized Shallots and Apples",
+          "author": "Lidey Heuck",
+          "source": "https://cooking.nytimes.com/recipes/1021698-sheet-pan-sausages-with-caramelized-shallots-and-apples",
+          "time": "1.5 hours",
+          "servings": "4 servings",
+          "archived": true,
+          "archived_at": "2021-12-20T19:46:01.292-05:00",
+          "tags": [],
+          "team_id": 2,
+          "primary_image": {
+            "url": "https://images-cdn.recipeyak.com/scraper/4bcda2e997da4a7794e55174589f6282.jpg",
+            "background_url": "data:image/jpg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAcACoDASIAAhEBAxEB/8QAGgAAAgMBAQAAAAAAAAAAAAAABQYDBAcCAf/EACsQAAICAgEDAwMDBQAAAAAAAAECAwQFEQAhMVEGEhMUQWEiIzJSkaHB8P/EABcBAQEBAQAAAAAAAAAAAAAAAAMFAgT/xAAfEQACAgEFAQEAAAAAAAAAAAABAgADEQQSEyEiQTH/2gAMAwEAAhEDEQA/ALVWji8rbRMe9avMzK6SRylWbp1/TrofxvXOc1X+srZKgyiG7UBE3zKzDRO/d7h06jRHg75Us46lkFlu1cdYgkiRmjKtsSE9tMD+sbJPbprkN+vJh8WuMjt1pTaKzvMkxknlO9qpHZevffjkw0s2D+yjzAHA6nq4uaS9BUrWJJJ2H7qOD7o/bse5ie+9nmi4HG1MdREcTAkjRcDY/vxerxyYPBrNNDNZyGQ00k+the2gT41/vgmKxka8klbBl69CCZJ55JXP7rltFV32Ua0edJtWo7QIPG1q7yYzTWlpWp1tfI8zj2KFXQA874bW5Gyg77jfByz18rQ+rPURWHrtIRoNo9x+PzyCK7UliSSNZWjZQysEOiD2PForVF8/e4Fjsx9fIg52vncUySxs0jl+pkfQC99Bv6d/b7cK+mKFvN2Uu5DRWM7AA0CfPHi3DHagaOZAy6+45xShjq11jiUKo4qoAczJsJGJYyFCDK45qgYpYiX3xFP5AgdCPPXXTmT18Lloropw17ryznUnzr7V6nbsBs9e2tnzzUbUK2EAcsrKdq6MVZT5BHbid6lzeYx2NnaHKWSU6AsV31/IAP8Anh2adXOTEr1DIu0SbOwy4rB1/SWJb57LyGSbR18UZ7KT5O/+3yxFhs3FCkYysShVChVDaGvsOvBXoWshxsuRctJallb3yOdk6OuNfyv54wUAQS2Z/9k="
+          },
+          "scheduled_count": 0,
+          "scheduled_count_all_time": 1,
+          "ingredients": [
+            {
+              "id": 3404,
+              "description": "peeled, about 6 ounces",
+              "quantity_name": "6 shallots",
+              "quantity_name_description": "6 shallots, peeled, about 6 ounces",
+              "recipe_id": 331,
+              "quantity": "6",
+              "name": "shallots",
+              "optional": false
+            },
+            {
+              "id": 3405,
+              "description": "",
+              "quantity_name": "2 crisp apples (preferably one tart, like Granny Smith, and one sweet, like Fuji)",
+              "quantity_name_description": "2 crisp apples (preferably one tart, like Granny Smith, and one sweet, like Fuji), ",
+              "recipe_id": 331,
+              "quantity": "2",
+              "name": "crisp apples (preferably one tart, like Granny Smith, and one sweet, like Fuji)",
+              "optional": false
+            },
+            {
+              "id": 3406,
+              "description": "more as needed",
+              "quantity_name": "1 tablespoon olive oil",
+              "quantity_name_description": "1 tablespoon olive oil, more as needed",
+              "recipe_id": 331,
+              "quantity": "1 tablespoon",
+              "name": "olive oil",
+              "optional": false
+            },
+            {
+              "id": 3407,
+              "description": "",
+              "quantity_name": "some kosher salt",
+              "quantity_name_description": "some kosher salt, ",
+              "recipe_id": 331,
+              "quantity": "some",
+              "name": "kosher salt",
+              "optional": false
+            },
+            {
+              "id": 3408,
+              "description": "",
+              "quantity_name": "some black pepper",
+              "quantity_name_description": "some black pepper, ",
+              "recipe_id": 331,
+              "quantity": "some",
+              "name": "black pepper",
+              "optional": false
+            },
+            {
+              "id": 3409,
+              "description": "",
+              "quantity_name": "1 pound sweet or hot italian sausages",
+              "quantity_name_description": "1 pound sweet or hot italian sausages, ",
+              "recipe_id": 331,
+              "quantity": "1 pound",
+              "name": "sweet or hot italian sausages",
+              "optional": false
+            },
+            {
+              "id": 3410,
+              "description": "",
+              "quantity_name": "3 fresh rosemary sprigs",
+              "quantity_name_description": "3 fresh rosemary sprigs, ",
+              "recipe_id": 331,
+              "quantity": "3",
+              "name": "fresh rosemary sprigs",
+              "optional": false
+            },
+            {
+              "id": 3411,
+              "description": "",
+              "quantity_name": "1 teaspoon whole-grain mustard",
+              "quantity_name_description": "1 teaspoon whole-grain mustard, ",
+              "recipe_id": 331,
+              "quantity": "1 teaspoon",
+              "name": "whole-grain mustard",
+              "optional": false
+            },
+            {
+              "id": 3412,
+              "description": "",
+              "quantity_name": "1 teaspoon apple cider vinegar",
+              "quantity_name_description": "1 teaspoon apple cider vinegar, ",
+              "recipe_id": 331,
+              "quantity": "1 teaspoon",
+              "name": "apple cider vinegar",
+              "optional": false
+            },
+            {
+              "id": 3413,
+              "description": "for serving",
+              "quantity_name": "some chopped fresh parsely",
+              "quantity_name_description": "some chopped fresh parsely, for serving",
+              "recipe_id": 331,
+              "quantity": "some",
+              "name": "chopped fresh parsely",
+              "optional": true
+            }
+          ],
+          "objectID": "331",
+          "_highlightResult": {
+            "name": {
+              "value": "Sheet-Pan Sausages With Caramelized Shallots and <em>Apple</em>s",
+              "matchLevel": "full",
+              "fullyHighlighted": false,
+              "matchedWords": ["apple"]
+            },
+            "author": {
+              "value": "Lidey Heuck",
+              "matchLevel": "none",
+              "matchedWords": []
+            }
+          }
+        },
+        {
+          "id": 275,
+          "name": "Caramelized Onion, Apple and Goat Cheese Melts",
+          "author": "Jerrelle Guy",
+          "source": "https://cooking.nytimes.com/recipes/1021491-caramelized-onion-apple-and-goat-cheese-melts",
+          "time": "1 hour",
+          "servings": "4 sandwiches",
+          "archived": true,
+          "archived_at": "2021-02-09T19:26:10.374-05:00",
+          "tags": [],
+          "team_id": 2,
+          "primary_image": {
+            "url": "https://images-cdn.recipeyak.com/scraper/b59b4df3e31040b3af7545cd0d5156e9.jpg",
+            "background_url": "data:image/jpg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAcACoDASIAAhEBAxEB/8QAGgAAAgIDAAAAAAAAAAAAAAAABgcDBQEECP/EACwQAAEEAQMDAgUFAQAAAAAAAAECAwQRBQAGEiExQRNhFEJRcYEHFjIzoSL/xAAXAQEBAQEAAAAAAAAAAAAAAAAEAwEF/8QAHhEAAgICAwEBAAAAAAAAAAAAAQIAEQMSBCFREzH/2gAMAwEAAhEDEQA/AGluOa02GIyFhM5VuMqSf+26+Yf6PfQnC3NJwmPROdS6uFy4vhwgJu+pTfb66l3Lj3UsSMosMuSmWioPLsgAfKoHxQ7+NC0CbkNyyAmfGbax8dCZPAj+wkWk9fFdftoByszbflToLiUJQ7lB+pElp/8AUhOSQ8FMSoDSo7nauJoj2N9fzrEbHJ3BHS62sOV/YEq/irzY8a2NzxxvPczWPjkpaiR0hl4DjSiSSr2FdK+2qlvbOaiOKxsTOtCO64DaeTYUqqB+9ao5+igg00zGThJGtrIsDiH8dvuKz6vJ+LKJ5J78Ku/910GiUS2kkm6GlltDZCdvzHZc9912a4aurBHeyT1J0fnMY5s+mpagpPQjge40pbAFnuCYWbA6gnBG4JsV2Fms/j0PP22uNHYS4ribBFg9CRfXsNS5pUDbEXHtluY5FUkMoCAkrRxFgcvyRXXuaPTS4zbn7Zz2QhwUNLZS5QEhtLnvfUd9Euxs3L3KqBEyXpuNRAHEcUUVKsgFX1oEgaCELNUe4+aB/YV4CCzj2cnl5TPpOvAhHOrqqSBehVPxYeEJ1kc1KCWCoGld/oPHvWm3KhRp0N2PJYbdaPyqSCOnbQKxh4EbIpRGYLNGrQ4rx07EkfnVMvE3ZfBJYeXoremE0QFW3G/iV83I4ILtfyo0dLqfO5ZGSfVQLdUaJPTqdNCIhCYzbaUAI41x8aqV7bxJcUfg2+5+UaXUIG9n/9k="
+          },
+          "scheduled_count": 0,
+          "scheduled_count_all_time": 1,
+          "ingredients": [
+            {
+              "id": 2761,
+              "description": "plus more as needed for frying",
+              "quantity_name": "2 tablespoons olive oil",
+              "quantity_name_description": "2 tablespoons olive oil, plus more as needed for frying",
+              "recipe_id": 275,
+              "quantity": "2 tablespoons",
+              "name": "olive oil",
+              "optional": false
+            },
+            {
+              "id": 2762,
+              "description": "peeled, halved and thinly sliced",
+              "quantity_name": "1 ½ pounds Vidalia onions",
+              "quantity_name_description": "1 ½ pounds Vidalia onions, peeled, halved and thinly sliced",
+              "recipe_id": 275,
+              "quantity": "1 ½ pounds",
+              "name": "Vidalia onions",
+              "optional": false
+            },
+            {
+              "id": 2763,
+              "description": "",
+              "quantity_name": "½ teaspoon kosher salt",
+              "quantity_name_description": "½ teaspoon kosher salt, ",
+              "recipe_id": 275,
+              "quantity": "½ teaspoon",
+              "name": "kosher salt",
+              "optional": false
+            },
+            {
+              "id": 2764,
+              "description": "",
+              "quantity_name": "1 teaspoon chopped fresh thyme leaves",
+              "quantity_name_description": "1 teaspoon chopped fresh thyme leaves, ",
+              "recipe_id": 275,
+              "quantity": "1 teaspoon",
+              "name": "chopped fresh thyme leaves",
+              "optional": false
+            },
+            {
+              "id": 2765,
+              "description": "",
+              "quantity_name": "½ teaspoon red-pepper flakes",
+              "quantity_name_description": "½ teaspoon red-pepper flakes, ",
+              "recipe_id": 275,
+              "quantity": "½ teaspoon",
+              "name": "red-pepper flakes",
+              "optional": false
+            },
+            {
+              "id": 2766,
+              "description": "",
+              "quantity_name": "4 ounces soft goat cheese",
+              "quantity_name_description": "4 ounces soft goat cheese, ",
+              "recipe_id": 275,
+              "quantity": "4 ounces",
+              "name": "soft goat cheese",
+              "optional": false
+            },
+            {
+              "id": 2767,
+              "description": "about 10 olives",
+              "quantity_name": "2 tablespoons chopped pitted kalamata olives",
+              "quantity_name_description": "2 tablespoons chopped pitted kalamata olives, about 10 olives",
+              "recipe_id": 275,
+              "quantity": "2 tablespoons",
+              "name": "chopped pitted kalamata olives",
+              "optional": false
+            },
+            {
+              "id": 2768,
+              "description": "",
+              "quantity_name": "8 ½-inch thick slices sourdough bread",
+              "quantity_name_description": "8 ½-inch thick slices sourdough bread, ",
+              "recipe_id": 275,
+              "quantity": "8",
+              "name": "½-inch thick slices sourdough bread",
+              "optional": false
+            },
+            {
+              "id": 2769,
+              "description": "halved, cored and thinly sliced",
+              "quantity_name": "½ pound apples or pears",
+              "quantity_name_description": "½ pound apples or pears, halved, cored and thinly sliced",
+              "recipe_id": 275,
+              "quantity": "½ pound",
+              "name": "apples or pears",
+              "optional": false
+            }
+          ],
+          "objectID": "275",
+          "_highlightResult": {
+            "name": {
+              "value": "Caramelized Onion, <em>Apple</em> and Goat Cheese Melts",
+              "matchLevel": "full",
+              "fullyHighlighted": false,
+              "matchedWords": ["apple"]
+            },
+            "author": {
+              "value": "Jerrelle Guy",
+              "matchLevel": "none",
+              "matchedWords": []
+            }
+          }
+        }
+      ],
+      "nbHits": 12,
+      "page": 0,
+      "nbPages": 1,
+      "hitsPerPage": 20,
+      "exhaustiveNbHits": true,
+      "exhaustiveTypo": true,
+      "exhaustive": {
+        "nbHits": true,
+        "typo": true
+      },
+      "query": "apple",
+      "params": "query=apple&&filters=team_id%3A2+OR+team_id%3A70&restrictIndices=recipes",
+      "index": "recipes",
+      "renderingContent": {},
+      "processingTimeMS": 1,
+      "processingTimingsMS": {
+        "_request": {
+          "roundTrip": 27
+        }
+      },
+      "serverTimeMS": 1
+    }
+  ]
+}
