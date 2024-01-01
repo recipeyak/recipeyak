@@ -12,6 +12,7 @@ import { Button } from "@/components/Buttons"
 import { Modal } from "@/components/Modal"
 import { toISODateString } from "@/date"
 import { CalendarDay } from "@/pages/schedule/CalendarDay"
+import HelpMenuModal from "@/pages/schedule/HelpMenuModal"
 import { Kbd } from "@/pages/schedule/Kbd"
 import { ScheduleRecipeModal } from "@/pages/schedule/ScheduleRecipeModal"
 import ShoppingList from "@/pages/schedule/ShoppingList"
@@ -19,6 +20,7 @@ import { ICalRecipe } from "@/queries/scheduledRecipeCreate"
 import { useScheduledRecipeList } from "@/queries/scheduledRecipeList"
 import { removeQueryParams, setQueryParams } from "@/querystring"
 import { styled } from "@/theme"
+import { useGlobalEvent } from "@/useGlobalEvent"
 
 function CalTitle({ dayTs }: { readonly dayTs: number }) {
   return (
@@ -227,10 +229,37 @@ function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
 }
 
 function HelpPrompt() {
+  const [show, setShow] = useState(false)
+
+  useGlobalEvent({
+    keyUp: (e: KeyboardEvent) => {
+      const el = document.activeElement
+      if (el == null || el.tagName !== "BODY") {
+        return
+      }
+      if (e.key === "?") {
+        setShow(true)
+      }
+    },
+  })
+
   return (
-    <div className="mb-1 mt-2 hidden md:block">
-      press<Kbd>?</Kbd>for help
-    </div>
+    <>
+      <div
+        className="mb-1 mt-2 hidden md:block"
+        onClick={() => {
+          setShow(true)
+        }}
+      >
+        press <Kbd>?</Kbd> for help
+      </div>
+      <HelpMenuModal
+        show={show}
+        close={() => {
+          setShow(false)
+        }}
+      />
+    </>
   )
 }
 

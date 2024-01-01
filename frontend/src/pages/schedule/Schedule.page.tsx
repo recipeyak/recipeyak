@@ -1,7 +1,6 @@
 import { Helmet } from "@/components/Helmet"
 import { NavPage } from "@/components/Page"
 import Calendar from "@/pages/schedule/Calendar"
-import HelpMenuModal from "@/pages/schedule/HelpMenuModal"
 
 export function SchedulePage() {
   return (
@@ -9,7 +8,6 @@ export function SchedulePage() {
       <div className="flex h-[calc(100vh-3rem)] grow px-2">
         <Helmet title="Schedule" />
         <Calendar />
-        <HelpMenuModal />
       </div>
     </NavPage>
   )
