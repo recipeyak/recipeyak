@@ -7,7 +7,6 @@ import {
   Popover,
   Separator,
 } from "react-aria-components"
-import { Configure, InstantSearch } from "react-instantsearch-core"
 import { Link } from "react-router-dom"
 
 import { useIsLoggedIn } from "@/auth"
@@ -29,7 +28,6 @@ import {
 } from "@/paths"
 import { useAuthLogout } from "@/queries/authLogout"
 import { useTeam } from "@/queries/teamFetch"
-import { useSearchClient } from "@/queries/useSearchClient"
 import { useTeamId } from "@/useTeamId"
 import { useUser } from "@/useUser"
 
@@ -193,8 +191,6 @@ const activeNavItemCss = "bg-[var(--color-background-calendar-day)]"
 
 export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
   const isLoggedIn = useIsLoggedIn()
-  const teamId = useTeamId()
-  const searchClient = useSearchClient()
   return (
     <nav className="flex h-[3.5rem] shrink-0 justify-between gap-1 px-3 pb-1 print:!hidden md:grid md:grid-cols-3">
       <div className="flex items-center justify-start gap-2">
@@ -215,12 +211,7 @@ export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
         </Link>
       </div>
       <div className="flex grow items-center">
-        {includeSearch && searchClient && (
-          <InstantSearch searchClient={searchClient} indexName="recipes">
-            <NavRecipeSearch />
-            <Configure hitsPerPage={1000} filters={`team_id:${teamId}`} />
-          </InstantSearch>
-        )}
+        {includeSearch && <NavRecipeSearch />}
       </div>
       {isLoggedIn ? <NavButtons /> : <AuthButtons />}
     </nav>

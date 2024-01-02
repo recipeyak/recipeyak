@@ -322,11 +322,8 @@ function App() {
           dehydrateOptions: {
             // see: https://github.com/TanStack/query/discussions/3735#discussioncomment-3007804
             shouldDehydrateQuery: (query) => {
-              // NOTE: list endpoint for recipes is huge, like 2MB for 400ish recipes
-              // we manually cache each recipe but don't include the list itself as that
-              // doubles the total storage and there's only 5MB of localStorage to work
-              // with.
-              if (query.queryKey.includes("recipes-list")) {
+              const skipPersistence = query?.meta?.["skipPersistence"] ?? false
+              if (skipPersistence) {
                 return false
               }
               // default implementation

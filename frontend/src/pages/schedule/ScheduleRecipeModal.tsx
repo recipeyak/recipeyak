@@ -6,7 +6,7 @@ import { DateInput, SearchInput } from "@/components/Forms"
 import { Modal } from "@/components/Modal"
 import { toISODateString } from "@/date"
 import { useScheduleRecipeCreate } from "@/queries/scheduledRecipeCreate"
-import { useSearchQuery } from "@/queries/searchRecipes"
+import { useSearchRecipes } from "@/queries/searchRecipes"
 import { imgixFmt } from "@/url"
 
 function RecipeSelectInput({
@@ -15,7 +15,7 @@ function RecipeSelectInput({
   onSelect: (_: RecipeSearchItem) => void
 }) {
   const [query, setQuery] = useState("")
-  const { data } = useSearchQuery(query)
+  const { data } = useSearchRecipes({ query })
 
   const hits = data?.hits ?? []
   const resultsNotShown =

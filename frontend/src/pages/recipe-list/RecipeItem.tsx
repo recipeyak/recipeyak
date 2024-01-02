@@ -8,7 +8,8 @@ import { Link } from "react-router-dom"
 import { clx } from "@/classnames"
 import { CustomHighlight } from "@/components/CustomHighlight"
 import { Image } from "@/components/Image"
-import { RecipeYakHit } from "@/search-types"
+import { ResponseFromUse } from "@/queries/queryUtilTypes"
+import { useSearchRecipes } from "@/queries/searchRecipes"
 import { imgixFmt } from "@/url"
 import { recipeURL } from "@/urls"
 
@@ -55,7 +56,7 @@ const Card = forwardRef(
   },
 )
 
-function HighlightIngredients({ hit }: { hit: RecipeYakHit }) {
+function HighlightIngredients({ hit }: { hit: Hit }) {
   const ingredientHighlights =
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     (hit._highlightResult?.ingredients ?? []) as HitHighlightResult[]
@@ -83,13 +84,15 @@ function HighlightIngredients({ hit }: { hit: RecipeYakHit }) {
   )
 }
 
+type Hit = NonNullable<ResponseFromUse<typeof useSearchRecipes>>["hits"][number]
+
 export function RecipeListItem({
   index,
   hit,
 }: {
   readonly index: number
   readonly url?: string
-  readonly hit: RecipeYakHit
+  readonly hit: Hit
 }) {
   const url = recipeURL(hit.id, hit.name)
 
