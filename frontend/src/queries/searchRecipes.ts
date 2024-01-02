@@ -8,7 +8,7 @@ export function useSearchRecipes({
   query,
   indexName = "recipes",
   facetFilters,
-  limit,
+  limit = 20,
 }: {
   query: string
   indexName?: "recipes" | "ingredients"
