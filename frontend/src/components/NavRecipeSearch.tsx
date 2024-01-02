@@ -1,9 +1,4 @@
 import React from "react"
-import {
-  useHits,
-  useInstantSearch,
-  useSearchBox,
-} from "react-instantsearch-core"
 import { Link, useHistory } from "react-router-dom"
 import useOnClickOutside from "use-onclickoutside"
 
@@ -11,7 +6,8 @@ import { clx } from "@/classnames"
 import { CustomHighlight } from "@/components/CustomHighlight"
 import { SearchInput } from "@/components/Forms"
 import { pathRecipeDetail, pathRecipesList } from "@/paths"
-import { RecipeYakHit } from "@/search-types"
+import { ResponseFromUse } from "@/queries/queryUtilTypes"
+import { useSearchRecipes } from "@/queries/searchRecipes"
 import { toURL } from "@/urls"
 import { useGlobalEvent } from "@/useGlobalEvent"
 
@@ -22,14 +18,16 @@ const styleSuggestionInfo = clx(
   stylesSuggestion,
 )
 
+type Hits = NonNullable<ResponseFromUse<typeof useSearchRecipes>>["hits"]
 function SearchResult({
+  query,
   hits,
   onClick,
 }: {
+  query: string
   onClick?: () => void
-  hits: Array<RecipeYakHit>
+  hits: Hits
 }) {
-  const { indexUiState } = useInstantSearch()
   const suggestions = hits
     .map((hit, index) => {
       return (
@@ -90,7 +88,7 @@ function SearchResult({
         <Link
           to={{
             pathname: pathRecipesList({}),
-            search: `search=${encodeURIComponent(indexUiState.query ?? "")}`,
+            search: `search=${encodeURIComponent(query ?? "")}`,
           }}
           data-testid="search browse"
         >
@@ -112,13 +110,10 @@ function isInputFocused() {
 
 export function NavRecipeSearch() {
   const history = useHistory()
-  const { query, refine } = useSearchBox()
-  const { hits } = useHits<{
-    readonly id: number
-    readonly name: string
-    readonly archived_at: string | null
-    readonly author: string | null
-  }>()
+
+  const [query, setQuery] = React.useState("")
+
+  const results = useSearchRecipes({ query })
 
   // If a user clicks outside of the dropdown, we want to hide the dropdown, but
   // keep their search query.
@@ -146,7 +141,7 @@ export function NavRecipeSearch() {
   })
 
   const resetForm = () => {
-    refine("")
+    setQuery("")
     setIsClosed(false)
   }
 
@@ -154,7 +149,8 @@ export function NavRecipeSearch() {
     // We need to extract the key from the synthetic event before we lose the
     // event.
     const key = e.key
-    const suggestion = hits[0]
+
+    const suggestion = results.data?.hits?.[0]
     if (!suggestion) {
       return
     }
@@ -171,7 +167,7 @@ export function NavRecipeSearch() {
         value={query}
         placeholder="Press / to search"
         onChange={(e) => {
-          refine(e.target.value)
+          setQuery(e.target.value)
         }}
         onKeyDown={handleSearchKeydown}
         onFocus={() => {
@@ -181,7 +177,8 @@ export function NavRecipeSearch() {
       {query && !isClosed && (
         <div className="absolute inset-x-0 top-[60px] z-10 w-full sm:inset-x-[unset] sm:max-w-[400px]">
           <SearchResult
-            hits={hits}
+            hits={results.data?.hits ?? []}
+            query={query}
             onClick={() => {
               resetForm()
             }}

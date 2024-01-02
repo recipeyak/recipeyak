@@ -1,17 +1,11 @@
 import { useEffect, useState } from "react"
-import {
-  useHits,
-  useInstantSearch,
-  useSearchBox,
-  useToggleRefinement,
-} from "react-instantsearch-core"
 
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
-import { SearchInput } from "@/components/Forms"
 import { RecipeListItem } from "@/pages/recipe-list/RecipeItem"
 import { pathRecipeAdd } from "@/paths"
-import { RecipeYakHit } from "@/search-types"
+import { ResponseFromUse } from "@/queries/queryUtilTypes"
+import { useSearchRecipes } from "@/queries/searchRecipes"
 import { styled } from "@/theme"
 
 function Results({
@@ -59,19 +53,18 @@ const RecipeGrid = styled.div`
   }
 `
 
+type Hits = NonNullable<ResponseFromUse<typeof useSearchRecipes>>["hits"]
+
 export function RecipeList(props: {
   readonly className?: string
   readonly advancedSearch?: boolean
+  readonly hits: Hits
+  readonly isSuccess: boolean
+  readonly query: string
 }) {
-  const { hits } = useHits<RecipeYakHit>()
   const [initialLimit, setLimit] = useState(20)
-  const {
-    indexUiState: { query },
-    status,
-    results,
-  } = useInstantSearch()
 
-  const recipeItems = hits
+  const recipeItems = props.hits
     .map((hit, index) => {
       return <RecipeListItem key={index} index={index} hit={hit} {...hit} />
     })
@@ -88,55 +81,31 @@ export function RecipeList(props: {
     }
   }, [recipeItems.length])
 
-  // @ts-expect-error ts(2339): Property 'serverTimeMS' does not exist on type 'SearchResults<any>'.
-  const hasServerResults = results.serverTimeMS != null
-  if (
-    !query &&
-    recipeItems.length === 0 &&
-    hasServerResults &&
-    status === "idle"
-  ) {
+  if (!props.query && recipeItems.length === 0 && props.isSuccess) {
     return <AddRecipeCallToAction />
   }
 
   return (
     <div className={props.className}>
       <RecipeGrid>
-        <Results recipes={recipeItems} query={query ?? ""} />
+        <Results recipes={recipeItems} query={props.query ?? ""} />
       </RecipeGrid>
     </div>
   )
 }
 
-export function Search() {
-  const { query, refine } = useSearchBox()
-  return (
-    <SearchInput
-      value={query}
-      onChange={(e) => {
-        refine(e.target.value)
-      }}
-      placeholder="search"
-    />
-  )
-}
-
-export function Matches() {
-  const { results: algoliaResults } = useHits()
-  const {
-    value: {
-      onFacetValue: { count: countOn },
-    },
-  } = useToggleRefinement({
-    attribute: "archived",
-    on: [true, false],
-    off: false,
-  })
-
+export function Matches({
+  nbHits,
+  archivedCount,
+  showArchived,
+}: {
+  nbHits: number
+  archivedCount: number
+  showArchived: boolean
+}) {
   return (
     <div className="text-sm">
-      matches: {algoliaResults?.nbHits || 0} (archived:{" "}
-      {(countOn ?? 0) - (algoliaResults?.nbHits ?? 0)})
+      matches: {nbHits} {showArchived && <>(archived: {archivedCount})</>}
     </div>
   )
 }
