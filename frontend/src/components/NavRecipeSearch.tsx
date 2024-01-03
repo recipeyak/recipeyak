@@ -22,10 +22,12 @@ type Hits = NonNullable<ResponseFromUse<typeof useSearchRecipes>>["hits"]
 function SearchResult({
   query,
   hits,
+  hitCount,
   onClick,
 }: {
   query: string
   onClick?: () => void
+  hitCount: number
   hits: Hits
 }) {
   const suggestions = hits
@@ -82,7 +84,7 @@ function SearchResult({
         )}
       >
         <span className="text-[var(--color-text-muted)]">
-          matches: {hits.length}
+          matches: {hitCount}
         </span>
 
         <Link
@@ -178,6 +180,7 @@ export function NavRecipeSearch() {
         <div className="absolute inset-x-0 top-[60px] z-10 w-full sm:inset-x-[unset] sm:max-w-[400px]">
           <SearchResult
             hits={results.data?.hits ?? []}
+            hitCount={results.data?.result.nbHits ?? 0}
             query={query}
             onClick={() => {
               resetForm()
