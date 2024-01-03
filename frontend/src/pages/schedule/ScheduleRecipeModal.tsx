@@ -2,6 +2,7 @@ import { Hit } from "@algolia/client-search"
 import { parseISO } from "date-fns"
 import { useState } from "react"
 
+import { isMobile } from "@/browser"
 import { Button } from "@/components/Buttons"
 import { CustomHighlight } from "@/components/CustomHighlight"
 import { DateInput, SearchInput } from "@/components/Forms"
@@ -28,6 +29,7 @@ function RecipeSelectInput({
       <SearchInput
         placeholder="search recipes"
         value={query}
+        autoFocus={!isMobile()}
         onChange={(e) => {
           setQuery(e.target.value)
         }}
