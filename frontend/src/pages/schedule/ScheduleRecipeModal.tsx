@@ -1,7 +1,9 @@
+import { Hit } from "@algolia/client-search"
 import { parseISO } from "date-fns"
 import { useState } from "react"
 
 import { Button } from "@/components/Buttons"
+import { CustomHighlight } from "@/components/CustomHighlight"
 import { DateInput, SearchInput } from "@/components/Forms"
 import { Modal } from "@/components/Modal"
 import { toISODateString } from "@/date"
@@ -34,19 +36,20 @@ function RecipeSelectInput({
         {hits.length === 0 && query.length !== 0 ? (
           <div className="text-center">no results</div>
         ) : (
-          hits.map((item) => {
+          hits.map((hit) => {
             return (
               <RecipeItem
-                key={item.id}
+                key={hit.id}
                 src={
-                  item.primary_image?.url != null
-                    ? imgixFmt(item.primary_image.url)
+                  hit.primary_image?.url != null
+                    ? imgixFmt(hit.primary_image.url)
                     : ""
                 }
-                name={item.name}
-                author={item.author ?? ""}
+                hit={hit}
+                name={hit.name}
+                author={hit.author ?? ""}
                 onClick={() => {
-                  onSelect(item)
+                  onSelect(hit)
                 }}
               />
             )
@@ -67,11 +70,13 @@ function RecipeItem({
   name,
   author,
   onClick,
+  hit,
 }: {
   src: string
   name: string
   author: string
   onClick?: () => void
+  hit?: Hit<{}>
 }) {
   const cls =
     "h-[40px] w-[40px] rounded-md bg-[var(--color-background-empty-image)] object-cover"
@@ -88,8 +93,12 @@ function RecipeItem({
     >
       {src !== "" ? <img src={src} className={cls} /> : <div className={cls} />}
       <div>
-        <div className="line-clamp-1 text-ellipsis">{name}</div>
-        <div className="line-clamp-1 text-ellipsis text-sm">{author}</div>
+        <div className="line-clamp-1 text-ellipsis">
+          {hit ? <CustomHighlight hit={hit} attribute="name" /> : name}
+        </div>
+        <div className="line-clamp-1 text-ellipsis text-sm">
+          {hit ? <CustomHighlight hit={hit} attribute="author" /> : author}
+        </div>
       </div>
     </div>
   )
