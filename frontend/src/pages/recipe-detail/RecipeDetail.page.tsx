@@ -640,7 +640,7 @@ function RecipeInfo(props: {
                     <Link
                       to={{
                         pathname: pathRecipesList({}),
-                        search: `search=author:'${encodeURIComponent(
+                        search: `search='${encodeURIComponent(
                           props.recipe.author,
                         )}'`,
                       }}
