@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import pydantic
+from django.db import transaction
 from django.shortcuts import get_object_or_404
 
 from recipeyak.api.base.decorators import endpoint
@@ -17,11 +18,18 @@ class CompleteUploadResponse(pydantic.BaseModel):
 
 @endpoint()
 def upload_complete_view(request: AuthedHttpRequest, upload_id: int) -> JsonResponse:
-    upload = get_object_or_404(
-        Upload.objects.filter(created_by=request.user), pk=upload_id
-    )
-    upload.completed = True
-    upload.save()
+    with transaction.atomic():
+        upload = get_object_or_404(
+            Upload.objects.filter(created_by=request.user), pk=upload_id
+        )
+        upload.completed = True
+        # A little bodgy but set the upload on the user when we're done, maybe
+        # we can structure this better
+        if upload.profile is not None:
+            user = upload.profile
+            user.profile_upload = upload
+            user.save()
+        upload.save()
 
     return JsonResponse(
         CompleteUploadResponse(

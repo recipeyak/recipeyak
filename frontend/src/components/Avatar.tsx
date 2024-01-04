@@ -1,8 +1,9 @@
 import { assertNever } from "@/assert"
 import { clx } from "@/classnames"
+import { imgixFmt } from "@/url"
 
 const avatarCss =
-  "max-h-none rounded-full bg-[var(--color-background-empty-image)] print:!hidden"
+  "max-h-none rounded-full object-cover bg-[var(--color-background-empty-image)] print:!hidden"
 
 function UserProfileImage({
   onClick,
@@ -27,7 +28,7 @@ function UserProfileImage({
       width={size}
       height={size}
       alt={alt}
-      src={src}
+      src={imgixFmt(src)}
     />
   )
 }

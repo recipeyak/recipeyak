@@ -18,6 +18,7 @@ from recipeyak.models import (
 from recipeyak.models.reaction import Reaction
 from recipeyak.models.timeline_event import TimelineEvent
 from recipeyak.models.upload import Upload
+from recipeyak.models.user import get_avatar_url
 
 IGNORED_TIMELINE_EVENTS = {"set_primary_image", "remove_primary_image"}
 
@@ -78,7 +79,12 @@ def serialize_public_user(user: User) -> PublicUser:
         id=user.id,
         name=user.name or user.email,
         email=user.email,
-        avatar_url=user.avatar_url,
+        avatar_url=get_avatar_url(
+            email=user.email,
+            profile_upload_key=user.profile_upload.key
+            if user.profile_upload is not None
+            else None,
+        ),
     )
 
 

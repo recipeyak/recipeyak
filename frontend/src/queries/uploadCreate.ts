@@ -3,13 +3,17 @@ import { isOk, Ok } from "@/result"
 
 export const uploadCreate = async ({
   file,
-  recipeId,
   onProgress,
-}: {
-  file: File
-  recipeId: number
-  onProgress: (_: number) => void
-}) => {
+  ...params
+}: { file: File; onProgress: (_: number) => void } & (
+  | {
+      recipeId: number
+      purpose: "recipe"
+    }
+  | {
+      purpose: "profile"
+    }
+)) => {
   const res = await http.post<{
     id: string
     upload_url: string
@@ -18,7 +22,8 @@ export const uploadCreate = async ({
     file_name: file.name,
     content_type: file.type,
     content_length: file.size,
-    recipe_id: recipeId,
+    purpose: params.purpose,
+    ...(params.purpose === "profile" ? {} : { recipe_id: params.recipeId }),
   })
   if (!isOk(res)) {
     return res

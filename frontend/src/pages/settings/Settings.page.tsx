@@ -1,3 +1,7 @@
+import { useQueryClient } from "@tanstack/react-query"
+import { useState } from "react"
+import { Button, FileTrigger } from "react-aria-components"
+
 import { Avatar } from "@/components/Avatar"
 import { Box } from "@/components/Box"
 import { Helmet } from "@/components/Helmet"
@@ -11,10 +15,15 @@ import { DangerZone } from "@/pages/settings/DangerZone"
 import { Export } from "@/pages/settings/Export"
 import Sessions from "@/pages/settings/Sessions"
 import { ThemePicker } from "@/pages/settings/ThemePicker"
+import { uploadCreate } from "@/queries/uploadCreate"
 import { useUserFetch } from "@/queries/userFetch"
+import { isOk } from "@/result"
+import { toast } from "@/toast"
 
 export function SettingsPage() {
   const userInfo = useUserFetch()
+  const queryClient = useQueryClient()
+  const [isLoading, setIsLoading] = useState(true)
 
   if (!userInfo.isSuccess) {
     return (
@@ -42,12 +51,48 @@ export function SettingsPage() {
         <Box dir="col" align="start" className="gap-2">
           <div className="flex flex-col gap-2">
             <Avatar avatarURL={userInfo.data.avatar_url} size={72} />
-            <a
-              href="https://secure.gravatar.com"
-              className="self-start rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-card)] px-2 py-1 text-xs font-medium"
+            <FileTrigger
+              acceptedFileTypes={["image/jpeg", "image/png"]}
+              onSelect={(e) => {
+                if (e == null) {
+                  return
+                }
+                let files = Array.from(e)
+                const file = files[0]
+                setIsLoading(true)
+                // TODO: we should open this in a modal that:
+                // 1. allows adjustments
+                // 2. allows previewing of what it will look like
+                // 3. allows us to clearly show a loading state
+                void uploadCreate({
+                  file,
+                  purpose: "profile",
+                  onProgress: () => {},
+                }).then((x) => {
+                  if (isOk(x)) {
+                    queryClient
+                      .invalidateQueries({
+                        queryKey: ["user-detail"],
+                      })
+                      .then(() => {
+                        setIsLoading(false)
+                      })
+                      .catch(() => {
+                        setIsLoading(false)
+                      })
+                  } else {
+                    setIsLoading(false)
+                    toast.error("problem changing profile picture")
+                  }
+                })
+              }}
             >
-              Change profile picture
-            </a>
+              <Button className="self-start rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-card)] px-2 py-1 text-xs font-medium text-[var(--color-text)]">
+                {!isLoading
+                  ? "Change profile picture"
+                  : "Changing profile picture..."}
+              </Button>
+            </FileTrigger>
           </div>
           <Box dir="col" style={{ maxWidth: 400 }} gap={2}>
             <ChangeEmail email={userInfo.data.email} />

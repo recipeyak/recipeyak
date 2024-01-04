@@ -5,7 +5,7 @@ import pydantic
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.models.user import User
+from recipeyak.models.user import User, get_avatar_url
 
 
 class UserSerializer(pydantic.BaseModel):
@@ -24,7 +24,12 @@ def serialize_user(user: User) -> UserSerializer:
     return UserSerializer(
         id=user.id,
         name=name,
-        avatar_url=user.avatar_url,
+        avatar_url=get_avatar_url(
+            email=user.email,
+            profile_upload_key=user.profile_upload.key
+            if user.profile_upload is not None
+            else None,
+        ),
         email=user.email,
         theme_day=cast(
             Literal["light", "dark", "dark_dimmed", "autumn", "solarized"],

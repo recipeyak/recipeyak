@@ -6,6 +6,7 @@ import pydantic
 
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.models.scheduled_recipe import ScheduledRecipe
+from recipeyak.models.user import get_avatar_url
 
 
 class ScheduledRecipeUpdateParams(RequestParams):
@@ -51,7 +52,14 @@ def serialize_scheduled_recipe(
         createdBy=CreatedBySerializer(
             id=scheduled_recipe.created_by.id,
             name=scheduled_recipe.created_by.get_display_name(),
-            avatar_url=scheduled_recipe.created_by.avatar_url,
+            avatar_url=get_avatar_url(
+                email=scheduled_recipe.created_by.email,
+                profile_upload_key=(
+                    scheduled_recipe.created_by.profile_upload.key
+                    if scheduled_recipe.created_by.profile_upload is not None
+                    else None
+                ),
+            ),
         )
         if scheduled_recipe.created_by
         else None,

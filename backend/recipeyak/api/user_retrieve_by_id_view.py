@@ -12,7 +12,7 @@ from recipeyak.api.unwrap import unwrap
 from recipeyak.models.note import Note
 from recipeyak.models.scheduled_recipe import ScheduledRecipe
 from recipeyak.models.upload import Upload
-from recipeyak.models.user import User
+from recipeyak.models.user import User, get_avatar_url
 
 
 class UserDetailByIdStats(pydantic.BaseModel):
@@ -283,7 +283,12 @@ def user_retrieve_by_id_view(request: AuthedHttpRequest, user_id: str) -> JsonRe
             id=user.id,
             name=user.name,
             email=user.email,
-            avatar_url=user.avatar_url,
+            avatar_url=get_avatar_url(
+                email=user.email,
+                profile_upload_key=user.profile_upload.key
+                if user.profile_upload is not None
+                else None,
+            ),
             created=user.created,
             stats=UserDetailByIdStats(
                 recipesAdd=recipes_added_count,

@@ -38,16 +38,22 @@ class Upload(CommonInfo):
     scraped_by = models.ForeignKey["User"](
         "User", related_name="scrapes", null=True, on_delete=models.SET_NULL
     )
+    scraped_by_id: int
 
     note = models.ForeignKey["Note"](
         "Note", related_name="uploads", null=True, on_delete=models.SET_NULL
     )
+    note_id: int | None
+
     recipe = models.ForeignKey["Recipe"](
         "Recipe", related_name="uploads", null=True, on_delete=models.SET_NULL
     )
-
-    note_id: int | None
     recipe_id: int | None
+
+    profile = models.ForeignKey["User"](
+        "User", related_name="+", null=True, on_delete=models.SET_NULL
+    )
+    profile_id: int | None
 
     class Meta:
         db_table = "core_upload"

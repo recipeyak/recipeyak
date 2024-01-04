@@ -41,12 +41,14 @@ select
     m.team_id,
     t.name,
     m.user_id,
-    u.email
+    u.email,
+    upload.key
 from
     core_invite i
     join core_membership m on m.id = i.membership_id
     join core_team t on t.id = m.team_id
     join core_myuser u on u.id = m.user_id
+    join core_upload upload on upload.id = u.profile_upload_id
 where
     m.user_id = %(user_id)s;
             """,
@@ -60,7 +62,11 @@ where
                 status=status,
                 team=TeamResponse(id=team_id, name=team_name),
                 creator=CreatorResponse(
-                    id=user_id, email=user_email, avatar_url=get_avatar_url(user_email)
+                    id=user_id,
+                    email=user_email,
+                    avatar_url=get_avatar_url(
+                        email=user_email, profile_upload_key=user_profile_upload_key
+                    ),
                 ),
             )
             for (
@@ -71,6 +77,7 @@ where
                 team_name,
                 user_id,
                 user_email,
+                user_profile_upload_key,
             ) in invite_rows
         ]
         return JsonResponse(invites)
