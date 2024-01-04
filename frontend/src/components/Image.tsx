@@ -1,7 +1,6 @@
 import { useRef } from "react"
 
 import { clx } from "@/classnames"
-import { imgixFmt } from "@/url"
 import { useIntersectionObserver } from "@/useIntersectionObserver"
 
 export function Image({
