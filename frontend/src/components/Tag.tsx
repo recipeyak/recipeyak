@@ -1,28 +1,4 @@
-import { styled } from "@/theme"
-
-const TagInner = styled.span<{
-  fontWeight?: React.CSSProperties["fontWeight"]
-  selectable?: boolean
-}>`
-  align-items: center;
-  background-color: var(--color-background-card);
-  border-radius: 290486px;
-  color: var(--color-text);
-  display: inline-flex;
-  font-size: 0.75rem;
-  height: 2em;
-  justify-content: center;
-  line-height: 1.5;
-  padding-left: 0.875em;
-  padding-right: 0.875em;
-  white-space: nowrap;
-  ${(p) => p.fontWeight && `font-weight: ${p.fontWeight}`}
-  ${(p) =>
-    p.selectable &&
-    `user-select: text !important;
-  -webkit-user-select: text !important;
-  cursor: auto !important;`}
-`
+import { clx } from "@/classnames"
 
 export function Tag({
   children,
@@ -30,12 +6,18 @@ export function Tag({
   selectable,
 }: {
   children: React.ReactNode
-  fontWeight?: string
+  fontWeight?: "normal"
   selectable?: boolean
 }) {
   return (
-    <TagInner fontWeight={fontWeight} selectable={selectable}>
+    <span
+      className={clx(
+        "inline-flex h-[2em] items-center justify-center whitespace-nowrap rounded-[290486px] bg-[var(--color-background-card)] px-[0.875em] text-xs leading-[1.5] text-[var(--color-text)]",
+        fontWeight && "font-normal",
+        selectable && "!cursor-auto !select-text",
+      )}
+    >
       {children}
-    </TagInner>
+    </span>
   )
 }

@@ -6,7 +6,6 @@ import { RecipeListItem } from "@/pages/recipe-list/RecipeItem"
 import { pathRecipeAdd } from "@/paths"
 import { ResponseFromUse } from "@/queries/queryUtilTypes"
 import { useSearchRecipes } from "@/queries/searchRecipes"
-import { styled } from "@/theme"
 
 function Results({
   recipes,
@@ -39,19 +38,6 @@ function NoMatchingRecipe({ query }: { readonly query: string }) {
     </div>
   )
 }
-
-const RecipeGrid = styled.div`
-  display: grid;
-  gap: 0.5rem;
-  // support two columns on iOS.
-
-  @media (max-width: 449px) {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  }
-  @media (min-width: 450px) {
-    grid-template-columns: repeat(auto-fill, minmax(225px, 1fr));
-  }
-`
 
 type Hits = NonNullable<ResponseFromUse<typeof useSearchRecipes>>["hits"]
 
@@ -87,9 +73,9 @@ export function RecipeList(props: {
 
   return (
     <div className={props.className}>
-      <RecipeGrid>
+      <div className="grid gap-2 [grid-template-columns:repeat(auto-fill,minmax(175px,1fr))] sm:[grid-template-columns:repeat(auto-fill,minmax(225px,1fr))]">
         <Results recipes={recipeItems} query={props.query ?? ""} />
-      </RecipeGrid>
+      </div>
     </div>
   )
 }

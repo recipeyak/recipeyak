@@ -10,6 +10,7 @@ import { useDrop } from "react-dnd"
 import { useLocation } from "react-router"
 
 import { assertNever } from "@/assert"
+import { clx } from "@/classnames"
 import { isInsideChangeWindow, toISODateString } from "@/date"
 import { DragDrop } from "@/dragDrop"
 import {
@@ -20,7 +21,6 @@ import { ScheduleRecipeModal } from "@/pages/schedule/ScheduleRecipeModal"
 import { ICalRecipe } from "@/queries/scheduledRecipeCreate"
 import { useScheduledRecipeDelete } from "@/queries/scheduledRecipeDelete"
 import { useScheduledRecipeUpdate } from "@/queries/scheduledRecipeUpdate"
-import { css, styled } from "@/theme"
 import { useCurrentDay } from "@/useCurrentDay"
 
 function DayOfWeek({ date }: { date: Date }) {
@@ -42,53 +42,6 @@ const Title = ({ date }: { readonly date: Date }) => {
     </div>
   )
 }
-
-const isTodayStyle = css`
-  border-bottom: 2px solid var(--color-accent);
-`
-
-const isSelectedDayStyle = css`
-  border: 2px solid var(--color-border-selected-day);
-  border-radius: 6px;
-`
-
-const isDroppableStyle = css`
-  opacity: 0.5;
-`
-
-interface ICalendarDayContainerProps {
-  readonly isToday: boolean
-  readonly isSelectedDay: boolean
-  readonly isDroppable: boolean
-}
-
-const CalendarDayContainer = styled.div<ICalendarDayContainerProps>`
-  flex: 1 1 0%;
-  display: flex;
-  flex-direction: column;
-  padding: 0.25rem;
-  background-color: var(--color-background-calendar-day);
-  transition:
-    background-color,
-    border 0.2s;
-  // prevent shifting when we show the highlight border
-  border: 2px solid transparent;
-
-  ${(p) => p.isToday && isTodayStyle}
-  ${(p) => p.isSelectedDay && isSelectedDayStyle}
-  ${(p) => p.isDroppable && isDroppableStyle}
-
-  &:not(:last-child) {
-    margin-right: 0.25rem;
-    @media (max-width: ${(p) => p.theme.medium}) {
-      margin-right: 0;
-      margin-bottom: 0.25rem;
-    }
-  }
-  @media (max-width: ${(p) => p.theme.medium}) {
-    width: 100%;
-  }
-`
 
 export function CalendarDay({
   date,
@@ -152,14 +105,19 @@ export function CalendarDay({
   const [showScheduleRecipeModal, setShowScheduleRecipeModal] = useState(false)
 
   return (
-    <CalendarDayContainer
+    <div
       ref={drop}
-      isDroppable={isDroppable}
-      isToday={isToday}
-      isSelectedDay={isSelectedDay}
       onDoubleClick={() => {
         setShowScheduleRecipeModal(true)
       }}
+      className={clx(
+        "flex shrink-0 grow basis-0 flex-col border-2 border-solid border-transparent bg-[var(--color-background-calendar-day)] p-1 transition-[background-color,border] duration-200 [word-break:break-word]",
+        isDroppable && "opacity-50",
+        isSelectedDay &&
+          // Could avoid the important here if we were using stylex
+          "rounded-md border-2 border-solid !border-[var(--color-border-selected-day)]",
+        isToday && "border-b-2 border-solid border-b-[var(--color-accent)]",
+      )}
     >
       <Title date={date} />
       {showScheduleRecipeModal && (
@@ -188,6 +146,6 @@ export function CalendarDay({
           />
         ))}
       </ul>
-    </CalendarDayContainer>
+    </div>
   )
 }

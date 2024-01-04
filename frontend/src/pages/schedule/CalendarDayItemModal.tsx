@@ -10,22 +10,7 @@ import { TimelineEvent } from "@/pages/recipe-detail/Notes"
 import { useScheduledRecipeDelete } from "@/queries/scheduledRecipeDelete"
 import { useScheduledRecipeFindNextOpen } from "@/queries/scheduledRecipeFindNextOpen"
 import { useScheduledRecipeUpdate } from "@/queries/scheduledRecipeUpdate"
-import { styled } from "@/theme"
 import { recipeURL } from "@/urls"
-
-const ButtonContainer = styled(Box)`
-  margin-top: auto;
-  flex-direction: column;
-  gap: 0.5rem;
-`
-
-const RecipeName = styled(Link)`
-  font-size: 1rem;
-
-  @media (max-width: 450px) {
-    font-size: 1.25rem;
-  }
-`
 
 const options = [
   "Sunday",
@@ -72,7 +57,9 @@ export function CalendarDayItemModal({
       content={
         <>
           <Box dir="col" gap={2}>
-            <RecipeName to={to}>{recipeName}</RecipeName>
+            <Link className="text-xl sm:text-base" to={to}>
+              {recipeName}
+            </Link>
           </Box>
 
           {reschedulerOpen && (
@@ -97,7 +84,7 @@ export function CalendarDayItemModal({
               is_scraped: false,
             }}
           />
-          <ButtonContainer>
+          <div className="flex flex-col gap-2">
             <Button
               size="normal"
               active={reschedulerOpen}
@@ -110,7 +97,7 @@ export function CalendarDayItemModal({
             <Button size="normal" variant="primary" to={to}>
               View Recipe
             </Button>
-          </ButtonContainer>
+          </div>
         </>
       }
     />
