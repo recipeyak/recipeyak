@@ -2,18 +2,15 @@ import { X } from "react-feather"
 
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
-import { styled } from "@/theme"
-
-const CloseButtonInner = styled(Button)`
-  background: unset;
-  padding: 0;
-  border-style: none !important;
-  box-shadow: none !important;
-`
 
 export function CloseButton({ onClose }: { onClose?: () => void }) {
   return (
-    <CloseButtonInner size="small" onClick={onClose} data-testid="close modal">
+    <Button
+      size="small"
+      onClick={onClose}
+      data-testid="close modal"
+      className="!border-none bg-[unset] p-0 !shadow-none"
+    >
       <Box
         style={{
           background: "var(--color-background-card)",
@@ -28,6 +25,6 @@ export function CloseButton({ onClose }: { onClose?: () => void }) {
       >
         <X size={14} strokeWidth={3} />
       </Box>
-    </CloseButtonInner>
+    </Button>
   )
 }

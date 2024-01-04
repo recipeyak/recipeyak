@@ -7,6 +7,7 @@ import { chunk, first } from "lodash-es"
 import { useState } from "react"
 import { useHistory, useLocation } from "react-router-dom"
 
+import { clx } from "@/classnames"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { Modal } from "@/components/Modal"
@@ -33,50 +34,18 @@ function CalTitle({ dayTs }: { readonly dayTs: number }) {
 
 export type IDays = Record<string, ICalRecipe[] | undefined>
 
-const WeekdaysContainer = styled.div`
-  @media (max-width: ${(p) => p.theme.medium}) {
-    display: none;
-  }
-  display: flex;
-  font-size: 14px;
-  flex-shrink: 0;
-  & > b {
-    width: ${(1 / 7) * 100}%;
-    &:not(:last-child) {
-      margin-right: 0.25rem;
-    }
-  }
-`
-
 function Weekdays() {
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
   return (
-    <WeekdaysContainer>
+    <div className="hidden grid-cols-7 text-sm md:grid">
       {weekDays.map((x) => (
-        // TODO: Fix this the next time the file is edited.
-        // eslint-disable-next-line react/forbid-elements
-        <b key={x}>{x}</b>
+        <div className="font-semibold" key={x}>
+          {x}
+        </div>
       ))}
-    </WeekdaysContainer>
+    </div>
   )
 }
-
-const CalendarWeekContainer = styled.div`
-  display: flex;
-  @media (max-width: ${(p) => p.theme.medium}) {
-    height: 100%;
-    flex-direction: column;
-    margin-top: 0.5rem;
-    &:first-child,
-    &:last-child {
-      display: none;
-    }
-  }
-  height: ${(1 / 3) * 100}%;
-  &:not(:last-child) {
-    margin-bottom: 0.25rem;
-  }
-`
 
 const WEEK_DAYS = 7
 
@@ -93,15 +62,20 @@ function Days({ start, end, isError, days }: IDaysProps) {
   }
 
   return (
-    <div className="mb-2 h-full grow">
-      {chunk(eachDayOfInterval({ start, end }), WEEK_DAYS).map((dates) => {
+    <div className="mb-2 flex h-full grow flex-col gap-1">
+      {chunk(eachDayOfInterval({ start, end }), WEEK_DAYS).map((dates, idx) => {
         const firstDay = first(dates)
+        const weekContainerCss = clx(
+          "flex h-full shrink-0 flex-col gap-1 md:h-1/3 md:flex-row",
+          // Hide the first and last weeks on mobile
+          (idx === 0 || idx === 2) && "hidden md:flex",
+        )
         if (firstDay == null) {
-          return <CalendarWeekContainer />
+          return <div className={weekContainerCss} />
         }
         const week = String(startOfWeek(firstDay))
         return (
-          <CalendarWeekContainer key={week}>
+          <div key={week} className={weekContainerCss}>
             {dates.map((date) => {
               const scheduledRecipes = days[toISODateString(date)] || []
               return (
@@ -112,7 +86,7 @@ function Days({ start, end, isError, days }: IDaysProps) {
                 />
               )
             })}
-          </CalendarWeekContainer>
+          </div>
         )
       })}
     </div>
@@ -317,7 +291,7 @@ export function Calendar() {
   })
 
   return (
-    <Box dir="col" grow={1}>
+    <Box dir="col" grow={1} className="gap-2 md:gap-0">
       <Nav
         dayTs={startOfWeekMs}
         onNext={nextPage}

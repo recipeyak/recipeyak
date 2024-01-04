@@ -1,63 +1,31 @@
 import React from "react"
 import { ChevronLeft, ChevronRight, Share, Star, X } from "react-feather"
 
+import { clx } from "@/classnames"
 import { Button } from "@/components/Buttons"
-import { styled } from "@/theme"
 import { imgixFmt } from "@/url"
 
-const MyGalleryContainer = styled.div`
-  opacity: 1 !important;
-  z-index: 30;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-`
-
-// One problem with this is if images are too small, they'll get stretched by
-// the height 100%.
-//
-// Without stetching, images in Chrome will appear small and the jump to their
-// larger size when a larger srcset image is loaded.
-const MyGalleryImg = styled.img.attrs({ loading: "eager" })`
-  height: 100%;
-  margin: auto;
-  object-fit: contain;
-`
-const MyGalleryButton = styled(Button)`
-  background: rgba(0, 0, 0, 0.46);
-  color: white;
-  border-style: none !important;
-  box-shadow: none !important;
-  backdrop-filter: blur(10px);
-  pointer-events: initial;
-`
-
-const MyGalleryLink = styled(Button)`
-  background: rgba(0, 0, 0, 0.46);
-  color: white;
-  border-style: none !important;
-  box-shadow: none !important;
-  backdrop-filter: blur(10px);
-  pointer-events: initial;
-
-  padding-bottom: calc(0.375em - 1px);
-  padding-top: calc(0.375em - 1px);
-  border-radius: 6px;
-  padding-left: 0.75em;
-  padding-right: 0.75em;
-`
-
-const NavButtonRow = styled.div`
-  display: flex;
-  margin-top: auto;
-  margin-bottom: auto;
-  justify-content: space-between;
-
-  width: 100%;
-  grid-area: 1/1;
-`
+function GalleryButton({
+  children,
+  className,
+  onClick,
+}: {
+  children: React.ReactNode
+  className?: string
+  onClick?: () => void
+}) {
+  return (
+    <Button
+      onClick={onClick}
+      className={clx(
+        "pointer-events-auto !border-none text-white !shadow-none backdrop-blur-[10px]  ![background-color:rgba(0,0,0,0.46)]",
+        className,
+      )}
+    >
+      {children}
+    </Button>
+  )
+}
 
 function buildSrcSetUrls(u: string): string {
   const t = new URL(u)
@@ -99,7 +67,7 @@ export const Gallery = (props: {
 
   const starColor = props.isPrimary ? "#ffbf00" : undefined
   return (
-    <MyGalleryContainer>
+    <div className="fixed left-0 top-0 z-30 h-full w-full !opacity-100">
       <div className="left-0 top-0 h-full w-full bg-[#000] opacity-[0.8]" />
       <div className="absolute left-0 top-0 h-full w-full">
         <div
@@ -116,7 +84,14 @@ export const Gallery = (props: {
               scrolling={"no"}
             />
           ) : (
-            <MyGalleryImg
+            <img
+              // One problem with this is if images are too small, they'll get stretched by
+              // the height 100%.
+              //
+              // Without stetching, images in Chrome will appear small and the jump to their
+              // larger size when a larger srcset image is loaded.
+              className="m-auto h-full object-contain"
+              loading="eager"
               key={imgixFmt(props.imageUrl)}
               src={imgixFmt(props.imageUrl)}
               onLoad={(e) => {
@@ -137,36 +112,35 @@ export const Gallery = (props: {
         </div>
         <div className="pointer-events-none absolute top-0 grid h-full w-full flex-col p-2">
           <div className="col-span-full row-span-full mb-auto flex w-full justify-between">
-            <MyGalleryButton className="mr-auto" onClick={props.onStar}>
+            <GalleryButton className="mr-auto" onClick={props.onStar}>
               <Star color={starColor} fill={starColor} />
-            </MyGalleryButton>
-            <MyGalleryLink
-              as={"a"}
+            </GalleryButton>
+            <a
               target="_blank"
               rel="noopener noreferrer"
               href={props.imageUrl}
-              className="ml-auto"
+              className="pointer-events-auto ml-auto rounded-md !border-none px-3 py-[calc(0.375em-1px)] text-white !shadow-none backdrop-blur-[10px] [background-color:rgba(0,0,0,0.46)]"
             >
               <Share />
-            </MyGalleryLink>
-            <MyGalleryButton className="ml-2" onClick={props.onClose}>
+            </a>
+            <GalleryButton className="ml-2" onClick={props.onClose}>
               <X />
-            </MyGalleryButton>
+            </GalleryButton>
           </div>
-          <NavButtonRow>
+          <div className="my-auto flex w-full justify-between [grid-area:1/1]">
             {props.hasPrevious && (
-              <MyGalleryButton onClick={props.onPrevious} className="mr-auto">
+              <GalleryButton onClick={props.onPrevious} className="mr-auto">
                 <ChevronLeft />
-              </MyGalleryButton>
+              </GalleryButton>
             )}
             {props.hasNext && (
-              <MyGalleryButton onClick={props.onNext} className="ml-auto">
+              <GalleryButton onClick={props.onNext} className="ml-auto">
                 <ChevronRight />
-              </MyGalleryButton>
+              </GalleryButton>
             )}
-          </NavButtonRow>
+          </div>
         </div>
       </div>
-    </MyGalleryContainer>
+    </div>
   )
 }

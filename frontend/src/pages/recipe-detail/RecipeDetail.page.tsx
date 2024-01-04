@@ -326,18 +326,6 @@ function RecipeMetaItem({
   )
 }
 
-const RecipeMetaContainer = styled.div<{ inline?: boolean }>`
-  display: flex;
-
-  flex-wrap: wrap;
-  grid-row-gap: 4px;
-  ${(props) =>
-    props.inline
-      ? `column-gap: 0.75rem;`
-      : `flex-direction: column;
-  justify-content: end;`}
-`
-
 function RecipeEditor(props: { recipe: Recipe; onClose: () => void }) {
   const [formState, setFormState] = useState<Partial<Recipe>>(props.recipe)
   const updateRecipe = useRecipeUpdate()
@@ -651,7 +639,12 @@ function RecipeInfo(props: {
                 )}
               </div>
             </div>
-            <RecipeMetaContainer inline={inlineLayout}>
+            <div
+              className={clx(
+                "flex flex-wrap gap-y-1",
+                inlineLayout ? "gap-x-3" : "flex-col justify-end",
+              )}
+            >
               {notEmpty(props.recipe.time) && (
                 <RecipeMetaItem inline={inlineLayout} label={"Time"}>
                   {props.recipe.time}
@@ -697,16 +690,13 @@ function RecipeInfo(props: {
                   Edit
                 </Button>
               )}
-            </RecipeMetaContainer>
+            </div>
           </>
         )}
       </div>
       {(props.recipe.primaryImage || props.editingEnabled) && (
         <>
-          <ImageWrapper
-            style={{ position: "relative" }}
-            className="print:!hidden"
-          >
+          <ImageWrapper className="relative print:!hidden">
             <Image
               sources={{
                 url: imgixFmt(props.recipe.primaryImage?.url ?? ""),
