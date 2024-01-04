@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query"
-import { useState } from "react"
+import produce from "immer"
 import { Button, FileTrigger } from "react-aria-components"
 
 import { Avatar } from "@/components/Avatar"
@@ -15,15 +15,14 @@ import { DangerZone } from "@/pages/settings/DangerZone"
 import { Export } from "@/pages/settings/Export"
 import Sessions from "@/pages/settings/Sessions"
 import { ThemePicker } from "@/pages/settings/ThemePicker"
-import { uploadCreate } from "@/queries/uploadCreate"
-import { useUserFetch } from "@/queries/userFetch"
-import { isOk } from "@/result"
+import { useUploadCreate } from "@/queries/uploadCreate"
+import { setQueryDataUser, useUserFetch } from "@/queries/userFetch"
 import { toast } from "@/toast"
 
 export function SettingsPage() {
   const userInfo = useUserFetch()
   const queryClient = useQueryClient()
-  const [isLoading, setIsLoading] = useState(false)
+  const uploadCreate = useUploadCreate()
 
   if (!userInfo.isSuccess) {
     return (
@@ -59,36 +58,39 @@ export function SettingsPage() {
                 }
                 let files = Array.from(e)
                 const file = files[0]
-                setIsLoading(true)
                 // TODO: we should open this in a modal that:
                 // 1. allows adjustments
                 // 2. allows previewing of what it will look like
-                // 3. allows us to clearly show a loading state
-                void uploadCreate({
-                  file,
-                  purpose: "profile",
-                  onProgress: () => {},
-                }).then((x) => {
-                  if (isOk(x)) {
-                    queryClient
-                      .invalidateQueries({
-                        queryKey: ["user-detail"],
+                uploadCreate.mutate(
+                  {
+                    file,
+                    purpose: "profile",
+                  },
+                  {
+                    onSuccess: (res) => {
+                      // NOTE: there are other places in the cache that we
+                      // should update (since it isn't normalized), but this is
+                      // good enough
+                      setQueryDataUser(queryClient, {
+                        updater: (prev) => {
+                          if (prev == null) {
+                            return prev
+                          }
+                          return produce(prev, (draft) => {
+                            draft.avatar_url = res.url
+                          })
+                        },
                       })
-                      .then(() => {
-                        setIsLoading(false)
-                      })
-                      .catch(() => {
-                        setIsLoading(false)
-                      })
-                  } else {
-                    setIsLoading(false)
-                    toast.error("problem changing profile picture")
-                  }
-                })
+                    },
+                    onError: () => {
+                      toast.error("problem changing profile picture")
+                    },
+                  },
+                )
               }}
             >
               <Button className="self-start rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-card)] px-2 py-1 text-xs font-medium text-[var(--color-text)]">
-                {!isLoading
+                {!uploadCreate.isPending
                   ? "Change profile picture"
                   : "Changing profile picture..."}
               </Button>

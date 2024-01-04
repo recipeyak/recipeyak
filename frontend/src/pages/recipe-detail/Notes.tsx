@@ -27,8 +27,7 @@ import { PickVariant } from "@/queries/queryUtilTypes"
 import { useReactionCreate } from "@/queries/reactionCreate"
 import { useReactionDelete } from "@/queries/reactionDelete"
 import { RecipeFetchResponse as Recipe } from "@/queries/recipeFetch"
-import * as api from "@/queries/uploadCreate"
-import { isOk } from "@/result"
+import { useUploadCreate } from "@/queries/uploadCreate"
 import { styled } from "@/theme"
 import { toast } from "@/toast"
 import { notUndefined } from "@/typeguard"
@@ -639,6 +638,7 @@ function useFileUpload(
   recipeId: number,
 ) {
   const [localImages, setLocalImages] = React.useState<InProgressUpload[]>([])
+  const uploadCreate = useUploadCreate()
 
   const addFiles = (files: FileList) => {
     for (const file of files) {
@@ -658,8 +658,8 @@ function useFileUpload(
           ...s,
         ]
       })
-      void api
-        .uploadCreate({
+      uploadCreate.mutate(
+        {
           file,
           purpose: "recipe",
           recipeId,
@@ -673,11 +673,11 @@ function useFileUpload(
               }),
             )
           },
-        })
-        .then((res) => {
-          if (isOk(res)) {
+        },
+        {
+          onSuccess: (res) => {
             addUploads({
-              ...res.data,
+              ...res,
               type: "upload",
               localId: fileId,
               backgroundUrl: null,
@@ -691,7 +691,8 @@ function useFileUpload(
                 }
               }),
             )
-          } else {
+          },
+          onError: () => {
             setLocalImages(
               produce((s) => {
                 const existingUpload = s.find((x) => x.localId === fileId)
@@ -700,8 +701,9 @@ function useFileUpload(
                 }
               }),
             )
-          }
-        })
+          },
+        },
+      )
     }
   }
 
