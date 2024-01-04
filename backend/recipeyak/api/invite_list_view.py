@@ -48,7 +48,7 @@ from
     join core_membership m on m.id = i.membership_id
     join core_team t on t.id = m.team_id
     join core_myuser u on u.id = m.user_id
-    join core_upload upload on upload.id = u.profile_upload_id
+    left join core_upload upload on upload.id = u.profile_upload_id
 where
     m.user_id = %(user_id)s;
             """,
