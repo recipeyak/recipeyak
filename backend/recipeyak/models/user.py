@@ -12,6 +12,7 @@ from django.contrib.postgres.fields import CIEmailField
 from django.db import models, transaction
 
 from recipeyak.models.membership import Membership
+from recipeyak.models.upload import public_url
 
 if TYPE_CHECKING:
     from django.db.models.manager import RelatedManager
@@ -19,6 +20,7 @@ if TYPE_CHECKING:
 
     from recipeyak.models.scheduled_recipe import ScheduledRecipe
     from recipeyak.models.team import Team
+    from recipeyak.models.upload import Upload  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +40,9 @@ class UserManager(BaseUserManager["User"]):
             return user
 
 
-def get_avatar_url(email: str) -> str:
+def get_avatar_url(*, email: str, profile_upload_key: str | None) -> str:
+    if profile_upload_key is not None:
+        return public_url(profile_upload_key)
     md5_email = hashlib.md5(email.encode("utf-8")).hexdigest()
     # indenticons by default `d=identicon`
     # Avatars with ratings of G only `r=g`
@@ -72,6 +76,11 @@ class User(AbstractBaseUser):
     )
     schedule_team_id: int | None
 
+    profile_upload = models.ForeignKey["Upload"](
+        "Upload", related_name="+", on_delete=models.SET_NULL, null=True
+    )
+    profile_upload_id: int | None
+
     # required by django.contrib.auth
     USERNAME_FIELD = "email"
 
@@ -92,10 +101,6 @@ class User(AbstractBaseUser):
             .exclude(invite=None)
             .exists()
         )
-
-    @property
-    def avatar_url(self) -> str:
-        return get_avatar_url(self.email)
 
     scheduled_recipes: RelatedManager[ScheduledRecipe]
     membership_set: RelatedManager[Membership]

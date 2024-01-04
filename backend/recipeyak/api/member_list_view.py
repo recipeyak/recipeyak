@@ -39,10 +39,12 @@ select
     m.level membership_level,
     u.id user_id,
     u.name user_name,
-    u.email user_email
+    u.email user_email,
+    upload.key profile_upload_key
 from
     core_membership m
     join core_myuser as u on u.id = m.user_id
+    left join core_upload as upload on upload.id = u.profile_upload_id
 where
     team_id = %(team_id)s;""",
             {
@@ -58,8 +60,11 @@ where
         user_id,
         user_name,
         user_email,
+        profile_upload_key,
     ) in rows:
-        avatar_url = get_avatar_url(user_email)
+        avatar_url = get_avatar_url(
+            email=user_email, profile_upload_key=profile_upload_key
+        )
         user = UserResponse(
             id=user_id,
             name=user_name,

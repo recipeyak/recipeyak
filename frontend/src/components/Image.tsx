@@ -1,7 +1,6 @@
 import { useRef } from "react"
 
 import { clx } from "@/classnames"
-import { imgixFmt } from "@/url"
 import { useIntersectionObserver } from "@/useIntersectionObserver"
 
 export function Image({
@@ -75,7 +74,7 @@ export function Image({
       {sources != null && isVisible && (
         <>
           <img
-            src={imgixFmt(sources.url ?? "")}
+            src={sources.url ?? ""}
             loading={loading}
             className={clx(
               "absolute z-[1] h-full w-full object-cover",

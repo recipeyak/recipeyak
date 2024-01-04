@@ -661,6 +661,7 @@ function useFileUpload(
       void api
         .uploadCreate({
           file,
+          purpose: "recipe",
           recipeId,
           onProgress(progress) {
             setLocalImages(

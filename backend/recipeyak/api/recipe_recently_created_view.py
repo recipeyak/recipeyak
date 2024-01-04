@@ -8,6 +8,7 @@ from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
 from recipeyak.models import filter_recipes, get_team
+from recipeyak.models.user import get_avatar_url
 
 
 class PrimaryImageResponse(pydantic.BaseModel):
@@ -44,7 +45,12 @@ def recipe_recently_created_view(request: AuthedHttpRequest) -> JsonResponse:
             created_by = CreatedByResponse(
                 id=create_event.created_by.id,
                 name=create_event.created_by.name or create_event.created_by.email,
-                avatarUrl=create_event.created_by.avatar_url,
+                avatarUrl=get_avatar_url(
+                    email=create_event.created_by.email,
+                    profile_upload_key=create_event.created_by.profile_upload.key
+                    if create_event.created_by.profile_upload is not None
+                    else None,
+                ),
             )
         else:
             created_by = None

@@ -66,7 +66,12 @@ def member_update_view(
             user=UserResponse(
                 id=membership.user.id,
                 name=membership.user.name,
-                avatar_url=get_avatar_url(membership.user.email),
+                avatar_url=get_avatar_url(
+                    email=membership.user.email,
+                    profile_upload_key=membership.user.profile_upload.key
+                    if membership.user.profile_upload is not None
+                    else None,
+                ),
                 email=membership.user.email,
             ),
         )
