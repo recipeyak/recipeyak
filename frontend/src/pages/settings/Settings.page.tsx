@@ -23,7 +23,7 @@ import { toast } from "@/toast"
 export function SettingsPage() {
   const userInfo = useUserFetch()
   const queryClient = useQueryClient()
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
 
   if (!userInfo.isSuccess) {
     return (
