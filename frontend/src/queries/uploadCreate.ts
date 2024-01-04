@@ -1,11 +1,21 @@
+import { useMutation } from "@tanstack/react-query"
+
 import { http } from "@/http"
+import { unwrapResult } from "@/query"
 import { isOk, Ok } from "@/result"
 
-export const uploadCreate = async ({
+export function useUploadCreate() {
+  return useMutation({
+    mutationFn: (params: Parameters<typeof uploadCreate>[0]) =>
+      uploadCreate(params).then(unwrapResult),
+  })
+}
+
+const uploadCreate = async ({
   file,
   onProgress,
   ...params
-}: { file: File; onProgress: (_: number) => void } & (
+}: { file: File; onProgress?: (_: number) => void } & (
   | {
       recipeId: number
       purpose: "recipe"
@@ -34,7 +44,7 @@ export const uploadCreate = async ({
       "Content-Type": file.type,
     },
     onUploadProgress(progressEvent: { loaded: number; total: number }) {
-      onProgress((progressEvent.loaded / progressEvent.total) * 100)
+      onProgress?.((progressEvent.loaded / progressEvent.total) * 100)
     },
   })
   if (!isOk(uploadRes)) {
