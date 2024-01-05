@@ -36,7 +36,7 @@ export type IDays = Record<string, ScheduledRecipe[] | undefined>
 function Weekdays() {
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
   return (
-    <div className="hidden grid-cols-7 text-sm md:grid">
+    <div className="hidden grid-cols-7 gap-1 text-sm md:grid">
       {weekDays.map((x) => (
         <div className="font-semibold" key={x}>
           {x}
