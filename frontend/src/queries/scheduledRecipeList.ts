@@ -28,6 +28,7 @@ type ScheduledRecipeUpdated = {
   recipe: {
     id: number
     name: string
+    author: string | null
     primaryImage: { id: string; url: string; backgroundUrl: string } | null
   }
   team: null

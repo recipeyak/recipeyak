@@ -6,7 +6,7 @@ import { clx } from "@/classnames"
 import { Image } from "@/components/Image"
 import { isInsideChangeWindow } from "@/date"
 import { DragDrop } from "@/dragDrop"
-import { CalendarDayItemModal } from "@/pages/schedule/CalendarDayItemModal"
+import { ScheduledRecipeEditModal } from "@/pages/schedule/ScheduledRecipeEditModal"
 import { imgixFmt } from "@/url"
 import { recipeURL } from "@/urls"
 import { useGlobalEvent } from "@/useGlobalEvent"
@@ -37,6 +37,7 @@ interface ICalendarItemProps {
   readonly date: Date
   readonly recipeID: number | string
   readonly recipeName: string
+  readonly recipeAuthor: string | null
   readonly scheduledId: number
   readonly createdAt: string
   readonly createdBy: {
@@ -54,6 +55,7 @@ export function CalendarItem({
   date,
   remove,
   recipeName,
+  recipeAuthor,
   recipeID,
   primaryImage,
   scheduledId,
@@ -136,12 +138,14 @@ export function CalendarItem({
           }}
         />
       </li>
-      <CalendarDayItemModal
+      <ScheduledRecipeEditModal
         isOpen={show}
         scheduledId={scheduledId}
         createdAt={createdAt}
         createdBy={createdBy}
         recipeName={recipeName}
+        recipeAuthor={recipeAuthor}
+        primaryImage={primaryImage}
         recipeId={recipeID}
         date={date}
         onClose={(change) => {

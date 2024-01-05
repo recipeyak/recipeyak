@@ -36,6 +36,7 @@ function toCalRecipe(
     recipe: {
       id: recipe.id,
       name: recipe.name,
+      author: null,
       primaryImage: null,
     },
     on: toISODateString(on),
@@ -62,6 +63,7 @@ const scheduleRecipe = (recipeID: number, on: Date | string) => {
       readonly recipe: {
         readonly id: number
         readonly name: string
+        readonly author: string | null
         readonly primaryImage: {
           readonly url: string
           readonly backgroundUrl: string | null
