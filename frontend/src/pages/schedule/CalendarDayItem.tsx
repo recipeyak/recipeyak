@@ -108,7 +108,7 @@ export function CalendarItem({
       <li
         ref={ref}
         className={clx(
-          "flex items-start gap-2",
+          "flex items-center gap-2",
           visibility === "visible" ? "visible" : "invisible",
         )}
       >
