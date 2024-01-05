@@ -68,6 +68,7 @@ export function AuthPage(props: { children: React.ReactNode }) {
 
   return (
     <div
+      // eslint-disable-next-line no-restricted-syntax
       style={{
         display: "flex",
         flexDirection: "column",

@@ -47,6 +47,7 @@ export function Image({
     <div
       ref={ref}
       onClick={onClick}
+      // eslint-disable-next-line no-restricted-syntax
       style={{
         // TODO: could use css variables and a tailwind class
         ...(width != null
@@ -84,6 +85,7 @@ export function Image({
             )}
           />
           <div
+            // eslint-disable-next-line no-restricted-syntax
             style={{
               // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
               ["--backgroundImage" as string]: sources.backgroundUrl

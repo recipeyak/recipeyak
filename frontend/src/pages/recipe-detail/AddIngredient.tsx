@@ -93,7 +93,6 @@ function AddIngredientForm({
             placeholder="diced at 3cm"
           />
           {createIngredient.isError ? (
-            // TODO: Fix this the next time the file is edited.
             // eslint-disable-next-line react/forbid-elements
             <p className="text-base text-[var(--color-danger)]">
               A recipe needs at least one ingredient

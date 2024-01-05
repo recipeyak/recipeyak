@@ -208,7 +208,6 @@ function StepBody({
   )
 
   return (
-    // TODO: Fix this the next time the file is edited.
     // eslint-disable-next-line react/forbid-elements
     <section
       className={clx(editingEnabled && "cursor-pointer")}

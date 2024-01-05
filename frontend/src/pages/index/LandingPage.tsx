@@ -36,7 +36,6 @@ function HomeContainer({
 
 function FeaturesContainer({ children }: { children: JSX.Element[] }) {
   return (
-    // TODO: Fix this the next time the file is edited.
     // eslint-disable-next-line react/forbid-elements
     <section className="bg-[var(--color-primary)] p-4 text-white">
       <HomeContainer>
@@ -69,7 +68,6 @@ function FeatureGrid({
 }
 
 function Feature({ text, imageURL, index }: IFeatureProps) {
-  // TODO: Fix this the next time the file is edited.
   // eslint-disable-next-line react/forbid-elements
   const description = <p className={`self-center md:w-1/2`}>{text}</p>
   const image = (
@@ -101,7 +99,6 @@ interface IHowItWorksContainerProps {
 }
 function HowItWorksContainer({ children }: IHowItWorksContainerProps) {
   return (
-    // TODO: Fix this the next time the file is edited.
     // eslint-disable-next-line react/forbid-elements
     <section className="px-4 pt-4">
       <HomeContainer className="grid">
@@ -120,10 +117,8 @@ interface IHowToProps {
 function HowTo({ content, index, imageURL }: IHowToProps) {
   return (
     <FeatureGrid key={imageURL} className={"flex-wrap md:flex-nowrap"}>
-      {/* TODO: Fix this the next time the file is edited. */}
       {/* eslint-disable-next-line react/forbid-elements */}
       <p className="self-center md:w-1/2">
-        {/* TODO: Fix this the next time the file is edited. */}
         {/* eslint-disable-next-line react/forbid-elements */}
         <b>
           {index + 1}
@@ -196,7 +191,6 @@ const LandingPage = () => {
   return (
     <NavPage includeSearch={false} noContainer>
       <HomeContainer className="grid gap-4 px-4 pb-4">
-        {/* TODO: Fix this the next time the file is edited. */}
         {/* eslint-disable-next-line react/forbid-elements */}
         <section className="mb-2 flex justify-center">
           <h1 className="max-w-[900px] text-center text-[4rem] leading-[4rem]">
@@ -212,7 +206,7 @@ const LandingPage = () => {
           Create Account
         </Button>
       </HomeContainer>
-      {/* TODO: Fix this the next time the file is edited. */}
+
       {/* eslint-disable-next-line react/forbid-elements */}
       <section className="bg-gradient-to-b from-[var(--color-background)] from-50% to-[var(--color-primary)] to-50% px-4 pt-4">
         <HomeContainer>

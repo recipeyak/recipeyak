@@ -85,6 +85,7 @@ export function ScheduleModal({
                         <Link
                           to={to}
                           className="grow"
+                          // eslint-disable-next-line no-restricted-syntax
                           style={{ lineHeight: "1.3" }}
                         >
                           <div className="font-medium">

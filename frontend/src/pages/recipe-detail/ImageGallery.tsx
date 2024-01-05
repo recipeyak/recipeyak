@@ -80,6 +80,7 @@ export const Gallery = (props: {
             // dom node was unmounted and remounted
             <iframe
               src={props.imageUrl}
+              // eslint-disable-next-line no-restricted-syntax
               style={{ margin: "auto", height: "100%" }}
               scrolling={"no"}
             />

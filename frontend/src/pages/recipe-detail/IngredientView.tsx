@@ -61,7 +61,6 @@ export default function IngredientView({
   dragRef,
 }: IIngredientVIewProps) {
   return (
-    // TODO: Fix this the next time the file is edited.
     // eslint-disable-next-line react/forbid-elements
     <p
       className="cursor-auto select-text justify-between whitespace-pre-wrap pb-[0.4rem] leading-5"

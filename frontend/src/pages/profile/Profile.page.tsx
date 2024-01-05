@@ -331,6 +331,7 @@ function ActivityLog({
       const key = `${x.created_date} - ${x.recipe_id}`
       out.push(
         <React.Fragment key={key}>
+          {/* eslint-disable-next-line no-restricted-syntax */}
           <div style={{ lineHeight: "1.2", textAlign: "right", fontSize: 14 }}>
             {isFirst
               ? parseISO(x.created_date).toLocaleDateString(undefined, {
@@ -339,6 +340,8 @@ function ActivityLog({
                 })
               : null}
           </div>
+
+          {/* eslint-disable-next-line no-restricted-syntax */}
           <div style={{ lineHeight: "1.2" }}>
             <Link
               className="line-clamp-1 text-ellipsis"
@@ -346,6 +349,8 @@ function ActivityLog({
             >
               {x.recipe_name}
             </Link>
+
+            {/* eslint-disable-next-line no-restricted-syntax */}
             <div style={{ fontSize: 14 }}>{description}</div>
           </div>
         </React.Fragment>,
@@ -357,6 +362,7 @@ function ActivityLog({
 
   return (
     <div
+      // eslint-disable-next-line no-restricted-syntax
       style={{
         display: "grid",
         columnGap: "0.5rem",

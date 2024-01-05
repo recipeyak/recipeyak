@@ -302,6 +302,7 @@ function RecipeMetaItem({
   label: string
 }) {
   return (
+    // eslint-disable-next-line no-restricted-syntax
     <div style={{ display: "flex", gap: inline ? "0.25rem" : undefined }}>
       <div className="font-bold" style={!inline ? { width: 90 } : undefined}>
         {label}

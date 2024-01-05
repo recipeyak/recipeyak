@@ -2,7 +2,6 @@ import { clx } from "@/classnames"
 
 export function Loader({ align = "center" }: { align?: "center" | "left" }) {
   return (
-    // TODO: Fix this the next time the file is edited.
     // eslint-disable-next-line react/forbid-elements
     <p
       className={clx(
