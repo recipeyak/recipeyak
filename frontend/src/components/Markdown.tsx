@@ -8,44 +8,10 @@ import smartypants from "remark-smartypants"
 import { Link } from "@/components/Routing"
 import * as settings from "@/settings"
 import { normalizeUnitsFracs } from "@/text"
-import { styled } from "@/theme"
 import {
   THEME_CSS_BAKING_POWDER,
   THEME_CSS_BAKING_SODA,
 } from "@/themeConstants"
-
-const MarkdownWrapper = styled.div`
-  a {
-    text-decoration: underline;
-  }
-  a:hover {
-    text-decoration: none;
-  }
-  ul {
-    list-style-type: disc;
-    padding-left: 1.5rem;
-  }
-
-  ol {
-    padding-left: 1.5rem;
-  }
-
-  p:not(:last-child) {
-    margin-bottom: 0.5rem;
-  }
-
-  blockquote {
-    padding-left: 0.25rem;
-    border-left: 3px solid var(--color-border);
-    & > p {
-      margin-bottom: 0rem;
-    }
-
-    &:last-of-type > p {
-      margin-bottom: 0.5rem;
-    }
-  }
-`
 
 const ALLOWED_MARKDOWN_TYPES: (keyof Components)[] = [
   "text",
@@ -71,15 +37,83 @@ function renderLink({
   React.AnchorHTMLAttributes<HTMLAnchorElement>,
   HTMLAnchorElement
 >) {
+  const linkCss = "underline hover:no-underline"
   if (href?.startsWith(settings.DOMAIN)) {
     const to = new URL(href).pathname
-    return <Link {...props} to={to} children={to.substring(1)} />
+    return (
+      <Link {...props} to={to} children={to.substring(1)} className={linkCss} />
+    )
   }
-  return <a {...props} href={href} />
+  return <a {...props} href={href} className={linkCss} />
 }
 
+function renderUl({
+  children,
+  ...props
+}: React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLUListElement>,
+  HTMLUListElement
+>) {
+  return (
+    <ul {...props} className="mb-2 list-inside list-disc">
+      {children}
+    </ul>
+  )
+}
+
+function renderOl({
+  children,
+  ...props
+}: React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLOListElement>,
+  HTMLOListElement
+>) {
+  return (
+    <ol {...props} className="mb-2 list-inside list-decimal">
+      {children}
+    </ol>
+  )
+}
+
+function renderP({
+  children,
+  ...props
+}: React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLParagraphElement>,
+  HTMLParagraphElement
+>) {
+  return (
+    // eslint-disable-next-line react/forbid-elements
+    <p {...props} className="last-child:mb-0 mb-2">
+      {children}
+    </p>
+  )
+}
+
+function renderBlockQuote({
+  children,
+  ...props
+}: React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLQuoteElement>,
+  HTMLQuoteElement
+>) {
+  return (
+    <blockquote
+      {...props}
+      className="mb-2 border-y-0 border-l-[3px] border-r-0 border-solid border-l-[var(--color-border)] pl-2"
+    >
+      {children}
+    </blockquote>
+  )
+}
+
+// setup a lot of renderers so we can style the individual tags
 const renderers = {
   a: renderLink,
+  ul: renderUl,
+  ol: renderOl,
+  p: renderP,
+  blockquote: renderBlockQuote,
 }
 
 function remarkHighlightBakingSodaAndPowder() {
@@ -114,7 +148,7 @@ function remarkHighlightBakingSodaAndPowder() {
 
 export function Markdown({ children: text }: { children: string }) {
   return (
-    <MarkdownWrapper className="cursor-auto select-text [word-break:break-word]">
+    <div className="cursor-auto select-text [word-break:break-word]">
       <ReactMarkdown
         allowedElements={ALLOWED_MARKDOWN_TYPES}
         remarkPlugins={[
@@ -144,6 +178,6 @@ export function Markdown({ children: text }: { children: string }) {
         components={renderers}
         unwrapDisallowed
       />
-    </MarkdownWrapper>
+    </div>
   )
 }

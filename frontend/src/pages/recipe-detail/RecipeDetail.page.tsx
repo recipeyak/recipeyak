@@ -43,7 +43,6 @@ import {
 import { useRecipeUpdate } from "@/queries/recipeUpdate"
 import { useSectionUpdate } from "@/queries/sectionUpdate"
 import { notEmpty } from "@/text"
-import { styled } from "@/theme"
 import { formatImgOpenGraph, imgixFmt } from "@/url"
 import { useAddSlugToUrl } from "@/useAddSlugToUrl"
 import { useGlobalEvent } from "@/useGlobalEvent"
@@ -293,20 +292,6 @@ function RecipeBanner({ children }: { readonly children: React.ReactNode }) {
 
 type IRecipeProps = RouteComponentProps<{ recipeId: string }>
 
-const ImageWrapper = styled.div`
-  aspect-ratio: 3/2;
-  @media (min-width: 800px) {
-    grid-area: 1 / 2;
-  }
-  @media (max-width: 799px) {
-    grid-area: 2 / 1;
-  }
-  @media (max-width: 599px) {
-    margin-left: -0.75rem;
-    margin-right: -0.75rem;
-  }
-`
-
 function RecipeMetaItem({
   inline,
   children,
@@ -441,38 +426,6 @@ function RecipeEditor(props: { recipe: Recipe; onClose: () => void }) {
     </div>
   )
 }
-
-const HeaderBgOverlay = styled.div`
-  border-radius: 6px;
-  background-color: var(--color-modal-background);
-  z-index: 35;
-
-  @media (min-width: 800px) {
-    grid-area: 1 / 2;
-  }
-  @media (max-width: 799px) {
-    grid-area: 2 / 1;
-  }
-
-  @media (max-width: 599px) {
-    margin-left: -0.75rem;
-    margin-right: -0.75rem;
-    border-radius: 0px;
-  }
-`
-const HeaderImgOverlay = styled.div`
-  @media (max-width: 799px) {
-    grid-area: 2 / 1;
-  }
-  @media (min-width: 800px) {
-    grid-area: 1 / 2;
-  }
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
-`
 
 function HeaderImgUploader({ children }: { children: React.ReactNode }) {
   return (
@@ -696,7 +649,7 @@ function RecipeInfo(props: {
       </div>
       {(props.recipe.primaryImage || props.editingEnabled) && (
         <>
-          <ImageWrapper className="relative print:!hidden">
+          <div className="relative -mx-3 aspect-[3/2] [grid-area:2/1] print:!hidden sm:mx-0 md:[grid-area:1/2]">
             <Image
               sources={{
                 url: imgixFmt(props.recipe.primaryImage?.url ?? ""),
@@ -714,15 +667,15 @@ function RecipeInfo(props: {
                 {props.recipe.primaryImage.author}
               </div>
             )}
-          </ImageWrapper>
+          </div>
           {props.editingEnabled && (
             <>
-              <HeaderBgOverlay />
-              <HeaderImgOverlay>
+              <div className="z-[35] -mx-3 rounded-none bg-[var(--color-modal-background)] [grid-area:2/1] sm:mx-0 sm:rounded-md md:[grid-area:1/2]" />
+              <div className="z-[999] flex items-center justify-center [grid-area:2/1] md:[grid-area:1/2]">
                 <HeaderImgUploader>
                   <div>Select a primary image from note uploads.</div>
                 </HeaderImgUploader>
-              </HeaderImgOverlay>
+              </div>
             </>
           )}
         </>
@@ -730,28 +683,6 @@ function RecipeInfo(props: {
     </>
   )
 }
-
-const RecipeDetailGrid = styled.div<{ enableLargeImageRow: boolean }>`
-  max-width: 1000px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 1rem;
-
-  display: grid;
-  gap: 0.5rem;
-
-  @media (max-width: 799px) {
-    grid-template-rows: ${(props) =>
-      props.enableLargeImageRow ? " auto auto auto" : "auto"};
-    grid-template-columns: 1fr;
-  }
-
-  @media (min-width: 800px) {
-    grid-template-rows: ${(props) =>
-      props.enableLargeImageRow ? "auto auto auto" : "auto"};
-    grid-template-columns: minmax(350px, 3fr) 5fr;
-  }
-`
 
 export function RecipeDetailPage(props: IRecipeProps) {
   const recipeId = parseInt(props.match.params.recipeId, 10)
@@ -820,6 +751,8 @@ export function RecipeDetailPage(props: IRecipeProps) {
     recipeTitle = recipeTitle + ` by ${recipe.author}`
   }
 
+  const enableLargeImageRow = !!recipe.primaryImage?.url || editingEnabled
+
   return (
     <NavPage>
       <Helmet title={recipe.name} />
@@ -857,9 +790,13 @@ export function RecipeDetailPage(props: IRecipeProps) {
         />
       )}
 
-      <RecipeDetailGrid
-        enableLargeImageRow={!!recipe.primaryImage?.url || editingEnabled}
-        className="print:!flex print:!flex-col"
+      <div
+        className={clx(
+          "mx-auto mt-4 grid max-w-[1000px] grid-cols-1 gap-2 print:!flex print:!flex-col md:[grid-template-columns:minmax(350px,3fr)_5fr]",
+          enableLargeImageRow
+            ? "[grid-template-rows:auto_auto_auto]"
+            : "[grid-template-rows:auto]",
+        )}
       >
         <RecipeInfo
           recipe={recipe}
@@ -877,7 +814,7 @@ export function RecipeDetailPage(props: IRecipeProps) {
             openImage={openImage}
           />
         )}
-      </RecipeDetailGrid>
+      </div>
     </NavPage>
   )
 }

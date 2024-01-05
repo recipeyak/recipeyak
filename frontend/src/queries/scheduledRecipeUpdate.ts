@@ -1,12 +1,18 @@
 import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { http } from "@/http"
-import { CalendarResponse, ICalRecipe } from "@/queries/scheduledRecipeCreate"
+import {
+  CalendarResponse,
+  ScheduledRecipe,
+} from "@/queries/scheduledRecipeCreate"
 import { unwrapResult } from "@/query"
 import { useTeamId } from "@/useTeamId"
 
-const updateScheduleRecipe = (calId: number, recipe: Partial<ICalRecipe>) => {
-  return http.patch<ICalRecipe>(`/api/v1/calendar/${calId}/`, recipe)
+const updateScheduleRecipe = (
+  calId: number,
+  recipe: Partial<ScheduledRecipe>,
+) => {
+  return http.patch<ScheduledRecipe>(`/api/v1/calendar/${calId}/`, recipe)
 }
 
 function scheduledRecipeUpdate({
@@ -18,7 +24,7 @@ function scheduledRecipeUpdate({
     // ISO date string
     on: string
   }
-}): Promise<ICalRecipe> {
+}): Promise<ScheduledRecipe> {
   return updateScheduleRecipe(scheduledRecipeId, update).then(unwrapResult)
 }
 
@@ -26,7 +32,7 @@ export function onScheduledRecipeUpdateSuccess(params: {
   queryClient: QueryClient
   teamID: number
   scheduledRecipeId: number
-  updatedCalRecipe: ICalRecipe
+  updatedCalRecipe: ScheduledRecipe
 }) {
   params.queryClient.setQueriesData(
     { queryKey: [params.teamID, "calendar"] },

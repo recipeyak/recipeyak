@@ -29,6 +29,7 @@ export function CalendarDayItemModal({
   recipeName,
   recipeId,
   date,
+  isOpen,
   onClose,
   createdAt,
   createdBy,
@@ -37,7 +38,8 @@ export function CalendarDayItemModal({
   readonly recipeId: number | string
   readonly recipeName: string
   readonly date: Date
-  readonly onClose: () => void
+  readonly isOpen: boolean
+  readonly onClose: (_: boolean) => void
   readonly createdAt: string
   readonly createdBy: {
     readonly id: number | string
@@ -51,56 +53,57 @@ export function CalendarDayItemModal({
   const prettyDate = formatAbsoluteDate(date, { includeYear: true })
   return (
     <Modal
-      show
-      onClose={onClose}
+      isOpen={isOpen}
+      onOpenChange={(change) => {
+        onClose(change)
+      }}
       title={prettyDate}
-      content={
-        <>
-          <Box dir="col" gap={2}>
-            <Link className="text-xl sm:text-base" to={to}>
-              {recipeName}
-            </Link>
-          </Box>
+    >
+      <Box dir="col" gap={2}>
+        <Link className="text-xl sm:text-base" to={to}>
+          {recipeName}
+        </Link>
+      </Box>
 
-          {reschedulerOpen && (
-            <RescheduleSection
-              onClose={onClose}
-              date={date}
-              scheduledId={scheduledId}
-              recipeName={recipeName}
-            />
-          )}
+      {reschedulerOpen && (
+        <RescheduleSection
+          onClose={() => {
+            onClose(false)
+          }}
+          date={date}
+          scheduledId={scheduledId}
+          recipeName={recipeName}
+        />
+      )}
 
-          <hr className="my-2" />
+      <hr className="my-2" />
 
-          <TimelineEvent
-            className="mb-2"
-            enableLinking={false}
-            event={{
-              id: scheduledId,
-              action: "scheduled",
-              created_by: createdBy,
-              created: createdAt,
-              is_scraped: false,
-            }}
-          />
-          <div className="flex flex-col gap-2">
-            <Button
-              size="normal"
-              active={reschedulerOpen}
-              onClick={() => {
-                setReschedulerOpen((val) => !val)
-              }}
-            >
-              Reschedule
-            </Button>
-            <Button size="normal" variant="primary" to={to}>
-              View Recipe
-            </Button>
-          </div>
-        </>
-      }
-    />
+      <TimelineEvent
+        className="mb-2"
+        enableLinking={false}
+        event={{
+          id: scheduledId,
+          action: "scheduled",
+          created_by: createdBy,
+          created: createdAt,
+          is_scraped: false,
+        }}
+      />
+      <div className="flex flex-col gap-2">
+        <Button
+          size="normal"
+          active={reschedulerOpen}
+          onClick={() => {
+            setReschedulerOpen((val) => !val)
+          }}
+        >
+          Reschedule
+        </Button>
+        <Button size="normal" variant="primary" to={to}>
+          View Recipe
+        </Button>
+      </div>
+    </Modal>
   )
 }
 

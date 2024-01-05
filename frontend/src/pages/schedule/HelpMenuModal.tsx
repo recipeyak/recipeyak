@@ -48,17 +48,17 @@ function KeyBind({ bind }: IKeyBindProps) {
 
 export default function HelpMenuModal({
   show,
-  close,
+  onOpenChange,
 }: {
   show: boolean
-  close: () => void
+  onOpenChange: (_: boolean) => void
 }) {
   return (
     <Modal
-      show={show}
-      onClose={close}
+      isOpen={show}
+      onOpenChange={onOpenChange}
       title="Tips"
-      content={
+      children={
         <div className="flex flex-col gap-2">
           {keybinds.map((keybind) => (
             <div key={keybind.description}>

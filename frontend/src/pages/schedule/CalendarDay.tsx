@@ -18,7 +18,7 @@ import {
   ICalendarDragItem,
 } from "@/pages/schedule/CalendarDayItem"
 import { ScheduleRecipeModal } from "@/pages/schedule/ScheduleRecipeModal"
-import { ICalRecipe } from "@/queries/scheduledRecipeCreate"
+import { ScheduledRecipe } from "@/queries/scheduledRecipeCreate"
 import { useScheduledRecipeDelete } from "@/queries/scheduledRecipeDelete"
 import { useScheduledRecipeUpdate } from "@/queries/scheduledRecipeUpdate"
 import { useCurrentDay } from "@/useCurrentDay"
@@ -48,7 +48,7 @@ export function CalendarDay({
   scheduledRecipes,
 }: {
   readonly date: Date
-  readonly scheduledRecipes: ICalRecipe[]
+  readonly scheduledRecipes: ScheduledRecipe[]
 }) {
   const today = useCurrentDay()
   const isToday = isSameDay(date, today)
@@ -120,14 +120,13 @@ export function CalendarDay({
       )}
     >
       <Title date={date} />
-      {showScheduleRecipeModal && (
-        <ScheduleRecipeModal
-          onClose={() => {
-            setShowScheduleRecipeModal(false)
-          }}
-          defaultValue={toISODateString(date)}
-        />
-      )}
+      <ScheduleRecipeModal
+        isOpen={showScheduleRecipeModal}
+        onOpenChange={() => {
+          setShowScheduleRecipeModal(false)
+        }}
+        defaultValue={toISODateString(date)}
+      />
       <ul className="flex h-full flex-col gap-3 overflow-y-auto px-1">
         {scheduled.map((x) => (
           <CalendarItem
@@ -138,6 +137,7 @@ export function CalendarDay({
             date={date}
             recipeName={x.recipe.name}
             recipeID={x.recipe.id}
+            primaryImage={x.recipe.primaryImage}
             remove={() => {
               scheduledRecipeDelete.mutate({
                 scheduledRecipeId: x.id,

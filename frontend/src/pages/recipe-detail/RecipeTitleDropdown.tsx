@@ -203,16 +203,15 @@ export function Dropdown({
           })}
         </Menu>
       </Popover>
-      {showScheduleModal && (
-        <ScheduleModal
-          recipeId={recipeId}
-          recipeName={recipeName}
-          scheduleHistory={recipeRecentScheduleHistory}
-          onClose={() => {
-            setShowScheduleModal(false)
-          }}
-        />
-      )}
+      <ScheduleModal
+        isOpen={showScheduleModal}
+        recipeId={recipeId}
+        recipeName={recipeName}
+        scheduleHistory={recipeRecentScheduleHistory}
+        onOpenChange={(value) => {
+          setShowScheduleModal(value)
+        }}
+      />
     </MenuTrigger>
   )
 }

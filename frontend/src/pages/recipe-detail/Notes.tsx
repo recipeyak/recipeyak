@@ -28,7 +28,6 @@ import { useReactionCreate } from "@/queries/reactionCreate"
 import { useReactionDelete } from "@/queries/reactionDelete"
 import { RecipeFetchResponse as Recipe } from "@/queries/recipeFetch"
 import { useUploadCreate } from "@/queries/uploadCreate"
-import { styled } from "@/theme"
 import { toast } from "@/toast"
 import { notUndefined } from "@/typeguard"
 import { imgixFmt } from "@/url"
@@ -531,61 +530,6 @@ interface INoteCreatorProps {
   readonly className?: string
 }
 
-const DragDropLabel = styled.label`
-  font-size: 0.85rem;
-  cursor: pointer;
-  border-style: solid;
-  border-top-style: none;
-  border-width: thin;
-  border-color: var(--color-border);
-  border-bottom-left-radius: 3px;
-  border-bottom-right-radius: 3px;
-  padding-left: 0.25rem;
-  padding-right: 0.25rem;
-  padding-top: 0.1rem;
-  padding-bottom: 0.1rem;
-  font-weight: 500;
-  background-color: var(--color-background-card);
-`
-
-const FileUploadContainer = styled.div`
-  border-style: solid;
-  border-top-style: none;
-  border-width: thin;
-  border-color: var(--color-border);
-  background-color: var(--color-background-card);
-  padding: 0.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem;
-`
-
-const CloseButton = styled.button`
-  z-index: 10;
-  position: absolute;
-  right: 0;
-  padding: 0.3rem;
-  cursor: pointer;
-  top: -4px;
-  border-radius: 100%;
-  aspect-ratio: 1;
-  line-height: 0;
-  border-width: 0;
-  background-color: #4a4a4a;
-  color: #dbdbdb;
-  font-weight: 700;
-`
-
-const Image100Px = styled.img.attrs({ loading: "lazy" })<{
-  readonly isLoading?: boolean
-  readonly src: string
-}>`
-  height: 100px;
-  width: 100px;
-  border-radius: 6px;
-  object-fit: cover;
-  filter: ${(props) => (props.isLoading ? "grayscale(100%)" : "unset")};
-`
 function FilePreview({
   src,
   isLoading,
@@ -601,28 +545,24 @@ function FilePreview({
 }) {
   return (
     <div
-      className="grid print:!hidden"
-      style={{
-        backgroundColor: "var(--color-background-empty-image)",
-        borderRadius: 6,
-      }}
+      className="grid rounded-md bg-[var(--color-background-empty-image)] print:!hidden"
       onClick={onClick}
     >
-      <Image100Px
+      <img
+        className={clx(
+          "z-10 h-[100px] w-[100px] rounded-md object-cover [grid-area:1/1]",
+          isLoading && "grayscale",
+        )}
+        loading="lazy"
         src={contentType.startsWith("image/") ? imgixFmt(src) : src}
-        isLoading={isLoading}
-        style={{
-          gridArea: "1 / 1",
-          zIndex: 10,
-        }}
       />
       {backgroundUrl != null && (
         <div
           style={{
-            gridArea: "1 / 1",
+            // TODO: could use a css var
             backgroundImage: `url(${backgroundUrl})`,
           }}
-          className="relative h-[100px] w-[100px] rounded-md bg-cover bg-center bg-no-repeat object-cover after:pointer-events-none after:absolute after:h-full after:w-full after:rounded-md after:backdrop-blur-[6px] after:content-['']"
+          className="relative h-[100px] w-[100px] rounded-md bg-cover bg-center bg-no-repeat object-cover [grid-area:1/1] after:pointer-events-none after:absolute after:h-full after:w-full after:rounded-md after:backdrop-blur-[6px] after:content-['']"
         />
       )}
     </div>
@@ -751,19 +691,6 @@ function useFileUpload(
   } as const
 }
 
-const ProgressBarContainer = styled.div`
-  z-index: 10;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  width: 100px;
-  display: flex;
-  align-items: end;
-  justify-content: center;
-`
-
 function FileWithStatus({
   url,
   contentType,
@@ -797,13 +724,13 @@ function FileWithStatus({
         {progress != null &&
           // hide the progress bar once it is complete
           progress !== 100 && (
-            <ProgressBarContainer>
+            <div className="absolute inset-0 z-10 flex w-[100px] items-end justify-center">
               <progress
                 value={progress}
                 max="100"
                 className="h-[0.2rem] rounded-none accent-[var(--color-primary)]"
               />
-            </ProgressBarContainer>
+            </div>
           )}
       </a>
       {state === "failed" && (
@@ -852,7 +779,7 @@ function FileUploader({
   return (
     <>
       {files.length > 0 && (
-        <FileUploadContainer>
+        <div className="flex flex-wrap gap-1 border-[thin] border-solid border-[var(--color-border)] bg-[var(--color-background-card)] p-2 [border-top-style:none]">
           {files.map((f) => (
             // NOTE(sbdchd): it's important that the `localId` is consistent
             // throughout the upload content, otherwise we'll wipe out the DOM
@@ -865,7 +792,8 @@ function FileUploader({
                 state={f.state}
                 backgroundUrl={null}
               />
-              <CloseButton
+              <button
+                className="absolute right-0 top-[-4px] z-10 aspect-[1] cursor-pointer rounded-[100%] border-[0px] bg-[#4a4a4a] p-[0.3rem] font-bold leading-[0] text-[#dbdbdb]"
                 onClick={() => {
                   if (confirm("Delete file?")) {
                     removeFile(f.localId)
@@ -873,17 +801,17 @@ function FileUploader({
                 }}
               >
                 &times;
-              </CloseButton>
+              </button>
             </div>
           ))}
-        </FileUploadContainer>
+        </div>
       )}
-      <DragDropLabel className="mb-2 text-[var(--color-text-muted)]">
+      <label className="mb-2 cursor-pointer rounded-b-[3px] border-[thin] border-solid border-[var(--color-border)] bg-[var(--color-background-card)] px-[0.25rem] py-[0.1rem] text-sm font-medium text-[var(--color-text-muted)] [border-top-style:none]">
         <input
           type="file"
           multiple
           accept="image/jpeg, image/png, application/pdf"
-          style={{ display: "none" }}
+          className="hidden"
           onChange={(e) => {
             const newFiles = e.target.files
             if (newFiles != null) {
@@ -897,7 +825,7 @@ function FileUploader({
           }}
         />
         Attach images & pdfs by dragging & dropping, selecting or pasting them.
-      </DragDropLabel>
+      </label>
     </>
   )
 }
