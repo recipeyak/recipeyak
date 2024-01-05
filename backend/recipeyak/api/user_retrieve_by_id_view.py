@@ -281,7 +281,7 @@ def user_retrieve_by_id_view(request: AuthedHttpRequest, user_id: str) -> JsonRe
     return JsonResponse(
         UserDetailByIdResponse(
             id=user.id,
-            name=user.name,
+            name=user.name or user.email,
             email=user.email,
             avatar_url=get_avatar_url(
                 email=user.email,
