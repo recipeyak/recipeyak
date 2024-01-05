@@ -1,9 +1,10 @@
 import { useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
-import { Button, FileTrigger } from "react-aria-components"
+import { FileTrigger } from "react-aria-components"
 
 import { Avatar } from "@/components/Avatar"
 import { Box } from "@/components/Box"
+import { Button } from "@/components/Buttons"
 import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
 import { NavPage } from "@/components/Page"
@@ -90,7 +91,7 @@ export function SettingsPage() {
                 )
               }}
             >
-              <Button className="self-start rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-card)] px-2 py-1 text-xs font-medium text-[var(--color-text)]">
+              <Button size="small">
                 {!uploadCreate.isPending
                   ? "Change profile picture"
                   : "Changing profile picture..."}
