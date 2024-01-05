@@ -35,6 +35,7 @@ export function SettingsPage() {
   return (
     <NavPage>
       <Box
+        // eslint-disable-next-line no-restricted-syntax
         style={{
           maxWidth: 800,
           marginLeft: "auto",
@@ -96,6 +97,8 @@ export function SettingsPage() {
               </Button>
             </FileTrigger>
           </div>
+
+          {/* eslint-disable-next-line no-restricted-syntax */}
           <Box dir="col" style={{ maxWidth: 400 }} gap={2}>
             <ChangeEmail email={userInfo.data.email} />
             <ChangeName initialValue={userInfo.data.name} />

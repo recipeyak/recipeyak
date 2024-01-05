@@ -26,6 +26,7 @@ export function DragIcon() {
 
 export const Chevron = () => (
   <svg
+    // eslint-disable-next-line no-restricted-syntax
     style={{ width: "1.5em" }}
     fill="currentColor"
     viewBox="0 0 20 20"

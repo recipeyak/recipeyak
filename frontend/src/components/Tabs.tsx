@@ -19,6 +19,7 @@ interface ITabProps {
 export function Tab({ isActive, children, onClick }: ITabProps) {
   return (
     <Box
+      // eslint-disable-next-line no-restricted-syntax
       style={{
         textDecoration: isActive ? "underline" : "",
         textUnderlineOffset: "0.25rem",

@@ -92,7 +92,7 @@ function UserDropdown() {
         >
           <MenuItem id="meta-info" className="pl-2">
             <div className="pb-1 ">
-              <span className="">{user.name ?? user.email}</span>
+              <span>{user.name ?? user.email}</span>
               <span> · </span>
               <span className="text-sm ">{team.data?.name}</span>
               <div className="text-sm ">{user.email}</div>

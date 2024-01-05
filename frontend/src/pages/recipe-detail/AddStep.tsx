@@ -62,7 +62,6 @@ function AddStep({ recipeId, onCancel, index, position }: IAddStepProps) {
           name="step"
         />
         {addStep.error ? (
-          // TODO: Fix this the next time the file is edited.
           // eslint-disable-next-line react/forbid-elements
           <p className="text-base text-[var(--color-danger)]">
             A step is required

@@ -83,7 +83,6 @@ function ShoppingListItem({
   const units = normalizeUnitsFracs(quantitiesToString(quantities))
 
   return (
-    // TODO: Fix this the next time the file is edited.
     // eslint-disable-next-line react/forbid-elements
     <section className="text-sm" key={name + units}>
       {units} {name}
@@ -135,8 +134,8 @@ const ShoppingListList = React.forwardRef<
               <div key={groupName}>
                 {groupIndex > 0 && (
                   // ensure copying the list has a new line between categories
-                  // TODO: Fix this the next time the file is edited.
-                  // eslint-disable-next-line react/forbid-elements
+
+                  // eslint-disable-next-line react/forbid-elements, no-restricted-syntax
                   <section style={{ maxHeight: "0.5rem" }}>
                     <br />
                   </section>

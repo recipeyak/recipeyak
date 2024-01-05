@@ -49,6 +49,20 @@ module.exports = {
         selector: "TSEnumDeclaration",
         message: "Don't declare enums. Use a union of literals instead.",
       },
+      {
+        selector:
+          "JSXAttribute[name.name='style'][value.type='JSXExpressionContainer'][value.expression.type='ObjectExpression'][value.expression.properties.length=0]",
+        message: "Avoid empty style={{}}.",
+      },
+      {
+        selector: "JSXAttribute[name.name='className'][value.value='']",
+        message: 'Avoid empty className="".',
+      },
+      {
+        selector:
+          "JSXAttribute[name.name='style'][value.type='JSXExpressionContainer'][value.expression.type='ObjectExpression']",
+        message: "Avoid inline styles.",
+      },
     ],
     "no-restricted-globals": [
       "error",

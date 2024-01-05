@@ -37,14 +37,13 @@ export function TeamInvitePage(props: ITeamInviteProps) {
             {teamInfo.data.name}
           </h1>
         </Link>
-        {/* TODO: Fix this the next time the file is edited. */}
+
         {/* eslint-disable-next-line react/forbid-elements */}
         <section className="mb-2 flex items-center justify-between">
           <h2 className="text-2xl">Invite Team Members</h2>
         </section>
         <form
           action=""
-          className=""
           onSubmit={(e) => {
             e.preventDefault()
             sendInvites.mutate(
@@ -84,7 +83,7 @@ export function TeamInvitePage(props: ITeamInviteProps) {
               />
               <div>
                 <h4 className="text-base font-medium">{role.name}</h4>
-                {/* TODO: Fix this the next time the file is edited. */}
+
                 {/* eslint-disable-next-line react/forbid-elements */}
                 <p className="text-[var(--color-text-muted)]">
                   {role.description}
@@ -92,10 +91,9 @@ export function TeamInvitePage(props: ITeamInviteProps) {
               </div>
             </label>
           ))}
-          {/* TODO: Fix this the next time the file is edited. */}
+
           {/* eslint-disable-next-line react/forbid-elements */}
           <p className="mb-2">
-            {/* TODO: Fix this the next time the file is edited. */}
             {/* eslint-disable-next-line react/forbid-elements */}
             <b>Note:</b> Users without an account will be sent an email asking
             to create one.

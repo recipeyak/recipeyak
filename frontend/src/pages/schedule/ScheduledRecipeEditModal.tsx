@@ -266,6 +266,7 @@ function RescheduleSection({
                 onChange={handleDateChange}
                 type="date"
                 className="w-full"
+                // eslint-disable-next-line no-restricted-syntax
                 style={{
                   border: "1px solid var(--color-border)",
                   borderRadius: 5,
