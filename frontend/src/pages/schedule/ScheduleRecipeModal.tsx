@@ -67,7 +67,7 @@ function RecipeSelectInput({
   )
 }
 
-export function RecipeItem({
+function RecipeItem({
   src,
   name,
   author,
