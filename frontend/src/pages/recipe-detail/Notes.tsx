@@ -248,7 +248,7 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
           {note.created_by.id === userId ? (
             <a
               className="ml-2 cursor-pointer text-[0.825rem] text-[var(--color-text-muted)] print:hidden"
-              data-testid={`edit-note-${note.id}`}
+              data-testid="edit-note"
               onClick={onNoteClick}
             >
               edit

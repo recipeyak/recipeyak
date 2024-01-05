@@ -102,7 +102,7 @@ export function Invites() {
   ]
 
   return (
-    <Table label="invites">
+    <Table label="invites" data-testid="invites-list">
       <TableHeader columns={columns}>
         {(column) => {
           return <Column isRowHeader>{column.name}</Column>

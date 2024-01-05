@@ -167,7 +167,6 @@ const SelectInner = styled.select`
   border: 1px solid transparent;
   border-radius: 6px;
   box-shadow: none;
-  display: inline-flex;
   height: 2.25em;
   justify-content: flex-start;
   line-height: 1.5;
@@ -180,13 +179,6 @@ const SelectInner = styled.select`
   background-color: var(--color-background-card);
   border-color: var(--color-border);
   color: var(--color-text);
-  &:hover {
-    border-color: var(--color-border);
-  }
-  &:focus,
-  &:active {
-    border-color: var(--color-border);
-  }
   cursor: pointer;
   display: block;
   max-width: 100%;

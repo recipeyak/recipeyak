@@ -185,12 +185,11 @@ function StepBody({
           size="small"
           loading={remove.isPending}
           type="button"
-          name="delete"
         >
           Delete
         </Button>
         <div className="flex gap-2">
-          <Button size="small" name="cancel edit" onClick={handleCancel}>
+          <Button size="small" onClick={handleCancel}>
             Cancel
           </Button>
           <Button
@@ -198,7 +197,6 @@ function StepBody({
             size="small"
             onClick={updateStep}
             loading={update.isPending}
-            name="save"
           >
             Save
           </Button>
