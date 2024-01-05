@@ -66,7 +66,7 @@ import {
   pathTeamSettings,
 } from "@/paths"
 import { API_GIT_TREE_SHA, GIT_SHA, SENTRY_DSN } from "@/settings"
-import { theme, ThemeProvider, themeSet } from "@/theme"
+import { themeSet } from "@/theme"
 import { Toaster } from "@/toast"
 import { useUserTheme } from "@/useUserTheme"
 
@@ -333,17 +333,15 @@ function App() {
         }}
       >
         <ReactQueryDevtools initialIsOpen={false} />
-        <ThemeProvider theme={theme}>
-          <HelmetProvider>
-            <DndProvider backend={HTML5Backend}>
-              <ErrorBoundary>
-                <Helmet />
-                <Toaster toastOptions={{ position: "bottom-center" }} />
-                <AppRouter />
-              </ErrorBoundary>
-            </DndProvider>
-          </HelmetProvider>
-        </ThemeProvider>
+        <HelmetProvider>
+          <DndProvider backend={HTML5Backend}>
+            <ErrorBoundary>
+              <Helmet />
+              <Toaster toastOptions={{ position: "bottom-center" }} />
+              <AppRouter />
+            </ErrorBoundary>
+          </DndProvider>
+        </HelmetProvider>
       </PersistQueryClientProvider>
     </Suspense>
   )

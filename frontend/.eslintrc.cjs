@@ -74,9 +74,8 @@ module.exports = {
             message: "Please import from '@/toast' instead.",
           },
           {
-            name: "styled-components",
-            message:
-              "Please import from '@/theme' for type safe versions of 'styled-components' instead.",
+            name: "react-textarea-autosize",
+            message: "Please import Textarea instead.",
           },
         ],
         patterns: [
@@ -124,7 +123,7 @@ module.exports = {
     "react/jsx-fragments": "error",
     "react/forbid-elements": [
       "error",
-      { forbid: ["p", "style", "section", "b", "em", "i"] },
+      { forbid: ["p", "style", "section", "b", "em", "i", "select"] },
     ],
     "no-lonely-if": "error",
     "object-shorthand": ["error", "always"],

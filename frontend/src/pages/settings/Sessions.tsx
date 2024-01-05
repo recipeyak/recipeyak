@@ -1,6 +1,7 @@
 import { useState } from "react"
 
 import { assertNever } from "@/assert"
+import { clx } from "@/classnames"
 import { Badge } from "@/components/Badge"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
@@ -114,7 +115,7 @@ function SessionList() {
 
   return (
     <div className="flex flex-col items-center gap-2">
-      <Table label="sessions">
+      <Table label="sessions" className={clx(!showAll && "max-h-[280px]")}>
         <TableHeader columns={columns}>
           {(column) => {
             return <Column isRowHeader>{column.name}</Column>
