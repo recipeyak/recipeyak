@@ -10,6 +10,7 @@ import { TimelineEvent } from "@/pages/recipe-detail/Notes"
 import { useScheduledRecipeDelete } from "@/queries/scheduledRecipeDelete"
 import { useScheduledRecipeFindNextOpen } from "@/queries/scheduledRecipeFindNextOpen"
 import { useScheduledRecipeUpdate } from "@/queries/scheduledRecipeUpdate"
+import { imgixFmt } from "@/url"
 import { recipeURL } from "@/urls"
 
 const options = [
@@ -24,9 +25,35 @@ const options = [
   "Weekday",
 ] as const
 
-export function CalendarDayItemModal({
+function RecipeItem({
+  src,
+  name,
+  author,
+  to,
+}: {
+  src: string
+  name: string
+  author: string | null
+  to: string
+}) {
+  const cls =
+    "h-[40px] w-[40px] rounded-md bg-[var(--color-background-empty-image)] object-cover"
+  return (
+    <Link to={to} className="flex cursor-pointer items-center gap-2">
+      {src !== "" ? <img src={src} className={cls} /> : <div className={cls} />}
+      <div>
+        <div className="line-clamp-1 text-ellipsis">{name}</div>
+        <div className="line-clamp-1 text-ellipsis text-sm">{author}</div>
+      </div>
+    </Link>
+  )
+}
+
+export function ScheduledRecipeEditModal({
   scheduledId,
   recipeName,
+  recipeAuthor,
+  primaryImage,
   recipeId,
   date,
   isOpen,
@@ -37,6 +64,7 @@ export function CalendarDayItemModal({
   readonly scheduledId: number
   readonly recipeId: number | string
   readonly recipeName: string
+  readonly recipeAuthor: string | null
   readonly date: Date
   readonly isOpen: boolean
   readonly onClose: (_: boolean) => void
@@ -45,6 +73,10 @@ export function CalendarDayItemModal({
     readonly id: number | string
     readonly name: string
     readonly avatar_url: string
+  } | null
+  readonly primaryImage: {
+    url: string
+    backgroundUrl: string | null
   } | null
 }) {
   const to = recipeURL(recipeId, recipeName)
@@ -59,49 +91,50 @@ export function CalendarDayItemModal({
       }}
       title={prettyDate}
     >
-      <Box dir="col" gap={2}>
-        <Link className="text-xl sm:text-base" to={to}>
-          {recipeName}
-        </Link>
-      </Box>
-
-      {reschedulerOpen && (
-        <RescheduleSection
-          onClose={() => {
-            onClose(false)
-          }}
-          date={date}
-          scheduledId={scheduledId}
-          recipeName={recipeName}
-        />
-      )}
-
-      <hr className="my-2" />
-
-      <TimelineEvent
-        className="mb-2"
-        enableLinking={false}
-        event={{
-          id: scheduledId,
-          action: "scheduled",
-          created_by: createdBy,
-          created: createdAt,
-          is_scraped: false,
-        }}
-      />
       <div className="flex flex-col gap-2">
-        <Button
-          size="normal"
-          active={reschedulerOpen}
-          onClick={() => {
-            setReschedulerOpen((val) => !val)
+        <RecipeItem
+          to={to}
+          src={primaryImage?.url != null ? imgixFmt(primaryImage.url) : ""}
+          name={recipeName}
+          author={recipeAuthor}
+        />
+
+        {reschedulerOpen && (
+          <RescheduleSection
+            onClose={() => {
+              onClose(false)
+            }}
+            date={date}
+            scheduledId={scheduledId}
+            recipeName={recipeName}
+          />
+        )}
+        <hr className="my-1" />
+
+        <TimelineEvent
+          enableLinking={false}
+          event={{
+            id: scheduledId,
+            action: "scheduled",
+            created_by: createdBy,
+            created: createdAt,
+            is_scraped: false,
           }}
-        >
-          Reschedule
-        </Button>
-        <Button size="normal" variant="primary" to={to}>
-          View Recipe
-        </Button>
+        />
+        <div className="flex flex-col gap-2">
+          <Button
+            size="normal"
+            active={reschedulerOpen}
+            onClick={() => {
+              setReschedulerOpen((val) => !val)
+            }}
+          >
+            Reschedule
+          </Button>
+          <Button size="normal" variant="primary" to={to}>
+            View Recipe
+          </Button>
+        </div>
       </div>
     </Modal>
   )
@@ -168,45 +201,63 @@ function RescheduleSection({
     onClose()
   }
   return (
-    <Box dir="col" gap={2} mt={2}>
+    <Box dir="col" gap={2}>
       <Box dir="col" gap={4} mt={2} mb={2}>
         <Box dir="col" gap={2}>
-          <Box align="center" gap={2}>
-            {(
-              [
+          <div className="flex justify-between">
+            <Box align="center" gap={2}>
+              {(
                 [
-                  "tomorrow",
-                  () => {
-                    handleSave({ on: addDays(date, 1) })
-                  },
-                ],
-                [
-                  "next week",
-                  () => {
-                    handleSave({ on: addWeeks(date, 1) })
-                  },
-                ],
-                [
-                  "custom",
-                  () => {
-                    setShowCustom((s) => !s)
-                  },
-                ],
-              ] as const
-            ).map(([label, onClick]) => {
-              return (
-                <Button
-                  key={label}
-                  size="small"
-                  onClick={onClick}
-                  active={label === "custom" && showCustom}
-                  disabled={scheduledRecipeUpdate.isPending}
-                >
-                  {!scheduledRecipeUpdate.isPending ? label : "updating..."}
-                </Button>
-              )
-            })}
-          </Box>
+                  [
+                    "today",
+                    () => {
+                      handleSave({ on: new Date() })
+                    },
+                  ],
+                  [
+                    "next day",
+                    () => {
+                      handleSave({ on: addDays(date, 1) })
+                    },
+                  ],
+                  [
+                    "next week",
+                    () => {
+                      handleSave({ on: addWeeks(date, 1) })
+                    },
+                  ],
+                  [
+                    "custom",
+                    () => {
+                      setShowCustom((s) => !s)
+                    },
+                  ],
+                ] as const
+              ).map(([label, onClick]) => {
+                return (
+                  <Button
+                    key={label}
+                    size="small"
+                    onClick={onClick}
+                    active={label === "custom" && showCustom}
+                    disabled={scheduledRecipeUpdate.isPending}
+                  >
+                    {!scheduledRecipeUpdate.isPending ? label : "updating..."}
+                  </Button>
+                )
+              })}
+            </Box>
+
+            <Button
+              size="small"
+              variant="danger"
+              onClick={handleDelete}
+              disabled={scheduledRecipeDelete.isPending}
+            >
+              {!scheduledRecipeDelete.isPending ? "delete" : "deleting..."}
+            </Button>
+          </div>
+
           {showCustom && (
             <>
               <input
@@ -252,32 +303,19 @@ function RescheduleSection({
           )}
         </Box>
       </Box>
-      <Box space="between" align="center">
-        <Button
-          size="small"
-          variant="danger"
-          onClick={handleDelete}
-          disabled={scheduledRecipeDelete.isPending}
-        >
-          {!scheduledRecipeDelete.isPending ? "delete" : "deleting..."}
-        </Button>
-        <Box gap={2}>
-          <Button size="small" onClick={onClose}>
-            dismiss
+      <Box space="end" align="center">
+        {showCustom && (
+          <Button
+            size="small"
+            variant="primary"
+            onClick={() => {
+              handleSave({ on: localDate })
+            }}
+            disabled={scheduledRecipeUpdate.isPending}
+          >
+            {!scheduledRecipeUpdate.isPending ? "save" : "saving..."}
           </Button>
-          {showCustom && (
-            <Button
-              size="small"
-              variant="primary"
-              onClick={() => {
-                handleSave({ on: localDate })
-              }}
-              disabled={scheduledRecipeUpdate.isPending}
-            >
-              {!scheduledRecipeUpdate.isPending ? "save" : "saving..."}
-            </Button>
-          )}
-        </Box>
+        )}
       </Box>
     </Box>
   )
