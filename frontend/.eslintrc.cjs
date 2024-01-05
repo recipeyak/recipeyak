@@ -91,6 +91,11 @@ module.exports = {
             name: "react-textarea-autosize",
             message: "Please import Textarea instead.",
           },
+          {
+            name: "react-aria-components",
+            importNames: ["Button"],
+            message: "Please import @/components/Button instead.",
+          },
         ],
         patterns: [
           {
