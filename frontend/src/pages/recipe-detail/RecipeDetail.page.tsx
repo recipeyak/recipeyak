@@ -407,7 +407,6 @@ function RecipeEditor(props: { recipe: Recipe; onClose: () => void }) {
           size="small"
           className="mr-3"
           type="button"
-          name="cancel recipe update"
           onClick={props.onClose}
         >
           Cancel
@@ -418,7 +417,6 @@ function RecipeEditor(props: { recipe: Recipe; onClose: () => void }) {
           variant="primary"
           loading={updateRecipe.isPending}
           onClick={onSave}
-          name="save recipe"
         >
           Save
         </Button>
@@ -767,7 +765,6 @@ export function RecipeDetailPage(props: IRecipeProps) {
           <Button
             size="small"
             type="button"
-            name="toggle add section"
             className="ml-3"
             aria-label="exit edit mode"
             onClick={toggleEditMode}

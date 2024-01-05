@@ -71,22 +71,18 @@ export function ChangeEmail(props: { email: string }) {
             <Box gap={2}>
               <Button
                 disabled={updateEmail.isPending}
-                name="email"
                 size="small"
                 onClick={() => {
                   cancelEdit()
                 }}
-                value="save email"
               >
                 Cancel
               </Button>
               <Button
                 variant="primary"
                 size="small"
-                name="email"
                 type="submit"
                 loading={updateEmail.isPending}
-                value="save email"
               >
                 Save
               </Button>

@@ -129,12 +129,7 @@ export function Section({
               Delete
             </Button>
             <div className="flex gap-2">
-              <Button
-                onClick={handleCancel}
-                size="small"
-                type="button"
-                name="cancel add ingredient"
-              >
+              <Button onClick={handleCancel} size="small" type="button">
                 Cancel
               </Button>
               <Button
