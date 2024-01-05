@@ -11,27 +11,6 @@ import { imgixFmt } from "@/url"
 import { recipeURL } from "@/urls"
 import { useGlobalEvent } from "@/useGlobalEvent"
 
-function RecipeLink({
-  name,
-  id,
-  onClick,
-}: {
-  readonly id: number | string
-  readonly name: string
-  readonly onClick: (e: React.MouseEvent) => void
-}) {
-  const to = recipeURL(id, name)
-  return (
-    <Link
-      className="line-clamp-3 text-ellipsis break-words rounded-md text-sm font-semibold leading-tight focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)]"
-      to={to}
-      onClick={onClick}
-    >
-      {name}
-    </Link>
-  )
-}
-
 interface ICalendarItemProps {
   readonly remove: () => void
   readonly date: Date
@@ -109,26 +88,11 @@ export function CalendarItem({
     <>
       <li
         ref={ref}
-        className={clx(
-          "flex items-center gap-2",
-          visibility === "visible" ? "visible" : "invisible",
-        )}
+        className={clx(visibility === "visible" ? "visible" : "invisible")}
       >
-        <Image
-          width={25}
-          height={25}
-          sources={
-            primaryImage && {
-              url: imgixFmt(primaryImage.url),
-              backgroundUrl: primaryImage.backgroundUrl,
-            }
-          }
-          rounded
-        />
-
-        <RecipeLink
-          name={recipeName}
-          id={recipeID}
+        <Link
+          className="line-clamp-3 flex w-full items-center gap-2 text-ellipsis break-words rounded-md text-sm font-semibold leading-tight focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)]"
+          to={recipeURL(recipeID, recipeName)}
           onClick={(e) => {
             if (e.shiftKey || e.metaKey) {
               return
@@ -136,7 +100,20 @@ export function CalendarItem({
             e.preventDefault()
             setShow(true)
           }}
-        />
+        >
+          <Image
+            width={25}
+            height={25}
+            sources={
+              primaryImage && {
+                url: imgixFmt(primaryImage.url),
+                backgroundUrl: primaryImage.backgroundUrl,
+              }
+            }
+            rounded
+          />
+          <div>{recipeName}</div>
+        </Link>
       </li>
       <ScheduledRecipeEditModal
         isOpen={show}
