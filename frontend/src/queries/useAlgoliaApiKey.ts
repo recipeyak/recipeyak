@@ -12,10 +12,9 @@ const getAlgoliaApiKey = () =>
 export function useAlgoliaApiKey() {
   return useQuery({
     queryKey: ["algolia"],
-    // only fetch on page load.
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
+    // Only fetch on initial page load.
+    staleTime: Infinity,
+    gcTime: Infinity,
     queryFn: async () => {
       const res = await getAlgoliaApiKey().then(unwrapResult)
       return res
