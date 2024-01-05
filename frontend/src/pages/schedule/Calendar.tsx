@@ -17,10 +17,9 @@ import HelpMenuModal from "@/pages/schedule/HelpMenuModal"
 import { Kbd } from "@/pages/schedule/Kbd"
 import { ScheduleRecipeModal } from "@/pages/schedule/ScheduleRecipeModal"
 import ShoppingList from "@/pages/schedule/ShoppingList"
-import { ICalRecipe } from "@/queries/scheduledRecipeCreate"
+import { ScheduledRecipe } from "@/queries/scheduledRecipeCreate"
 import { useScheduledRecipeList } from "@/queries/scheduledRecipeList"
 import { removeQueryParams, setQueryParams } from "@/querystring"
-import { styled } from "@/theme"
 import { useGlobalEvent } from "@/useGlobalEvent"
 
 function CalTitle({ dayTs }: { readonly dayTs: number }) {
@@ -32,7 +31,7 @@ function CalTitle({ dayTs }: { readonly dayTs: number }) {
   )
 }
 
-export type IDays = Record<string, ICalRecipe[] | undefined>
+export type IDays = Record<string, ScheduledRecipe[] | undefined>
 
 function Weekdays() {
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
@@ -143,25 +142,24 @@ function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
   return (
     <Box space="between" align="center" shrink={0}>
       <Modal
-        show={showShopping}
-        onClose={() => {
-          setShowShopping(false)
+        isOpen={showShopping}
+        onOpenChange={(value) => {
+          setShowShopping(value)
         }}
         title="Shopping List"
-        content={
+        children={
           <div className="flex">
             <ShoppingList />
           </div>
         }
       />
 
-      {showSchedule && (
-        <ScheduleRecipeModal
-          onClose={() => {
-            setShowSchedule(false)
-          }}
-        />
-      )}
+      <ScheduleRecipeModal
+        isOpen={showSchedule}
+        onOpenChange={(value) => {
+          setShowSchedule(value)
+        }}
+      />
 
       <Box gap={1} className="items-center">
         <CalTitle dayTs={dayTs} />
@@ -229,8 +227,8 @@ function HelpPrompt() {
       </div>
       <HelpMenuModal
         show={show}
-        close={() => {
-          setShow(false)
+        onOpenChange={(value) => {
+          setShow(value)
         }}
       />
     </>
@@ -261,8 +259,7 @@ export function Calendar() {
 
   const scheduledRecipesResult = useScheduledRecipeList({ startOfWeekMs })
 
-  const scheduledRecipes: ICalRecipe[] =
-    scheduledRecipesResult.data?.scheduledRecipes ?? []
+  const scheduledRecipes = scheduledRecipesResult.data?.scheduledRecipes ?? []
 
   function nextPage() {
     setQueryParams(history, {

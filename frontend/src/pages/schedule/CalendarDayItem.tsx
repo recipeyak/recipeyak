@@ -3,9 +3,11 @@ import { useDrag } from "react-dnd"
 import { Link } from "react-router-dom"
 
 import { clx } from "@/classnames"
+import { Image } from "@/components/Image"
 import { isInsideChangeWindow } from "@/date"
 import { DragDrop } from "@/dragDrop"
 import { CalendarDayItemModal } from "@/pages/schedule/CalendarDayItemModal"
+import { imgixFmt } from "@/url"
 import { recipeURL } from "@/urls"
 import { useGlobalEvent } from "@/useGlobalEvent"
 
@@ -21,7 +23,7 @@ function RecipeLink({
   const to = recipeURL(id, name)
   return (
     <Link
-      className="break-words rounded-md text-sm font-semibold leading-tight focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)]"
+      className="line-clamp-3 text-ellipsis break-words rounded-md text-sm font-semibold leading-tight focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)]"
       to={to}
       onClick={onClick}
     >
@@ -30,32 +32,7 @@ function RecipeLink({
   )
 }
 
-const CalendarListItem = React.forwardRef(
-  (
-    {
-      visibility,
-      children,
-    }: {
-      visibility: "visible" | "hidden"
-      children: React.ReactNode
-    },
-    ref: React.ForwardedRef<HTMLLIElement>,
-  ) => {
-    return (
-      <li
-        ref={ref}
-        className={clx(
-          "flex items-center justify-between",
-          visibility === "visible" ? "visible" : "invisible",
-        )}
-      >
-        {children}
-      </li>
-    )
-  },
-)
-
-export interface ICalendarItemProps {
+interface ICalendarItemProps {
   readonly remove: () => void
   readonly date: Date
   readonly recipeID: number | string
@@ -67,6 +44,10 @@ export interface ICalendarItemProps {
     readonly name: string
     readonly avatar_url: string
   } | null
+  readonly primaryImage: {
+    readonly url: string
+    readonly backgroundUrl: string | null
+  } | null
 }
 
 export function CalendarItem({
@@ -74,6 +55,7 @@ export function CalendarItem({
   remove,
   recipeName,
   recipeID,
+  primaryImage,
   scheduledId,
   createdAt,
   createdBy,
@@ -90,7 +72,7 @@ export function CalendarItem({
       return
     }
 
-    if (e.key === "#" || e.key === "Delete") {
+    if (e.key === "#" || e.key === "Delete" || e.key === "Backspace") {
       remove()
     }
   }
@@ -123,7 +105,25 @@ export function CalendarItem({
 
   return (
     <>
-      <CalendarListItem ref={ref} visibility={visibility}>
+      <li
+        ref={ref}
+        className={clx(
+          "flex items-start gap-2",
+          visibility === "visible" ? "visible" : "invisible",
+        )}
+      >
+        <Image
+          width={25}
+          height={25}
+          sources={
+            primaryImage && {
+              url: imgixFmt(primaryImage.url),
+              backgroundUrl: primaryImage.backgroundUrl,
+            }
+          }
+          rounded
+        />
+
         <RecipeLink
           name={recipeName}
           id={recipeID}
@@ -135,20 +135,19 @@ export function CalendarItem({
             setShow(true)
           }}
         />
-      </CalendarListItem>
-      {show ? (
-        <CalendarDayItemModal
-          scheduledId={scheduledId}
-          createdAt={createdAt}
-          createdBy={createdBy}
-          recipeName={recipeName}
-          recipeId={recipeID}
-          date={date}
-          onClose={() => {
-            setShow(false)
-          }}
-        />
-      ) : null}
+      </li>
+      <CalendarDayItemModal
+        isOpen={show}
+        scheduledId={scheduledId}
+        createdAt={createdAt}
+        createdBy={createdBy}
+        recipeName={recipeName}
+        recipeId={recipeID}
+        date={date}
+        onClose={(change) => {
+          setShow(change)
+        }}
+      />
     </>
   )
 }

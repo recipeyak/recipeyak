@@ -159,10 +159,12 @@ function RecipeSelect({
 }
 
 export function ScheduleRecipeModal({
-  onClose,
+  isOpen,
+  onOpenChange,
   defaultValue,
 }: {
-  onClose: () => void
+  isOpen: boolean
+  onOpenChange: (_: boolean) => void
   defaultValue?: string
 }) {
   const [isoDate, setIsoDate] = useState(
@@ -186,14 +188,14 @@ export function ScheduleRecipeModal({
       recipeName: selectedItem.name,
       on: parseISO(isoDate),
     })
-    onClose()
+    onOpenChange(false)
   }
   return (
     <Modal
-      show
-      onClose={onClose}
+      isOpen={isOpen}
+      onOpenChange={onOpenChange}
       title="Schedule a Recipe"
-      content={
+      children={
         <form
           className="flex h-full flex-col items-start gap-2"
           onSubmit={(e) => {

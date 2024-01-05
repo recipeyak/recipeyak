@@ -2,7 +2,10 @@ import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query"
 import { addWeeks, parseISO, startOfWeek, subWeeks } from "date-fns"
 
 import { http } from "@/http"
-import { CalendarResponse, ICalRecipe } from "@/queries/scheduledRecipeCreate"
+import {
+  CalendarResponse,
+  ScheduledRecipe,
+} from "@/queries/scheduledRecipeCreate"
 import { unwrapResult } from "@/query"
 import { useTeamId } from "@/useTeamId"
 
@@ -20,7 +23,7 @@ export function onRecipeDeletion(
   queryClient: QueryClient,
   vars: { teamId: number; scheduledRecipeId: number },
 ) {
-  let deletedCalRecipe: ICalRecipe | undefined
+  let deletedCalRecipe: ScheduledRecipe | undefined
   queryClient.setQueriesData(
     { queryKey: [vars.teamId, "calendar"] },
     (data: unknown) => {
@@ -30,7 +33,7 @@ export function onRecipeDeletion(
       if (oldData == null) {
         return oldData
       }
-      const updatedScheduledRecipes: ICalRecipe[] = []
+      const updatedScheduledRecipes: ScheduledRecipe[] = []
       oldData.scheduledRecipes.forEach((calRecipe) => {
         if (calRecipe.id !== vars.scheduledRecipeId) {
           updatedScheduledRecipes.push(calRecipe)
@@ -79,7 +82,7 @@ export function useScheduledRecipeDelete() {
             if (data == null) {
               return data
             }
-            const updatedScheduledRecipes: ICalRecipe[] = [
+            const updatedScheduledRecipes: ScheduledRecipe[] = [
               ...data.scheduledRecipes,
               deletedCalRecipe,
             ]

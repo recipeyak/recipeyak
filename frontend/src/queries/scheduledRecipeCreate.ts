@@ -10,25 +10,10 @@ import { useUser } from "@/useUser"
 import { random32Id } from "@/uuid"
 
 export type CalendarResponse = {
-  scheduledRecipes: ICalRecipe[]
+  scheduledRecipes: ScheduledRecipe[]
   settings: {
     syncEnabled: boolean
     calendarLink: string
-  }
-}
-
-export interface ICalRecipe {
-  readonly id: number
-  readonly on: string
-  readonly created: string
-  readonly createdBy: {
-    readonly id: number | string
-    readonly name: string
-    readonly avatar_url: string
-  } | null
-  readonly recipe: {
-    readonly id: number
-    readonly name: string
   }
 }
 
@@ -44,13 +29,14 @@ function toCalRecipe(
     name: string
     avatarURL: string
   },
-): ICalRecipe {
+): ScheduledRecipe {
   return {
     id: tempId,
     created: String(new Date()),
     recipe: {
       id: recipe.id,
       name: recipe.name,
+      primaryImage: null,
     },
     on: toISODateString(on),
     createdBy: {
@@ -63,29 +49,46 @@ function toCalRecipe(
 }
 
 const scheduleRecipe = (recipeID: number, on: Date | string) => {
-  return http.post<ICalRecipe>(`/api/v1/calendar/`, {
-    recipe: recipeID,
-    on: toISODateString(on),
-  })
+  return http
+    .post<{
+      readonly id: number
+      readonly on: string
+      readonly created: string
+      readonly createdBy: {
+        readonly id: number | string
+        readonly name: string
+        readonly avatar_url: string
+      } | null
+      readonly recipe: {
+        readonly id: number
+        readonly name: string
+        readonly primaryImage: {
+          readonly url: string
+          readonly backgroundUrl: string | null
+        } | null
+      }
+    }>(`/api/v1/calendar/`, {
+      recipe: recipeID,
+      on: toISODateString(on),
+    })
+    .then(unwrapResult)
 }
 
-function scheduleRecipeV2({
-  recipeID,
-  on,
-}: {
-  recipeID: number
-  recipeName: string
-  on: Date
-}): Promise<ICalRecipe> {
-  return scheduleRecipe(recipeID, on).then(unwrapResult)
-}
+export type ScheduledRecipe = Awaited<ReturnType<typeof scheduleRecipe>>
 
 export function useScheduleRecipeCreate() {
   const teamID = useTeamId()
   const queryClient = useQueryClient()
   const user = useUser()
   return useMutation({
-    mutationFn: scheduleRecipeV2,
+    mutationFn: ({
+      recipeID,
+      on,
+    }: {
+      recipeID: number
+      recipeName: string
+      on: Date
+    }) => scheduleRecipe(recipeID, on),
     onMutate: (vars) => {
       const tempId = random32Id()
       const tempScheduledRecipe = toCalRecipe(
@@ -114,7 +117,7 @@ export function useScheduleRecipeCreate() {
             if (data == null) {
               return data
             }
-            const updatedScheduledRecipes: ICalRecipe[] = [
+            const updatedScheduledRecipes: ScheduledRecipe[] = [
               ...data.scheduledRecipes,
               tempScheduledRecipe,
             ]
@@ -137,7 +140,7 @@ export function useScheduleRecipeCreate() {
             if (data == null) {
               return data
             }
-            const updatedScheduledRecipes: ICalRecipe[] = [
+            const updatedScheduledRecipes: ScheduledRecipe[] = [
               ...data.scheduledRecipes.filter(
                 (x) =>
                   x.id !== context?.optimisticScheduledRecipeId &&

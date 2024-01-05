@@ -25,7 +25,11 @@ type ScheduledRecipeUpdated = {
   createdBy: null
   id: number
   on: string
-  recipe: { id: number; name: string }
+  recipe: {
+    id: number
+    name: string
+    primaryImage: { id: string; url: string; backgroundUrl: string } | null
+  }
   team: null
   user: null
 }

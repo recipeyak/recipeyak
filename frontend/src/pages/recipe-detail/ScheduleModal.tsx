@@ -17,14 +17,16 @@ import { addQueryParams } from "@/querystring"
 type RecentSchedule = Recipe["recentSchedules"][number]
 
 export function ScheduleModal({
+  isOpen,
   recipeName,
   recipeId,
-  onClose,
   scheduleHistory,
+  onOpenChange,
 }: {
+  readonly isOpen: boolean
   readonly recipeId: number
   readonly recipeName: string
-  readonly onClose: () => void
+  readonly onOpenChange: (_: boolean) => void
   readonly scheduleHistory: readonly RecentSchedule[]
 }) {
   const [isoDate, setIsoDate] = React.useState(toISODateString(new Date()))
@@ -42,7 +44,7 @@ export function ScheduleModal({
       },
       {
         onSuccess: () => {
-          onClose()
+          onOpenChange(false)
         },
       },
     )
@@ -50,10 +52,12 @@ export function ScheduleModal({
 
   return (
     <Modal
-      show
-      onClose={onClose}
+      isOpen={isOpen}
+      onOpenChange={(value) => {
+        onOpenChange(value)
+      }}
       title={`Schedule: ${recipeName}`}
-      content={
+      children={
         <div className="flex h-full flex-col gap-2">
           <DateInput
             id="schedule-data"
