@@ -3,10 +3,10 @@ from __future__ import annotations
 import asyncio
 
 from ably import AblyRest
-from django.http import JsonResponse
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.team_update_view import get_teams
 from recipeyak.config import ABLY_API_KEY
 
