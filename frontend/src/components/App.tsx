@@ -65,7 +65,7 @@ import {
   pathTeamList,
   pathTeamSettings,
 } from "@/paths"
-import { GIT_SHA, SENTRY_DSN } from "@/settings"
+import { API_GIT_TREE_SHA, GIT_SHA, SENTRY_DSN } from "@/settings"
 import { theme, ThemeProvider, themeSet } from "@/theme"
 import { Toaster } from "@/toast"
 import { useUserTheme } from "@/useUserTheme"
@@ -316,7 +316,7 @@ function App() {
           // NOTE: Ideally we'd only bust the cache when the cache schema changes
           // in a backwards incompatible way but calculating that is annoying so
           // just break it on every deploy
-          buster: GIT_SHA,
+          buster: API_GIT_TREE_SHA,
           persister,
           maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
           dehydrateOptions: {
