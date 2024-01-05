@@ -36,6 +36,7 @@ function toCalRecipe(
     recipe: {
       id: recipe.id,
       name: recipe.name,
+      primaryImage: null,
     },
     on: toISODateString(on),
     createdBy: {
