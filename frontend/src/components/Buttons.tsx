@@ -4,19 +4,6 @@ import * as React from "react"
 import { clx } from "@/classnames"
 import { Link } from "@/components/Routing"
 
-interface IButtonProps {
-  readonly loading?: boolean
-  readonly size?: "small" | "normal" | "large"
-  readonly active?: boolean
-  readonly style?: React.CSSProperties
-  readonly className?: string
-  readonly children: React.ReactNode
-  readonly variant?: "primary" | "danger" | "link"
-  readonly type?: "submit" | "reset" | "button" | undefined
-  readonly disabled?: boolean
-  readonly onClick?: (e: React.MouseEvent) => void
-  readonly to?: string | LocationDescriptor<unknown>
-}
 export const Button = ({
   loading = false,
   className = "",
@@ -28,7 +15,19 @@ export const Button = ({
   to,
   type = "button",
   ...props
-}: IButtonProps) => {
+}: {
+  readonly loading?: boolean
+  readonly size?: "small" | "normal" | "large"
+  readonly active?: boolean
+  readonly style?: React.CSSProperties
+  readonly className?: string
+  readonly children: React.ReactNode
+  readonly variant?: "primary" | "danger" | "link"
+  readonly type?: "submit" | "reset" | "button" | undefined
+  readonly disabled?: boolean
+  readonly onClick?: (e: React.MouseEvent) => void
+  readonly to?: string | LocationDescriptor<unknown>
+}) => {
   const buttonCss = clx(
     "relative inline-flex cursor-pointer select-none items-center justify-center whitespace-nowrap rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-card)] px-[0.75em] py-[calc(0.375em-1px)] text-center align-top text-base font-medium leading-[1.5] text-[var(--color-text)] no-underline transition-[translateY,border-color,box-shadow] duration-200 enabled:hover:no-underline enabled:active:translate-y-px disabled:cursor-default disabled:text-[var(--color-text-disabled)]",
     active && "translate-y-px",
@@ -41,7 +40,8 @@ export const Button = ({
     loading &&
       "!text-[transparent] after:absolute after:left-[calc(50%-(1em/2))] after:top-[calc(50%-(1em/2))] after:block after:h-[1em] after:w-[1em] after:animate-spin after:rounded-[290486px] after:border-2 after:border-solid after:border-[var(--color-border)] after:border-r-transparent after:border-t-transparent after:duration-500 after:content-['']",
     size === "small" && "text-xs",
-    size === "large" && "text-2xl",
+    // stylex would avoid us having to important this :/
+    size === "large" && "!text-2xl",
   )
   if (to != null) {
     return (

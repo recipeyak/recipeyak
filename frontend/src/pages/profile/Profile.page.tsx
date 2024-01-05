@@ -364,7 +364,7 @@ function ActivityLog({
         gridTemplateColumns: "max-content 1fr",
       }}
     >
-      {out}
+      {out.length > 0 ? out : <div>no activity yet</div>}
     </div>
   )
 }

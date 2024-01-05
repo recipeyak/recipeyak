@@ -214,11 +214,9 @@ class RecipeResponse(pydantic.BaseModel):
     sections: list[SectionResponse]
     modified: datetime
     created: datetime
-    # TODO: why dupe?
     archived_at: datetime | None
     tags: list[str] | None
     primaryImage: UploadResponse | None
-    archivedAt: datetime | None
 
 
 def serialize_timeline_event(
