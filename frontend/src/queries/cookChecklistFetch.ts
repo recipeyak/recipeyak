@@ -1,5 +1,5 @@
-import { useChannel } from "@ably-labs/react-hooks"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useChannel } from "ably/react"
 
 import { http } from "@/http"
 import { updateChecklistItemCache } from "@/queries/cookChecklistUpdate"
