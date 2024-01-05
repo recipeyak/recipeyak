@@ -4,6 +4,7 @@ import { Link } from "react-router-dom"
 
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
+import { Select } from "@/components/Forms"
 import { Modal } from "@/components/Modal"
 import { formatAbsoluteDate, toISODateString } from "@/date"
 import { TimelineEvent } from "@/pages/recipe-detail/Notes"
@@ -275,7 +276,7 @@ function RescheduleSection({
                 <summary>shortcuts</summary>
                 <Box gap={2} align="center">
                   <div className="text-[14px]">next open</div>
-                  <select
+                  <Select
                     value={day}
                     onChange={handleSelectChange}
                     disabled={findNextOpen.isPending}
@@ -287,7 +288,7 @@ function RescheduleSection({
                         </option>
                       )
                     })}
-                  </select>
+                  </Select>
                   <div>
                     <Button
                       size="small"

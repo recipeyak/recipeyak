@@ -1,7 +1,8 @@
 import * as React from "react"
+// eslint-disable-next-line no-restricted-imports
 import TextareaAutosize from "react-textarea-autosize"
 
-import { styled } from "@/theme"
+import { clx } from "@/classnames"
 
 interface IFormErrorHandlerProps {
   readonly error: string[] | null | undefined
@@ -32,34 +33,6 @@ export function CheckBox(props: ITypelessInput) {
 export function RadioButton(props: ITypelessInput) {
   return <input {...props} type="radio" />
 }
-
-const StyledInput = styled.input<{ isDanger?: boolean }>`
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  align-items: center;
-  border: 1px solid transparent;
-  box-shadow: none;
-  font-size: 1rem;
-  justify-content: flex-start;
-  padding-bottom: 5px;
-  padding-top: 5px;
-  padding-left: 6px;
-  padding-right: 6px;
-  position: relative;
-  vertical-align: top;
-
-  background-color: var(--color-background-card);
-  border-color: var(--color-border);
-  color: var(--color-text);
-
-  border-radius: 6px;
-  box-shadow: inset 0 1px 2px rgba(10, 10, 10, 0.1);
-  width: 100%;
-  transition: 0.2s;
-  transition-property: border-color, box-shadow;
-  z-index: 1;
-  ${(p) => p.isDanger && `border-color: var(--color-danger);`}
-`
 
 type BaseInputProps = React.ComponentProps<"input"> & {
   className?: string
@@ -95,11 +68,12 @@ const BaseInput = React.forwardRef(
     ref: BaseInputProps["ref"],
   ) => {
     return (
-      <StyledInput
-        className={
-          className + " " + "placeholder:text-[var(--color-input-placeholder)]"
-        }
-        isDanger={error}
+      <input
+        className={clx(
+          "relative z-[1] w-full appearance-none items-center justify-start rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-card)] px-[6px] py-[5px] align-top text-base text-[var(--color-text)] shadow-none transition-[border-color,box-shadow] duration-200 [box-shadow:inset_0_1px_2px_rgba(10,10,10,0.1)] placeholder:text-[var(--color-input-placeholder)]",
+          error && "border-[var(--color-danger)]",
+          className,
+        )}
         {...props}
         ref={ref}
       />
@@ -122,79 +96,6 @@ export const PasswordInput = createInput("password")
 export const EmailInput = createInput("email")
 export const DateInput = createInput("date")
 
-const SelectWrapper = styled.div`
-  display: inline-block;
-  max-width: 100%;
-  position: relative;
-  vertical-align: top;
-  height: 2.25em
-  &::after {
-    border: 1px solid var(--color-border);
-    border-right: 0;
-    border-top: 0;
-    content: " ";
-    display: block;
-    height: 0.5em;
-    pointer-events: none;
-    position: absolute;
-    transform: rotate(-45deg);
-    width: 0.5em;
-    margin-top: -0.375em;
-    right: 1.125em;
-    top: 50%;
-    z-index: 4;
-  }
-  &:hover {
-    &::after {
-      border-color: var(--color-border);
-    }
-  }
-  border-radius: 6px;
-  font-size: 0.75rem;
-`
-
-const controlPaddingVertical = "calc(0.375em - 1px)"
-const controlPaddingHorizontal = "calc(0.625em - 1px)"
-
-const SelectInner = styled.select`
-  -moz-appearance: none;
-  -webkit-appearance: none;
-
-  font-size: 0.75rem;
-  font-weight: 600;
-
-  align-items: center;
-  border: 1px solid transparent;
-  border-radius: 6px;
-  box-shadow: none;
-  height: 2.25em;
-  justify-content: flex-start;
-  line-height: 1.5;
-  padding-bottom: ${controlPaddingVertical};
-  padding-left: ${controlPaddingHorizontal};
-  padding-right: ${controlPaddingHorizontal};
-  padding-top: ${controlPaddingVertical};
-  position: relative;
-  vertical-align: top;
-  background-color: var(--color-background-card);
-  border-color: var(--color-border);
-  color: var(--color-text);
-  cursor: pointer;
-  display: block;
-  max-width: 100%;
-  &:hover {
-    border-color: var(--color-border);
-  }
-  &:focus,
-  &:active {
-    border-color: var(--color-border);
-  }
-  &::-ms-expand {
-    display: none;
-  }
-  padding-right: 2.5em;
-`
-
 export function Select(props: {
   id?: string
   value: number | string
@@ -203,62 +104,35 @@ export function Select(props: {
   children?: React.ReactNode
 }) {
   return (
-    <SelectWrapper>
-      <SelectInner {...props} />
-    </SelectWrapper>
+    <div className="relative inline-block h-[2.25em] max-w-full rounded-md align-top text-xs after:pointer-events-none after:absolute after:right-[1.125em] after:top-[50%] after:z-[4] after:mt-[-0.375em] after:block after:h-[0.5em] after:w-[0.5em] after:-rotate-45 after:border after:border-r-0 after:border-t-0 after:border-solid after:border-[var(--color-accent)] after:content-['_']">
+      {/* eslint-disable-next-line react/forbid-elements */}
+      <select
+        {...props}
+        className="relative block h-[2.25em] max-w-full cursor-pointer appearance-none items-center justify-start rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-card)] px-[calc(0.625em-1px)] py-[calc(0.375em-1px)] pr-[2.5em] align-top text-xs font-semibold leading-[1.5] text-[var(--color-text)] shadow-none hover:border-[var(--color-border)] focus:border-[var(--color-border)] active:border-[var(--color-border)]"
+      />
+    </div>
   )
 }
 
-export const Textarea = styled(TextareaAutosize).attrs({
-  className: "placeholder:text-[var(--color-input-placeholder)]",
-})<{
+export function Textarea({
+  isError,
+  minimized,
+  bottomFlat,
+  ...props
+}: Omit<React.ComponentProps<typeof TextareaAutosize>, "className" | "ref"> & {
   isError?: boolean
-  bottomFlat?: boolean
   minimized?: boolean
-}>`
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  align-items: center;
-  border: 1px solid transparent;
-  box-shadow: none;
-  font-size: 1rem;
-  justify-content: flex-start;
-  padding-bottom: 5px;
-  padding-top: 5px;
-  padding-left: 6px;
-  padding-right: 6px;
-  position: relative;
-  border-radius: 6px;
-
-  background-color: var(--color-background-card);
-  border-color: var(--color-border);
-  color: var(--color-text);
-
-  box-shadow: inset 0 1px 2px rgba(10, 10, 10, 0.1);
-  width: 100%;
-  transition: 0.2s;
-  transition-property: border-color, box-shadow;
-  z-index: 1;
-
-  ${(p) => p.isError && `border-color: var(--color-danger);`}
-
-  display: block;
-  padding: 0.75rem;
-  border-radius: 6px;
-  ${(p) =>
-    !p.minimized &&
-    `
-    line-height: 1.5;
-    min-height: 120px;
-    max-height: 600px;
-    `}
-
-  max-width: 100%;
-  min-width: 100%;
-  resize: vertical;
-
-  ${(p) =>
-    p.bottomFlat &&
-    `border-bottom-left-radius: unset;
-    border-bottom-right-radius: unset;`}
-`
+  bottomFlat?: boolean
+}) {
+  return (
+    <TextareaAutosize
+      {...props}
+      className={clx(
+        "relative z-[1] block w-full min-w-full max-w-full resize-y appearance-none items-center justify-start rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-card)] p-3 px-[6px] py-[5px] text-base text-[var(--color-text)] shadow-none transition-[border-color,box-shadow] duration-200 [box-shadow:inset_0_1px_2px_rgba(10,10,10,0.1)] placeholder:text-[var(--color-input-placeholder)]",
+        isError && "border-[var(--color-danger)]",
+        !minimized && "max-h-[600px] min-h-[120px] leading-[1.5]",
+        bottomFlat && "rounded-b-[unset]",
+      )}
+    />
+  )
+}
