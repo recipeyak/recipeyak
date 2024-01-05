@@ -12,10 +12,9 @@ const getAlgoliaApiKey = () =>
 export function useAlgoliaApiKey() {
   return useQuery({
     queryKey: ["algolia"],
-    // only fetch on page load.
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
+    // refetch daily. Tokens expire after 10 days.
+    // The browser cache should have this information.
+    refetchInterval: 24 * 60 * 60 * 1000,
     queryFn: async () => {
       const res = await getAlgoliaApiKey().then(unwrapResult)
       return res
