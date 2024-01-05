@@ -91,7 +91,7 @@ export function CalendarItem({
         className={clx(visibility === "visible" ? "visible" : "invisible")}
       >
         <Link
-          className="line-clamp-3 flex w-full items-center gap-2 text-ellipsis break-words rounded-md text-sm font-semibold leading-tight focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)]"
+          className="flex w-full items-center gap-2 rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)]"
           to={recipeURL(recipeID, recipeName)}
           onClick={(e) => {
             if (e.shiftKey || e.metaKey) {
@@ -112,7 +112,9 @@ export function CalendarItem({
             }
             rounded
           />
-          <div>{recipeName}</div>
+          <div className="line-clamp-3 text-ellipsis break-words text-sm font-semibold leading-tight">
+            {recipeName}
+          </div>
         </Link>
       </li>
       <ScheduledRecipeEditModal
