@@ -76,7 +76,7 @@ function MembersList({
   )
 
   return (
-    <Table label="invites">
+    <Table label="members">
       <TableHeader columns={columns}>
         {(column) => {
           return <Column isRowHeader>{column.name}</Column>
