@@ -1,9 +1,9 @@
-import { configureAbly, useChannel } from "@ably-labs/react-hooks"
 import {
   keepPreviousData,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query"
+import { useChannel } from "ably/react"
 import { addWeeks, endOfWeek, startOfWeek, subWeeks } from "date-fns"
 import parseISO from "date-fns/parseISO"
 import * as t from "io-ts"
@@ -15,10 +15,6 @@ import { onRecipeDeletion } from "@/queries/scheduledRecipeDelete"
 import { onScheduledRecipeUpdateSuccess } from "@/queries/scheduledRecipeUpdate"
 import { unwrapEither } from "@/query"
 import { useTeamId } from "@/useTeamId"
-
-configureAbly({
-  authUrl: "/api/v1/auth/ably/",
-})
 
 type ScheduledRecipeUpdated = {
   created: string

@@ -36,7 +36,6 @@
     "vitest-dom": "^0.1.1"
   },
   "dependencies": {
-    "@ably-labs/react-hooks": "^2.1.1",
     "@sentry/react": "^7.81.1",
     "@tanstack/query-sync-storage-persister": "^5.8.3",
     "@tanstack/react-query": "^5.8.4",
@@ -49,6 +48,7 @@
     "@types/react-router": "^5.1.7",
     "@types/react-router-dom": "^5.1.5",
     "@types/react-textarea-autosize": "^4.3.3",
+    "ably": "^1.2.48",
     "algoliasearch": "^4.22.0",
     "axios": "^0.18.0",
     "date-fns": "^2.4.1",
