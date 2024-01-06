@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { useHistory, useLocation } from "react-router"
 
 import { Button } from "@/components/Buttons"
-import { SearchInput, Select } from "@/components/Forms"
+import { SearchInput } from "@/components/Forms"
 import { Matches, RecipeList } from "@/components/RecipeSearchList"
 import { useSearchRecipeFacets } from "@/queries/searchRecipeFacets"
 import { useSearchRecipes } from "@/queries/searchRecipes"
@@ -249,18 +249,32 @@ export function RecipeSearchList() {
           <div className="flex flex-col">
             {showAdvanced && (
               <div className="flex flex-wrap gap-2">
-                <div className="flex flex-col">
-                  <label>Search by</label>
-                  <Select
-                    value={searchBy}
-                    onChange={(e) => {
-                      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-                      setSearchBy(e.target.value as SearchFieldOptions)
-                    }}
-                  >
-                    <option value="name_author">name & author</option>
-                    <option value="ingredient_name">ingredient name</option>
-                  </Select>
+                <div className="flex max-h-48 min-h-48 min-w-48 max-w-48 flex-col ">
+                  <label className="font-medium">Search by</label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      id="name_author"
+                      name="search_by"
+                      defaultChecked
+                      defaultValue={"name_author"}
+                      onChange={() => {
+                        setSearchBy("name_author")
+                      }}
+                    />
+                    <label htmlFor="name_author">name & author</label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name="search_by"
+                      id="ingredient_name"
+                      onChange={() => {
+                        setSearchBy("ingredient_name")
+                      }}
+                    />
+                    <label htmlFor="ingredient_name">ingredient name</label>
+                  </div>
                 </div>
                 <CustomRefinement
                   indexName={indexName}
