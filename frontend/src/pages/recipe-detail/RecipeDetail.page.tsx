@@ -302,6 +302,7 @@ function RecipeMetaItem({
   label: string
 }) {
   return (
+    // eslint-disable-next-line no-restricted-syntax
     <div style={{ display: "flex", gap: inline ? "0.25rem" : undefined }}>
       <div className="font-bold" style={!inline ? { width: 90 } : undefined}>
         {label}
@@ -407,7 +408,6 @@ function RecipeEditor(props: { recipe: Recipe; onClose: () => void }) {
           size="small"
           className="mr-3"
           type="button"
-          name="cancel recipe update"
           onClick={props.onClose}
         >
           Cancel
@@ -418,7 +418,6 @@ function RecipeEditor(props: { recipe: Recipe; onClose: () => void }) {
           variant="primary"
           loading={updateRecipe.isPending}
           onClick={onSave}
-          name="save recipe"
         >
           Save
         </Button>
@@ -767,7 +766,6 @@ export function RecipeDetailPage(props: IRecipeProps) {
           <Button
             size="small"
             type="button"
-            name="toggle add section"
             className="ml-3"
             aria-label="exit edit mode"
             onClick={toggleEditMode}

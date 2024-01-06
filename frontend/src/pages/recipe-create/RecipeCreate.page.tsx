@@ -119,6 +119,7 @@ function CreateManuallyForm() {
 export function RecipeCreatePage() {
   return (
     <NavPage>
+      {/* eslint-disable-next-line no-restricted-syntax */}
       <div style={{ maxWidth: 500 }} className="mx-auto flex-col text-center">
         <Helmet title="Add Recipe" />
         <h1 className="my-2 text-left text-lg font-medium">Add Recipe</h1>

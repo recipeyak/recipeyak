@@ -62,7 +62,6 @@ function AddStep({ recipeId, onCancel, index, position }: IAddStepProps) {
           name="step"
         />
         {addStep.error ? (
-          // TODO: Fix this the next time the file is edited.
           // eslint-disable-next-line react/forbid-elements
           <p className="text-base text-[var(--color-danger)]">
             A step is required
@@ -70,12 +69,7 @@ function AddStep({ recipeId, onCancel, index, position }: IAddStepProps) {
         ) : null}
       </div>
       <div className="flex justify-end gap-2">
-        <Button
-          onClick={onCancel}
-          size="small"
-          type="button"
-          name="cancel step"
-        >
+        <Button onClick={onCancel} size="small" type="button">
           Cancel
         </Button>
         <Button
@@ -83,7 +77,6 @@ function AddStep({ recipeId, onCancel, index, position }: IAddStepProps) {
           size="small"
           disabled={step === ""}
           type="submit"
-          name="save step"
           aria-label="add step"
           loading={addStep.isPending}
         >

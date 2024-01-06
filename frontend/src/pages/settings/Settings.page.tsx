@@ -1,9 +1,10 @@
 import { useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
-import { Button, FileTrigger } from "react-aria-components"
+import { FileTrigger } from "react-aria-components"
 
 import { Avatar } from "@/components/Avatar"
 import { Box } from "@/components/Box"
+import { Button } from "@/components/Buttons"
 import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
 import { NavPage } from "@/components/Page"
@@ -35,6 +36,7 @@ export function SettingsPage() {
   return (
     <NavPage>
       <Box
+        // eslint-disable-next-line no-restricted-syntax
         style={{
           maxWidth: 800,
           marginLeft: "auto",
@@ -89,13 +91,15 @@ export function SettingsPage() {
                 )
               }}
             >
-              <Button className="self-start rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-card)] px-2 py-1 text-xs font-medium text-[var(--color-text)]">
+              <Button size="small">
                 {!uploadCreate.isPending
                   ? "Change profile picture"
                   : "Changing profile picture..."}
               </Button>
             </FileTrigger>
           </div>
+
+          {/* eslint-disable-next-line no-restricted-syntax */}
           <Box dir="col" style={{ maxWidth: 400 }} gap={2}>
             <ChangeEmail email={userInfo.data.email} />
             <ChangeName initialValue={userInfo.data.name} />

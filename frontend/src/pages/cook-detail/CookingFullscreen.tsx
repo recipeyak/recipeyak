@@ -61,6 +61,7 @@ function Ingredients({
 
   return (
     <div
+      // eslint-disable-next-line no-restricted-syntax
       style={{
         display: "flex",
         flexDirection: "column",
@@ -82,6 +83,7 @@ function Ingredients({
         return (
           <div
             key={`ingredient-${i.id}`}
+            // eslint-disable-next-line no-restricted-syntax
             style={{ fontSize: "18px" }}
             className="flex items-start"
           >
@@ -95,11 +97,13 @@ function Ingredients({
                   ingredientId: i.id,
                 })
               }}
+              // eslint-disable-next-line no-restricted-syntax
               style={{ marginTop: "0.5rem" }}
             />
             <label
               htmlFor={`ingredient-${i.id}`}
               className="cursor-auto select-text"
+              // eslint-disable-next-line no-restricted-syntax
               style={{
                 paddingLeft: "0.5rem",
                 paddingBottom: "0.5rem",
@@ -124,6 +128,7 @@ function Steps({ steps }: { steps: readonly Step[] }) {
   const [selectedStep, setSelectedStep] = useState<number | undefined>()
   return (
     <div
+      // eslint-disable-next-line no-restricted-syntax
       style={{
         display: "flex",
         flexDirection: "column",
@@ -139,6 +144,7 @@ function Steps({ steps }: { steps: readonly Step[] }) {
             onClick={() => {
               setSelectedStep(i.id)
             }}
+            // eslint-disable-next-line no-restricted-syntax
             style={{
               fontSize: "18px",
               gap: "0.125rem",
@@ -148,6 +154,7 @@ function Steps({ steps }: { steps: readonly Step[] }) {
             className="flex flex-col"
           >
             <div
+              // eslint-disable-next-line no-restricted-syntax
               style={{
                 fontSize: "14px",
                 fontWeight: isSelected ? "font-bold" : "500",
@@ -172,6 +179,7 @@ function Notes({
   recipeId: number
 }) {
   if (notes.length === 0) {
+    // eslint-disable-next-line no-restricted-syntax
     return <div style={{ fontSize: "16px" }}>no notes</div>
   }
   return (
@@ -215,6 +223,7 @@ export function CookingFullscreen({
   return (
     <div className="fixed inset-0 z-20 items-center justify-center bg-[var(--color-background)]">
       <div
+        // eslint-disable-next-line no-restricted-syntax
         style={{
           padding: "0.5rem 1.25rem",
           overflow: "auto",
@@ -225,6 +234,7 @@ export function CookingFullscreen({
           to={pathRecipeDetail({ recipeId: recipeId.toString() })}
           variant="link"
           className="mb-2"
+          // eslint-disable-next-line no-restricted-syntax
           style={{ fontSize: "0.875rem" }}
         >
           ← Return to Recipe
@@ -233,6 +243,7 @@ export function CookingFullscreen({
         <Box
           gap={2}
           dir="col"
+          // eslint-disable-next-line no-restricted-syntax
           style={{
             fontSize: "18px",
             maxWidth: 600,
@@ -243,6 +254,7 @@ export function CookingFullscreen({
         >
           <div
             className="cursor-auto select-text"
+            // eslint-disable-next-line no-restricted-syntax
             style={{
               fontSize: "2rem",
               lineHeight: "1em",
@@ -291,6 +303,7 @@ export function CookingFullscreen({
             ) : null}
           </div>
           {notEmpty(recipeSource) && (
+            // eslint-disable-next-line no-restricted-syntax
             <div style={{ fontSize: "14px", display: "flex", gap: "0.25rem" }}>
               <div>from</div>
               <RecipeSource source={recipeSource} />

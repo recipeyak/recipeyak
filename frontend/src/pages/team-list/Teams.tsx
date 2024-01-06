@@ -47,7 +47,7 @@ export function TeamsList() {
   ]
 
   return (
-    <Table label="invites">
+    <Table label="invites" data-testid="teams-list">
       <TableHeader columns={columns}>
         {(column) => {
           return <Column isRowHeader>{column.name}</Column>
@@ -69,6 +69,7 @@ export function TeamsList() {
                         to={pathTeamDetail({
                           teamId: team.id.toString(),
                         })}
+                        data-testid={`team-${team.id}`}
                       >
                         {team.name}
                       </Link>

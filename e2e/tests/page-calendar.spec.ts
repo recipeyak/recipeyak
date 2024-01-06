@@ -26,23 +26,6 @@ test("shopping list", async ({ page }, testInfo) => {
   await page.getByTestId("close modal").click();
 });
 
-test("settings modal", async ({ page }, testInfo) => {
-  await login(page);
-  await page.getByRole("link", { name: "Calendar" }).click();
-
-  await page.getByTestId("show calendar settings").click();
-
-  await expect(page.getByText("iCalendar Feed")).toBeVisible();
-  await expect(
-    page.getByRole("button", { name: "Disable Sync" })
-  ).toBeVisible();
-  await expect(page.getByRole("button", { name: "Reset" })).toBeVisible();
-
-  await expect(page).toHaveScreenshot({ fullPage: true });
-
-  await page.getByTestId("close modal").click();
-});
-
 test("calendar nav buttons", async ({ page }) => {
   await login(page);
   await page.getByRole("link", { name: "Calendar" }).click();

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom"
 
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
+import { Select } from "@/components/Forms"
 import { Modal } from "@/components/Modal"
 import { formatAbsoluteDate, toISODateString } from "@/date"
 import { TimelineEvent } from "@/pages/recipe-detail/Notes"
@@ -204,30 +205,30 @@ function RescheduleSection({
     <Box dir="col" gap={2}>
       <Box dir="col" gap={4} mt={2} mb={2}>
         <Box dir="col" gap={2}>
-          <div className="flex justify-between">
-            <Box align="center" gap={2}>
+          <div className="flex flex-wrap justify-between gap-2">
+            <div className="flex items-center gap-2">
               {(
                 [
                   [
-                    "today",
+                    "Today",
                     () => {
                       handleSave({ on: new Date() })
                     },
                   ],
                   [
-                    "next day",
+                    "Next Day",
                     () => {
                       handleSave({ on: addDays(date, 1) })
                     },
                   ],
                   [
-                    "next week",
+                    "Next Week",
                     () => {
                       handleSave({ on: addWeeks(date, 1) })
                     },
                   ],
                   [
-                    "custom",
+                    "Custom",
                     () => {
                       setShowCustom((s) => !s)
                     },
@@ -239,14 +240,14 @@ function RescheduleSection({
                     key={label}
                     size="small"
                     onClick={onClick}
-                    active={label === "custom" && showCustom}
+                    active={label === "Custom" && showCustom}
                     disabled={scheduledRecipeUpdate.isPending}
                   >
-                    {!scheduledRecipeUpdate.isPending ? label : "updating..."}
+                    {!scheduledRecipeUpdate.isPending ? label : "Updating..."}
                   </Button>
                 )
               })}
-            </Box>
+            </div>
 
             <Button
               size="small"
@@ -254,7 +255,7 @@ function RescheduleSection({
               onClick={handleDelete}
               disabled={scheduledRecipeDelete.isPending}
             >
-              {!scheduledRecipeDelete.isPending ? "delete" : "deleting..."}
+              {!scheduledRecipeDelete.isPending ? "Delete" : "Deleting..."}
             </Button>
           </div>
 
@@ -265,6 +266,7 @@ function RescheduleSection({
                 onChange={handleDateChange}
                 type="date"
                 className="w-full"
+                // eslint-disable-next-line no-restricted-syntax
                 style={{
                   border: "1px solid var(--color-border)",
                   borderRadius: 5,
@@ -275,7 +277,7 @@ function RescheduleSection({
                 <summary>shortcuts</summary>
                 <Box gap={2} align="center">
                   <div className="text-[14px]">next open</div>
-                  <select
+                  <Select
                     value={day}
                     onChange={handleSelectChange}
                     disabled={findNextOpen.isPending}
@@ -287,7 +289,7 @@ function RescheduleSection({
                         </option>
                       )
                     })}
-                  </select>
+                  </Select>
                   <div>
                     <Button
                       size="small"

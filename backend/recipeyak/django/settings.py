@@ -87,9 +87,7 @@ MIDDLEWARE = [
     "recipeyak.api.base.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django.middleware.http.ConditionalGetMiddleware",
     "recipeyak.api.base.middleware.NoCacheMiddleware",
     "recipeyak.api.base.middleware.ExceptionMiddleware",
 ]

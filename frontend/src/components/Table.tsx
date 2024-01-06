@@ -32,12 +32,22 @@ export function Cell({
 export function Table({
   label,
   children,
+  className,
+  ...rest
 }: {
   label: string
   children: React.ReactNode
+  ["data-testid"]?: string
+  className?: string
 }) {
   return (
-    <div className="relative max-h-[280px] w-full overflow-auto rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-calendar-day)] shadow">
+    <div
+      className={clx(
+        "relative w-full overflow-auto rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-calendar-day)] shadow",
+        className,
+      )}
+      {...rest}
+    >
       <AriaTable
         aria-label={label}
         className="border-separate border-spacing-0"

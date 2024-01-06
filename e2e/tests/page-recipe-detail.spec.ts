@@ -16,7 +16,7 @@ test("schedule modal", async ({ page }, testInfo) => {
   await login(page);
   await page.goto("/recipes/618-cumin-and-cashew-yogurt-rice");
   await page.getByRole("button", { name: "Actions" }).click();
-  await page.getByRole("button", { name: "Schedule" }).click();
+  await page.getByRole("menuitem", { name: "Schedule" }).click();
 
   await expect(page).toHaveScreenshot({ fullPage: true });
 
@@ -31,7 +31,7 @@ test("actions > copy ingredients", async ({ page }, testInfo) => {
 
   await expect(page).toHaveScreenshot({ fullPage: true });
 
-  await page.getByRole("button", { name: "Copy Ingredients" }).click();
+  await page.getByRole("menuitem", { name: "Copy Ingredients" }).click();
   await expect(page.getByText("Copied ingredients to")).toBeVisible();
 
   await expect(page).toHaveScreenshot({ fullPage: true });
@@ -41,7 +41,7 @@ test("actions > edit", async ({ page }) => {
   await login(page);
   await page.goto("/recipes/618-cumin-and-cashew-yogurt-rice");
   await page.getByRole("button", { name: "Actions" }).click();
-  await page.getByRole("button", { name: "Enable Editing" }).click();
+  await page.getByRole("menuitem", { name: "Enable Editing" }).click();
 
   await expect(page.getByLabel("exit edit mode")).toBeVisible();
 
@@ -52,7 +52,7 @@ test("edit mode > edit step", async ({ page }) => {
   await login(page);
   await page.goto("/recipes/618-cumin-and-cashew-yogurt-rice");
   await page.getByRole("button", { name: "Actions" }).click();
-  await page.getByRole("button", { name: "Enable Editing" }).click();
+  await page.getByRole("menuitem", { name: "Enable Editing" }).click();
 
   await page.getByLabel("add step").click();
 
@@ -63,7 +63,7 @@ test("edit mode > edit ingredient", async ({ page }) => {
   await login(page);
   await page.goto("/recipes/618-cumin-and-cashew-yogurt-rice");
   await page.getByRole("button", { name: "Actions" }).click();
-  await page.getByRole("button", { name: "Enable Editing" }).click();
+  await page.getByRole("menuitem", { name: "Enable Editing" }).click();
 
   await page.getByLabel("add ingredient").click();
 
@@ -74,7 +74,7 @@ test("edit mode > edit metadata", async ({ page }) => {
   await login(page);
   await page.goto("/recipes/618-cumin-and-cashew-yogurt-rice");
   await page.getByRole("button", { name: "Actions" }).click();
-  await page.getByRole("button", { name: "Enable Editing" }).click();
+  await page.getByRole("menuitem", { name: "Enable Editing" }).click();
 
   await page.getByLabel("edit metadata").click();
 
@@ -94,7 +94,7 @@ test("note > open add reaction modal", async ({ page }) => {
   await login(page);
   await page.goto("/recipes/618-cumin-and-cashew-yogurt-rice");
 
-  await page.getByLabel("open reactions").click();
+  await page.getByLabel("open reactions").first().click();
 
   await expect(page).toHaveScreenshot({ fullPage: true });
 });
@@ -103,7 +103,7 @@ test("note > edit", async ({ page }) => {
   await login(page);
   await page.goto("/recipes/618-cumin-and-cashew-yogurt-rice");
 
-  await page.getByTestId("edit-note-1157").click();
+  await page.getByTestId("edit-note").first().click();
 
   // ensure we have the edit buttons
   await expect(page.getByLabel("save note")).toBeVisible();

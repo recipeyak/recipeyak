@@ -49,6 +49,20 @@ module.exports = {
         selector: "TSEnumDeclaration",
         message: "Don't declare enums. Use a union of literals instead.",
       },
+      {
+        selector:
+          "JSXAttribute[name.name='style'][value.type='JSXExpressionContainer'][value.expression.type='ObjectExpression'][value.expression.properties.length=0]",
+        message: "Avoid empty style={{}}.",
+      },
+      {
+        selector: "JSXAttribute[name.name='className'][value.value='']",
+        message: 'Avoid empty className="".',
+      },
+      {
+        selector:
+          "JSXAttribute[name.name='style'][value.type='JSXExpressionContainer'][value.expression.type='ObjectExpression']",
+        message: "Avoid inline styles.",
+      },
     ],
     "no-restricted-globals": [
       "error",
@@ -74,9 +88,13 @@ module.exports = {
             message: "Please import from '@/toast' instead.",
           },
           {
-            name: "styled-components",
-            message:
-              "Please import from '@/theme' for type safe versions of 'styled-components' instead.",
+            name: "react-textarea-autosize",
+            message: "Please import Textarea instead.",
+          },
+          {
+            name: "react-aria-components",
+            importNames: ["Button"],
+            message: "Please import @/components/Button instead.",
           },
         ],
         patterns: [
@@ -124,7 +142,7 @@ module.exports = {
     "react/jsx-fragments": "error",
     "react/forbid-elements": [
       "error",
-      { forbid: ["p", "style", "section", "b", "em", "i"] },
+      { forbid: ["p", "style", "section", "b", "em", "i", "select"] },
     ],
     "no-lonely-if": "error",
     "object-shorthand": ["error", "always"],

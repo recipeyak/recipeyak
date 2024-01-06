@@ -5,7 +5,7 @@ test("initial load", async ({ page }) => {
   await login(page);
 
   await page.getByRole("img", { name: "avatar" }).click();
-  await page.getByRole("link", { name: "Teams" }).click();
+  await page.getByRole("menuitem", { name: "Teams" }).click();
 
   await page.getByRole("link", { name: "Create a Team" }).click();
   await expect(

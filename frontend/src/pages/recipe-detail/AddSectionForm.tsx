@@ -49,21 +49,11 @@ export function AddSectionForm({
         />
       </div>
       <div className="flex justify-between">
-        <Button
-          size="small"
-          type="button"
-          name="toggle add section"
-          onClick={toggleShowAddSection}
-        >
+        <Button size="small" type="button" onClick={toggleShowAddSection}>
           Add Ingredient
         </Button>
         <div className="flex gap-2">
-          <Button
-            onClick={onCancel}
-            size="small"
-            type="button"
-            name="cancel add ingredient"
-          >
+          <Button onClick={onCancel} size="small" type="button">
             Cancel
           </Button>
           <Button

@@ -1,5 +1,4 @@
 import {
-  Button,
   Menu,
   MenuItem,
   MenuItemProps,
@@ -12,6 +11,7 @@ import { Link } from "react-router-dom"
 import { useIsLoggedIn } from "@/auth"
 import { clx } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
+import { Button } from "@/components/Buttons"
 import Logo from "@/components/Logo"
 import { NavRecipeSearch } from "@/components/NavRecipeSearch"
 import { NavLink } from "@/components/Routing"
@@ -74,7 +74,7 @@ function UserDropdown() {
 
   return (
     <MenuTrigger>
-      <Button className="flex cursor-pointer items-center justify-center rounded-full border-none bg-[unset] p-0 focus-visible:outline focus-visible:outline-[3px] focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)]">
+      <Button className="!rounded-full !border-none !p-0">
         <Avatar avatarURL={user.avatarURL} />
       </Button>
       <Popover className="w-56 origin-top-left overflow-auto rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-calendar-day)] p-2 shadow-lg outline-none">
@@ -92,7 +92,7 @@ function UserDropdown() {
         >
           <MenuItem id="meta-info" className="pl-2">
             <div className="pb-1 ">
-              <span className="">{user.name ?? user.email}</span>
+              <span>{user.name ?? user.email}</span>
               <span> · </span>
               <span className="text-sm ">{team.data?.name}</span>
               <div className="text-sm ">{user.email}</div>

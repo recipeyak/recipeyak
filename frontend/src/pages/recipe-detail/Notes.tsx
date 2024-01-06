@@ -248,7 +248,7 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
           {note.created_by.id === userId ? (
             <a
               className="ml-2 cursor-pointer text-[0.825rem] text-[var(--color-text-muted)] print:hidden"
-              data-testid={`edit-note-${note.id}`}
+              data-testid="edit-note"
               onClick={onNoteClick}
             >
               edit
@@ -370,7 +370,6 @@ function MaybeLink({
   children: React.ReactNode
 }) {
   if (to == null) {
-    // TODO: Fix this the next time the file is edited.
     // eslint-disable-next-line react/forbid-elements
     return <b>{children}</b>
   }
@@ -558,6 +557,7 @@ function FilePreview({
       />
       {backgroundUrl != null && (
         <div
+          // eslint-disable-next-line no-restricted-syntax
           style={{
             // TODO: could use a css var
             backgroundImage: `url(${backgroundUrl})`,

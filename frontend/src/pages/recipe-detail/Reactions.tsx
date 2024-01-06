@@ -2,7 +2,7 @@ import Tippy from "@tippyjs/react"
 import groupBy from "lodash/groupBy"
 import orderBy from "lodash-es/orderBy"
 import slice from "lodash-es/slice"
-import React, { useState } from "react"
+import { useState } from "react"
 import { Smile } from "react-feather"
 
 import { clx } from "@/classnames"
@@ -15,36 +15,6 @@ type Reaction = PickVariant<
   Recipe["timelineItems"][number],
   "note"
 >["reactions"][number]
-
-const OpenReactions = React.forwardRef(
-  (
-    props: {
-      className?: string
-      onClick: () => void
-      children?: React.ReactNode
-    },
-
-    ref: React.ForwardedRef<HTMLDivElement>,
-  ) => {
-    return (
-      <div
-        ref={ref}
-        className={clx(
-          "inline-block rounded-[12px] bg-[var(--color-background-card)] leading-[0] text-[var(--color-text)]",
-          props.className,
-        )}
-        aria-label="open reactions"
-        onClick={props.onClick}
-      >
-        {props.children ? (
-          props.children
-        ) : (
-          <Smile className="text-[var(--color-text)]" size={14} />
-        )}
-      </div>
-    )
-  },
-)
 
 const REACTION_EMOJIS = ["❤️", "😆", "🤮"] as const
 
@@ -121,12 +91,18 @@ export function ReactionPopover(props: {
         </div>
       }
     >
-      <OpenReactions
-        className={clx("cursor-pointer", props.className)}
+      <div
+        className={clx(
+          "inline-block cursor-pointer rounded-[12px] bg-[var(--color-background-card)] leading-[0] text-[var(--color-text)]",
+          props.className,
+        )}
+        aria-label="open reactions"
         onClick={() => {
           setVisible((s) => !s)
         }}
-      />
+      >
+        <Smile className="text-[var(--color-text)]" size={14} />
+      </div>
     </Tippy>
   )
 }
