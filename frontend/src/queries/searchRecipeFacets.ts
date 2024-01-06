@@ -1,5 +1,7 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
+import { useContext } from "react"
 
+import { AlgoliaContext } from "@/components/AlgoliaProvider"
 import { useSearchClient } from "@/queries/useSearchClient"
 import { useTeamId } from "@/useTeamId"
 
@@ -12,7 +14,8 @@ export function useSearchRecipeFacets({
   facetQuery: string
   indexName?: "recipes" | "ingredients"
 }) {
-  const searchClient = useSearchClient()
+  const searchClient = useContext(AlgoliaContext)
+
   const teamId = useTeamId()
 
   return useQuery({

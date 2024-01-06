@@ -24,6 +24,7 @@ import {
 } from "react-router-dom"
 
 import { useIsLoggedIn } from "@/auth"
+import { AlgoliaProvider } from "@/components/AlgoliaProvider"
 import { ErrorBoundary } from "@/components/ErrorBoundary"
 import { Helmet } from "@/components/Helmet"
 import { queryClient } from "@/components/queryClient"
@@ -338,18 +339,20 @@ function App() {
             },
           }}
         >
-          <ReactQueryDevtools initialIsOpen={false} />
-          <ThemeProvider theme={theme}>
-            <HelmetProvider>
-              <DndProvider backend={HTML5Backend}>
-                <ErrorBoundary>
-                  <Helmet />
-                  <Toaster toastOptions={{ position: "bottom-center" }} />
-                  <AppRouter />
-                </ErrorBoundary>
-              </DndProvider>
-            </HelmetProvider>
-          </ThemeProvider>
+          <AlgoliaProvider>
+            <ReactQueryDevtools initialIsOpen={false} />
+            <ThemeProvider theme={theme}>
+              <HelmetProvider>
+                <DndProvider backend={HTML5Backend}>
+                  <ErrorBoundary>
+                    <Helmet />
+                    <Toaster toastOptions={{ position: "bottom-center" }} />
+                    <AppRouter />
+                  </ErrorBoundary>
+                </DndProvider>
+              </HelmetProvider>
+            </ThemeProvider>
+          </AlgoliaProvider>
         </PersistQueryClientProvider>
       </AblyProvider>
     </Suspense>

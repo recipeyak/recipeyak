@@ -1,5 +1,4 @@
-from datetime import timedelta
-from typing import Any, Self
+from typing import Any
 
 from django.http import HttpResponse
 
@@ -16,11 +15,6 @@ class JsonResponse(HttpResponse):
         kwargs.setdefault("content_type", "application/json")
         content = json_dumps(data)
         super().__init__(content=content, **kwargs)
-
-    def max_age(self, delta: timedelta) -> Self:
-        seconds = int(delta.total_seconds())
-        self["Cache-Control"] = f"max-age={seconds}, must-revalidate, private"
-        return self
 
 
 class YamlResponse(HttpResponse):

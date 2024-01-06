@@ -32,4 +32,4 @@ def algolia_retrieve_view(request: AuthedHttpRequest) -> JsonResponse:
             "api_key": get_token(team_ids=team_ids),
         },
         status=200,
-    ).max_age(timedelta(days=7))
+    )
