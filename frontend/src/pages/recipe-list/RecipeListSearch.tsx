@@ -380,7 +380,7 @@ export function RecipeSearchList() {
           </div>
           <div className="ml-auto">
             <Button size="small" onClick={searchTools.toggle}>
-              {searchTools.enabled ? "hide search tools" : "search tools"}
+              {searchTools.enabled ? "Hide Search Tools" : "Search Tools"}
             </Button>
           </div>
         </div>
