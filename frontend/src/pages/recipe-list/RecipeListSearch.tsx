@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { useHistory, useLocation, useParams } from "react-router"
+import { useHistory, useLocation } from "react-router"
 
 import { Button } from "@/components/Buttons"
 import { SearchInput } from "@/components/Forms"
