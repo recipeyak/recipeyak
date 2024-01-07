@@ -98,11 +98,11 @@
     ),
     tuple(
       'beef broth',
-      'meat',
+      'canned & packaged',
     ),
     tuple(
       'beef or chicken broth',
-      'meat',
+      'canned & packaged',
     ),
     tuple(
       'beef stock',
@@ -214,7 +214,7 @@
     ),
     tuple(
       'dry mustard powder',
-      'condiments',
+      'spices',
     ),
     tuple(
       'eggplant',
@@ -286,11 +286,11 @@
     ),
     tuple(
       'low-sodium chicken broth',
-      'meat',
+      'canned & packaged',
     ),
     tuple(
       'malted milk powder',
-      'dairy',
+      'baking',
     ),
     tuple(
       'medium-coarse yellow cornmeal',
