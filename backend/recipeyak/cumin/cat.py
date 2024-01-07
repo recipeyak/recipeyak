@@ -106,6 +106,7 @@ DEPARTMENT_MAPPING = {
         "jalapeno",
         "jalapeño",
         "bell pepper",
+        "poblano pepper",
         "onion",
         "parsley",
         "parsely",
