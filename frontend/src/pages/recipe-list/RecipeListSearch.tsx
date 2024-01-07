@@ -31,7 +31,7 @@ function CustomRefinement({
   const items = facetResults.data?.[0].facetHits ?? []
 
   return (
-    <div className="flex max-h-48 min-h-48 min-w-48 max-w-48 flex-col">
+    <div className="flex w-full flex-col  sm:max-h-48 sm:min-h-48 sm:w-fit ">
       <div className="font-medium">{label}</div>
       <SearchInput
         placeholder="search..."
@@ -328,62 +328,64 @@ export function RecipeSearchList() {
         }
       />
       <div className="flex flex-col gap-2">
-        <div className="flex gap-1">
-          <div className="flex flex-col">
-            {searchTools.enabled && (
-              <div className="flex flex-wrap gap-2">
-                <div className="flex max-h-48 min-h-48 min-w-48 max-w-48 flex-col ">
-                  <label className="font-medium">Search by</label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="radio"
-                      id="name_author"
-                      name="search_by"
-                      defaultChecked={searchBy === "name_author"}
-                      onChange={() => {
-                        setSearchBy("name_author")
-                      }}
-                    />
-                    <label htmlFor="name_author">name & author</label>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="radio"
-                      name="search_by"
-                      id="ingredient_name"
-                      defaultChecked={searchBy === "ingredient_name"}
-                      onChange={() => {
-                        setSearchBy("ingredient_name")
-                      }}
-                    />
-                    <label htmlFor="ingredient_name">ingredient name</label>
-                  </div>
-                </div>
-                <CustomRefinement
-                  indexName={indexName}
-                  facetFilters={facetFilters}
-                  label="Tags"
-                  attribute="tags"
-                  onChange={setFacetFilters}
+        <div className="flex w-full items-center justify-between">
+          <Matches
+            nbHits={totalCount}
+            archivedCount={archivedCount}
+            showArchived={showArchived}
+          />
+
+          <Button size="small" onClick={searchTools.toggle}>
+            {searchTools.enabled ? "hide search tools" : "search tools"}
+          </Button>
+        </div>
+
+        {searchTools.enabled && (
+          <div
+            className="flex w-full flex-wrap gap-x-6
+          sm:w-fit"
+          >
+            <div className="flex flex-col">
+              <label className="font-medium">Search by</label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  id="name_author"
+                  name="search_by"
+                  defaultChecked={searchBy === "name_author"}
+                  onChange={() => {
+                    setSearchBy("name_author")
+                  }}
                 />
-                <RecipesToggle
-                  facetFilters={facetFilters}
-                  onChange={setFacetFilters}
-                />
+                <label htmlFor="name_author">name & author</label>
               </div>
-            )}
-            <Matches
-              nbHits={totalCount}
-              archivedCount={archivedCount}
-              showArchived={showArchived}
+              <div className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="search_by"
+                  id="ingredient_name"
+                  defaultChecked={searchBy === "ingredient_name"}
+                  onChange={() => {
+                    setSearchBy("ingredient_name")
+                  }}
+                />
+                <label htmlFor="ingredient_name">ingredient name</label>
+              </div>
+            </div>
+            <CustomRefinement
+              indexName={indexName}
+              facetFilters={facetFilters}
+              label="Tags"
+              attribute="tags"
+              onChange={setFacetFilters}
+            />
+            <RecipesToggle
+              facetFilters={facetFilters}
+              onChange={setFacetFilters}
             />
           </div>
-          <div className="ml-auto">
-            <Button size="small" onClick={searchTools.toggle}>
-              {searchTools.enabled ? "Hide Search Tools" : "Search Tools"}
-            </Button>
-          </div>
-        </div>
+        )}
+
         <RecipeList
           hits={hits}
           className="w-full"
