@@ -37,7 +37,7 @@ export function BorderBox({
     className,
   )
   if (rest.as === "form") {
-    return <form className={cls} onSubmit={rest.onSubmit} />
+    return <form className={cls} onSubmit={rest.onSubmit} children={children} />
   }
   return <div className={cls}>{children}</div>
 }

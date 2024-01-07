@@ -332,7 +332,7 @@ def test_parse_name_description(ingredient: str, expected: tuple[str, str]) -> N
             "Chopped fresh parsley, for serving (optional)",
             IngredientResult(
                 quantity="some",
-                name="Chopped fresh parsley",
+                name="chopped fresh parsley",
                 description="for serving",
                 optional=True,
             ),
@@ -382,6 +382,28 @@ def test_parse_name_description(ingredient: str, expected: tuple[str, str]) -> N
                 quantity="1 cup",
                 name="instant or kombu dashi (see Tip)",
                 description="vegetable or chicken broth, or water",
+            ),
+        ),
+        (
+            "Fresh corn tortillas and lime wedges, for serving",
+            IngredientResult(
+                quantity="some",
+                name="fresh corn tortillas and lime wedges",
+                description="for serving",
+            ),
+        ),
+        (
+            "Kosher salt",
+            IngredientResult(
+                quantity="some",
+                name="kosher salt",
+            ),
+        ),
+        (
+            "Anaheim or Cubanelle peppers",
+            IngredientResult(
+                quantity="some",
+                name="Anaheim or Cubanelle peppers",
             ),
         ),
     ],

@@ -478,6 +478,23 @@ def parse_name_description(text: str) -> tuple[str, str]:
     return (prefix, suffix)
 
 
+# For example:
+#   "Kosher salt" -> "kosher salt"
+#   "Some Other Stuff" -> "Some Other Stuff"
+def normalize_name(text: str) -> str:
+    text = text.strip()
+    words = iter(text.split())
+    first_word = next(words, None)
+    if first_word is None:
+        # no first word for some reason
+        return text
+    first_word_is_upper = first_word[0].isupper()
+    following_words_are_lower = all(x[0].islower() for x in words)
+    if first_word_is_upper and following_words_are_lower:
+        return text.lower()
+    return text
+
+
 def parse_ingredient(text: str) -> IngredientResult:
     quantity_name, description = parse_name_description(text)
     quantity, name = parse_quantity_name(quantity_name)
@@ -503,7 +520,7 @@ def parse_ingredient(text: str) -> IngredientResult:
         # Some seems like a good default instead of empty string. Empty string
         # looks a little weird in the UI.
         quantity=quantity.strip() or "some",
-        name=name.strip(),
+        name=normalize_name(name),
         description=description.strip(),
         optional=is_optional,
     )
