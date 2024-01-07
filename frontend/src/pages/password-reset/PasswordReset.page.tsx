@@ -66,32 +66,39 @@ export function PasswordResetPage() {
   return (
     <AuthPage>
       <Helmet title="Password Reset" />
-      <BorderBox p={3} as="form" onSubmit={handleReset}>
-        <h1 className="mb-2 text-xl font-medium">Password Reset</h1>
+      <BorderBox
+        p={3}
+        as="form"
+        onSubmit={handleReset}
+        className="flex flex-col "
+      >
+        <h1 className="text-xl font-medium">Password Reset</h1>
 
         <FormErrorHandler error={errors.nonFieldErrors} />
 
-        <div>
-          <Label>Email</Label>
-          <EmailInput
-            autoFocus
-            onChange={(e) => {
-              setEmail(e.target.value)
-            }}
-            name="email"
-            value={email}
-            required
-            placeholder="a.person@me.com"
-          />
-          <FormErrorHandler error={errors.email} />
-        </div>
+        <div className="flex flex-col gap-2">
+          <div>
+            <Label>Email</Label>
+            <EmailInput
+              autoFocus
+              onChange={(e) => {
+                setEmail(e.target.value)
+              }}
+              name="email"
+              value={email}
+              required
+              placeholder="a.person@me.com"
+            />
+            <FormErrorHandler error={errors.email} />
+          </div>
 
-        <div className="flex items-center justify-between">
-          <Button loading={resetPassword.isPending} type="submit">
-            Send Reset Email
-          </Button>
+          <div className="flex items-center justify-between">
+            <Button loading={resetPassword.isPending} type="submit">
+              Send Reset Email
+            </Button>
 
-          <Link to={redirect.route}>{redirect.name} →</Link>
+            <Link to={redirect.route}>{redirect.name} →</Link>
+          </div>
         </div>
       </BorderBox>
     </AuthPage>
