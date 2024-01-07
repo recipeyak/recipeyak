@@ -2,7 +2,7 @@ import { History } from "history"
 
 export function setQueryParams(
   history: History<unknown>,
-  paramUpdates: Record<string, string>,
+  paramUpdates: Record<string, string | Array<string> | undefined>,
 ) {
   const search = addQueryParams(history.location.search, paramUpdates)
   void Promise.resolve().then(() => {
@@ -16,11 +16,20 @@ export function setQueryParams(
 
 export function addQueryParams(
   search: string,
-  paramUpdates: Record<string, string>,
+  paramUpdates: Record<string, string | string[] | undefined>,
 ): string {
   const params = new URLSearchParams(search)
   Object.entries(paramUpdates).forEach(([key, value]) => {
-    params.set(key, value)
+    if (value === undefined) {
+      params.delete(key)
+    } else if (Array.isArray(value)) {
+      params.delete(key)
+      for (const val of value) {
+        params.append(key, val)
+      }
+    } else {
+      params.set(key, value)
+    }
   })
   return "?" + params.toString()
 }
