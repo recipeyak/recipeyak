@@ -24,7 +24,7 @@ from recipeyak.models.recipe import Recipe
 from recipeyak.models.section import Section
 from recipeyak.models.team import Team
 from recipeyak.models.upload import Upload
-from recipeyak.scraper import ScrapeResult, scrape_recipe
+from recipeyak.scraper.scrape_recipe import ScrapeResult, scrape_recipe
 
 logger = structlog.stdlib.get_logger()
 
