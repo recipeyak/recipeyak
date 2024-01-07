@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { useHistory, useLocation } from "react-router"
+import { useHistory, useLocation, useParams } from "react-router"
 
 import { Button } from "@/components/Buttons"
 import { SearchInput } from "@/components/Forms"
@@ -76,7 +76,7 @@ function CustomRefinement({
   )
 }
 
-function ArchivedToggle({
+function RecipesToggle({
   onChange,
   facetFilters,
 }: {
@@ -190,6 +190,7 @@ function useThrottle(value: string, interval: number = 500) {
 function useUpdateQueryParams(query: string) {
   const throttledQuery = useThrottle(query)
   const history = useHistory()
+
   useEffect(() => {
     if (throttledQuery === "") {
       removeQueryParams(history, ["search"])
@@ -199,24 +200,102 @@ function useUpdateQueryParams(query: string) {
   }, [history, throttledQuery])
 }
 
-export function RecipeSearchList() {
-  const [showAdvanced, setAdvanced] = useState(false)
-  const [searchBy, setSearchBy] = useState<SearchFieldOptions>("name_author")
+function useSearchTools() {
+  const history = useHistory()
+  const [showAdvanced, setAdvanced] = useState<boolean>(() => {
+    const params = new URLSearchParams(window.location.search)
+    return params.get("search_tools") === "1"
+  })
+
+  function toggle() {
+    setAdvanced((s) => {
+      if (s) {
+        removeQueryParams(history, ["search_tools"])
+        return false
+      }
+      setQueryParams(history, { search_tools: "1" })
+      return true
+    })
+  }
+
+  return {
+    enabled: showAdvanced,
+    toggle,
+  } as const
+}
+
+function useSearchByState() {
+  const location = useLocation()
+  const history = useHistory()
+  const [searchBy, setSearchByState] = useState<SearchFieldOptions>(() => {
+    const params = new URLSearchParams(location.search)
+    const searchByParam = params.get("search_by")
+    if (
+      searchByParam === "name_author" ||
+      searchByParam === "ingredient_name"
+    ) {
+      return searchByParam
+    }
+    return "name_author"
+  })
+
+  function setSearchBy(x: SearchFieldOptions) {
+    setQueryParams(history, {
+      search_by: x,
+    })
+    setSearchByState(x)
+  }
+  return [searchBy, setSearchBy] as const
+}
+
+function useFacetFiltersState() {
+  const location = useLocation()
+  const history = useHistory()
+  const [facetFilters, setFacetFilterState] = useState<FacetFilters>(() => {
+    const params = new URLSearchParams(location.search)
+
+    return {
+      OrArchived: params.get("or_archived") === "1",
+      AndNeverScheduled: params.get("and_never_scheduled") === "1",
+      tags: params.getAll("tag"),
+    }
+  })
+
+  function setFacetFilters(x: Partial<FacetFilters>) {
+    if ("AndNeverScheduled" in x) {
+      setQueryParams(history, {
+        and_never_scheduled: x.AndNeverScheduled ? "1" : undefined,
+      })
+    }
+    if ("OrArchived" in x) {
+      setQueryParams(history, { or_archived: x.OrArchived ? "1" : undefined })
+    }
+    if ("tags" in x) {
+      setQueryParams(history, { tag: x.tags ? x.tags : [] })
+    }
+    setFacetFilterState((s) => ({ ...s, ...x }))
+  }
+  return [facetFilters, setFacetFilters] as const
+}
+
+function useSearchState() {
   const location = useLocation()
   const [query, setQuery] = useState(() => {
     const query = new URLSearchParams(location.search).get("search")
     return query ?? ""
   })
+  return [query, setQuery] as const
+}
+
+export function RecipeSearchList() {
+  const searchTools = useSearchTools()
+  const [searchBy, setSearchBy] = useSearchByState()
+  const [query, setQuery] = useSearchState()
+  const [facetFilters, setFacetFilters] = useFacetFiltersState()
 
   useUpdateQueryParams(query)
 
   const indexName = searchBy === "name_author" ? "recipes" : "ingredients"
-
-  const [facetFilters, setFacetFilters] = useState<FacetFilters>({
-    OrArchived: false,
-    AndNeverScheduled: false,
-    tags: [],
-  })
 
   const serializedFacetFilters = facetFilters
     ? serializeFacetFilters(facetFilters)
@@ -247,7 +326,7 @@ export function RecipeSearchList() {
       <div className="flex flex-col gap-2">
         <div className="flex gap-1">
           <div className="flex flex-col">
-            {showAdvanced && (
+            {searchTools.enabled && (
               <div className="flex flex-wrap gap-2">
                 <div className="flex max-h-48 min-h-48 min-w-48 max-w-48 flex-col ">
                   <label className="font-medium">Search by</label>
@@ -256,8 +335,7 @@ export function RecipeSearchList() {
                       type="radio"
                       id="name_author"
                       name="search_by"
-                      defaultChecked
-                      defaultValue={"name_author"}
+                      defaultChecked={searchBy === "name_author"}
                       onChange={() => {
                         setSearchBy("name_author")
                       }}
@@ -269,6 +347,7 @@ export function RecipeSearchList() {
                       type="radio"
                       name="search_by"
                       id="ingredient_name"
+                      defaultChecked={searchBy === "ingredient_name"}
                       onChange={() => {
                         setSearchBy("ingredient_name")
                       }}
@@ -281,15 +360,11 @@ export function RecipeSearchList() {
                   facetFilters={facetFilters}
                   label="Tags"
                   attribute="tags"
-                  onChange={(value) => {
-                    setFacetFilters((s) => ({ ...s, ...value }))
-                  }}
+                  onChange={setFacetFilters}
                 />
-                <ArchivedToggle
+                <RecipesToggle
                   facetFilters={facetFilters}
-                  onChange={(value) => {
-                    setFacetFilters((s) => ({ ...s, ...value }))
-                  }}
+                  onChange={setFacetFilters}
                 />
               </div>
             )}
@@ -300,20 +375,15 @@ export function RecipeSearchList() {
             />
           </div>
           <div className="ml-auto">
-            <Button
-              size="small"
-              onClick={() => {
-                setAdvanced((s) => !s)
-              }}
-            >
-              {showAdvanced ? "hide search tools" : "search tools"}
+            <Button size="small" onClick={searchTools.toggle}>
+              {searchTools.enabled ? "hide search tools" : "search tools"}
             </Button>
           </div>
         </div>
         <RecipeList
           hits={hits}
           className="w-full"
-          advancedSearch={showAdvanced}
+          advancedSearch={searchTools.enabled}
           query={query}
           isSuccess={results.isSuccess}
         />
