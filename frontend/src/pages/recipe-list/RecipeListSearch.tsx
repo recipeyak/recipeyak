@@ -321,7 +321,11 @@ export function RecipeSearchList() {
         onChange={(e) => {
           setQuery(e.target.value)
         }}
-        placeholder="search"
+        placeholder={
+          searchBy === "name_author"
+            ? "search by title & author..."
+            : "search by ingredient..."
+        }
       />
       <div className="flex flex-col gap-2">
         <div className="flex gap-1">
