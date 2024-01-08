@@ -61,7 +61,7 @@ export const Button = ({
       "active:text-[var(--color-text-disabled)] active:underline",
     variant === "danger" &&
       // we don't have stylex, so we need to important the overrides
-      "!border-[var(--color-danger)] bg-[var(--color-danger)]  disabled:bg-[var(--color-danger-disabled)]",
+      "!border-[var(--color-danger)] bg-[var(--color-danger)] disabled:bg-[var(--color-danger-disabled)]",
     variant === "primary" &&
       "border-[var(--color-primary)] bg-[var(--color-primary)] focus:[box-shadow:0_0_5px_var(--color-primary-shadow)] enabled:hover:bg-[var(--color-primary-active)] enabled:active:!bg-[var(--color-primary-active)] disabled:bg-[var(--color-primary-disabled)]",
     variant === "primary" &&
