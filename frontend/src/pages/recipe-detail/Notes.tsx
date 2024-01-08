@@ -1,6 +1,6 @@
 import produce from "immer"
 import orderBy from "lodash-es/orderBy"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { useLocation } from "react-router-dom"
 
 import { clx } from "@/classnames"
@@ -569,6 +569,18 @@ function FilePreview({
   )
 }
 
+function useIsMounted() {
+  const isMounted = useRef(true)
+
+  useEffect(() => {
+    return () => {
+      isMounted.current = false
+    }
+  }, [])
+
+  return isMounted
+}
+
 // todo: clear changes on cancellation
 function useFileUpload(
   addUploads: (upload: UploadSuccess) => void,
@@ -579,8 +591,10 @@ function useFileUpload(
 ) {
   const [localImages, setLocalImages] = React.useState<InProgressUpload[]>([])
   const uploadCreate = useUploadCreate()
+  const isMounted = useIsMounted()
 
-  const addFiles = (files: FileList) => {
+  const addFiles = async (files: FileList) => {
+    const uploadPromises: Promise<void>[] = []
     for (const file of files) {
       const fileId = uuid4()
       setLocalImages((s) => {
@@ -598,24 +612,27 @@ function useFileUpload(
           ...s,
         ]
       })
-      uploadCreate.mutate(
-        {
-          file,
-          purpose: "recipe",
-          recipeId,
-          onProgress(progress) {
-            setLocalImages(
-              produce((s) => {
-                const f = s.find((x) => x.localId === fileId)
-                if (f) {
-                  f.progress = progress
-                }
-              }),
-            )
-          },
-        },
-        {
-          onSuccess: (res) => {
+      uploadPromises.push(
+        uploadCreate
+          .mutateAsync({
+            file,
+            purpose: "recipe",
+            recipeId,
+            onProgress(progress) {
+              setLocalImages(
+                produce((s) => {
+                  const f = s.find((x) => x.localId === fileId)
+                  if (f) {
+                    f.progress = progress
+                  }
+                }),
+              )
+            },
+          })
+          .then((res) => {
+            if (!isMounted) {
+              return
+            }
             addUploads({
               ...res,
               type: "upload",
@@ -631,8 +648,11 @@ function useFileUpload(
                 }
               }),
             )
-          },
-          onError: () => {
+          })
+          .catch(() => {
+            if (!isMounted) {
+              return
+            }
             setLocalImages(
               produce((s) => {
                 const existingUpload = s.find((x) => x.localId === fileId)
@@ -641,10 +661,10 @@ function useFileUpload(
                 }
               }),
             )
-          },
-        },
+          }),
       )
     }
+    await Promise.allSettled(uploadPromises)
   }
 
   const removeFile = (localId: string | undefined) => {
@@ -772,7 +792,7 @@ function FileUploader({
   removeFile,
   files,
 }: {
-  addFiles: (files: FileList) => void
+  addFiles: (files: FileList) => Promise<void>
   removeFile: (fileId: string | undefined) => void
   files: FileUpload[]
 }) {
@@ -815,7 +835,7 @@ function FileUploader({
           onChange={(e) => {
             const newFiles = e.target.files
             if (newFiles != null) {
-              addFiles(newFiles)
+              void addFiles(newFiles)
               // we want to clear the file input so we can repeatedly upload the
               // same file.
               //
@@ -835,7 +855,7 @@ function UploadContainer({
   children,
 }: {
   children: React.ReactNode
-  addFiles: (files: FileList) => void
+  addFiles: (files: FileList) => Promise<void>
 }) {
   return (
     <div
@@ -846,7 +866,7 @@ function UploadContainer({
       onDrop={(event) => {
         if (event.dataTransfer?.files) {
           const newFiles = event.dataTransfer.files
-          addFiles(newFiles)
+          void addFiles(newFiles)
         }
       }}
     >
