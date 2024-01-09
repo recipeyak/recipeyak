@@ -3,77 +3,66 @@ import * as React from "react"
 // eslint-disable-next-line no-restricted-imports
 import { Button as AriaButton } from "react-aria-components"
 
-import { assertNever } from "@/assert"
 import { clx } from "@/classnames"
 import { Link } from "@/components/Routing"
 
 export const Button = ({
-  loading = false,
-  className = "",
+  loading,
+  className,
   size = "normal",
   children,
   active,
   variant,
   disabled,
+  hover,
+  focus,
   to,
-  type = "button",
+  type,
   ...props
 }: {
-  readonly loading?: boolean
   readonly size?: "small" | "normal" | "large"
-  readonly active?: boolean
+
   readonly style?: React.CSSProperties
   readonly className?: string
   readonly children: React.ReactNode
-  readonly variant?: "primary" | "danger" | "link"
+  readonly variant?: "primary" | "danger" | "gradient"
   readonly type?: "submit" | "reset" | "button" | undefined
+  readonly loading?: boolean
+  readonly active?: boolean
+  readonly hover?: boolean
+  readonly focus?: boolean
   readonly disabled?: boolean
   readonly onClick?: (e: React.MouseEvent) => void
   readonly to?: string | LocationDescriptor<unknown>
 }) => {
-  // basically have to do some stylex like jazz due to tailwind limitations
-  let textColor: string
-  switch (variant) {
-    case undefined:
-      textColor = clx("text-[var(--color-text)]")
-    case "link":
-      textColor = clx("text-[var(--color-text)]")
-      break
-    case "danger":
-      textColor = clx("text-[var(--color-danger-button-text)]")
-      break
-    case "primary":
-      textColor = clx("text-[var(--color-primary-button-text)]")
-      break
-    default:
-      assertNever(variant)
-  }
-  if (loading) {
-    textColor = clx("!text-transparent")
-  }
-
-  const buttonCss = clx(
-    "relative inline-flex cursor-pointer select-none items-center justify-center whitespace-nowrap rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-card)] p-0 px-3 py-1 text-center align-top text-sm font-medium leading-[1.5] no-underline transition-[border-color,box-shadow] duration-200 focus-visible:outline focus-visible:outline-[3px] focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)] enabled:hover:no-underline disabled:cursor-default disabled:text-[var(--color-text-disabled)] print:!hidden",
-    variant === "link" &&
-      "border-transparent bg-transparent enabled:hover:text-[var(--color-text-disabled)] enabled:hover:underline enabled:focus:text-[var(--color-text-disabled)] enabled:focus:underline enabled:active:text-[var(--color-text-disabled)] enabled:active:underline",
-    variant === "link" &&
-      active &&
-      "active:text-[var(--color-text-disabled)] active:underline",
+  const variantStyles = clx(
+    variant === undefined &&
+      "border-[var(--color-normal-default-border)] bg-[var(--color-normal-default-bg)] text-[var(--color-normal-default-text)] enabled:hover:border-[var(--color-normal-hover-border)] enabled:hover:bg-[var(--color-normal-hover-bg)] enabled:hover:text-[var(--color-normal-hover-text)] enabled:active:border-[var(--color-normal-active-border)] enabled:active:bg-[var(--color-normal-active-bg)] enabled:active:text-[var(--color-normal-active-text)] disabled:border-[var(--color-normal-disabled-border)] disabled:bg-[var(--color-normal-disabled-bg)] disabled:text-[var(--color-normal-disabled-text)] enabled:data-[force-active='true']:border-[var(--color-normal-active-border)] enabled:data-[force-hover='true']:border-[var(--color-normal-hover-border)] enabled:data-[force-active='true']:bg-[var(--color-normal-active-bg)] enabled:data-[force-hover='true']:bg-[var(--color-normal-hover-bg)] enabled:data-[force-active='true']:text-[var(--color-normal-active-text)] enabled:data-[force-hover='true']:text-[var(--color-normal-hover-text)]",
+    variant === "primary" &&
+      "border-[var(--color-primary-default-border)] bg-[var(--color-primary-default-bg)] text-[var(--color-primary-default-text)] enabled:hover:border-[var(--color-primary-hover-border)] enabled:hover:bg-[var(--color-primary-hover-bg)] enabled:hover:text-[var(--color-primary-hover-text)] enabled:active:border-[var(--color-primary-active-border)] enabled:active:bg-[var(--color-primary-active-bg)] enabled:active:text-[var(--color-primary-active-text)] disabled:border-[var(--color-primary-disabled-border)] disabled:bg-[var(--color-primary-disabled-bg)] disabled:text-[var(--color-primary-disabled-text)] enabled:data-[force-active='true']:border-[var(--color-primary-active-border)] enabled:data-[force-hover='true']:border-[var(--color-primary-hover-border)] enabled:data-[force-active='true']:bg-[var(--color-primary-active-bg)] enabled:data-[force-hover='true']:bg-[var(--color-primary-hover-bg)] enabled:data-[force-active='true']:text-[var(--color-primary-active-text)] enabled:data-[force-hover='true']:text-[var(--color-primary-hover-text)]",
     variant === "danger" &&
-      // we don't have stylex, so we need to important the overrides
-      "!border-[var(--color-danger)] bg-[var(--color-danger)] disabled:bg-[var(--color-danger-disabled)]",
-    variant === "primary" &&
-      "border-[var(--color-primary)] bg-[var(--color-primary)] focus:[box-shadow:0_0_5px_var(--color-primary-shadow)] enabled:hover:bg-[var(--color-primary-active)] enabled:active:!bg-[var(--color-primary-active)] disabled:bg-[var(--color-primary-disabled)]",
-    variant === "primary" &&
-      active &&
-      "active:!bg-[var(--color-primary-active)]",
-    loading &&
-      "after:absolute after:left-[calc(50%-(1em/2))] after:top-[calc(50%-(1em/2))] after:block after:h-[1em] after:w-[1em] after:animate-spin after:rounded-[290486px] after:border-2 after:border-solid after:border-[var(--color-border)] after:border-r-transparent after:border-t-transparent after:duration-500 after:content-['']",
+      "border-[var(--color-danger-default-border)] bg-[var(--color-danger-default-bg)] text-[var(--color-danger-default-text)] enabled:hover:border-[var(--color-danger-hover-border)] enabled:hover:bg-[var(--color-danger-hover-bg)] enabled:hover:text-[var(--color-danger-hover-text)] enabled:active:border-[var(--color-danger-active-border)] enabled:active:bg-[var(--color-danger-active-bg)] enabled:active:text-[var(--color-danger-active-text)] disabled:border-[var(--color-danger-disabled-border)] disabled:bg-[var(--color-danger-disabled-bg)] disabled:text-[var(--color-danger-disabled-text)] enabled:data-[force-active='true']:border-[var(--color-danger-active-border)] enabled:data-[force-hover='true']:border-[var(--color-danger-hover-border)] enabled:data-[force-active='true']:bg-[var(--color-danger-active-bg)] enabled:data-[force-hover='true']:bg-[var(--color-danger-hover-bg)] enabled:data-[force-active='true']:text-[var(--color-danger-active-text)] enabled:data-[force-hover='true']:text-[var(--color-danger-hover-text)]",
+    variant === "gradient" &&
+      "pointer-events-auto !border-none text-white !shadow-none backdrop-blur-[10px] ![background-color:rgba(0,0,0,0.46)]",
+  )
+
+  const focusCss = clx(
+    "focus-visible:outline focus-visible:outline-[3px] focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)]",
+    focus &&
+      "!outline !outline-[3px] !-outline-offset-2 !outline-[rgb(47,129,247)]",
+  )
+
+  const textSize = clx(
     size === "normal" && "text-base",
     size === "small" && "text-xs",
-    // stylex would avoid us having to important this :/
     size === "large" && "!text-2xl",
-    textColor,
+  )
+
+  const buttonCss = clx(
+    "relative inline-flex cursor-pointer select-none items-center justify-center whitespace-nowrap rounded-md border border-solid p-0 px-3 py-1 text-center align-top text-sm font-medium leading-[1.5] no-underline transition-[border-color,background-color] duration-75 disabled:cursor-default print:!hidden",
+    focusCss,
+    variantStyles,
+    textSize,
   )
   if (to != null) {
     return (
@@ -87,8 +76,10 @@ export const Button = ({
     <AriaButton
       {...props}
       isDisabled={loading || disabled}
-      type={type}
+      type={type ?? "button"}
       className={clx(className, buttonCss)}
+      data-force-hover={hover}
+      data-force-active={active}
     >
       {children}
     </AriaButton>

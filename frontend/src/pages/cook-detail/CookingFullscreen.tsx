@@ -1,7 +1,7 @@
 import { useState } from "react"
 
 import { Box } from "@/components/Box"
-import { Button } from "@/components/Buttons"
+import { Link } from "@/components/Routing"
 import { Tab, Tabs } from "@/components/Tabs"
 import { getInitialIngredients } from "@/ingredients"
 import { IngredientViewContent } from "@/pages/recipe-detail/IngredientView"
@@ -230,15 +230,12 @@ export function CookingFullscreen({
           height: "100%",
         }}
       >
-        <Button
+        <Link
           to={pathRecipeDetail({ recipeId: recipeId.toString() })}
-          variant="link"
-          className="mb-2"
-          // eslint-disable-next-line no-restricted-syntax
-          style={{ fontSize: "0.875rem" }}
+          className="mb-2 px-1 py-2 text-sm"
         >
           ← Return to Recipe
-        </Button>
+        </Link>
 
         <Box
           gap={2}

@@ -172,14 +172,61 @@ table {
   --color-background: white;
 
   --color-primary: #e37857;
-  --color-primary-button-text: var(--color-background);
-  --color-primary-shadow: rgba(255, 114, 71, 0.8);
-  --color-primary-active: #ff5f2e;
-  --color-primary-disabled: #e03500;
+
+  // Button
+  // Normal
+  // default
+  --color-normal-default-bg: var(--color-background);
+  --color-normal-default-text: var(--color-text);
+  --color-normal-default-border: var(--color-border);
+  // &:hover
+  --color-normal-hover-bg: #{darken(white, 5%)};
+  --color-normal-hover-text: var(--color-normal-default-text);
+  --color-normal-hover-border: var(--color-normal-default-border);
+  // &:active
+  --color-normal-active-bg: #{darken(white, 10%)};
+  --color-normal-active-text: var(--color-normal-default-text);
+  --color-normal-active-border: var(--color-normal-default-border);
+  // &:disabled
+  --color-normal-disabled-bg: var(--color-normal-default-bg);
+  --color-normal-disabled-text: var(--color-normal-default-border);
+  --color-normal-disabled-border: var(--color-normal-default-border);
+  // Primary
+  // default
+  --color-primary-default-bg: #d97706;
+  --color-primary-default-text: white;
+  --color-primary-default-border: var(--color-primary-default-bg);
+  // &:hover
+  --color-primary-hover-bg: #{darken(#d97706, 5%)};
+  --color-primary-hover-text: var(--color-primary-default-text);
+  --color-primary-hover-border: var(--color-primary-default-border);
+  // &:active
+  --color-primary-active-bg: #{darken(#d97706, 10%)};
+  --color-primary-active-text: var(--color-primary-default-text);
+  --color-primary-active-border: var(--color-primary-default-border);
+  // &:disabled
+  --color-primary-disabled-bg: var(--color-primary-active-bg);
+  --color-primary-disabled-text: var(--color-primary-default-text);
+  --color-primary-disabled-border: var(--color-primary-default-border);
+  // Danger
+  --color-danger-default-bg: #dc2626;
+  --color-danger-default-text: #fff2f1;
+  --color-danger-default-border: var(--color-danger-default-bg);
+  // &:hover
+  --color-danger-hover-bg: #{lighten(#dc2626, 7%)};
+  --color-danger-hover-text: var(--color-danger-default-text);
+  --color-danger-hover-border: var(--color-danger-default-border);
+  // &:active
+  --color-danger-active-bg: #{darken(#dc2626, 5%)};
+  --color-danger-active-text: #ffdad7;
+  --color-danger-active-border: var(--color-danger-default-border);
+  // &:disabled
+  --color-danger-disabled-bg: #{darken(#ef4444, 20%)};
+  --color-danger-disabled-text: var(--color-danger-default-text);
+  --color-danger-disabled-border: var(--color-danger-default-border);
 
   --color-text: #4a4a4a;
   --color-text-muted: rgba(115, 115, 115, 1);
-  --color-text-disabled: var(--color-text);
 
   --color-input-placeholder: var(--color-text-muted);
 
@@ -192,8 +239,6 @@ table {
   --color-accent: rgb(255, 114, 71);
 
   --color-danger: #ff3860;
-  --color-danger-button-text: white;
-  --color-danger-disabled: #{darken(#fb5274, 20%)};
 
   --color-background-card: var(--color-background);
   --color-background-calendar-day: whitesmoke;
@@ -208,26 +253,69 @@ table {
 
 @mixin theme-dark {
   --color-background: #0d1116;
+  --color-primary: #d97706;
+  --color-danger: #dc2626;
 
-  --color-primary: #854d0e;
-  --color-primary-button-text: white;
-  --color-primary-shadow: rgba(255, 114, 71, 0.8);
-  --color-primary-active: var(--color-primary);
-  --color-primary-disabled: #b86349;
+  // Button
+  // Normal
+  // default
+  --color-normal-default-bg: #161b22;
+  --color-normal-default-text: var(--color-text);
+  --color-normal-default-border: var(--color-border);
+  // &:hover
+  --color-normal-hover-bg: #{lighten(#161b22, 5%)};
+  --color-normal-hover-text: var(--color-text);
+  --color-normal-hover-border: var(--color-normal-default-border);
+  // &:active
+  --color-normal-active-bg: #{lighten(#161b22, 7%)};
+  --color-normal-active-text: var(--color-text);
+  --color-normal-active-border: #{lighten(#2f353c, 5%)};
+  // &:disabled
+  --color-normal-disabled-bg: #{darken(#161b22, 2%)};
+  --color-normal-disabled-text: rgb(114, 120, 128);
+  --color-normal-disabled-border: var(--color-normal-default-border);
+  // Primary
+  // default
+  --color-primary-default-bg: #d97706;
+  --color-primary-default-text: white;
+  --color-primary-default-border: var(--color-primary-default-bg);
+  // &:hover
+  --color-primary-hover-bg: #{darken(#d97706, 5%)};
+  --color-primary-hover-text: var(--color-primary-default-text);
+  --color-primary-hover-border: var(--color-primary-default-border);
+  // &:active
+  --color-primary-active-bg: #{darken(#d97706, 10%)};
+  --color-primary-active-text: var(--color-primary-default-text);
+  --color-primary-active-border: var(--color-primary-default-border);
+  // &:disabled
+  --color-primary-disabled-bg: var(--color-primary-active-bg);
+  --color-primary-disabled-text: var(--color-primary-default-text);
+  --color-primary-disabled-border: var(--color-primary-default-border);
+  // Danger
+  --color-danger-default-bg: #dc2626;
+  --color-danger-default-text: #fff2f1;
+  --color-danger-default-border: var(--color-danger-default-bg);
+  // &:hover
+  --color-danger-hover-bg: #{lighten(#dc2626, 7%)};
+  --color-danger-hover-text: var(--color-danger-default-text);
+  --color-danger-hover-border: var(--color-danger-default-border);
+  // &:active
+  --color-danger-active-bg: #{darken(#dc2626, 5%)};
+  --color-danger-active-text: #ffdad7;
+  --color-danger-active-border: var(--color-danger-default-border);
+  // &:disabled
+  --color-danger-disabled-bg: #{darken(#ef4444, 20%)};
+  --color-danger-disabled-text: var(--color-danger-default-text);
+  --color-danger-disabled-border: var(--color-danger-default-border);
 
   --color-text: rgb(230, 237, 243);
   --color-text-muted: var(--color-text);
-  --color-text-disabled: rgb(185, 185, 185);
 
   --color-input-placeholder: var(--color-text-muted);
 
   --color-border: #2f353c;
   --color-border-selected-day: var(--color-border);
   --color-accent: var(--color-text);
-
-  --color-danger: #fb5274;
-  --color-danger-button-text: white;
-  --color-danger-disabled: #{darken(#fb5274, 20%)};
 
   --color-background-card: #161b22;
   --color-background-calendar-day: var(--color-background-card);
@@ -245,13 +333,9 @@ table {
 
   --color-primary: #854d0e;
   --color-primary-button-text: white;
-  --color-primary-shadow: rgba(255, 114, 71, 0.8);
-  --color-primary-active: var(--color-primary);
-  --color-primary-disabled: #b86349;
 
   --color-text: rgb(173, 186, 199);
   --color-text-muted: var(--color-text);
-  --color-text-disabled: rgb(118, 131, 144);
 
   --color-input-placeholder: var(--color-text-muted);
 
@@ -260,8 +344,6 @@ table {
   --color-accent: var(--color-text);
 
   --color-danger: #fb5274;
-  --color-danger-button-text: white;
-  --color-danger-disabled: #{darken(#fb5274, 20%)};
 
   --color-background-card: rgb(34, 39, 46);
   --color-background-calendar-day: var(--color-background-card);
@@ -279,13 +361,61 @@ table {
 
   --color-primary: #e37857;
   --color-primary-button-text: white;
-  --color-primary-shadow: rgba(255, 114, 71, 0.8);
-  --color-primary-active: var(--color-primary);
-  --color-primary-disabled: #b86349;
+
+  // Button
+  // Normal
+  // default
+  --color-normal-default-bg: var(--color-background);
+  --color-normal-default-text: var(--color-text);
+  --color-normal-default-border: var(--color-border);
+  // &:hover
+  --color-normal-hover-bg: #{darken(rgb(185, 110, 52), 3%)};
+  --color-normal-hover-text: var(--color-normal-default-text);
+  --color-normal-hover-border: var(--color-normal-default-border);
+  // &:active
+  --color-normal-active-bg: #{darken(rgb(185, 110, 52), 7%)};
+  --color-normal-active-text: var(--color-normal-default-text);
+  --color-normal-active-border: var(--color-normal-default-border);
+  // &:disabled
+  --color-normal-disabled-bg: var(--color-normal-default-bg);
+  --color-normal-disabled-text: var(--color-normal-default-border);
+  --color-normal-disabled-border: var(--color-normal-default-border);
+  // Primary
+  // default
+  --color-primary-default-bg: #d97706;
+  --color-primary-default-text: white;
+  --color-primary-default-border: var(--color-primary-default-bg);
+  // &:hover
+  --color-primary-hover-bg: #{darken(#d97706, 5%)};
+  --color-primary-hover-text: var(--color-primary-default-text);
+  --color-primary-hover-border: var(--color-primary-default-border);
+  // &:active
+  --color-primary-active-bg: #{darken(#d97706, 10%)};
+  --color-primary-active-text: var(--color-primary-default-text);
+  --color-primary-active-border: var(--color-primary-default-border);
+  // &:disabled
+  --color-primary-disabled-bg: var(--color-primary-active-bg);
+  --color-primary-disabled-text: var(--color-primary-default-text);
+  --color-primary-disabled-border: var(--color-primary-default-border);
+  // Danger
+  --color-danger-default-bg: #dc2626;
+  --color-danger-default-text: #fff2f1;
+  --color-danger-default-border: var(--color-danger-default-bg);
+  // &:hover
+  --color-danger-hover-bg: #{lighten(#dc2626, 7%)};
+  --color-danger-hover-text: var(--color-danger-default-text);
+  --color-danger-hover-border: var(--color-danger-default-border);
+  // &:active
+  --color-danger-active-bg: #{darken(#dc2626, 5%)};
+  --color-danger-active-text: #ffdad7;
+  --color-danger-active-border: var(--color-danger-default-border);
+  // &:disabled
+  --color-danger-disabled-bg: #{darken(#ef4444, 20%)};
+  --color-danger-disabled-text: var(--color-danger-default-text);
+  --color-danger-disabled-border: var(--color-danger-default-border);
 
   --color-text: rgb(237, 237, 237);
   --color-text-muted: var(--color-text);
-  --color-text-disabled: rgb(185, 185, 185);
 
   --color-input-placeholder: rgb(208, 197, 180);
 
@@ -294,8 +424,6 @@ table {
   --color-accent: hsla(15, 50%, 82%, 0.865);
 
   --color-danger: #fb5274;
-  --color-danger-button-text: white;
-  --color-danger-disabled: #{darken(#fb5274, 20%)};
 
   --color-background-card: rgb(188, 133, 92);
   --color-background-calendar-day: var(--color-background-card);
@@ -313,13 +441,61 @@ table {
 
   --color-primary: #b58900;
   --color-primary-button-text: white;
-  --color-primary-shadow: var(--color-primary);
-  --color-primary-active: var(--color-primary);
-  --color-primary-disabled: var(--color-primary);
+
+  // Button
+  // Normal
+  // default
+  --color-normal-default-bg: var(--color-background);
+  --color-normal-default-text: var(--color-text);
+  --color-normal-default-border: var(--color-border);
+  // &:hover
+  --color-normal-hover-bg: #{darken(#fdf6e3, 3%)};
+  --color-normal-hover-text: var(--color-normal-default-text);
+  --color-normal-hover-border: var(--color-normal-default-border);
+  // &:active
+  --color-normal-active-bg: #{darken(#fdf6e3, 5%)};
+  --color-normal-active-text: var(--color-normal-default-text);
+  --color-normal-active-border: var(--color-normal-default-border);
+  // &:disabled
+  --color-normal-disabled-bg: var(--color-normal-default-bg);
+  --color-normal-disabled-text: var(--color-normal-default-border);
+  --color-normal-disabled-border: var(--color-normal-default-border);
+  // Primary
+  // default
+  --color-primary-default-bg: #d97706;
+  --color-primary-default-text: white;
+  --color-primary-default-border: var(--color-primary-default-bg);
+  // &:hover
+  --color-primary-hover-bg: #{darken(#d97706, 5%)};
+  --color-primary-hover-text: var(--color-primary-default-text);
+  --color-primary-hover-border: var(--color-primary-default-border);
+  // &:active
+  --color-primary-active-bg: #{darken(#d97706, 10%)};
+  --color-primary-active-text: var(--color-primary-default-text);
+  --color-primary-active-border: var(--color-primary-default-border);
+  // &:disabled
+  --color-primary-disabled-bg: var(--color-primary-active-bg);
+  --color-primary-disabled-text: var(--color-primary-default-text);
+  --color-primary-disabled-border: var(--color-primary-default-border);
+  // Danger
+  --color-danger-default-bg: #dc2626;
+  --color-danger-default-text: #fff2f1;
+  --color-danger-default-border: var(--color-danger-default-bg);
+  // &:hover
+  --color-danger-hover-bg: #{lighten(#dc2626, 7%)};
+  --color-danger-hover-text: var(--color-danger-default-text);
+  --color-danger-hover-border: var(--color-danger-default-border);
+  // &:active
+  --color-danger-active-bg: #{darken(#dc2626, 5%)};
+  --color-danger-active-text: #ffdad7;
+  --color-danger-active-border: var(--color-danger-default-border);
+  // &:disabled
+  --color-danger-disabled-bg: #{darken(#ef4444, 20%)};
+  --color-danger-disabled-text: var(--color-danger-default-text);
+  --color-danger-disabled-border: var(--color-danger-default-border);
 
   --color-text: #4a4a4a;
   --color-text-muted: rgba(115, 115, 115, 1);
-  --color-text-disabled: var(--color-text);
 
   --color-input-placeholder: #b1b1b1;
 
@@ -328,8 +504,6 @@ table {
   --color-accent: #657b83;
 
   --color-danger: #dc322f;
-  --color-danger-button-text: white;
-  --color-danger-disabled: #{darken(#dc322f, 20%)};
 
   --color-background-card: var(--color-background);
   --color-background-calendar-day: #eee8d5;
