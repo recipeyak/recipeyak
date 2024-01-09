@@ -333,6 +333,57 @@ table {
 
   --color-primary: #854d0e;
   --color-primary-button-text: white;
+  // Button
+  // Normal
+  // default
+  --color-normal-default-bg: rgb(28, 33, 40);
+  --color-normal-default-text: var(--color-text);
+  --color-normal-default-border: var(--color-border);
+  // &:hover
+  --color-normal-hover-bg: #{lighten(rgb(28, 33, 40), 5%)};
+  --color-normal-hover-text: var(--color-text);
+  --color-normal-hover-border: var(--color-normal-default-border);
+  // &:active
+  --color-normal-active-bg: #{lighten(rgb(28, 33, 40), 7%)};
+  --color-normal-active-text: var(--color-text);
+  --color-normal-active-border: var(--color-border);
+  // &:disabled
+  --color-normal-disabled-bg: #{darken(rgb(28, 33, 40), 2%)};
+  --color-normal-disabled-text: rgb(114, 120, 128);
+  --color-normal-disabled-border: var(--color-normal-default-border);
+  // Primary
+  // default
+  --color-primary-default-bg: #d97706;
+  --color-primary-default-text: white;
+  --color-primary-default-border: var(--color-primary-default-bg);
+  // &:hover
+  --color-primary-hover-bg: #{darken(#d97706, 5%)};
+  --color-primary-hover-text: var(--color-primary-default-text);
+  --color-primary-hover-border: var(--color-primary-default-border);
+  // &:active
+  --color-primary-active-bg: #{darken(#d97706, 10%)};
+  --color-primary-active-text: var(--color-primary-default-text);
+  --color-primary-active-border: var(--color-primary-default-border);
+  // &:disabled
+  --color-primary-disabled-bg: var(--color-primary-active-bg);
+  --color-primary-disabled-text: var(--color-primary-default-text);
+  --color-primary-disabled-border: var(--color-primary-default-border);
+  // Danger
+  --color-danger-default-bg: #dc2626;
+  --color-danger-default-text: #fff2f1;
+  --color-danger-default-border: var(--color-danger-default-bg);
+  // &:hover
+  --color-danger-hover-bg: #{lighten(#dc2626, 7%)};
+  --color-danger-hover-text: var(--color-danger-default-text);
+  --color-danger-hover-border: var(--color-danger-default-border);
+  // &:active
+  --color-danger-active-bg: #{darken(#dc2626, 5%)};
+  --color-danger-active-text: #ffdad7;
+  --color-danger-active-border: var(--color-danger-default-border);
+  // &:disabled
+  --color-danger-disabled-bg: #{darken(#ef4444, 20%)};
+  --color-danger-disabled-text: var(--color-danger-default-text);
+  --color-danger-disabled-border: var(--color-danger-default-border);
 
   --color-text: rgb(173, 186, 199);
   --color-text-muted: var(--color-text);
