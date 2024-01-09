@@ -10,6 +10,7 @@ import { FormErrorHandler, PasswordInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { Label } from "@/components/Label"
 import { AuthPage } from "@/components/Page"
+import { Link } from "@/components/Routing"
 import { pathHome, pathLogin } from "@/paths"
 import { useAuthPasswordResetConfirm } from "@/queries/authPasswordResetConfirm"
 import { toast } from "@/toast"
@@ -127,9 +128,7 @@ export function PasswordResetConfirmPage(props: RouteProps) {
               Change Password
             </Button>
 
-            <Button to={pathLogin({})} variant="link">
-              To Login
-            </Button>
+            <Link to={pathLogin({})}>To Login</Link>
           </div>
         </form>
       </BorderBox>

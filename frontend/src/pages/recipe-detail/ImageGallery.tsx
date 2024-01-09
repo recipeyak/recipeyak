@@ -1,7 +1,6 @@
 import React from "react"
 import { ChevronLeft, ChevronRight, Share, Star, X } from "react-feather"
 
-import { clx } from "@/classnames"
 import { Button } from "@/components/Buttons"
 import { imgixFmt } from "@/url"
 
@@ -15,13 +14,7 @@ function GalleryButton({
   onClick?: () => void
 }) {
   return (
-    <Button
-      onClick={onClick}
-      className={clx(
-        "pointer-events-auto !border-none text-white !shadow-none backdrop-blur-[10px]  ![background-color:rgba(0,0,0,0.46)]",
-        className,
-      )}
-    >
+    <Button onClick={onClick} variant="gradient" className={className}>
       {children}
     </Button>
   )

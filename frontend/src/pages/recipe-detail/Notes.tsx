@@ -812,6 +812,7 @@ function FileUploader({
                 state={f.state}
                 backgroundUrl={null}
               />
+              {/* eslint-disable-next-line react/forbid-elements */}
               <button
                 className="absolute right-0 top-[-4px] z-10 aspect-[1] cursor-pointer rounded-[100%] border-[0px] bg-[#4a4a4a] p-[0.3rem] font-bold leading-[0] text-[#dbdbdb]"
                 onClick={() => {

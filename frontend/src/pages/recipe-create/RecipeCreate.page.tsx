@@ -30,7 +30,7 @@ function CreateFromURLForm() {
   return (
     <form onSubmit={handleImport}>
       <div className="text-left text-[14px] font-medium">URL</div>
-      <div className="flex gap-2">
+      <div className="flex items-center gap-2">
         <TextInput
           placeholder="https://cooking.nytimes.com..."
           name="recipe url"
@@ -86,7 +86,7 @@ function CreateManuallyForm() {
   return (
     <form onSubmit={handleManualAdd}>
       <div className="text-left text-[14px] font-medium">Title</div>
-      <div className="flex gap-2">
+      <div className="flex items-center gap-2">
         <TextInput
           placeholder="Butternutt Squash Soup"
           name="recipe url"

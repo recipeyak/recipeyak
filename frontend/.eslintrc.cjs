@@ -74,6 +74,7 @@ module.exports = {
       "origin",
       "event",
       "localStorage",
+      "focus",
     ],
     "no-restricted-imports": [
       "error",
@@ -142,7 +143,7 @@ module.exports = {
     "react/jsx-fragments": "error",
     "react/forbid-elements": [
       "error",
-      { forbid: ["p", "style", "section", "b", "em", "i", "select"] },
+      { forbid: ["p", "style", "section", "b", "em", "i", "select", "button"] },
     ],
     "no-lonely-if": "error",
     "object-shorthand": ["error", "always"],
