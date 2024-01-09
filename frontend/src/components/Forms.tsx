@@ -128,7 +128,7 @@ export function Textarea({
     <TextareaAutosize
       {...props}
       className={clx(
-        "relative z-[1] block w-full min-w-full max-w-full resize-y appearance-none items-center justify-start rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-card)] p-3 px-[6px] py-[5px] text-base text-[var(--color-text)] shadow-none transition-[border-color,box-shadow] duration-200 [box-shadow:inset_0_1px_2px_rgba(10,10,10,0.1)] placeholder:text-[var(--color-input-placeholder)]",
+        "relative z-[1] block w-full min-w-full max-w-full resize-y appearance-none items-center justify-start rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-card)] px-3 py-2 text-base text-[var(--color-text)] shadow-none transition-[border-color,box-shadow] duration-200 [box-shadow:inset_0_1px_2px_rgba(10,10,10,0.1)] placeholder:text-[var(--color-input-placeholder)]",
         isError && "border-[var(--color-danger)]",
         !minimized && "max-h-[600px] min-h-[120px] leading-[1.5]",
         bottomFlat && "rounded-b-[unset]",

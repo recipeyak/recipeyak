@@ -301,6 +301,21 @@ def test_parse_quantity_name(ingredient: str, expected: tuple[str, str]) -> None
             "½ jalapeño pepper, seeded, ribs removed",
             ("½ jalapeño pepper", "seeded, ribs removed"),
         ),
+        (
+            "1 1/2 pounds boneless, skinless chicken breast, cut into 3/4-inch cubes",
+            (
+                "1 1/2 pounds boneless, skinless chicken breast",
+                "cut into 3/4-inch cubes",
+            ),
+        ),
+        (
+            "1 lb cooked, shredded chicken",
+            ("1 lb cooked, shredded chicken", ""),
+        ),
+        (
+            "2 pounds raw, cooked, frozen, skinless, shredded chicken",
+            ("2 pounds raw, cooked, frozen, skinless, shredded chicken", ""),
+        ),
     ],
 )
 def test_parse_name_description(ingredient: str, expected: tuple[str, str]) -> None:

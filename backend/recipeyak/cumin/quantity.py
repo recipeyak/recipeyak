@@ -450,7 +450,9 @@ def parse_quantity_name(text: str) -> tuple[str, str]:
     return (quantity.strip(), name.strip())
 
 
-NON_INGREDIENT_NAMES = frozenset({"bone-in", "skin-on", "fresh"})
+NON_INGREDIENT_NAMES = frozenset(
+    {"bone-in", "skin-on", "fresh", "cooked", "raw", "frozen", "skinless", "boneless"}
+)
 
 
 def parse_name_description(text: str) -> tuple[str, str]:
