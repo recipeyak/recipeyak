@@ -48,7 +48,7 @@ export function DangerZone() {
     <Box dir="col" align="start" gap={1}>
       <label className="text-xl font-bold">Danger Zone</label>
       <Button size="small" onClick={deleteUserAccount} variant="danger">
-        permanently delete my account
+        Permanently Delete My Account
       </Button>
     </Box>
   )
