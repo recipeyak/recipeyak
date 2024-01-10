@@ -1,3 +1,4 @@
+import { snakeCase } from "lodash-es"
 import { useEffect, useRef, useState } from "react"
 import { useHistory, useLocation } from "react-router"
 
@@ -77,84 +78,17 @@ function CustomRefinement({
   )
 }
 
-function CreatedByUser({
-  facetFilters,
-  onToggle,
+function UserToggleFilter({
+  userId,
+  prefixLabel,
+  onClick,
 }: {
-  facetFilters: FacetFilters
-  onToggle: () => void
-}) {
-  const user = useUserById({ id: String(facetFilters.AndCreatedById ?? 1) })
-  if (user.data == null) {
-    return null
-  }
-  return (
-    <div className="flex items-center gap-2">
-      <input
-        id="created_by_id"
-        type="checkbox"
-        defaultChecked={true}
-        onChange={onToggle}
-      />
-      <label htmlFor="created_by_id">Created by {user.data.name}</label>
-    </div>
-  )
-}
-function ArchivedByUser({
-  facetFilters,
-  onToggle,
-}: {
-  facetFilters: FacetFilters
-  onToggle: () => void
-}) {
-  const user = useUserById({ id: String(facetFilters.AndArchivedById ?? 1) })
-  if (user.data == null) {
-    return null
-  }
-  return (
-    <div className="flex items-center gap-2">
-      <input
-        id="archived_by_id"
-        type="checkbox"
-        defaultChecked={true}
-        onChange={onToggle}
-      />
-      <label htmlFor="archived_by_id">Archived by {user.data.name}</label>
-    </div>
-  )
-}
-function ScheduledByUser({
-  facetFilters,
-  onToggle,
-}: {
-  facetFilters: FacetFilters
-  onToggle: () => void
-}) {
-  const user = useUserById({ id: String(facetFilters.AndScheduledById ?? 1) })
-  if (user.data == null) {
-    return null
-  }
-  return (
-    <div className="flex items-center gap-2">
-      <input
-        id="scheduled_by_id"
-        type="checkbox"
-        defaultChecked={true}
-        onChange={onToggle}
-      />
-      <label htmlFor="scheduled_by_id">Scheduled by {user.data.name}</label>
-    </div>
-  )
-}
-function PrimaryImageCreatedByUser({
-  facetFilters,
-  onToggle,
-}: {
-  facetFilters: FacetFilters
-  onToggle: () => void
+  onClick: () => void
+  userId: string
+  prefixLabel: string
 }) {
   const user = useUserById({
-    id: String(facetFilters.AndPrimaryImageCreatedById ?? 1),
+    id: userId,
   })
   if (user.data == null) {
     return null
@@ -162,17 +96,24 @@ function PrimaryImageCreatedByUser({
   return (
     <div className="flex items-center gap-2">
       <input
-        id="scheduled_by_id"
+        id={`user_toggle_filter_${snakeCase(prefixLabel)}`}
         type="checkbox"
         defaultChecked={true}
-        onChange={onToggle}
+        onChange={onClick}
       />
-      <label htmlFor="scheduled_by_id">
-        Primary image created by {user.data.name}
+      <label htmlFor={`user_toggle_filter_${snakeCase(prefixLabel)}`}>
+        {prefixLabel} {user.data.name}
       </label>
     </div>
   )
 }
+
+const userToggleFilters = [
+  { key: "AndCreatedById", label: "Created by" },
+  { key: "AndArchivedById", label: "Archived by" },
+  { key: "AndScheduledById", label: "Scheduled by" },
+  { key: "AndPrimaryImageCreatedById", label: "Primary image created by" },
+] as const
 
 function RecipesToggle({
   onChange,
@@ -216,38 +157,23 @@ function RecipesToggle({
         />
         <label htmlFor="never_scheduled">Never scheduled recipes</label>
       </div>
-      {facetFilters.AndCreatedById != null && (
-        <CreatedByUser
-          facetFilters={facetFilters}
-          onToggle={() => {
-            onChange({ AndCreatedById: null })
-          }}
-        />
-      )}
-      {facetFilters.AndArchivedById != null && (
-        <ArchivedByUser
-          facetFilters={facetFilters}
-          onToggle={() => {
-            onChange({ AndArchivedById: null })
-          }}
-        />
-      )}
-      {facetFilters.AndScheduledById != null && (
-        <ScheduledByUser
-          facetFilters={facetFilters}
-          onToggle={() => {
-            onChange({ AndScheduledById: null })
-          }}
-        />
-      )}
-      {facetFilters.AndPrimaryImageCreatedById != null && (
-        <PrimaryImageCreatedByUser
-          facetFilters={facetFilters}
-          onToggle={() => {
-            onChange({ AndPrimaryImageCreatedById: null })
-          }}
-        />
-      )}
+
+      {userToggleFilters.map((filter) => {
+        const id = facetFilters[filter.key]
+        if (id == null) {
+          return null
+        }
+        return (
+          <UserToggleFilter
+            key={filter.key}
+            userId={id.toString()}
+            prefixLabel={filter.label}
+            onClick={() => {
+              onChange({ [filter.key]: null })
+            }}
+          />
+        )
+      })}
     </div>
   )
 }
