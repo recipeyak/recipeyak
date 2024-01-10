@@ -45,7 +45,7 @@ def get_scheduled_recipes(team_id: int) -> QuerySet[ScheduledRecipe]:
     )
 
 
-class StartEndDateSerializer(RequestParams):
+class StartEndDateParams(RequestParams):
     start: date
     end: date
 
@@ -54,7 +54,7 @@ class StartEndDateSerializer(RequestParams):
 def calendar_list_view(
     request: AuthedHttpRequest, team_id: object = ()
 ) -> JsonResponse:
-    params = StartEndDateSerializer.parse_obj(request.GET.dict())
+    params = StartEndDateParams.parse_obj(request.GET.dict())
     start = params.start
     end = params.end
     team_id = get_team(request.user).id

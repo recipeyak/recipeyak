@@ -11,7 +11,7 @@ from recipeyak.models import Team
 from recipeyak.models.invite import Invite
 
 
-class CreateInviteSerializer(RequestParams):
+class CreateInviteParams(RequestParams):
     emails: list[str]
     level: Literal["admin", "contributor", "read"]
 
@@ -29,7 +29,7 @@ def invite_create_view(request: AuthedHttpRequest, team_id: int) -> JsonResponse
     need to use to_representation or form_represenation
     """
     team = Team.objects.get(pk=team_id)
-    params = CreateInviteSerializer.parse_raw(request.body)
+    params = CreateInviteParams.parse_raw(request.body)
     with transaction.atomic():
         invite_ids = list[int]()
         for email in params.emails:
