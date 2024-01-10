@@ -4,13 +4,8 @@ from datetime import date, datetime
 
 import pydantic
 
-from recipeyak.api.base.serialization import RequestParams
 from recipeyak.models.scheduled_recipe import ScheduledRecipe
 from recipeyak.models.user import get_avatar_url
-
-
-class ScheduledRecipeUpdateParams(RequestParams):
-    on: date | None
 
 
 class CreatedBySerializer(pydantic.BaseModel):

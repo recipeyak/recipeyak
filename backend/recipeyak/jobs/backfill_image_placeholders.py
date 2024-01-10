@@ -11,10 +11,8 @@ import typer
 from dotenv import load_dotenv
 from PIL import Image, ImageOps, UnidentifiedImageError
 from pillow_heif import register_heif_opener
-from pydantic import (
-    BaseSettings,
-    PostgresDsn,
-)
+from pydantic import PostgresDsn
+from pydantic_settings import BaseSettings
 from yarl import URL
 
 logger = structlog.stdlib.get_logger()
@@ -128,7 +126,7 @@ def main(dry_run: bool = False) -> None:
         asyncio.run(
             job(
                 dry_run=dry_run,
-                database_url=config.DATABASE_URL,
+                database_url=str(config.DATABASE_URL),
                 storage_hostname=config.STORAGE_HOSTNAME,
             )
         )

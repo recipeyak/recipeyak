@@ -1,19 +1,22 @@
 from __future__ import annotations
 
+from typing import Annotated
+
 from django.shortcuts import get_object_or_404
+from pydantic import Field
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams, StrTrimmed
+from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.recipe import ingredient_to_text, serialize_ingredient
 from recipeyak.models import ChangeType, RecipeChange, filter_ingredients, get_team
 
 
 class IngredientsPatchParams(RequestParams):
-    quantity: StrTrimmed | None = None
-    name: StrTrimmed | None = None
-    description: StrTrimmed | None = None
+    quantity: Annotated[str, Field(strip_whitespace=True)] | None = None
+    name: Annotated[str, Field(strip_whitespace=True)] | None = None
+    description: Annotated[str, Field(strip_whitespace=True)] | None = None
     position: str | None = None
     optional: bool | None = None
 

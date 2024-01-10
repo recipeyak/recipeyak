@@ -1,16 +1,19 @@
 from __future__ import annotations
 
+from typing import Annotated
+
 from django.shortcuts import get_object_or_404
+from pydantic import Field
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams, StrTrimmed
+from recipeyak.api.base.serialization import RequestParams
 from recipeyak.models import ChangeType, RecipeChange, filter_steps, get_team
 
 
 class StepPatchParams(RequestParams):
-    text: StrTrimmed | None = None
+    text: Annotated[str, Field(strip_whitespace=True)] | None = None
     position: str | None = None
 
 

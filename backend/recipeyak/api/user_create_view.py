@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Annotated
 
 from django.contrib.auth import login
-from django.contrib.auth.password_validation import validate_password
 from django.db import transaction
-from pydantic import root_validator, validator
+from pydantic import AfterValidator, model_validator
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AnonymousHttpRequest
@@ -16,33 +15,28 @@ from recipeyak.models.team import Team
 from recipeyak.models.user import User
 
 
-class RegisterUserDetailView(RequestParams):
-    email: str
-    password1: str
+def _validate_email(email: str) -> str:
+    if User.objects.filter(email=email).first() is not None:
+        msg = f"An email/password account is already associated with { email }."
+        raise ValueError(msg)
+    return email
+
+
+class RegisterUserDetailViewParams(RequestParams):
+    email: Annotated[str, AfterValidator(_validate_email)]
+    password1: Annotated[str, AfterValidator(lambda x: validate_password(x))]
     password2: str
 
-    @validator("password1")
-    def validate_password1(cls, v: str) -> str:
-        validate_password(v)
-        return v
-
-    @validator("email")
-    def validate_email(cls, email: str) -> str:
-        if User.objects.filter(email=email).first() is not None:
-            msg = f"An email/password account is already associated with { email }."
-            raise ValueError(msg)
-        return email
-
-    @root_validator
-    def validate(cls, data: dict[str, Any]) -> dict[str, Any]:  # type: ignore[override]
-        if data["password1"] != data["password2"]:
+    @model_validator(mode="after")
+    def check_passwords_match(self) -> RegisterUserDetailViewParams:
+        if self.password1 != self.password2:
             raise ValueError("The two password fields didn't match.")
-        return data
+        return self
 
 
 @endpoint(auth_required=False)
 def user_create_view(request: AnonymousHttpRequest) -> JsonResponse:
-    params = RegisterUserDetailView.parse_raw(request.body)
+    params = RegisterUserDetailViewParams.parse_raw(request.body)
     with transaction.atomic():
         team = Team.objects.create(name="Personal")
         user = User()

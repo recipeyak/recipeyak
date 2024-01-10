@@ -16,10 +16,10 @@ class SearchClickIngredient(RequestParams):
 class SearchClickRecipe(RequestParams):
     id: int
     name: str
-    author: str | None
-    tags: list[str] | None
+    author: str | None = None
+    tags: list[str] | None = None
     ingredients: list[SearchClickIngredient]
-    archived_at: str | None
+    archived_at: str | None = None
     scheduledCount: int
 
 

@@ -1,16 +1,19 @@
 from __future__ import annotations
 
+from typing import Annotated
+
 import advocate
 import structlog
 from django.core.exceptions import ValidationError
 from django.db import transaction
+from pydantic import Field
 from recipe_scrapers._exceptions import RecipeScrapersExceptions
 
 from recipeyak import ordering
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams, StrTrimmed
+from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.recipe import (
     serialize_recipe,
 )
@@ -31,8 +34,8 @@ logger = structlog.stdlib.get_logger()
 
 class RecipePostParams(RequestParams):
     team: str
-    from_url: StrTrimmed | None = None
-    name: StrTrimmed | None = None
+    from_url: Annotated[str, Field(strip_whitespace=True)] | None = None
+    name: Annotated[str, Field(strip_whitespace=True)] | None = None
 
 
 def normalize_title(title: str | None) -> str | None:

@@ -12,10 +12,8 @@ import structlog
 import typer
 from algoliasearch.search_client import SearchClient
 from dotenv import load_dotenv
-from pydantic import (
-    BaseSettings,
-    PostgresDsn,
-)
+from pydantic import PostgresDsn
+from pydantic_settings import BaseSettings
 
 logger = structlog.stdlib.get_logger()
 
@@ -137,7 +135,8 @@ delete from recipe_index_queue where id = ANY($1)
 
 
 async def job(config: Config, single_run: bool) -> None:
-    pg = await asyncpg.connect(dsn=config.DATABASE_URL)
+    dsn = str(config.DATABASE_URL)
+    pg = await asyncpg.connect(dsn=dsn)
 
     if single_run:
         await process_queue(pg, config=config)

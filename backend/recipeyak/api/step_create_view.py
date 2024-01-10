@@ -1,19 +1,22 @@
 from __future__ import annotations
 
+from typing import Annotated
+
 from django.shortcuts import get_object_or_404
+from pydantic import Field
 
 from recipeyak import ordering
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams, StrTrimmed
+from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.recipe import serialize_step
 from recipeyak.models import ChangeType, RecipeChange, Step, filter_recipes, get_team
 
 
 class StepCreateParams(RequestParams):
-    text: StrTrimmed
-    position: StrTrimmed | None = None
+    text: Annotated[str, Field(strip_whitespace=True)]
+    position: Annotated[str, Field(strip_whitespace=True)] | None = None
 
 
 @endpoint()

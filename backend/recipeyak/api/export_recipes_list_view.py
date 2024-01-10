@@ -27,14 +27,12 @@ class ExportSection(pydantic.BaseModel):
 class ExportRecipe(pydantic.BaseModel):
     id: int
     name: str
-    author: str | None
-    time: str | None
-    source: str | None
-    # # TODO: make sure we order these right
+    author: str | None = None
+    time: str | None = None
+    source: str | None = None
     ingredients: list[ExportIngredient | ExportSection]
-    # # TODO: make sure we order these right
     steps: list[str]
-    tags: list[str] | None
+    tags: list[str] | None = None
 
 
 def serialize_export_recipe(recipe: Recipe) -> ExportRecipe:

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Literal, assert_never
+from typing import Literal, assert_never
 from uuid import uuid4
 
 import pydantic
@@ -20,18 +20,18 @@ class StartUploadParams(RequestParams):
     file_name: str
     content_type: str
     content_length: int
-    recipe_id: int | None
+    recipe_id: int | None = None
     purpose: Literal["recipe", "profile"] = "recipe"
 
-    @pydantic.root_validator
-    def validate(cls, data: dict[str, Any]) -> dict[str, Any]:  # type: ignore[override]
-        recipe_id = data["recipe_id"]
-        purpose = data["purpose"]
+    @pydantic.model_validator(mode="after")
+    def validate_purpose_and_id(self) -> StartUploadParams:
+        recipe_id = self.recipe_id
+        purpose = self.purpose
         if purpose == "recipe" and recipe_id is None:
             raise ValueError("recipe_id is required when purpose is recipe")
         if purpose == "profile" and recipe_id is not None:
             raise ValueError("recipe_id is not allowed when purpose is profile")
-        return data
+        return self
 
 
 class StartUploadResponse(pydantic.BaseModel):
