@@ -66,24 +66,26 @@ from recipe_index_queue
                     where core_upload.id = core_recipe.primary_image_id
                 ),
                 'archived_by_id', (
-SELECT
-	created_by_id
-FROM ( SELECT DISTINCT ON (recipe_id)
-		recipe_id,
-		action,
-		created_by_id
-	FROM
-		timeline_event
-	WHERE
-		action in('archived', 'unarchived')
-		
-	ORDER BY
-		recipe_id,
-		created DESC) sub
-WHERE
-	action = 'archived'
-	and created_by_id is not null
-	and recipe_id = core_recipe.id),
+                    select
+                        created_by_id
+                    from (
+                        select distinct on (recipe_id)
+                            recipe_id,
+                            action,
+                            created_by_id
+                        from
+                            timeline_event
+                        where
+                            action in ('archived', 'unarchived')
+                        order by
+                            recipe_id,
+                            created desc
+                    ) sub
+                    where
+                        action = 'archived'
+                        and created_by_id is not null
+                        and recipe_id = core_recipe.id
+                ),
                 'created_by_id', (
                     select
                         created_by_id
