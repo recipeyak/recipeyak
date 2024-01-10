@@ -330,28 +330,26 @@ function useFacetFiltersState() {
       setQueryParams(history, { or_archived: x.OrArchived ? "1" : undefined })
     }
     if ("tags" in x) {
-      setQueryParams(history, { tag: x.tags ? x.tags : [] })
+      setQueryParams(history, { tag: x.tags ?? [] })
     }
     if ("AndCreatedById" in x) {
       setQueryParams(history, {
-        created_by_id: x.AndCreatedById ? x.AndCreatedById : undefined,
+        created_by_id: x.AndCreatedById ?? undefined,
       })
     }
     if ("AndArchivedById" in x) {
       setQueryParams(history, {
-        archived_by_id: x.AndArchivedById ? x.AndArchivedById : undefined,
+        archived_by_id: x.AndArchivedById ?? undefined,
       })
     }
     if ("AndScheduledById" in x) {
       setQueryParams(history, {
-        scheduled_by_id: x.AndScheduledById ? x.AndScheduledById : undefined,
+        scheduled_by_id: x.AndScheduledById ?? undefined,
       })
     }
     if ("AndPrimaryImageCreatedById" in x) {
       setQueryParams(history, {
-        primary_image_created_by_id: x.AndPrimaryImageCreatedById
-          ? x.AndPrimaryImageCreatedById
-          : undefined,
+        primary_image_created_by_id: x.AndPrimaryImageCreatedById ?? undefined,
       })
     }
     setFacetFilterState((s) => ({ ...s, ...x }))
