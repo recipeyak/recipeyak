@@ -166,7 +166,7 @@ function RecipesToggle({
         return (
           <UserToggleFilter
             key={filter.key}
-            userId={id.toString()}
+            userId={id}
             prefixLabel={filter.label}
             onClick={() => {
               onChange({ [filter.key]: null })
@@ -183,10 +183,10 @@ type FacetFilters = {
   OrArchived: boolean
   AndNeverScheduled: boolean
   tags: string[]
-  AndCreatedById: number | null
-  AndArchivedById: number | null
-  AndScheduledById: number | null
-  AndPrimaryImageCreatedById: number | null
+  AndCreatedById: string | null
+  AndArchivedById: string | null
+  AndScheduledById: string | null
+  AndPrimaryImageCreatedById: string | null
 }
 
 function serializeFacetFilters(
@@ -309,23 +309,14 @@ function useFacetFiltersState() {
   const [facetFilters, setFacetFilterState] = useState<FacetFilters>(() => {
     const params = new URLSearchParams(location.search)
 
-    const createdById = parseInt(params.get("created_by_id") ?? "null", 10)
-    const archivedById = parseInt(params.get("archived_by_id") ?? "null", 10)
-    const scheduledById = parseInt(params.get("scheduled_by_id") ?? "null", 10)
-    const primaryImageCreatedById = parseInt(
-      params.get("primary_image_created_by_id") ?? "null",
-      10,
-    )
     return {
       OrArchived: params.get("or_archived") === "1",
       AndNeverScheduled: params.get("and_never_scheduled") === "1",
       tags: params.getAll("tag"),
-      AndCreatedById: Number.isNaN(createdById) ? null : createdById,
-      AndArchivedById: Number.isNaN(archivedById) ? null : archivedById,
-      AndScheduledById: Number.isNaN(scheduledById) ? null : scheduledById,
-      AndPrimaryImageCreatedById: Number.isNaN(primaryImageCreatedById)
-        ? null
-        : primaryImageCreatedById,
+      AndCreatedById: params.get("created_by_id"),
+      AndArchivedById: params.get("archived_by_id"),
+      AndScheduledById: params.get("scheduled_by_id"),
+      AndPrimaryImageCreatedById: params.get("primary_image_created_by_id"),
     }
   })
 
@@ -343,27 +334,23 @@ function useFacetFiltersState() {
     }
     if ("AndCreatedById" in x) {
       setQueryParams(history, {
-        created_by_id: x.AndCreatedById ? String(x.AndCreatedById) : undefined,
+        created_by_id: x.AndCreatedById ? x.AndCreatedById : undefined,
       })
     }
     if ("AndArchivedById" in x) {
       setQueryParams(history, {
-        archived_by_id: x.AndArchivedById
-          ? String(x.AndArchivedById)
-          : undefined,
+        archived_by_id: x.AndArchivedById ? x.AndArchivedById : undefined,
       })
     }
     if ("AndScheduledById" in x) {
       setQueryParams(history, {
-        scheduled_by_id: x.AndScheduledById
-          ? String(x.AndScheduledById)
-          : undefined,
+        scheduled_by_id: x.AndScheduledById ? x.AndScheduledById : undefined,
       })
     }
     if ("AndPrimaryImageCreatedById" in x) {
       setQueryParams(history, {
         primary_image_created_by_id: x.AndPrimaryImageCreatedById
-          ? String(x.AndPrimaryImageCreatedById)
+          ? x.AndPrimaryImageCreatedById
           : undefined,
       })
     }
