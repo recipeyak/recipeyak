@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Annotated
 
 from django.shortcuts import get_object_or_404
-from pydantic import Field
+from pydantic import StringConstraints
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
@@ -14,9 +14,9 @@ from recipeyak.models import ChangeType, RecipeChange, filter_ingredients, get_t
 
 
 class IngredientsPatchParams(RequestParams):
-    quantity: Annotated[str, Field(strip_whitespace=True)] | None = None
-    name: Annotated[str, Field(strip_whitespace=True)] | None = None
-    description: Annotated[str, Field(strip_whitespace=True)] | None = None
+    quantity: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
+    name: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
+    description: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
     position: str | None = None
     optional: bool | None = None
 

@@ -6,7 +6,7 @@ import advocate
 import structlog
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from pydantic import Field
+from pydantic import StringConstraints
 from recipe_scrapers._exceptions import RecipeScrapersExceptions
 
 from recipeyak import ordering
@@ -34,8 +34,8 @@ logger = structlog.stdlib.get_logger()
 
 class RecipePostParams(RequestParams):
     team: str
-    from_url: Annotated[str, Field(strip_whitespace=True)] | None = None
-    name: Annotated[str, Field(strip_whitespace=True)] | None = None
+    from_url: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
+    name: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
 
 
 def normalize_title(title: str | None) -> str | None:

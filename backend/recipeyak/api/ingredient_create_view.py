@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Annotated
 
 from django.shortcuts import get_object_or_404
-from pydantic import Field
+from pydantic import StringConstraints
 
 from recipeyak import ordering
 from recipeyak.api.base.decorators import endpoint
@@ -22,9 +22,9 @@ from recipeyak.models.section import Section
 
 
 class IngredientCreateParams(RequestParams):
-    quantity: Annotated[str, Field(strip_whitespace=True)]
-    name: Annotated[str, Field(strip_whitespace=True)]
-    description: Annotated[str, Field(strip_whitespace=True)]
+    quantity: Annotated[str, StringConstraints(strip_whitespace=True)]
+    name: Annotated[str, StringConstraints(strip_whitespace=True)]
+    description: Annotated[str, StringConstraints(strip_whitespace=True)]
     position: str | None = None
     optional: bool | None = None
 

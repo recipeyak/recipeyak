@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Annotated
 
-from pydantic import Field
+from pydantic import StringConstraints
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
@@ -21,12 +21,12 @@ from recipeyak.models.upload import Upload
 
 
 class RecipePatchParams(RequestParams):
-    name: Annotated[str, Field(strip_whitespace=True)] | None = None
-    author: Annotated[str, Field(strip_whitespace=True)] | None = None
-    time: Annotated[str, Field(strip_whitespace=True)] | None = None
-    tags: list[Annotated[str, Field(strip_whitespace=True)]] | None = None
-    servings: Annotated[str, Field(strip_whitespace=True)] | None = None
-    source: Annotated[str, Field(strip_whitespace=True)] | None = None
+    name: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
+    author: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
+    time: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
+    tags: list[Annotated[str, StringConstraints(strip_whitespace=True)]] | None = None
+    servings: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
+    source: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
     archived_at: datetime | None = None
 
     # attributes requiring custom handling.

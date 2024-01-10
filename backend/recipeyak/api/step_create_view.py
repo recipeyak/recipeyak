@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Annotated
 
 from django.shortcuts import get_object_or_404
-from pydantic import Field
+from pydantic import StringConstraints
 
 from recipeyak import ordering
 from recipeyak.api.base.decorators import endpoint
@@ -15,8 +15,8 @@ from recipeyak.models import ChangeType, RecipeChange, Step, filter_recipes, get
 
 
 class StepCreateParams(RequestParams):
-    text: Annotated[str, Field(strip_whitespace=True)]
-    position: Annotated[str, Field(strip_whitespace=True)] | None = None
+    text: Annotated[str, StringConstraints(strip_whitespace=True)]
+    position: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
 
 
 @endpoint()
