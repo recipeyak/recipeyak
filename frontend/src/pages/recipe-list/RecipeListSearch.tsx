@@ -6,6 +6,7 @@ import { SearchInput } from "@/components/Forms"
 import { Matches, RecipeList } from "@/components/RecipeSearchList"
 import { useSearchRecipeFacets } from "@/queries/searchRecipeFacets"
 import { useSearchRecipes } from "@/queries/searchRecipes"
+import { useUserById } from "@/queries/userById"
 import { removeQueryParams, setQueryParams } from "@/querystring"
 
 function CustomRefinement({
@@ -76,23 +77,109 @@ function CustomRefinement({
   )
 }
 
+function CreatedByUser({
+  facetFilters,
+  onToggle,
+}: {
+  facetFilters: FacetFilters
+  onToggle: () => void
+}) {
+  const user = useUserById({ id: String(facetFilters.AndCreatedById ?? 1) })
+  if (user.data == null) {
+    return null
+  }
+  return (
+    <div className="flex items-center gap-2">
+      <input
+        id="created_by_id"
+        type="checkbox"
+        defaultChecked={true}
+        onChange={onToggle}
+      />
+      <label htmlFor="created_by_id">Created by {user.data.name}</label>
+    </div>
+  )
+}
+function ArchivedByUser({
+  facetFilters,
+  onToggle,
+}: {
+  facetFilters: FacetFilters
+  onToggle: () => void
+}) {
+  const user = useUserById({ id: String(facetFilters.AndArchivedById ?? 1) })
+  if (user.data == null) {
+    return null
+  }
+  return (
+    <div className="flex items-center gap-2">
+      <input
+        id="archived_by_id"
+        type="checkbox"
+        defaultChecked={true}
+        onChange={onToggle}
+      />
+      <label htmlFor="archived_by_id">Archived by {user.data.name}</label>
+    </div>
+  )
+}
+function ScheduledByUser({
+  facetFilters,
+  onToggle,
+}: {
+  facetFilters: FacetFilters
+  onToggle: () => void
+}) {
+  const user = useUserById({ id: String(facetFilters.AndScheduledById ?? 1) })
+  if (user.data == null) {
+    return null
+  }
+  return (
+    <div className="flex items-center gap-2">
+      <input
+        id="scheduled_by_id"
+        type="checkbox"
+        defaultChecked={true}
+        onChange={onToggle}
+      />
+      <label htmlFor="scheduled_by_id">Scheduled by {user.data.name}</label>
+    </div>
+  )
+}
+function PrimaryImageCreatedByUser({
+  facetFilters,
+  onToggle,
+}: {
+  facetFilters: FacetFilters
+  onToggle: () => void
+}) {
+  const user = useUserById({
+    id: String(facetFilters.AndPrimaryImageCreatedById ?? 1),
+  })
+  if (user.data == null) {
+    return null
+  }
+  return (
+    <div className="flex items-center gap-2">
+      <input
+        id="scheduled_by_id"
+        type="checkbox"
+        defaultChecked={true}
+        onChange={onToggle}
+      />
+      <label htmlFor="scheduled_by_id">
+        Primary image created by {user.data.name}
+      </label>
+    </div>
+  )
+}
+
 function RecipesToggle({
   onChange,
   facetFilters,
 }: {
-  facetFilters: {
-    OrArchived: boolean
-    AndNeverScheduled: boolean
-  }
-  onChange: (
-    _:
-      | {
-          OrArchived: boolean
-        }
-      | {
-          AndNeverScheduled: boolean
-        },
-  ) => void
+  facetFilters: FacetFilters
+  onChange: (_: Partial<FacetFilters>) => void
 }) {
   return (
     <div>
@@ -111,7 +198,7 @@ function RecipesToggle({
             }
           }}
         />
-        <label htmlFor="archived_recipes">Include archived recipes</label>
+        <label htmlFor="archived_recipes">Archived recipes</label>
       </div>
       <div className="flex items-center gap-2">
         <input
@@ -127,10 +214,40 @@ function RecipesToggle({
             }
           }}
         />
-        <label htmlFor="never_scheduled">
-          Limit to never scheduled recipes
-        </label>
+        <label htmlFor="never_scheduled">Never scheduled recipes</label>
       </div>
+      {facetFilters.AndCreatedById != null && (
+        <CreatedByUser
+          facetFilters={facetFilters}
+          onToggle={() => {
+            onChange({ AndCreatedById: null })
+          }}
+        />
+      )}
+      {facetFilters.AndArchivedById != null && (
+        <ArchivedByUser
+          facetFilters={facetFilters}
+          onToggle={() => {
+            onChange({ AndArchivedById: null })
+          }}
+        />
+      )}
+      {facetFilters.AndScheduledById != null && (
+        <ScheduledByUser
+          facetFilters={facetFilters}
+          onToggle={() => {
+            onChange({ AndScheduledById: null })
+          }}
+        />
+      )}
+      {facetFilters.AndPrimaryImageCreatedById != null && (
+        <PrimaryImageCreatedByUser
+          facetFilters={facetFilters}
+          onToggle={() => {
+            onChange({ AndPrimaryImageCreatedById: null })
+          }}
+        />
+      )}
     </div>
   )
 }
@@ -140,6 +257,10 @@ type FacetFilters = {
   OrArchived: boolean
   AndNeverScheduled: boolean
   tags: string[]
+  AndCreatedById: number | null
+  AndArchivedById: number | null
+  AndScheduledById: number | null
+  AndPrimaryImageCreatedById: number | null
 }
 
 function serializeFacetFilters(
@@ -157,6 +278,14 @@ function serializeFacetFilters(
         tags.push(`tags:${tag}`)
       }
       filters.push(tags)
+    } else if (key === "AndCreatedById" && value != null) {
+      filters.push(`created_by_id:${value}`)
+    } else if (key === "AndArchivedById" && value != null) {
+      filters.push(`archived_by_id:${value}`)
+    } else if (key === "AndScheduledById" && value != null) {
+      filters.push(`scheduled_by_id:${value}`)
+    } else if (key === "AndPrimaryImageCreatedById" && value != null) {
+      filters.push(`primary_image.created_by_id:${value}`)
     }
   }
   return filters
@@ -254,10 +383,23 @@ function useFacetFiltersState() {
   const [facetFilters, setFacetFilterState] = useState<FacetFilters>(() => {
     const params = new URLSearchParams(location.search)
 
+    const createdById = parseInt(params.get("created_by_id") ?? "null", 10)
+    const archivedById = parseInt(params.get("archived_by_id") ?? "null", 10)
+    const scheduledById = parseInt(params.get("scheduled_by_id") ?? "null", 10)
+    const primaryImageCreatedById = parseInt(
+      params.get("primary_image_created_by_id") ?? "null",
+      10,
+    )
     return {
       OrArchived: params.get("or_archived") === "1",
       AndNeverScheduled: params.get("and_never_scheduled") === "1",
       tags: params.getAll("tag"),
+      AndCreatedById: Number.isNaN(createdById) ? null : createdById,
+      AndArchivedById: Number.isNaN(archivedById) ? null : archivedById,
+      AndScheduledById: Number.isNaN(scheduledById) ? null : scheduledById,
+      AndPrimaryImageCreatedById: Number.isNaN(primaryImageCreatedById)
+        ? null
+        : primaryImageCreatedById,
     }
   })
 
@@ -272,6 +414,32 @@ function useFacetFiltersState() {
     }
     if ("tags" in x) {
       setQueryParams(history, { tag: x.tags ? x.tags : [] })
+    }
+    if ("AndCreatedById" in x) {
+      setQueryParams(history, {
+        created_by_id: x.AndCreatedById ? String(x.AndCreatedById) : undefined,
+      })
+    }
+    if ("AndArchivedById" in x) {
+      setQueryParams(history, {
+        archived_by_id: x.AndArchivedById
+          ? String(x.AndArchivedById)
+          : undefined,
+      })
+    }
+    if ("AndScheduledById" in x) {
+      setQueryParams(history, {
+        scheduled_by_id: x.AndScheduledById
+          ? String(x.AndScheduledById)
+          : undefined,
+      })
+    }
+    if ("AndPrimaryImageCreatedById" in x) {
+      setQueryParams(history, {
+        primary_image_created_by_id: x.AndPrimaryImageCreatedById
+          ? String(x.AndPrimaryImageCreatedById)
+          : undefined,
+      })
     }
     setFacetFilterState((s) => ({ ...s, ...x }))
   }

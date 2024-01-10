@@ -156,12 +156,42 @@ export function ProfilePage(props: RouteComponentProps<{ userId: string }>) {
   }
 
   const allStats = [
-    [userInfo.data.stats.recipesAdd, "Recipes Added", PlantIcon],
-    [userInfo.data.stats.recipesArchived, "Recipes Archived", TrashIcon],
-    [userInfo.data.stats.comments, "Comments", MessageIcon],
-    [userInfo.data.stats.scheduled, "Scheduled", CalendarIcon],
-    [userInfo.data.stats.photos, "Photos", AppIcon],
-    [userInfo.data.stats.primaryPhotos, "Primary Photos", TrophyIcon],
+    {
+      value: userInfo.data.stats.recipesAdd,
+      name: "Recipes Added",
+      icon: PlantIcon,
+      pathName: `/recipes?search_tools=1&created_by_id=${userInfo.data.id}`,
+    },
+    {
+      value: userInfo.data.stats.recipesArchived,
+      name: "Recipes Archived",
+      icon: TrashIcon,
+      pathName: `/recipes?search_tools=1&or_archived=1&archived_by_id=${userInfo.data.id}`,
+    },
+    {
+      value: userInfo.data.stats.comments,
+      name: "Comments",
+      icon: MessageIcon,
+      pathName: "/profile/14/comments",
+    },
+    {
+      value: userInfo.data.stats.scheduled,
+      name: "Scheduled",
+      icon: CalendarIcon,
+      pathName: `/recipes?search_tools=1&scheduled_by_id=${userInfo.data.id}`,
+    },
+    {
+      value: userInfo.data.stats.photos,
+      name: "Photos",
+      icon: AppIcon,
+      pathName: "/profile/14/photos",
+    },
+    {
+      value: userInfo.data.stats.primaryPhotos,
+      name: "Primary Photos",
+      icon: TrophyIcon,
+      pathName: `/recipes?search_tools=1&primary_image_created_by_id=${userInfo.data.id}`,
+    },
   ] as const
 
   // e.g., in US locale: Nov 27, 2017
@@ -185,8 +215,8 @@ export function ProfilePage(props: RouteComponentProps<{ userId: string }>) {
           <span className="text-2xl">Stats</span>
 
           <Box dir="row" align="start" wrap gap={2}>
-            {allStats.map(([value, name, Icon]) => {
-              return (
+            {allStats.map(({ value, name, icon: Icon, pathName }) => (
+              <Link key={name} to={pathName}>
                 <Box
                   key={name}
                   gap={1}
@@ -195,8 +225,8 @@ export function ProfilePage(props: RouteComponentProps<{ userId: string }>) {
                 >
                   <Icon /> {name} · {formatNumber(value)}
                 </Box>
-              )
-            })}
+              </Link>
+            ))}
           </Box>
         </div>
 
