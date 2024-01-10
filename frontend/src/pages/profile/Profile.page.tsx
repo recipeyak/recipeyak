@@ -172,7 +172,7 @@ export function ProfilePage(props: RouteComponentProps<{ userId: string }>) {
       value: userInfo.data.stats.comments,
       name: "Comments",
       icon: MessageIcon,
-      pathName: "/profile/14/comments",
+      pathName: `/profile/${userInfo.data.id}/comments`,
     },
     {
       value: userInfo.data.stats.scheduled,
@@ -184,7 +184,7 @@ export function ProfilePage(props: RouteComponentProps<{ userId: string }>) {
       value: userInfo.data.stats.photos,
       name: "Photos",
       icon: AppIcon,
-      pathName: "/profile/14/photos",
+      pathName: `/profile/${userInfo.data.id}/photos`,
     },
     {
       value: userInfo.data.stats.primaryPhotos,
