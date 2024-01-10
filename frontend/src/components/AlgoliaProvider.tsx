@@ -1,23 +1,17 @@
-import algoliasearch, { SearchClient } from "algoliasearch"
-import { createContext, useMemo } from "react"
+import { SearchClient } from "algoliasearch"
+import { createContext } from "react"
 
-import { useAlgoliaApiKey } from "@/queries/useAlgoliaApiKey"
+import { useAlgoliaClient } from "@/queries/useAlgoliaClient"
 import { useTeamId } from "@/useTeamId"
 
 export const AlgoliaContext = createContext<SearchClient | null>(null)
 
 export function AlgoliaProvider({ children }: { children: React.ReactNode }) {
   const teamId = useTeamId()
-  const res = useAlgoliaApiKey()
+  const res = useAlgoliaClient(teamId)
 
-  const searchClient = useMemo(() => {
-    if (res.data?.app_id == null || teamId === -1) {
-      return null
-    }
-    return algoliasearch(res.data.app_id, res.data.api_key)
-  }, [res.data?.api_key, res.data?.app_id, teamId])
   return (
-    <AlgoliaContext.Provider value={searchClient}>
+    <AlgoliaContext.Provider value={res.data ?? null}>
       {children}
     </AlgoliaContext.Provider>
   )
