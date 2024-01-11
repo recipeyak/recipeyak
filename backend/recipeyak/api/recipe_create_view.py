@@ -33,7 +33,7 @@ logger = structlog.stdlib.get_logger()
 
 
 class RecipePostParams(RequestParams):
-    team: str
+    team: int
     from_url: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
     name: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
 

@@ -131,8 +131,7 @@ export function useRecipeCreate() {
             name: string
           },
     ) => {
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      const team = teamId as number
+      const team = teamId
       const data =
         "from_url" in payload
           ? {

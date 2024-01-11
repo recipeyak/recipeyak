@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Annotated
 
 from django.contrib.auth import login
+from django.contrib.auth.password_validation import validate_password
 from django.db import transaction
 from pydantic import AfterValidator, model_validator
 
@@ -22,9 +23,14 @@ def _validate_email(email: str) -> str:
     return email
 
 
+def _validate_password(password: str) -> str:
+    validate_password(password)
+    return password
+
+
 class RegisterUserDetailViewParams(RequestParams):
     email: Annotated[str, AfterValidator(_validate_email)]
-    password1: Annotated[str, AfterValidator(lambda x: validate_password(x))]
+    password1: Annotated[str, AfterValidator(_validate_password)]
     password2: str
 
     @model_validator(mode="after")
