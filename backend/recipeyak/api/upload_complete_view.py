@@ -33,6 +33,6 @@ def upload_complete_view(request: AuthedHttpRequest, upload_id: int) -> JsonResp
 
     return JsonResponse(
         CompleteUploadResponse(
-            id=upload.pk, url=upload.public_url(), contentType=upload.content_type
+            id=str(upload.pk), url=upload.public_url(), contentType=upload.content_type
         )
     )

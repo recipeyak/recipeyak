@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 class Step(CommonInfo):
     """Recipe step"""
 
+    pk: int
     id = models.AutoField(primary_key=True)
     text = models.TextField()
     recipe = models.ForeignKey["Recipe"]("Recipe", on_delete=models.CASCADE)
