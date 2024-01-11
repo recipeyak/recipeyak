@@ -29,7 +29,7 @@ export function UserCommentsPage(
   if (userInfo.isError) {
     return (
       <NavPage>
-        <div>error loading profile, 404 maybe?</div>
+        <div>error loading comments</div>
       </NavPage>
     )
   }
