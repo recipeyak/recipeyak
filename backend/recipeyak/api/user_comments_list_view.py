@@ -31,10 +31,10 @@ def user_comments_list_view(request: AuthedHttpRequest, user_id: str) -> JsonRes
 
     notes = [
         Comment(
-            recipe=Recipe(id=x.recipe_id, name=x.recipe.name),
-            note=serialize_note(x, primary_image_id=0),
+            recipe=Recipe(id=note.recipe.id, name=note.recipe.name),
+            note=serialize_note(note, primary_image_id=0),
         )
-        for x in filter_notes(team=team)
+        for note in filter_notes(team=team)
         .prefetch_related(
             "recipe",
             "reactions",
