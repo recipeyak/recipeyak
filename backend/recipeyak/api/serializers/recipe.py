@@ -44,7 +44,7 @@ def serialize_attachments(
 ) -> list[NoteAttachment]:
     return [
         NoteAttachment(
-            id=attachment.pk,
+            id=str(attachment.pk),
             url=attachment.public_url(),
             backgroundUrl=attachment.background_url,
             isPrimary=attachment.pk == primary_image_id,

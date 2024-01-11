@@ -21,6 +21,7 @@ class Ingredient(CommonInfo):
 
     """
 
+    pk: int
     id = models.AutoField(primary_key=True)
     quantity = models.CharField(max_length=255)
     name = models.CharField(max_length=255)

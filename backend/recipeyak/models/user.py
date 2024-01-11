@@ -53,6 +53,7 @@ def get_avatar_url(*, email: str, profile_upload_key: str | None) -> str:
 class User(AbstractBaseUser):
     """Custom user model that only requires an email and password"""
 
+    pk: int
     id = models.AutoField(primary_key=True)
 
     email = CIEmailField(unique=True)
