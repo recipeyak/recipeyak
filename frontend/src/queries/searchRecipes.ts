@@ -1,4 +1,4 @@
-import { SearchOptions, SearchResponse } from "@algolia/client-search"
+import { SearchResponse } from "@algolia/client-search"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { useContext } from "react"
 
@@ -13,7 +13,7 @@ export function useSearchRecipes({
 }: {
   query: string
   indexName?: "recipes" | "ingredients"
-  facetFilters?: SearchOptions["facetFilters"]
+  facetFilters?: Array<string | Array<string>>
   limit?: number
 }) {
   const searchClient = useContext(AlgoliaContext)
@@ -55,7 +55,8 @@ export function useSearchRecipes({
           params: {
             filters: `team_id:${teamId}`,
             facets: ["archived"],
-            facetFilters: [["archived:false", "archived:true"]],
+            facetFilters:
+              facetFilters?.filter((x) => x !== "archived:false") ?? [],
             hitsPerPage: 0,
             page: 0,
             query,
