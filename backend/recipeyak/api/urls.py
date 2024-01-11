@@ -56,6 +56,7 @@ from recipeyak.api.team_retrieve_view import team_retrieve_view
 from recipeyak.api.team_update_view import team_update_view
 from recipeyak.api.upload_complete_view import upload_complete_view
 from recipeyak.api.upload_start_view import upload_start_view
+from recipeyak.api.user_comments_list_view import user_comments_list_view
 from recipeyak.api.user_create_view import user_create_view
 from recipeyak.api.user_delete_view import user_delete_view
 from recipeyak.api.user_login_view import user_login_view
@@ -467,6 +468,11 @@ urlpatterns = routes(
         "api/v1/user/<str:user_id>/",
         method="get",
         view=user_retrieve_by_id_view,
+    ),
+    route(
+        "api/v1/user/<str:user_id>/comments/",
+        method="get",
+        view=user_comments_list_view,
     ),
     route(
         "t/<int:team_id>/ical/<str:ical_id>/schedule.ics",

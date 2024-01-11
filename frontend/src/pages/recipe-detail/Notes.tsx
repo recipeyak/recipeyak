@@ -174,9 +174,16 @@ interface INoteProps {
   readonly note: Note
   readonly recipeId: number
   readonly className?: string
+  readonly readonly?: boolean
   readonly openImage: (id: string) => void
 }
-export function Note({ note, recipeId, className, openImage }: INoteProps) {
+export function Note({
+  note,
+  recipeId,
+  className,
+  openImage,
+  readonly,
+}: INoteProps) {
   const {
     draftText,
     isEditing,
@@ -238,50 +245,59 @@ export function Note({ note, recipeId, className, openImage }: INoteProps) {
           <a href={`#${noteHtmlId}`} className="ml-2">
             <NoteTimeStamp created={note.created} />
           </a>
-          <ReactionPopover
-            className="ml-auto print:!hidden"
-            onPick={(emoji) => {
-              addOrRemoveReaction(emoji)
-            }}
-            reactions={note.reactions}
-          />
-          {note.created_by.id === userId ? (
-            <a
-              className="ml-2 cursor-pointer text-[0.825rem] text-[var(--color-text-muted)] print:hidden"
-              data-testid="edit-note"
-              onClick={onNoteClick}
-            >
-              edit
-            </a>
-          ) : null}
+          {!readonly && (
+            <>
+              <ReactionPopover
+                className="ml-auto print:!hidden"
+                onPick={(emoji) => {
+                  addOrRemoveReaction(emoji)
+                }}
+                reactions={note.reactions}
+              />
+              {note.created_by.id === userId ? (
+                <a
+                  className="ml-2 cursor-pointer text-[0.825rem] text-[var(--color-text-muted)] print:hidden"
+                  data-testid="edit-note"
+                  onClick={onNoteClick}
+                >
+                  edit
+                </a>
+              ) : null}
+            </>
+          )}
         </Box>
         {!isEditing ? (
           <Box dir="col" className="gap-2">
             <Markdown>{note.text}</Markdown>
-            <Box gap={1} dir="col">
-              <Box wrap gap={1}>
-                {note.attachments.map((attachment) => (
-                  <FilePreview
-                    key={attachment.id}
-                    onClick={() => {
-                      openImage(attachment.id)
-                    }}
-                    contentType={attachment.contentType}
-                    src={attachment.url}
-                    backgroundUrl={attachment.backgroundUrl}
-                  />
-                ))}
+            {(note.attachments.length > 0 ||
+              note.reactions.length > 0 ||
+              !readonly) && (
+              <Box gap={1} dir="col">
+                <Box wrap gap={1}>
+                  {note.attachments.map((attachment) => (
+                    <FilePreview
+                      key={attachment.id}
+                      onClick={() => {
+                        openImage(attachment.id)
+                      }}
+                      contentType={attachment.contentType}
+                      src={attachment.url}
+                      backgroundUrl={attachment.backgroundUrl}
+                    />
+                  ))}
+                </Box>
+                <ReactionsFooter
+                  readonly={readonly}
+                  reactions={note.reactions}
+                  onPick={(emoji) => {
+                    addOrRemoveReaction(emoji)
+                  }}
+                  onClick={(emoji) => {
+                    addOrRemoveReaction(emoji)
+                  }}
+                />
               </Box>
-              <ReactionsFooter
-                reactions={note.reactions}
-                onPick={(emoji) => {
-                  addOrRemoveReaction(emoji)
-                }}
-                onClick={(emoji) => {
-                  addOrRemoveReaction(emoji)
-                }}
-              />
-            </Box>
+            )}
           </Box>
         ) : (
           <>
