@@ -23,6 +23,7 @@ class Membership(CommonInfo):
     ADMIN: Literal["admin"] = "admin"
     CONTRIBUTOR: Literal["contributor"] = "contributor"
     READ_ONLY: Literal["read"] = "read"
+    pk: int
     id: int
 
     MEMBERSHIP_CHOICES = (
