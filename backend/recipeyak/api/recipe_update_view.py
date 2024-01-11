@@ -85,7 +85,7 @@ def recipe_update_view(request: AuthedHttpRequest, recipe_id: str) -> JsonRespon
 
     if "primaryImageId" in provided_fields:
         existing_primary_image_id = (
-            recipe.primary_image.pk if recipe.primary_image else None
+            str(recipe.primary_image.pk) if recipe.primary_image else None
         )
         if params.primaryImageId != existing_primary_image_id:
             if params.primaryImageId is None:

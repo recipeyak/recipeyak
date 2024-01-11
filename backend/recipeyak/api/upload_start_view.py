@@ -83,8 +83,8 @@ def upload_start_view(request: AuthedHttpRequest) -> JsonResponse:
 
     return JsonResponse(
         StartUploadResponse(
-            id=upload.pk,
+            id=str(upload.pk),
             upload_url=upload_url,
-            upload_headers={"x-amz-meta-db_id": upload.pk},
+            upload_headers={"x-amz-meta-db_id": str(upload.pk)},
         )
     )
