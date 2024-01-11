@@ -12,7 +12,7 @@ THEMES = Literal["light", "autumn", "solarized", "dark", "dark_dimmed"]
 THEME_MODE = Literal["single", "sync_with_system"]
 
 
-class UserUpdatePayload(RequestParams):
+class UserUpdateParams(RequestParams):
     email: str | None = None
     name: str | None = None
     schedule_team: int | None = None
@@ -23,7 +23,7 @@ class UserUpdatePayload(RequestParams):
 
 @endpoint()
 def user_update_view(request: AuthedHttpRequest) -> JsonResponse:
-    params = UserUpdatePayload.parse_raw(request.body)
+    params = UserUpdateParams.parse_raw(request.body)
 
     with transaction.atomic():
         if params.schedule_team is not None:

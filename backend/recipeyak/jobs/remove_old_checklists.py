@@ -6,10 +6,8 @@ import sentry_sdk
 import structlog
 import typer
 from dotenv import load_dotenv
-from pydantic import (
-    BaseSettings,
-    PostgresDsn,
-)
+from pydantic import PostgresDsn
+from pydantic_settings import BaseSettings
 
 logger = structlog.stdlib.get_logger()
 
@@ -48,7 +46,7 @@ def main() -> None:
     config = Config()
     start = time.monotonic()
     with sentry_sdk.monitor(monitor_slug="remove-old-cook-checklists"):
-        asyncio.run(job(database_url=config.DATABASE_URL))
+        asyncio.run(job(database_url=str(config.DATABASE_URL)))
     logger.info("done!", total_time_sec=time.monotonic() - start)
     logger.info("exiting")
 

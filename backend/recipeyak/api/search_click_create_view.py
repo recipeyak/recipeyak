@@ -7,31 +7,31 @@ from recipeyak.api.base.serialization import RequestParams
 from recipeyak.models import SearchClick
 
 
-class SearchClickIngredient(RequestParams):
+class SearchClickIngredientParams(RequestParams):
     id: int
     quantity: str
     name: str
 
 
-class SearchClickRecipe(RequestParams):
+class SearchClickRecipeParams(RequestParams):
     id: int
     name: str
-    author: str | None
-    tags: list[str] | None
-    ingredients: list[SearchClickIngredient]
-    archived_at: str | None
+    author: str | None = None
+    tags: list[str] | None = None
+    ingredients: list[SearchClickIngredientParams]
+    archived_at: str | None = None
     scheduledCount: int
 
 
-class SearchClickMatch(RequestParams):
+class SearchClickMatchParams(RequestParams):
     kind: str
     value: str
 
 
 class SearchClickCreateParams(RequestParams):
     query: str
-    recipe: SearchClickRecipe
-    matches: list[SearchClickMatch]
+    recipe: SearchClickRecipeParams
+    matches: list[SearchClickMatchParams]
 
 
 @endpoint()

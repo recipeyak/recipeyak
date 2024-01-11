@@ -16,7 +16,6 @@ djangorestframework-types = "^0.2.0"
 orjson = "3.8.1"
 psycopg2-binary = "^2.9.3"
 boto3 = "^1.24.44"
-pydantic = {extras = ["email"], version = "^1.10.2"}
 yarl = "^1.8.1"
 advocate = "^1.0.0"
 Pillow = "^9.3.0"
@@ -35,6 +34,8 @@ algoliasearch = "^3.0.0"
 async-timeout = "^4.0.3"
 aiohttp = "^3.9.1"
 ruamel-yaml = "^0.18.5"
+pydantic = {extras = ["email"], version = "^2.5.3"}
+pydantic-settings = "^2.1.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "7.2.0"

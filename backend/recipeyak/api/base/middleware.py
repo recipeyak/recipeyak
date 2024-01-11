@@ -4,7 +4,6 @@ import time
 from collections.abc import Callable
 from uuid import uuid4
 
-import pydantic
 import sentry_sdk
 from django.conf import settings
 from django.contrib.sessions.middleware import (
@@ -15,8 +14,8 @@ from django.db import connection
 from django.http import HttpRequest, HttpResponse, HttpResponseServerError, JsonResponse
 from django.utils.deprecation import MiddlewareMixin
 
+from recipeyak.api.base.exceptions import RequestValidationError
 from recipeyak.api.base.request_state import State
-from recipeyak.api.base.serialization import RequestParams
 
 log = logging.getLogger(__name__)
 
@@ -197,10 +196,8 @@ class ExceptionMiddleware(MiddlewareMixin):
         self, request: HttpRequest, exception: Exception
     ) -> HttpResponse | None:
         # return a 400 response if we encounter a pydantic validation error.
-        if isinstance(exception, pydantic.ValidationError) and issubclass(
-            exception.model, RequestParams
-        ):
-            return JsonResponse({"message": exception.errors()}, status=400)
+        if isinstance(exception, RequestValidationError):
+            return JsonResponse({"message": exception.errors}, status=400)
         if isinstance(exception, ValidationError):
             return JsonResponse(
                 {"message": exception.messages, "non_field_errors": exception.messages},

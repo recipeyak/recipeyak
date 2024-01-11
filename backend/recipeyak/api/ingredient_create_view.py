@@ -1,12 +1,15 @@
 from __future__ import annotations
 
+from typing import Annotated
+
 from django.shortcuts import get_object_or_404
+from pydantic import StringConstraints
 
 from recipeyak import ordering
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams, StrTrimmed
+from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.recipe import ingredient_to_text, serialize_ingredient
 from recipeyak.models import (
     ChangeType,
@@ -19,9 +22,9 @@ from recipeyak.models.section import Section
 
 
 class IngredientCreateParams(RequestParams):
-    quantity: StrTrimmed
-    name: StrTrimmed
-    description: StrTrimmed
+    quantity: Annotated[str, StringConstraints(strip_whitespace=True)]
+    name: Annotated[str, StringConstraints(strip_whitespace=True)]
+    description: Annotated[str, StringConstraints(strip_whitespace=True)]
     position: str | None = None
     optional: bool | None = None
 

@@ -8,7 +8,7 @@ from recipeyak.api.calendar_list_view import get_cal_settings
 from recipeyak.models import Membership, get_team
 
 
-class CalSettingsSerializer(RequestParams):
+class CalSettingsParams(RequestParams):
     syncEnabled: bool
 
 
@@ -16,7 +16,7 @@ class CalSettingsSerializer(RequestParams):
 def calendar_update_settings_view(
     request: AuthedHttpRequest, team_id: int = -1
 ) -> JsonResponse:
-    params = CalSettingsSerializer.parse_raw(request.body)
+    params = CalSettingsParams.parse_raw(request.body)
     sync_enabled = params.syncEnabled
     team_id = get_team(request.user).id
 

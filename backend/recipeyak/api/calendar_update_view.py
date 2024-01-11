@@ -1,5 +1,7 @@
 from datetime import date
 
+from django.db import transaction
+
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
@@ -11,7 +13,7 @@ from recipeyak.realtime import publish_calendar_event
 
 
 class ScheduledRecipeUpdateParams(RequestParams):
-    on: date | None
+    on: date
 
 
 @endpoint()
@@ -21,11 +23,9 @@ def calendar_update_view(
     params = ScheduledRecipeUpdateParams.parse_raw(request.body)
     team_id = get_team(request.user).id
     scheduled_recipe = get_scheduled_recipes(team_id).get(id=scheduled_recipe_id)
-    if params.on is not None:
+    with transaction.atomic():
         scheduled_recipe.on = params.on
-    scheduled_recipe.save()
-
-    if params.on is not None:
+        scheduled_recipe.save()
         ScheduleEvent.objects.create(
             scheduled_recipe_id=scheduled_recipe_id,
             before_on=scheduled_recipe.on,

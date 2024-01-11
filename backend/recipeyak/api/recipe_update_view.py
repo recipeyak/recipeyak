@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 from datetime import datetime
+from typing import Annotated
+
+from pydantic import StringConstraints
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams, StrTrimmed
+from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.recipe import serialize_recipe
 from recipeyak.models import (
     ChangeType,
@@ -18,12 +21,12 @@ from recipeyak.models.upload import Upload
 
 
 class RecipePatchParams(RequestParams):
-    name: StrTrimmed | None = None
-    author: StrTrimmed | None = None
-    time: StrTrimmed | None = None
-    tags: list[StrTrimmed] | None = None
-    servings: StrTrimmed | None = None
-    source: StrTrimmed | None = None
+    name: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
+    author: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
+    time: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
+    tags: list[Annotated[str, StringConstraints(strip_whitespace=True)]] | None = None
+    servings: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
+    source: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
     archived_at: datetime | None = None
 
     # attributes requiring custom handling.

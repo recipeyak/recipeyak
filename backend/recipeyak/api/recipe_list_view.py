@@ -6,7 +6,7 @@ from typing import Any, NamedTuple, cast
 
 from django.db import connection
 from django.db.backends.utils import CursorWrapper
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
@@ -26,23 +26,18 @@ class RecipeListItemIngredient(BaseModel):
 class RecipeListItemPrimaryImage(BaseModel):
     id: int
     url: str
-    backgroundUrl: str | None = Field(...)
+    backgroundUrl: str | None
 
 
 class RecipeListItem(BaseModel):
     id: int
     name: str
     scheduledCount: int
-    # This odd syntax is required by pydantic
-    # see: https://docs.pydantic.dev/usage/models/#required-optional-fields
-    # Until V2 is released:
-    # see: https://github.com/pydantic/pydantic/issues/4887
-    # see: https://docs.pydantic.dev/blog/pydantic-v2/#required-vs-nullable-cleanup
-    author: str | None = Field(...)
-    tags: list[str] | None = Field(...)
+    author: str | None
+    tags: list[str] | None
     ingredients: list[RecipeListItemIngredient]
-    archived_at: datetime | None = Field(...)
-    primaryImage: RecipeListItemPrimaryImage | None = Field(...)
+    archived_at: datetime | None
+    primaryImage: RecipeListItemPrimaryImage | None
 
 
 class ListQueryResult(NamedTuple):

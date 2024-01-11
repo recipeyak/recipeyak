@@ -91,7 +91,7 @@ def serialize_public_user(user: User) -> PublicUser:
 def serialize_reactions(reactions: Iterable[Reaction]) -> list[ReactionResponse]:
     return [
         ReactionResponse(
-            id=reaction.pk,
+            id=str(reaction.id),
             type=cast(Literal["❤️", "😆", "🤮"], reaction.emoji),
             note_id=reaction.note_id,
             user=serialize_public_user(reaction.created_by),

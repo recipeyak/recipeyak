@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from django.shortcuts import get_object_or_404
-from pydantic import root_validator
+from pydantic import model_validator
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
@@ -15,13 +15,11 @@ class CreateNoteParams(RequestParams):
     text: str
     attachment_upload_ids: list[str]
 
-    @root_validator
-    def validate_text(
-        cls, values: dict[str, str | list[str]]
-    ) -> dict[str, str | list[str]]:
-        if len(values["text"]) < 0 and len(values["attachment_upload_ids"]) < 0:
+    @model_validator(mode="after")
+    def validate_non_empty(self) -> CreateNoteParams:
+        if len(self.text) < 0 and len(self.attachment_upload_ids) < 0:
             raise ValueError("non-empty note required")
-        return values
+        return self
 
 
 @endpoint()

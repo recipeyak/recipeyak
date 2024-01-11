@@ -37,7 +37,7 @@ def test_step_position_order(
 
 
 @pytest.mark.parametrize(
-    "step", [{"text": "A new step"}, {"text": "Another new step", "position": 23.0}]
+    "step", [{"text": "A new step"}, {"text": "Another new step", "position": "af"}]
 )
 def test_adding_step_to_recipe(
     step: dict[str, Any], client: Client, user: User, recipe: Recipe, team: Team
