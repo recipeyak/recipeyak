@@ -58,6 +58,8 @@ import {
   pathPasswordConfirm,
   pathPasswordReset,
   pathProfileById,
+  pathProfileByIdComments,
+  pathProfileByIdPhotos,
   pathRecipeAdd,
   pathRecipeDetail,
   pathRecipesList,
@@ -252,6 +254,16 @@ function Routes() {
               exact
               path={pathProfileById.pattern}
               component={ProfilePage}
+            />
+            <PrivateRoute
+              exact
+              path={pathProfileByIdComments.pattern}
+              component={() => <div>Coming soon</div>}
+            />
+            <PrivateRoute
+              exact
+              path={pathProfileByIdPhotos.pattern}
+              component={() => <div>Coming soon</div>}
             />
             <PrivateRoute
               exact

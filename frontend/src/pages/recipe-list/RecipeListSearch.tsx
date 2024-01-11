@@ -1,3 +1,4 @@
+import { snakeCase } from "lodash-es"
 import { useEffect, useRef, useState } from "react"
 import { useHistory, useLocation } from "react-router"
 
@@ -6,6 +7,7 @@ import { SearchInput } from "@/components/Forms"
 import { Matches, RecipeList } from "@/components/RecipeSearchList"
 import { useSearchRecipeFacets } from "@/queries/searchRecipeFacets"
 import { useSearchRecipes } from "@/queries/searchRecipes"
+import { useUserById } from "@/queries/userById"
 import { removeQueryParams, setQueryParams } from "@/querystring"
 
 function CustomRefinement({
@@ -76,23 +78,49 @@ function CustomRefinement({
   )
 }
 
+function UserToggleFilter({
+  userId,
+  prefixLabel,
+  onClick,
+}: {
+  onClick: () => void
+  userId: string
+  prefixLabel: string
+}) {
+  const user = useUserById({
+    id: userId,
+  })
+  if (user.data == null) {
+    return null
+  }
+  return (
+    <div className="flex items-center gap-2">
+      <input
+        id={`user_toggle_filter_${snakeCase(prefixLabel)}`}
+        type="checkbox"
+        defaultChecked={true}
+        onChange={onClick}
+      />
+      <label htmlFor={`user_toggle_filter_${snakeCase(prefixLabel)}`}>
+        {prefixLabel} {user.data.name}
+      </label>
+    </div>
+  )
+}
+
+const userToggleFilters = [
+  { key: "AndCreatedById", label: "Created by" },
+  { key: "AndArchivedById", label: "Archived by" },
+  { key: "AndScheduledById", label: "Scheduled by" },
+  { key: "AndPrimaryImageCreatedById", label: "Primary image created by" },
+] as const
+
 function RecipesToggle({
   onChange,
   facetFilters,
 }: {
-  facetFilters: {
-    OrArchived: boolean
-    AndNeverScheduled: boolean
-  }
-  onChange: (
-    _:
-      | {
-          OrArchived: boolean
-        }
-      | {
-          AndNeverScheduled: boolean
-        },
-  ) => void
+  facetFilters: FacetFilters
+  onChange: (_: Partial<FacetFilters>) => void
 }) {
   return (
     <div>
@@ -111,7 +139,7 @@ function RecipesToggle({
             }
           }}
         />
-        <label htmlFor="archived_recipes">Include archived recipes</label>
+        <label htmlFor="archived_recipes">Archived recipes</label>
       </div>
       <div className="flex items-center gap-2">
         <input
@@ -127,10 +155,25 @@ function RecipesToggle({
             }
           }}
         />
-        <label htmlFor="never_scheduled">
-          Limit to never scheduled recipes
-        </label>
+        <label htmlFor="never_scheduled">Never scheduled recipes</label>
       </div>
+
+      {userToggleFilters.map((filter) => {
+        const id = facetFilters[filter.key]
+        if (id == null) {
+          return null
+        }
+        return (
+          <UserToggleFilter
+            key={filter.key}
+            userId={id}
+            prefixLabel={filter.label}
+            onClick={() => {
+              onChange({ [filter.key]: null })
+            }}
+          />
+        )
+      })}
     </div>
   )
 }
@@ -140,6 +183,10 @@ type FacetFilters = {
   OrArchived: boolean
   AndNeverScheduled: boolean
   tags: string[]
+  AndCreatedById: string | null
+  AndArchivedById: string | null
+  AndScheduledById: string | null
+  AndPrimaryImageCreatedById: string | null
 }
 
 function serializeFacetFilters(
@@ -157,6 +204,14 @@ function serializeFacetFilters(
         tags.push(`tags:${tag}`)
       }
       filters.push(tags)
+    } else if (key === "AndCreatedById" && value != null) {
+      filters.push(`created_by_id:${value}`)
+    } else if (key === "AndArchivedById" && value != null) {
+      filters.push(`archived_by_id:${value}`)
+    } else if (key === "AndScheduledById" && value != null) {
+      filters.push(`scheduled_by_id:${value}`)
+    } else if (key === "AndPrimaryImageCreatedById" && value != null) {
+      filters.push(`primary_image.created_by_id:${value}`)
     }
   }
   return filters
@@ -258,6 +313,10 @@ function useFacetFiltersState() {
       OrArchived: params.get("or_archived") === "1",
       AndNeverScheduled: params.get("and_never_scheduled") === "1",
       tags: params.getAll("tag"),
+      AndCreatedById: params.get("created_by_id"),
+      AndArchivedById: params.get("archived_by_id"),
+      AndScheduledById: params.get("scheduled_by_id"),
+      AndPrimaryImageCreatedById: params.get("primary_image_created_by_id"),
     }
   })
 
@@ -271,7 +330,27 @@ function useFacetFiltersState() {
       setQueryParams(history, { or_archived: x.OrArchived ? "1" : undefined })
     }
     if ("tags" in x) {
-      setQueryParams(history, { tag: x.tags ? x.tags : [] })
+      setQueryParams(history, { tag: x.tags ?? [] })
+    }
+    if ("AndCreatedById" in x) {
+      setQueryParams(history, {
+        created_by_id: x.AndCreatedById ?? undefined,
+      })
+    }
+    if ("AndArchivedById" in x) {
+      setQueryParams(history, {
+        archived_by_id: x.AndArchivedById ?? undefined,
+      })
+    }
+    if ("AndScheduledById" in x) {
+      setQueryParams(history, {
+        scheduled_by_id: x.AndScheduledById ?? undefined,
+      })
+    }
+    if ("AndPrimaryImageCreatedById" in x) {
+      setQueryParams(history, {
+        primary_image_created_by_id: x.AndPrimaryImageCreatedById ?? undefined,
+      })
     }
     setFacetFilterState((s) => ({ ...s, ...x }))
   }

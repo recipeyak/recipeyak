@@ -57,10 +57,47 @@ from recipe_index_queue
                 'primary_image', (
                     select json_build_object(
                         'url', 'https://images-cdn.recipeyak.com/' || "key" ,
-                        'background_url', "background_url"
+                        'background_url', "background_url",
+                        'created_by_id', "created_by_id"
                     )
                     from core_upload
                     where core_upload.id = core_recipe.primary_image_id
+                ),
+                'archived_by_id', (
+                    select
+                        created_by_id
+                    from (
+                        select distinct on (recipe_id)
+                            recipe_id,
+                            action,
+                            created_by_id
+                        from
+                            timeline_event
+                        where
+                            action in ('archived', 'unarchived')
+                        order by
+                            recipe_id,
+                            created desc
+                    ) sub
+                    where
+                        action = 'archived'
+                        and created_by_id is not null
+                        and recipe_id = core_recipe.id
+                ),
+                'created_by_id', (
+                    select
+                        created_by_id
+                    from
+                        timeline_event
+                    where recipe_id = core_recipe.id
+                        and action = 'created'
+                    limit 1
+                ),
+                'scheduled_by_id', (
+                    select json_agg(distinct created_by_id)
+                    from core_scheduledrecipe
+                    where recipe_id = core_recipe.id
+                        and created_by_id is not null
                 ),
                 'scheduled_count', (
                     SELECT
