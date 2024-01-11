@@ -111,6 +111,7 @@ export function ReactionsFooter(props: {
   reactions: readonly Reaction[]
   onClick: (_: ReactionType) => void
   onPick: (_: ReactionType) => void
+  readonly?: boolean
 }) {
   const reactionsGroup = groupBy(props.reactions, (x) => x.type)
   const groupedReactions: { emoji: ReactionType; reactions: Reaction[] }[] =
@@ -128,9 +129,15 @@ export function ReactionsFooter(props: {
           key={emoji}
           title={reactionTitle(reactions)}
           onClick={() => {
+            if (props.readonly) {
+              return
+            }
             props.onClick(emoji)
           }}
-          className="mr-2 inline-flex cursor-pointer rounded-[15px] border border-solid border-[var(--color-border)] bg-[var(--color-background-card)] px-[0.3rem] py-0 pr-2 text-center text-[var(--color-text-muted)]"
+          className={clx(
+            "mr-2 inline-flex  rounded-[15px] border border-solid border-[var(--color-border)] bg-[var(--color-background-card)] px-[0.3rem] py-0 pr-2 text-center text-[var(--color-text-muted)]",
+            !props.readonly && "cursor-pointer",
+          )}
         >
           <div className="flex h-[24px] w-[24px] items-center justify-center">
             {emoji}
@@ -140,7 +147,7 @@ export function ReactionsFooter(props: {
           </div>
         </div>
       ))}
-      {groupedReactions.length > 0 && (
+      {!props.readonly && groupedReactions.length > 0 && (
         <ReactionPopover onPick={props.onPick} reactions={props.reactions} />
       )}
     </div>
