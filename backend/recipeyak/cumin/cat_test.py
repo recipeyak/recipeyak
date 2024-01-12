@@ -4,7 +4,7 @@ from pathlib import Path
 from textwrap import dedent
 from typing import Any
 
-from recipeyak.cumin.cat import category, create_trie, search
+from recipeyak.cumin.cat import category
 
 
 def test_categorize_ingredients() -> None:
