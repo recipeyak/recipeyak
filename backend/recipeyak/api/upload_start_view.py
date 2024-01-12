@@ -12,8 +12,9 @@ from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.models import filter_recipes, get_team
 from recipeyak.models.recipe import Recipe
-from recipeyak.models.upload import Upload, s3
+from recipeyak.models.upload import Upload
 from recipeyak.models.user import User
+from recipeyak.storage import s3
 
 
 class StartUploadParams(RequestParams):
@@ -70,7 +71,7 @@ def upload_start_view(request: AuthedHttpRequest) -> JsonResponse:
     )
     upload.save()
 
-    upload_url = s3.generate_presigned_url(
+    upload_url = s3().generate_presigned_url(
         "put_object",
         Params={
             "Bucket": config.STORAGE_BUCKET_NAME,

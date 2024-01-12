@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from collections.abc import Mapping
+from functools import cache
 from typing import Any
 
 from recipeyak.cumin.inflect import singularize
@@ -452,9 +452,10 @@ DEPARTMENT_MAPPING = {
 }
 
 
-def create_trie(mapping: Mapping[str, set[str]]) -> dict[str, Any]:
+@cache
+def create_trie() -> dict[str, Any]:
     trie: dict[str, Any] = {}
-    for category, ingredients in mapping.items():
+    for category, ingredients in DEPARTMENT_MAPPING.items():
         for ingredient in ingredients:
             tree = trie
             words = [singularize(x) for x in ingredient.replace("-", " ").split()]
@@ -467,13 +468,12 @@ def create_trie(mapping: Mapping[str, set[str]]) -> dict[str, Any]:
                 is_last = idx == len(words) - 1
                 if is_last and "$" not in tree:
                     tree["$"] = (category, len(ingredient))
+
     return trie
 
 
-trie = create_trie(DEPARTMENT_MAPPING)
-
-
-def search(item: str, trie: dict[str, Any] = trie) -> dict[str, set[int]]:
+def search(item: str) -> dict[str, set[int]]:
+    trie = create_trie()
     items = [singularize(x) for x in item.split()]
     counts = defaultdict(set)
     for start in range(len(items)):
