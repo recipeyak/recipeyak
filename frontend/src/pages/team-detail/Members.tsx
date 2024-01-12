@@ -124,7 +124,7 @@ function MembersList({
                           }}
                           loading={deleteTeamMember.isPending}
                         >
-                          {member.user.id === userId ? "leave" : "remove"}
+                          {member.user.id === userId ? "Leave" : "Remove"}
                         </Button>
                       ) : (
                         <div>–</div>
