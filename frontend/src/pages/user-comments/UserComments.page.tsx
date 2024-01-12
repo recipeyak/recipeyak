@@ -8,9 +8,9 @@ import { Loader } from "@/components/Loader"
 import { NavPage } from "@/components/Page"
 import { Link } from "@/components/Routing"
 import { Note } from "@/pages/recipe-detail/Notes"
-import { pathRecipeDetail } from "@/paths"
 import { useUserById } from "@/queries/userById"
 import { useUserCommentsList } from "@/queries/userCommentsList"
+import { recipeURL } from "@/urls"
 
 export function UserCommentsPage(
   props: RouteComponentProps<{ userId: string }>,
@@ -57,9 +57,10 @@ export function UserCommentsPage(
             {comments.data?.comments.map((comment) => (
               <div key={comment.note.id} className="flex flex-col gap-1">
                 <Link
-                  to={pathRecipeDetail({
-                    recipeId: comment.recipe.id.toString(),
-                  })}
+                  to={
+                    recipeURL(comment.recipe.id, comment.recipe.name) +
+                    `#note-${comment.note.id}`
+                  }
                 >
                   <div className="text-lg">{comment.recipe.name}</div>
                 </Link>
