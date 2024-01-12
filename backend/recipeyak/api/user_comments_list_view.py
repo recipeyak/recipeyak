@@ -43,7 +43,7 @@ def user_comments_list_view(request: AuthedHttpRequest, user_id: str) -> JsonRes
             "created_by",
             "last_modified_by",
         )
-        .filter(created_by=request.user)
+        .filter(created_by=user_id)
         .order_by("-created")
     ]
 

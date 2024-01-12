@@ -54,7 +54,7 @@ export function UserCommentsPage(
         <div>
           <span className="text-2xl">Comments</span>
           <div className="flex flex-col gap-2">
-            {comments.data?.comments.slice(0, 100).map((comment) => (
+            {comments.data?.comments.map((comment) => (
               <div key={comment.note.id} className="flex flex-col gap-1">
                 <Link
                   to={pathRecipeDetail({
