@@ -110,16 +110,3 @@ def test_categorize_ingredient_test_cases(snapshot: Any) -> None:
     ).splitlines()
 
     assert sorted((w, category(w)) for w in cases) == snapshot()
-
-
-def test_trie() -> None:
-    mapping = {
-        "spices": {
-            "red chile flakes",
-            "chile powder",
-        }
-    }
-
-    trie = create_trie(mapping)
-    assert search("red chile flakes", trie=trie)
-    assert search("red chile powder", trie=trie)

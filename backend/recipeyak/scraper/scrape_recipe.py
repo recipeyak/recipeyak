@@ -19,10 +19,11 @@ from recipe_scrapers import scrape_html as parse_html
 
 from recipeyak import config
 from recipeyak.models import Scrape
-from recipeyak.models.upload import Upload, s3
+from recipeyak.models.upload import Upload
 from recipeyak.models.user import User
 from recipeyak.scraper.extract import extract_recipe
 from recipeyak.scraper.fetch import fetch_bytes, fetch_content_length
+from recipeyak.storage import s3
 
 
 @dataclass
@@ -105,7 +106,7 @@ def _find_and_save_largest_image(
         )
         upload.save()
         # put_object seems simplier than upload_fileobj so going with it
-        s3.put_object(
+        s3().put_object(
             Bucket=config.STORAGE_BUCKET_NAME,
             Key=key,
             Body=image_res,
