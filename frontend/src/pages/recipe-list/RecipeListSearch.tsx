@@ -360,7 +360,7 @@ function useFacetFiltersState() {
 function useSearchState() {
   const location = useLocation()
   const [query, setQuery] = useState(() => {
-    const query = new URLSearchParams(location.search).get("search")
+    const query: string = new URLSearchParams(location.search).get("search")
     return query ?? ""
   })
   return [query, setQuery] as const

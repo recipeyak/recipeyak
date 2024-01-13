@@ -10,7 +10,15 @@ main() {
     node_modules/.bin/eslint '**/*.{ts,tsx,js,jsx}' --fix --cache
   fi
 
-  node_modules/.bin/tsc --noEmit
+  if [ "$CI" ]; then
+    # Prefix typescript output to make relative paths absolute paths.
+    # 
+    # This fixes compatability with actions/setup-node TSC problem matcher, which requires full paths.
+    # https://github.com/actions/setup-node/blob/a4fcaaf314b117a40d694a35ee36461f8ff3c6e6/.github/tsc.json
+    node_modules/.bin/tsc | awk -v prefix="$PWD" '{print prefix "/" $0}'
+  else
+    node_modules/.bin/tsc "$@"
+  fi
 }
 
 main "$@"
