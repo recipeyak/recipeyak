@@ -13,12 +13,13 @@ import { Helmet } from "@/components/Helmet"
 import { Image } from "@/components/Image"
 import { Loader } from "@/components/Loader"
 import { NavPage } from "@/components/Page"
-import { pathRecipeDetail, pathSchedule } from "@/paths"
+import { pathSchedule } from "@/paths"
 import { ResponseFromUse } from "@/queries/queryUtilTypes"
 import { useRecentlyCreatedRecipesList } from "@/queries/recentlyCreatedRecipesList"
 import { useRecentlyViewedRecipesList } from "@/queries/recentlyViewedRecipesList"
 import { useSchedulePreviewList } from "@/queries/schedulePreviewList"
 import { imgixFmt } from "@/url"
+import { recipeURL } from "@/urls"
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return <div className="pb-1 text-base font-medium">{children}</div>
@@ -166,7 +167,7 @@ function RecipeSlide({
   createdBy?: CreatedBy | null
 }) {
   return (
-    <Link key={r.id} to={pathRecipeDetail({ recipeId: r.id.toString() })}>
+    <Link key={r.id} to={recipeURL(r.id, r.name)}>
       <Box key={r.id} gap={2} className="items-center">
         <Image
           width={48}

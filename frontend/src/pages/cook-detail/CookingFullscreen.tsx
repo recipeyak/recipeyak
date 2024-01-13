@@ -8,12 +8,12 @@ import { IngredientViewContent } from "@/pages/recipe-detail/IngredientView"
 import { Note } from "@/pages/recipe-detail/Notes"
 import { RecipeSource } from "@/pages/recipe-detail/RecipeSource"
 import { StepView } from "@/pages/recipe-detail/Step"
-import { pathRecipeDetail } from "@/paths"
 import { useCookChecklistFetch } from "@/queries/cookChecklistFetch"
 import { useCookChecklistUpdate } from "@/queries/cookChecklistUpdate"
 import { PickVariant } from "@/queries/queryUtilTypes"
 import { RecipeFetchResponse as Recipe } from "@/queries/recipeFetch"
 import { notEmpty } from "@/text"
+import { recipeURL } from "@/urls"
 
 type Ingredient = Recipe["ingredients"][number]
 type Step = Recipe["steps"][number]
@@ -231,7 +231,7 @@ export function CookingFullscreen({
         }}
       >
         <Link
-          to={pathRecipeDetail({ recipeId: recipeId.toString() })}
+          to={recipeURL(recipeId, recipeName)}
           className="mb-2 px-1 py-2 text-sm"
         >
           ← Return to Recipe

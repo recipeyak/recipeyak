@@ -17,6 +17,7 @@ import { useRecipeDelete } from "@/queries/recipeDelete"
 import { RecipeFetchResponse as Recipe } from "@/queries/recipeFetch"
 import { useRecipeUpdate } from "@/queries/recipeUpdate"
 import { toast } from "@/toast"
+import { recipeURL } from "@/urls"
 
 type RecentSchedule = Recipe["recentSchedules"][number]
 type Ingredient = Recipe["ingredients"][number]
@@ -104,7 +105,7 @@ export function RecipeTitleDropdown({
     {
       type: "menuitem",
       label: "View Timeline",
-      to: pathRecipeDetail({ recipeId: recipeId.toString() }) + "?timeline=1",
+      to: recipeURL(recipeId, recipeName) + "?timeline=1",
     },
     {
       type: "menuitem",

@@ -5,10 +5,10 @@ import useOnClickOutside from "use-onclickoutside"
 import { clx } from "@/classnames"
 import { CustomHighlight } from "@/components/CustomHighlight"
 import { SearchInput } from "@/components/Forms"
-import { pathRecipeDetail, pathRecipesList } from "@/paths"
+import { pathRecipesList } from "@/paths"
 import { ResponseFromUse } from "@/queries/queryUtilTypes"
 import { useSearchRecipes } from "@/queries/searchRecipes"
-import { toURL } from "@/urls"
+import { recipeURL } from "@/urls"
 import { useGlobalEvent } from "@/useGlobalEvent"
 
 const stylesSuggestion = "p-1 overflow-x-hidden whitespace-nowrap text-ellipsis"
@@ -35,11 +35,7 @@ function SearchResult({
       return (
         <Link
           key={hit.id}
-          to={
-            pathRecipeDetail({ recipeId: hit.id.toString() }) +
-            "-" +
-            toURL(hit.name)
-          }
+          to={recipeURL(hit.id, hit.name)}
           className={clx(
             stylesSuggestion,
             index === 0 && "underline",
@@ -161,7 +157,7 @@ export function NavRecipeSearch() {
     }
     if (key === "Enter") {
       resetForm()
-      history.push(pathRecipeDetail({ recipeId: suggestion.id.toString() }))
+      history.push(recipeURL(suggestion.id, suggestion.name))
     }
   }
 

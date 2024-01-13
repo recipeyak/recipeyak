@@ -15,7 +15,6 @@ import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { DateInput } from "@/components/Forms"
 import { toISODateString } from "@/date"
-import { pathRecipeDetail } from "@/paths"
 import {
   IGetShoppingListResponse,
   IIngredientItem,
@@ -27,6 +26,7 @@ import { removeQueryParams, setQueryParams } from "@/querystring"
 import { ingredientByNameAlphabetical } from "@/sorters"
 import { normalizeUnitsFracs } from "@/text"
 import { toast } from "@/toast"
+import { recipeURL } from "@/urls"
 
 const selectElementText = (el: Element) => {
   const sel = window.getSelection()
@@ -192,7 +192,7 @@ function RecipeAccordian({
             return (
               <Link
                 key={r.scheduledRecipeId}
-                to={pathRecipeDetail({ recipeId: r.recipeId.toString() })}
+                to={recipeURL(r.recipeId, r.recipeName)}
                 className="line-clamp-1 text-ellipsis"
               >
                 {r.recipeName}
