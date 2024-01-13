@@ -114,6 +114,14 @@ export function CalendarDay({
       onDoubleClick={() => {
         setShowScheduleRecipeModal(true)
       }}
+      onDragOver={(e) => {
+        if (
+          e.dataTransfer.types.includes("text/uri-list") ||
+          e.dataTransfer.types.includes("recipeyak/recipe")
+        ) {
+          e.dataTransfer.dropEffect = "copy"
+        }
+      }}
       onDrop={(e) => {
         const recipe = e.dataTransfer.getData("recipeyak/recipe")
         const uriList = e.dataTransfer.getData("text/uri-list")
