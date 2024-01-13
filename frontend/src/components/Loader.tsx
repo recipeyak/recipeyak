@@ -5,7 +5,7 @@ export function Loader({ align = "center" }: { align?: "center" | "left" }) {
     // eslint-disable-next-line react/forbid-elements
     <p
       className={clx(
-        "text-sm text-[var(--color-text-muted)]",
+        "text-sm text-[--color-text-muted]",
         align === "center" && "text-center",
         align === "left" && "text-left",
       )}

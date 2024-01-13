@@ -67,7 +67,7 @@ export function ReactionPopover(props: {
       animation={false}
       interactive
       content={
-        <div className="flex rounded-[3px] border border-solid  border-[var(--color-border)] bg-[var(--color-background-card)] px-2 py-1 shadow">
+        <div className="flex rounded-[3px] border border-solid  border-[--color-border] bg-[--color-background-card] px-2 py-1 shadow">
           {REACTION_EMOJIS.map((emoji, index) => {
             return (
               <div
@@ -77,10 +77,10 @@ export function ReactionPopover(props: {
                   setVisible(false)
                 }}
                 className={clx(
-                  "h-[32px] w-[32px] cursor-pointer rounded-[3px] border-[var(--color-border)] p-[4px] text-center text-[16px]",
+                  "h-[32px] w-[32px] cursor-pointer rounded-[3px] border-[--color-border] p-[4px] text-center text-[16px]",
                   findReaction(props.reactions, emoji, userId ?? 0) != null
                     ? "bg-[hsla(0,0%,0%,0.04)]"
-                    : "bg-[var(--color-background-card)]",
+                    : "bg-[--color-background-card]",
                   index > 0 && "ml-1",
                 )}
               >
@@ -93,7 +93,7 @@ export function ReactionPopover(props: {
     >
       <div
         className={clx(
-          "inline-block cursor-pointer rounded-[12px] bg-[var(--color-background-card)] leading-[0] text-[var(--color-text)]",
+          "inline-block cursor-pointer rounded-[12px] bg-[--color-background-card] leading-[0] text-[--color-text]",
           props.className,
         )}
         aria-label="open reactions"
@@ -101,7 +101,7 @@ export function ReactionPopover(props: {
           setVisible((s) => !s)
         }}
       >
-        <Smile className="text-[var(--color-text)]" size={14} />
+        <Smile className="text-[--color-text]" size={14} />
       </div>
     </Tippy>
   )
@@ -123,7 +123,7 @@ export function ReactionsFooter(props: {
       (x) => orderBy(x.reactions, (reaction) => reaction.created)[0],
     )
   return (
-    <div className="flex items-center text-sm text-[var(--color-text-muted)] print:!hidden">
+    <div className="flex items-center text-sm text-[--color-text-muted] print:!hidden">
       {groupedReactions.map(({ emoji, reactions }) => (
         <div
           key={emoji}
@@ -135,7 +135,7 @@ export function ReactionsFooter(props: {
             props.onClick(emoji)
           }}
           className={clx(
-            "mr-2 inline-flex  rounded-[15px] border border-solid border-[var(--color-border)] bg-[var(--color-background-card)] px-[0.3rem] py-0 pr-2 text-center text-[var(--color-text-muted)]",
+            "mr-2 inline-flex  rounded-[15px] border border-solid border-[--color-border] bg-[--color-background-card] px-[0.3rem] py-0 pr-2 text-center text-[--color-text-muted]",
             !props.readonly && "cursor-pointer",
           )}
         >

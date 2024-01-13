@@ -14,7 +14,7 @@ import { useGlobalEvent } from "@/useGlobalEvent"
 const stylesSuggestion = "p-1 overflow-x-hidden whitespace-nowrap text-ellipsis"
 
 const styleSuggestionInfo = clx(
-  "text-center text-[var(--color-text-muted)]",
+  "text-center text-[--color-text-muted]",
   stylesSuggestion,
 )
 
@@ -39,8 +39,7 @@ function SearchResult({
           className={clx(
             stylesSuggestion,
             index === 0 && "underline",
-            hit.archived_at != null &&
-              "text-[var(--color-text-muted)] line-through",
+            hit.archived_at != null && "text-[--color-text-muted] line-through",
           )}
           onDragStart={(e) => {
             e.dataTransfer.setData("recipeyak/recipe", JSON.stringify(hit))
@@ -71,7 +70,7 @@ function SearchResult({
   return (
     <div
       onClick={onClick}
-      className="inline-grid w-full rounded-[5px] border border-solid border-[var(--color-border)] bg-[var(--color-background-card)] p-1"
+      className="inline-grid w-full rounded-[5px] border border-solid border-[--color-border] bg-[--color-background-card] p-1"
     >
       {hits.length === 0 && (
         <div className={styleSuggestionInfo}>No Results Found</div>
@@ -79,13 +78,11 @@ function SearchResult({
       {suggestions}
       <div
         className={clx(
-          "mt-2 flex justify-between border-[0] border-t border-solid border-[var(--color-border)]",
+          "mt-2 flex justify-between border-[0] border-t border-solid border-[--color-border]",
           stylesSuggestion,
         )}
       >
-        <span className="text-[var(--color-text-muted)]">
-          matches: {hitCount}
-        </span>
+        <span className="text-[--color-text-muted]">matches: {hitCount}</span>
 
         <Link
           to={{

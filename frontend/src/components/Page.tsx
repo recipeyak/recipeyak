@@ -55,13 +55,13 @@ export function AuthPage(props: { children: React.ReactNode }) {
   useEffect(() => {
     const el = document.querySelector("html")
     if (el) {
-      el.classList.add("bg-[var(--color-primary)]")
+      el.classList.add("bg-[--color-primary]")
     }
 
     return () => {
       const el2 = document.querySelector("html")
       if (el2) {
-        el2.classList.remove("bg-[var(--color-primary)]")
+        el2.classList.remove("bg-[--color-primary]")
       }
     }
   }, [])

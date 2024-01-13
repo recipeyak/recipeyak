@@ -94,7 +94,7 @@ function AddIngredientForm({
           />
           {createIngredient.isError ? (
             // eslint-disable-next-line react/forbid-elements
-            <p className="text-base text-[var(--color-danger)]">
+            <p className="text-base text-[--color-danger]">
               A recipe needs at least one ingredient
             </p>
           ) : null}

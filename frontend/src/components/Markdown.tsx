@@ -108,7 +108,7 @@ function renderBlockQuote({
   return (
     <blockquote
       {...omit(props, "node")}
-      className="mb-2 border-y-0 border-l-[3px] border-r-0 border-solid border-l-[var(--color-border)] pl-2"
+      className="mb-2 border-y-0 border-l-[3px] border-r-0 border-solid border-l-[--color-border] pl-2"
     >
       {children}
     </blockquote>

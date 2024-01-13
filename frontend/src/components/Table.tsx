@@ -43,7 +43,7 @@ export function Table({
   return (
     <div
       className={clx(
-        "relative w-full overflow-auto rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-calendar-day)] shadow",
+        "relative w-full overflow-auto rounded-md border border-solid border-[--color-border] bg-[--color-background-calendar-day] shadow",
         className,
       )}
       {...rest}
@@ -71,7 +71,7 @@ export function Column({
   return (
     <AriaColumn
       isRowHeader={isRowHeader}
-      className="sticky top-0 cursor-default whitespace-nowrap border-0 border-b border-solid border-[var(--color-border)] p-0 text-left font-bold outline-none first:rounded-tl-md last:rounded-tr-md focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-slate-600"
+      className="sticky top-0 cursor-default whitespace-nowrap border-0 border-b border-solid border-[--color-border] p-0 text-left font-bold outline-none first:rounded-tl-md last:rounded-tr-md focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-slate-600"
     >
       <div className="py-1 pl-4">{children}</div>
     </AriaColumn>

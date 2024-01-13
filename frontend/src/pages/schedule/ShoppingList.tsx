@@ -114,7 +114,7 @@ const ShoppingListList = React.forwardRef<
       p={2}
       minHeight="74px"
       className={clx(
-        "max-h-[425px] overflow-y-auto border-[1px] border-solid border-[var(--color-border)] !bg-[var(--color-background-card)]",
+        "max-h-[425px] overflow-y-auto border-[1px] border-solid border-[--color-border] !bg-[--color-background-card]",
         props.items.isPending || props.items.isRefetching ? "opacity-70" : "",
       )}
     >

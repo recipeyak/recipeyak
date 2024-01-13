@@ -38,7 +38,7 @@ function RecipeItem({
   to: string
 }) {
   const cls =
-    "h-[40px] w-[40px] rounded-md bg-[var(--color-background-empty-image)] object-cover"
+    "h-[40px] w-[40px] rounded-md bg-[--color-background-empty-image] object-cover"
   return (
     <Link to={to} className="flex cursor-pointer items-center gap-2">
       {src !== "" ? <img src={src} className={cls} /> : <div className={cls} />}

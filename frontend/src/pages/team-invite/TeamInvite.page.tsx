@@ -85,9 +85,7 @@ export function TeamInvitePage(props: ITeamInviteProps) {
                 <h4 className="text-base font-medium">{role.name}</h4>
 
                 {/* eslint-disable-next-line react/forbid-elements */}
-                <p className="text-[var(--color-text-muted)]">
-                  {role.description}
-                </p>
+                <p className="text-[--color-text-muted]">{role.description}</p>
               </div>
             </label>
           ))}
