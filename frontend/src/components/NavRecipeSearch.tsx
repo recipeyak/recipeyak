@@ -46,6 +46,9 @@ function SearchResult({
             hit.archived_at != null &&
               "text-[var(--color-text-muted)] line-through",
           )}
+          onDragStart={(e) => {
+            e.dataTransfer.setData("recipeyak/recipe", JSON.stringify(hit))
+          }}
         >
           <div className="flex">
             <span

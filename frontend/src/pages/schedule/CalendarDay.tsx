@@ -18,7 +18,10 @@ import {
   ICalendarDragItem,
 } from "@/pages/schedule/CalendarDayItem"
 import { ScheduleRecipeModal } from "@/pages/schedule/ScheduleRecipeModal"
-import { ScheduledRecipe } from "@/queries/scheduledRecipeCreate"
+import {
+  ScheduledRecipe,
+  useScheduleRecipeCreate,
+} from "@/queries/scheduledRecipeCreate"
 import { useScheduledRecipeDelete } from "@/queries/scheduledRecipeDelete"
 import { useScheduledRecipeUpdate } from "@/queries/scheduledRecipeUpdate"
 import { useCurrentDay } from "@/useCurrentDay"
@@ -103,12 +106,25 @@ export function CalendarDay({
 
   const isSelectedDay = isSelected || isDroppable
   const [showScheduleRecipeModal, setShowScheduleRecipeModal] = useState(false)
+  const scheduledRecipeCreate = useScheduleRecipeCreate()
 
   return (
     <div
       ref={drop}
       onDoubleClick={() => {
         setShowScheduleRecipeModal(true)
+      }}
+      onDrop={(e) => {
+        const recipe = e.dataTransfer.getData("recipeyak/recipe")
+        if (recipe) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          const parsedRecipe: { id: number; name: string } = JSON.parse(recipe)
+          scheduledRecipeCreate.mutate({
+            recipeID: parsedRecipe.id,
+            on: date,
+            recipeName: parsedRecipe.name,
+          })
+        }
       }}
       className={clx(
         "flex shrink-0 grow basis-0 flex-col border-2 border-solid border-transparent bg-[var(--color-background-calendar-day)] p-1 transition-[background-color,border] duration-200 [word-break:break-word]",
