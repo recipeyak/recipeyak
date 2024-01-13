@@ -1,6 +1,4 @@
 import { Hit } from "@algolia/client-search"
-// import CheckIcon from "@spectrum-icons/workflow/Checkmark"
-// import ChevronUpDownIcon from "@spectrum-icons/workflow/ChevronUpDown"
 import { parseISO } from "date-fns"
 import { useState } from "react"
 import {
