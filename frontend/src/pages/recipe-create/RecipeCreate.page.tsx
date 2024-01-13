@@ -6,8 +6,8 @@ import { Button } from "@/components/Buttons"
 import { TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { NavPage } from "@/components/Page"
-import { pathRecipeDetail } from "@/paths"
 import { useRecipeCreate } from "@/queries/recipeCreate"
+import { recipeURL } from "@/urls"
 
 function CreateFromURLForm() {
   const [url, setUrl] = useState("")
@@ -22,7 +22,7 @@ function CreateFromURLForm() {
       },
       {
         onSuccess: (res) => {
-          history.push(pathRecipeDetail({ recipeId: res.id.toString() }))
+          history.push(recipeURL(res.id, res.name))
         },
       },
     )
@@ -76,7 +76,7 @@ function CreateManuallyForm() {
       {
         onSuccess: (res) => {
           history.push({
-            pathname: pathRecipeDetail({ recipeId: res.id.toString() }),
+            pathname: recipeURL(res.id, res.name),
             search: "edit=1",
           })
         },

@@ -10,8 +10,8 @@ import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
 import { NavPage } from "@/components/Page"
 import { Link } from "@/components/Routing"
-import { pathRecipeDetail } from "@/paths"
 import { useUserById } from "@/queries/userById"
+import { recipeURL } from "@/urls"
 
 // icons from: https://lucide.dev
 
@@ -375,7 +375,7 @@ function ActivityLog({
           <div style={{ lineHeight: "1.2" }}>
             <Link
               className="line-clamp-1 text-ellipsis"
-              to={pathRecipeDetail({ recipeId: x.recipe_id.toString() })}
+              to={recipeURL(x.recipe_id, x.recipe_name)}
             >
               {x.recipe_name}
             </Link>
