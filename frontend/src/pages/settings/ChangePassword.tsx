@@ -10,7 +10,7 @@ export function ChangePassword() {
       <BetterLabel>Password</BetterLabel>
       <Link
         to={pathPassword({})}
-        className="self-start rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-card)] px-2 py-1 text-xs font-medium"
+        className="self-start rounded-md border border-solid border-[--color-border] bg-[--color-background-card] px-2 py-1 text-xs font-medium"
       >
         Change password
       </Link>

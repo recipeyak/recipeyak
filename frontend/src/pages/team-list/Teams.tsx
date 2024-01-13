@@ -25,7 +25,7 @@ export function TeamsList() {
 
   if (teams.data.length === 0) {
     return (
-      <div className="self-center text-sm text-[var(--color-text-muted)]">
+      <div className="self-center text-sm text-[--color-text-muted]">
         No teams.
       </div>
     )

@@ -274,7 +274,7 @@ function RecipeDetails({
 function ArchiveMessage({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="mx-2 rounded-[5px] bg-[var(--color-background-card)] px-3 py-1 font-bold"
+      className="mx-2 rounded-[5px] bg-[--color-background-card] px-3 py-1 font-bold"
       children={children}
     />
   )
@@ -429,7 +429,7 @@ function RecipeEditor(props: { recipe: Recipe; onClose: () => void }) {
 function HeaderImgUploader({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="rounded-[3px] bg-[var(--color-background-card)] p-2 font-[14px] !opacity-100"
+      className="rounded-[3px] bg-[--color-background-card] p-2 font-[14px] !opacity-100"
       children={children}
     />
   )
@@ -664,14 +664,14 @@ function RecipeInfo(props: {
               ariaLabel="open primary image"
             />
             {props.recipe.primaryImage?.author != null && (
-              <div className="absolute right-0 mr-2 text-right text-xs font-medium text-[var(--color-text-muted)] sm:mr-0">
+              <div className="absolute right-0 mr-2 text-right text-xs font-medium text-[--color-text-muted] sm:mr-0">
                 {props.recipe.primaryImage.author}
               </div>
             )}
           </div>
           {props.editingEnabled && (
             <>
-              <div className="z-[35] -mx-3 rounded-none bg-[var(--color-modal-background)] [grid-area:2/1] sm:mx-0 sm:rounded-md md:[grid-area:1/2]" />
+              <div className="z-[35] -mx-3 rounded-none bg-[--color-modal-background] [grid-area:2/1] sm:mx-0 sm:rounded-md md:[grid-area:1/2]" />
               <div className="z-[999] flex items-center justify-center [grid-area:2/1] md:[grid-area:1/2]">
                 <HeaderImgUploader>
                   <div>Select a primary image from note uploads.</div>

@@ -37,7 +37,7 @@ function HomeContainer({
 function FeaturesContainer({ children }: { children: JSX.Element[] }) {
   return (
     // eslint-disable-next-line react/forbid-elements
-    <section className="bg-[var(--color-primary)] p-4 text-white">
+    <section className="bg-[--color-primary] p-4 text-white">
       <HomeContainer>
         <h2 className={styles.subtitle}>Features</h2>
         <ul className="grid gap-4">{children}</ul>
@@ -208,7 +208,7 @@ const LandingPage = () => {
       </HomeContainer>
 
       {/* eslint-disable-next-line react/forbid-elements */}
-      <section className="bg-gradient-to-b from-[var(--color-background)] from-50% to-[var(--color-primary)] to-50% px-4 pt-4">
+      <section className="bg-gradient-to-b from-[--color-background] from-50% to-[--color-primary] to-50% px-4 pt-4">
         <HomeContainer>
           <img className="shadow" src={landingImg} alt="" />
         </HomeContainer>

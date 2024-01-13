@@ -36,7 +36,7 @@ function ScheduledRecipe(props: {
       </div>
       <Box gap={1} dir="col" grow={1}>
         {props.recipes.length === 0 ? (
-          <div className="text-[var(--color-text-muted)]">—</div>
+          <div className="text-[--color-text-muted]">—</div>
         ) : null}
         {props.recipes.map((x) => (
           <RecipeSlide key={x.id} recipe={x} />
@@ -49,7 +49,7 @@ function ScheduledRecipe(props: {
 function ScheduleContainer({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="w-full rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-calendar-day)] p-3 text-sm sm:w-[350px] sm:max-w-[350px]"
+      className="w-full rounded-md border border-solid border-[--color-border] bg-[--color-background-calendar-day] p-3 text-sm sm:w-[350px] sm:max-w-[350px]"
       children={children}
     />
   )
@@ -146,7 +146,7 @@ function SchedulePreview() {
 
 function CreatedBy({ createdBy }: { createdBy: NonNullable<CreatedBy> }) {
   const imageCss =
-    "w-[20px] h-[20px] rounded-full bg-[var(--color-background-empty-image)]"
+    "w-[20px] h-[20px] rounded-full bg-[--color-background-empty-image]"
   return (
     <div className="flex gap-1">
       {createdBy.avatarUrl ? (

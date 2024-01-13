@@ -63,9 +63,7 @@ function AddStep({ recipeId, onCancel, index, position }: IAddStepProps) {
         />
         {addStep.error ? (
           // eslint-disable-next-line react/forbid-elements
-          <p className="text-base text-[var(--color-danger)]">
-            A step is required
-          </p>
+          <p className="text-base text-[--color-danger]">A step is required</p>
         ) : null}
       </div>
       <div className="flex justify-end gap-2">

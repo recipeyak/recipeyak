@@ -22,7 +22,7 @@ function Time({ dateTime }: ITimeProps) {
 
 function TimelineItem({ children }: { children: React.ReactNode }) {
   return (
-    <li className="mb-2 rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-calendar-day)] p-2 font-medium">
+    <li className="mb-2 rounded-md border border-solid border-[--color-border] bg-[--color-background-calendar-day] p-2 font-medium">
       {children}
     </li>
   )
