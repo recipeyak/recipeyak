@@ -27,7 +27,7 @@
   ],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
-    "source.removeUnusedImports": true
+    "source.removeUnusedImports": "explicit"
   },
   "python.languageServer": "Pylance",
   "editor.tabSize": 4,
