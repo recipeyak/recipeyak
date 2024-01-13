@@ -28,7 +28,7 @@ import { NoteContainer } from "@/pages/recipe-detail/Notes"
 import { SectionTitle } from "@/pages/recipe-detail/RecipeHelpers"
 import { RecipeSource } from "@/pages/recipe-detail/RecipeSource"
 import { RecipeTimeline } from "@/pages/recipe-detail/RecipeTimeline"
-import { Dropdown } from "@/pages/recipe-detail/RecipeTitleDropdown"
+import { RecipeTitleDropdown } from "@/pages/recipe-detail/RecipeTitleDropdown"
 import { Section } from "@/pages/recipe-detail/Section"
 import StepContainer from "@/pages/recipe-detail/StepContainer"
 import { TagEditor } from "@/pages/recipe-detail/TagEditor"
@@ -551,9 +551,11 @@ function RecipeInfo(props: {
           inlineLayout && "md:[grid-area:1_/_span_2]",
         )}
       >
-        <Dropdown
+        <RecipeTitleDropdown
           recipeIsArchived={props.recipe.archived_at != null}
           recipeId={props.recipe.id}
+          recipeAuthor={props.recipe.author}
+          recipeImageUrl={props.recipe.primaryImage}
           recipeName={props.recipe.name}
           recipeIngredients={props.recipe.ingredients}
           recipeRecentScheduleHistory={props.recipe.recentSchedules}
