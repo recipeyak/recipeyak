@@ -352,13 +352,13 @@ function useFacetFiltersState() {
         primary_image_created_by_id: x.AndPrimaryImageCreatedById ?? undefined,
       })
     }
-    setFacetFilterState((s) => ({ ...s, ...x }))
+    setFacetFilterState((s) => ({ ...s,...x }))
   }
   return [facetFilters, setFacetFilters] as const
 }
 
 function useSearchState() {
-  const location = useLocation()
+  const location = useLocation() as { search: string }
   const [query, setQuery] = useState(() => {
     const query: string = new URLSearchParams(location.search).get("search")
     return query ?? ""
