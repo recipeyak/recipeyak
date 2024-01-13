@@ -40,17 +40,25 @@ function ActionItem(props: Omit<MenuItemProps, "className">) {
   )
 }
 
-export function Dropdown({
+export function RecipeTitleDropdown({
   recipeId,
   recipeName,
   recipeIsArchived: isArchived,
   recipeIngredients,
+  recipeAuthor,
+  recipeImageUrl,
   recipeRecentScheduleHistory,
   toggleEditing,
   editingEnabled,
 }: {
   recipeId: number
   recipeName: string
+  recipeImageUrl: {
+    id: string
+    url: string
+    backgroundUrl: string
+  } | null
+  recipeAuthor: string | null
   recipeIsArchived: boolean
   recipeIngredients: readonly Ingredient[]
   recipeRecentScheduleHistory: readonly RecentSchedule[]
@@ -207,6 +215,8 @@ export function Dropdown({
         isOpen={showScheduleModal}
         recipeId={recipeId}
         recipeName={recipeName}
+        recipeImageUrl={recipeImageUrl}
+        recipeAuthor={recipeAuthor}
         scheduleHistory={recipeRecentScheduleHistory}
         onOpenChange={(value) => {
           setShowScheduleModal(value)

@@ -16,18 +16,48 @@ import { addQueryParams } from "@/querystring"
 
 type RecentSchedule = Recipe["recentSchedules"][number]
 
+function RecipeItem({
+  src,
+  name,
+  author,
+}: {
+  src: string
+  name: string
+  author: string | null
+}) {
+  const cls =
+    "h-[40px] w-[40px] rounded-md bg-[var(--color-background-empty-image)] object-cover"
+  return (
+    <div className="flex items-center gap-2">
+      {src !== "" ? <img src={src} className={cls} /> : <div className={cls} />}
+      <div>
+        <div className="line-clamp-1 text-ellipsis">{name}</div>
+        <div className="line-clamp-1 text-ellipsis text-sm">{author}</div>
+      </div>
+    </div>
+  )
+}
+
 export function ScheduleModal({
   isOpen,
   recipeName,
   recipeId,
   scheduleHistory,
   onOpenChange,
+  recipeAuthor,
+  recipeImageUrl,
 }: {
   readonly isOpen: boolean
   readonly recipeId: number
   readonly recipeName: string
   readonly onOpenChange: (_: boolean) => void
   readonly scheduleHistory: readonly RecentSchedule[]
+  readonly recipeAuthor: string | null
+  readonly recipeImageUrl: {
+    id: string
+    url: string
+    backgroundUrl: string
+  } | null
 }) {
   const [isoDate, setIsoDate] = React.useState(toISODateString(new Date()))
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,9 +86,14 @@ export function ScheduleModal({
       onOpenChange={(value) => {
         onOpenChange(value)
       }}
-      title={`Schedule: ${recipeName}`}
+      title={"Schedule"}
       children={
         <div className="flex h-full flex-col gap-2">
+          <RecipeItem
+            src={recipeImageUrl?.url ?? ""}
+            name={recipeName}
+            author={recipeAuthor}
+          />
           <DateInput
             id="schedule-data"
             value={toISODateString(isoDate)}
@@ -105,7 +140,7 @@ export function ScheduleModal({
                           </Box>
                         </Link>
                         <Button size="small" to={to}>
-                          view
+                          View
                         </Button>
                       </Box>
                     )
@@ -122,7 +157,7 @@ export function ScheduleModal({
               onClick={handleSave}
               disabled={scheduledRecipeCreate.isPending}
             >
-              {!scheduledRecipeCreate.isPending ? "schedule" : "scheduling..."}
+              {!scheduledRecipeCreate.isPending ? "Schedule" : "Scheduling..."}
             </Button>
           </div>
         </div>
