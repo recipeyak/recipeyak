@@ -5,14 +5,7 @@ import { pathRecipeDetail, pathTeamDetail } from "@/paths"
 // we use `encodeURIComponent` for good measure
 export const toURL = (x = ""): string => encodeURIComponent(kebabCase(x))
 
-interface IStr {
-  readonly toString: () => string
-}
-
-export const recipeURL = <T extends IStr, U extends IStr>(
-  id: T,
-  name?: U,
-): string => {
+export const recipeURL = (id: string | number, name?: string): string => {
   const baseUrl = pathRecipeDetail({ recipeId: id.toString() })
   if (name) {
     return baseUrl + "-" + toURL(String(name))
