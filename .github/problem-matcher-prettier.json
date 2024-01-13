@@ -4,17 +4,9 @@
       "owner": "prettier",
       "pattern": [
         {
-          "regexp": "^ FAIL  .+"
-        },
-        {
-          "regexp": "^(.*)",
-          "message": 1
-        },
-        {
-          "regexp": " ❯ (.*)\\:(\\d+)\\:(\\d+)",
+          "regexp": "^prettier-violation:(.+):(.+)$",
           "file": 1,
-          "line": 2,
-          "column": 3
+          "message": 2
         }
       ]
     }

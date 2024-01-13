@@ -2,14 +2,23 @@
 set -ex
 set -o pipefail
 
-main() {
+prettier() {
   if [ "$CI" ]; then
-    node_modules/.bin/prettier '**/*.{js,jsx,scss,css,ts,tsx,json,yaml,yml,md}' --list-different | awk -v prefix="$PWD" '{print prefix "/" $0}'
-    node_modules/.bin/eslint '**/*.{ts,tsx,js,jsx}'
+    node_modules/.bin/prettier '**/*.{js,jsx,scss,css,ts,tsx,json,yaml,yml,md}' --list-different | awk -v prefix="$PWD" '{print "prettier-violation:"  prefix "/" $0 ":formatting required}'
   else
     node_modules/.bin/prettier '**/*.{js,jsx,scss,css,ts,tsx,json,yaml,yml,md}' --write --cache
+  fi
+}
+
+eslint() {
+  if [ "$CI" ]; then
+    node_modules/.bin/eslint '**/*.{ts,tsx,js,jsx}'
+  else
     node_modules/.bin/eslint '**/*.{ts,tsx,js,jsx}' --fix --cache
   fi
+}
+
+tsc() {
 
   if [ "$CI" ]; then
     # Prefix typescript output to make relative paths absolute paths.
@@ -18,8 +27,12 @@ main() {
     # https://github.com/actions/setup-node/blob/a4fcaaf314b117a40d694a35ee36461f8ff3c6e6/.github/tsc.json
     node_modules/.bin/tsc | awk -v prefix="$PWD" '{print prefix "/" $0}'
   else
-    node_modules/.bin/tsc "$@"
+    node_modules/.bin/tsc 
   fi
+}
+
+main() {
+    (trap 'kill 0' SIGINT; prettier & eslint & tsc)
 }
 
 main "$@"
