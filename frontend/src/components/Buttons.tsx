@@ -32,7 +32,7 @@ export const Button = ({
   readonly hover?: boolean
   readonly focus?: boolean
   readonly disabled?: boolean
-  readonly onClick?: (e: React.MouseEvent) => void
+  readonly onClick?: () => void
   readonly to?: string | LocationDescriptor<unknown>
 }) => {
   const variantStyles = clx(
@@ -74,7 +74,8 @@ export const Button = ({
 
   return (
     <AriaButton
-      {...props}
+      style={props.style}
+      onPress={props.onClick}
       isDisabled={loading || disabled}
       type={type ?? "button"}
       className={clx(className, buttonCss)}

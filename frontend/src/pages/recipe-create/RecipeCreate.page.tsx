@@ -30,7 +30,7 @@ function CreateFromURLForm() {
   return (
     <form onSubmit={handleImport}>
       <div className="text-left text-[14px] font-medium">URL</div>
-      <div className="flex items-center gap-2">
+      <div className="flex flex-col gap-2">
         <TextInput
           placeholder="https://cooking.nytimes.com..."
           name="recipe url"
@@ -45,7 +45,7 @@ function CreateFromURLForm() {
           type="submit"
           loading={recipeCreate.isPending}
         >
-          Import
+          {recipeCreate.isPending ? "Importing..." : "Import"}
         </Button>
       </div>
       {recipeCreate.isError ? (
@@ -86,7 +86,7 @@ function CreateManuallyForm() {
   return (
     <form onSubmit={handleManualAdd}>
       <div className="text-left text-[14px] font-medium">Title</div>
-      <div className="flex items-center gap-2">
+      <div className="flex flex-col gap-2">
         <TextInput
           placeholder="Butternutt Squash Soup"
           name="recipe url"
@@ -104,11 +104,7 @@ function CreateManuallyForm() {
             }
           </div>
         ) : null}
-        <Button
-          variant="primary"
-          type="submit"
-          loading={recipeCreate.isPending}
-        >
+        <Button type="submit" loading={recipeCreate.isPending}>
           Add Manually
         </Button>
       </div>
