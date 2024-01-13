@@ -29,7 +29,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import React, { useRef, useState } from "react"
+import { useRef, useState } from "react"
 import { useDrag, useDrop } from "react-dnd"
 
 import { clx } from "@/classnames"
@@ -132,10 +132,8 @@ function StepBody({
     setText(propText)
   }
 
-  const updateStep = (e: React.KeyboardEvent | undefined) => {
-    if (e && "preventDefault" in e) {
-      e.preventDefault()
-    }
+  const updateStep = (e?: { preventDefault?: () => void }) => {
+    e?.preventDefault?.()
     // if the text is empty, we should just delete the item instead of updating
     if (text === "") {
       removeStep()
