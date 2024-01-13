@@ -125,8 +125,8 @@ export function NavRecipeSearch() {
   const [isClosed, setIsClosed] = React.useState(false)
   const searchInputRef = React.useRef<HTMLInputElement>(null)
 
-  const ref = React.useRef(null)
-  useOnClickOutside(ref, () => {
+  const searchContainerRef = React.useRef(null)
+  useOnClickOutside(searchContainerRef, () => {
     setIsClosed(true)
   })
 
@@ -163,7 +163,7 @@ export function NavRecipeSearch() {
   }
 
   return (
-    <div ref={ref} className="flex w-full">
+    <div ref={searchContainerRef} className="flex w-full">
       <SearchInput
         ref={searchInputRef}
         value={query}

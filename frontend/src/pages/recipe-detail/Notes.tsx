@@ -170,6 +170,33 @@ function SharedEntry({
   )
 }
 
+function Attachments({
+  attachments,
+  openImage,
+}: {
+  attachments: Note["attachments"]
+  openImage: (_: string) => void
+}) {
+  if (attachments.length === 0) {
+    return null
+  }
+  return (
+    <Box wrap gap={1}>
+      {attachments.map((attachment) => (
+        <FilePreview
+          key={attachment.id}
+          onClick={() => {
+            openImage(attachment.id)
+          }}
+          contentType={attachment.contentType}
+          src={attachment.url}
+          backgroundUrl={attachment.backgroundUrl}
+        />
+      ))}
+    </Box>
+  )
+}
+
 interface INoteProps {
   readonly note: Note
   readonly recipeId: number
@@ -267,25 +294,16 @@ export function Note({
           )}
         </Box>
         {!isEditing ? (
-          <Box dir="col" className="gap-2">
+          <Box dir="col" className="gap-1">
             <Markdown>{note.text}</Markdown>
             {(note.attachments.length > 0 ||
               note.reactions.length > 0 ||
               !readonly) && (
               <Box gap={1} dir="col">
-                <Box wrap gap={1}>
-                  {note.attachments.map((attachment) => (
-                    <FilePreview
-                      key={attachment.id}
-                      onClick={() => {
-                        openImage(attachment.id)
-                      }}
-                      contentType={attachment.contentType}
-                      src={attachment.url}
-                      backgroundUrl={attachment.backgroundUrl}
-                    />
-                  ))}
-                </Box>
+                <Attachments
+                  attachments={note.attachments}
+                  openImage={openImage}
+                />
                 <ReactionsFooter
                   readonly={readonly}
                   reactions={note.reactions}
