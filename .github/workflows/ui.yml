@@ -56,11 +56,13 @@ jobs:
       - name: Install dependencies
         working-directory: "frontend"
         run: yarn install --frozen-lockfile
+      - run: echo "::add-matcher::.github/problem-matcher-prettier.json"
       - name: Run linter
         working-directory: "frontend"
         run: |
           ./s/lint
           ./s/build
+      - run: echo "::remove-matcher::.github/problem-matcher-prettier.json"
       - name: Move artifacts
         working-directory: "frontend"
         run: |

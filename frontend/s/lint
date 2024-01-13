@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 set -ex
+set -o pipefail
 
 main() {
   if [ "$CI" ]; then
-    node_modules/.bin/prettier '**/*.{js,jsx,scss,css,ts,tsx,json,yaml,yml,md}' --list-different
+    node_modules/.bin/prettier '**/*.{js,jsx,scss,css,ts,tsx,json,yaml,yml,md}' --list-different | awk -v prefix="$PWD" '{print prefix "/" $0}'
     node_modules/.bin/eslint '**/*.{ts,tsx,js,jsx}'
   else
     node_modules/.bin/prettier '**/*.{js,jsx,scss,css,ts,tsx,json,yaml,yml,md}' --write --cache
