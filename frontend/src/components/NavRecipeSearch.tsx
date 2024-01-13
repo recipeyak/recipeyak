@@ -44,6 +44,7 @@ function SearchResult({
           )}
           onDragStart={(e) => {
             e.dataTransfer.setData("recipeyak/recipe", JSON.stringify(hit))
+            e.dataTransfer.effectAllowed = "copyMove"
           }}
         >
           <div className="flex">
