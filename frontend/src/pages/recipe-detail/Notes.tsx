@@ -345,7 +345,7 @@ export function Note({
                   onClick={onDelete}
                   aria-label="delete note"
                 >
-                  delete
+                  Delete
                 </Button>
                 <Box gap={3} space="between" align="center">
                   <Button
@@ -356,7 +356,7 @@ export function Note({
                     }}
                     aria-label="cancel note"
                   >
-                    cancel
+                    Cancel
                   </Button>
                   <Button
                     variant="primary"
@@ -366,7 +366,7 @@ export function Note({
                     loading={isUpdating}
                     disabled={hasUnsavedImages}
                   >
-                    save
+                    Save
                   </Button>
                 </Box>
               </Box>

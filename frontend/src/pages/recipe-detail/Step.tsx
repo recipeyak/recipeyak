@@ -127,14 +127,15 @@ function StepBody({
   const remove = useStepDelete()
   const update = useStepUpdate()
 
-  const handleCancel = (e: React.MouseEvent) => {
-    e.stopPropagation()
+  const handleCancel = () => {
     setIsEditing(false)
     setText(propText)
   }
 
-  const updateStep = (e: React.KeyboardEvent | React.MouseEvent) => {
-    e.preventDefault()
+  const updateStep = (e: React.KeyboardEvent | undefined) => {
+    if (e && "preventDefault" in e) {
+      e.preventDefault()
+    }
     // if the text is empty, we should just delete the item instead of updating
     if (text === "") {
       removeStep()
