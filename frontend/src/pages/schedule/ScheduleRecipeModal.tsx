@@ -1,69 +1,170 @@
 import { Hit } from "@algolia/client-search"
+// import CheckIcon from "@spectrum-icons/workflow/Checkmark"
+// import ChevronUpDownIcon from "@spectrum-icons/workflow/ChevronUpDown"
 import { parseISO } from "date-fns"
 import { useState } from "react"
+import {
+  ComboBox,
+  Group,
+  Input,
+  Label,
+  ListBox,
+  ListBoxItem,
+  ListBoxItemProps,
+  Popover,
+} from "react-aria-components"
 
-import { isMobile } from "@/browser"
+import { clx } from "@/classnames"
 import { Button } from "@/components/Buttons"
 import { CustomHighlight } from "@/components/CustomHighlight"
-import { DateInput, SearchInput } from "@/components/Forms"
+import { DateInput } from "@/components/Forms"
 import { Modal } from "@/components/Modal"
 import { toISODateString } from "@/date"
 import { useScheduleRecipeCreate } from "@/queries/scheduledRecipeCreate"
 import { useSearchRecipes } from "@/queries/searchRecipes"
 import { imgixFmt } from "@/url"
 
-function RecipeSelectInput({
+const CheckIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M20 6 9 17l-5-5" />
+  </svg>
+)
+
+function RecipeSelect({
   onSelect,
+  value,
 }: {
-  onSelect: (_: RecipeSearchItem) => void
+  onSelect: (
+    _:
+      | Pick<RecipeSearchItem, "name" | "id" | "primary_image" | "author">
+      | undefined,
+  ) => void
+  value:
+    | Pick<RecipeSearchItem, "id" | "name" | "primary_image" | "author">
+    | undefined
 }) {
   const [query, setQuery] = useState("")
   const { data } = useSearchRecipes({ query })
-
   const hits = data?.hits ?? []
-  const resultsNotShown =
-    (data?.result.nbHits ?? 0) - (data?.result.hitsPerPage ?? 0)
+
+  if (value != null) {
+    return (
+      <div className="w-full">
+        <label className="cursor-default font-medium">Recipe</label>
+        <div className="flex items-center justify-between">
+          <RecipeItem
+            key={value.id}
+            src={
+              value.primary_image?.url != null
+                ? imgixFmt(value.primary_image.url)
+                : ""
+            }
+            name={value.name}
+            author={value.author ?? ""}
+          />
+          <Button
+            size="small"
+            onClick={() => {
+              onSelect(undefined)
+            }}
+          >
+            Change
+          </Button>
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div className="flex flex-col gap-2">
-      <SearchInput
-        placeholder="search recipes"
-        value={query}
-        autoFocus={!isMobile()}
-        onChange={(e) => {
-          setQuery(e.target.value)
+    <>
+      <ComboBox
+        className="group flex w-full flex-col gap-1"
+        inputValue={query}
+        onInputChange={setQuery}
+        items={hits}
+        allowsCustomValue
+        menuTrigger="focus"
+        onSelectionChange={(key) => {
+          const item = hits.find((x) => x.id === key)
+          onSelect(item)
         }}
-      />
-      <div className="flex max-h-[300px] flex-col gap-1 overflow-auto">
-        {hits.length === 0 && query.length !== 0 ? (
-          <div className="text-center">no results</div>
-        ) : (
-          hits.map((hit) => {
-            return (
-              <RecipeItem
-                key={hit.id}
-                src={
-                  hit.primary_image?.url != null
-                    ? imgixFmt(hit.primary_image.url)
-                    : ""
-                }
-                hit={hit}
-                name={hit.name}
-                author={hit.author ?? ""}
-                onClick={() => {
-                  onSelect(hit)
-                }}
-              />
-            )
-          })
-        )}
-        {resultsNotShown > 0 && (
-          <div className="text-center">
-            ({resultsNotShown} results not shown)
-          </div>
-        )}
-      </div>
-    </div>
+      >
+        <Label className="cursor-default font-medium">Recipe</Label>
+
+        <Group className="flex rounded-md border border-solid border-[var(--color-border)]">
+          <Input
+            className="w-full flex-1 rounded-md border-none bg-transparent px-3 py-2 text-base leading-5 text-[var(--color-text)] outline-none placeholder:text-[var(--color-input-placeholder)]"
+            placeholder={"search recipes"}
+          />
+          <Button className="flex items-center rounded-l-none rounded-r-md border-0 border-l border-solid px-3 transition">
+            ▼
+          </Button>
+        </Group>
+        <Popover className="w-[--trigger-width] overflow-auto rounded-md border border-solid border-[var(--color-border)] bg-[--color-background-card] text-base shadow-lg ring-1 ring-black/5">
+          <ListBox<
+            (typeof hits)[number]
+          > className="max-h-[375px] p-1 outline-none">
+            {(hit) => {
+              return (
+                <UserItem textValue={hit.name}>
+                  <RecipeItem
+                    key={hit.id}
+                    src={
+                      hit.primary_image?.url != null
+                        ? imgixFmt(hit.primary_image.url)
+                        : ""
+                    }
+                    hit={hit}
+                    name={hit.name}
+                    author={hit.author ?? ""}
+                  />
+                </UserItem>
+              )
+            }}
+          </ListBox>
+        </Popover>
+      </ComboBox>
+    </>
+  )
+}
+
+function UserItem(props: ListBoxItemProps & { children: React.ReactNode }) {
+  return (
+    <ListBoxItem
+      {...props}
+      className="group flex cursor-default select-none items-center gap-2 p-1"
+    >
+      {({ isSelected, isFocusVisible }) => {
+        return (
+          <>
+            <span
+              className={clx(
+                "group-selected:font-medium flex flex-1 items-center gap-3 truncate font-normal ",
+                isFocusVisible &&
+                  "rounded-md outline outline-[3px] outline-[rgb(47,129,247)]",
+              )}
+            >
+              {props.children}
+            </span>
+            {isSelected && (
+              <span className="flex w-5 items-center">
+                <CheckIcon />
+              </span>
+            )}
+          </>
+        )
+      }}
+    </ListBoxItem>
   )
 }
 
@@ -91,7 +192,6 @@ function RecipeItem({
           onClick?.()
         }
       }}
-      tabIndex={0}
     >
       {src !== "" ? <img src={src} className={cls} /> : <div className={cls} />}
       <div>
@@ -116,48 +216,6 @@ type RecipeSearchItem = {
   } | null
 }
 
-function RecipeSelect({
-  value,
-  onSelect,
-}: {
-  value: RecipeSearchItem | undefined
-  onSelect: (_: RecipeSearchItem | undefined) => void
-}) {
-  return (
-    <div className="flex w-full flex-col gap-1">
-      <div className="font-medium">Recipe</div>
-      {value != null ? (
-        <div className="flex w-full items-center justify-between gap-4">
-          <RecipeItem
-            key={value.id}
-            src={
-              value.primary_image?.url != null
-                ? imgixFmt(value.primary_image.url)
-                : ""
-            }
-            name={value.name}
-            author={value.author ?? ""}
-          />
-          <Button
-            size="small"
-            onClick={() => {
-              onSelect(undefined)
-            }}
-          >
-            change
-          </Button>
-        </div>
-      ) : (
-        <RecipeSelectInput
-          onSelect={(item) => {
-            onSelect(item)
-          }}
-        />
-      )}
-    </div>
-  )
-}
-
 export function ScheduleRecipeModal({
   isOpen,
   onOpenChange,
@@ -175,7 +233,10 @@ export function ScheduleRecipeModal({
     setFormError("")
     setIsoDate(e.target.value)
   }
-  const [selectedItem, setSelectedItem] = useState<RecipeSearchItem>()
+  const [selectedItem, setSelectedItem] =
+    useState<
+      Pick<RecipeSearchItem, "id" | "name" | "primary_image" | "author">
+    >()
   const scheduledRecipeCreate = useScheduleRecipeCreate()
 
   const handleSubmit = () => {
@@ -203,13 +264,7 @@ export function ScheduleRecipeModal({
             handleSubmit()
           }}
         >
-          <RecipeSelect
-            onSelect={(e) => {
-              setFormError("")
-              setSelectedItem(e)
-            }}
-            value={selectedItem}
-          />
+          <RecipeSelect onSelect={setSelectedItem} value={selectedItem} />
 
           <label className="flex w-full flex-col gap-1">
             <label className="font-medium" htmlFor="schedule-data">

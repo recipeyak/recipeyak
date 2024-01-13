@@ -155,6 +155,7 @@ function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
       />
 
       <ScheduleRecipeModal
+        key={showSchedule.toString()}
         isOpen={showSchedule}
         onOpenChange={(value) => {
           setShowSchedule(value)
