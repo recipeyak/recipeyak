@@ -27,7 +27,7 @@ class UserCommentsListResponse(pydantic.BaseModel):
 def user_comments_list_view(request: AuthedHttpRequest, user_id: str) -> JsonResponse:
     if not has_team_connection(user_id, request.user.id):
         raise Http404
-    team = get_team(  request.user  )
+    team = get_team(request.user)
 
     notes: str = [
         Comment(
