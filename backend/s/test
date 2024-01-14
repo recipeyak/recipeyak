@@ -11,6 +11,7 @@ main() {
   ARGS="${@}"
 
   
+  echo "$PWD"
   # shellcheck disable=SC2086
   if [ "$CI" ]; then
     NO_COLOR=1 ./.venv/bin/pytest --tb=line $ARGS
