@@ -10,8 +10,13 @@ main() {
   # shellcheck disable=SC2124
   ARGS="${@}"
 
+  
   # shellcheck disable=SC2086
-  ./.venv/bin/pytest $ARGS
+  if [ "$CI" ]; then
+    ./.venv/bin/pytest --tb=native $ARGS
+  else
+    ./.venv/bin/pytest $ARGS
+  fi
 }
 
 main "$@"

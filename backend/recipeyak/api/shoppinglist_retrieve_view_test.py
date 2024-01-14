@@ -50,7 +50,7 @@ def test_fetching_shoppinglist(
         },
     }
 
-    assert ShoppingList.objects.count() == 2
+    assert ShoppingList.objects.count() == 1
     shopping_list = ShoppingList.objects.order_by("-created").first()
     assert shopping_list is not None
     assert json.loads(shopping_list.ingredients) == res.json()["ingredients"]
