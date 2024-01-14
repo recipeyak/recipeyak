@@ -352,7 +352,7 @@ function useFacetFiltersState() {
         primary_image_created_by_id: x.AndPrimaryImageCreatedById ?? undefined,
       })
     }
-    setFacetFilterState((s) => ({ ...s,...x }))
+    setFacetFilterState((s) => ({ ...s, ...x }))
   }
   return [facetFilters, setFacetFilters] as const
 }
