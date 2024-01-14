@@ -13,7 +13,7 @@ main() {
   
   # shellcheck disable=SC2086
   if [ "$CI" ]; then
-    ./.venv/bin/pytest --tb=short $ARGS
+    ./.venv/bin/pytest --tb=line $ARGS
   else
     ./.venv/bin/pytest $ARGS
   fi

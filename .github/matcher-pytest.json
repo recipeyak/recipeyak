@@ -2,14 +2,10 @@
   "owner": "pytest",
   "pattern": [
     {
-      "regexp": "^(.*):\\d+: in (.*)$",
+      "regexp": "^(\\/.*):(\\d+): (.*)$",
       "file": 1,
-      "column": 2
-    },
-    {
-      "regexp": "^(\\s{4}|E\\s{3}.*)$",
-      "message": 1,
-      "loop": true
+      "column": 2,
+      "message": 3
     }
   ]
 }
