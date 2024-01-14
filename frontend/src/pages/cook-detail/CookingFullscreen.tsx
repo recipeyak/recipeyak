@@ -285,7 +285,7 @@ export function CookingFullscreen({
               <RecipeSource source={recipeSource} />
             </div>
           )}
-          <div className="absolute inset-x-0 bottom-0 flex justify-around border-[thin] border-solid border-[--color-border] bg-[--color-background]">
+          <div className="absolute  inset-x-0 bottom-0 z-20 flex justify-around border-[thin] border-solid border-[--color-border] bg-[--color-background]">
             <div className="flex items-center gap-4 py-2">
               <TabAnchor href="#ingredients">ingredients</TabAnchor>
               <TabAnchor href="#steps">steps</TabAnchor>
