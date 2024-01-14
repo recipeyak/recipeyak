@@ -41,7 +41,7 @@ jobs:
         with:
           name: test-results
           path: ~/test-results
-  lint:
+  format:
     needs: pre_job
     if: needs.pre_job.outputs.should_skip != 'true'
 
@@ -56,18 +56,60 @@ jobs:
       - name: Install dependencies
         working-directory: "frontend"
         run: yarn install --frozen-lockfile
-      - name: Run linter
+      - name: Check formatting
         working-directory: "frontend"
-        run: |
-          ./s/lint
-          ./s/build
-      - name: Move artifacts
-        working-directory: "frontend"
-        run: |
-          mkdir -p /tmp/frontend-artifacts
-          cp -R stats.html /tmp/frontend-artifacts
-      - name: Archive code coverage results
-        uses: actions/upload-artifact@v3
+        run: ./s/fmt
+  eslint:
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          name: frontend-artifacts
-          path: /tmp/frontend-artifacts
+          node-version-file: "frontend/package.json"
+          cache-dependency-path: "frontend/yarn.lock"
+          cache: "yarn"
+      - name: Install dependencies
+        working-directory: "frontend"
+        run: yarn install --frozen-lockfile
+      - name: Run Eslint
+        working-directory: "frontend"
+        run: ./s/eslint
+  typecheck:
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: "frontend/package.json"
+          cache-dependency-path: "frontend/yarn.lock"
+          cache: "yarn"
+      - name: Install dependencies
+        working-directory: "frontend"
+        run: yarn install --frozen-lockfile
+      - name: Check types
+        working-directory: "frontend"
+        run: ./s/typecheck
+  build:
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: "frontend/package.json"
+          cache-dependency-path: "frontend/yarn.lock"
+          cache: "yarn"
+      - name: Install dependencies
+        working-directory: "frontend"
+        run: yarn install --frozen-lockfile
+      - name: Build bundle
+        working-directory: "frontend"
+        run: ./s/build

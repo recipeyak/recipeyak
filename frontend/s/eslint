@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -ex
+
+main() {
+  if [ "$CI" ]; then
+    node_modules/.bin/eslint '**/*.{ts,tsx,js,jsx}'
+  else
+    node_modules/.bin/eslint '**/*.{ts,tsx,js,jsx}' --fix --cache
+  fi
+}
+
+main "$@"
