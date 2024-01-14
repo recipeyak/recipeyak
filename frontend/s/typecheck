@@ -2,7 +2,7 @@
 set -ex
 
 main() {
-  node_modules/.bin/tsc --noEmit "$@"
+  node_modules/.bin/tsc "$@"
 }
 
 main "$@"
