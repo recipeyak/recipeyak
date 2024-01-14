@@ -30,6 +30,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import { useRef, useState } from "react"
+import { PressEvent } from "react-aria-components"
 import { useDrag, useDrop } from "react-dnd"
 
 import { clx } from "@/classnames"
@@ -132,8 +133,11 @@ function StepBody({
     setText(propText)
   }
 
-  const updateStep = (e?: { preventDefault?: () => void }) => {
-    e?.preventDefault?.()
+  const updateStep = (e?: { preventDefault?: () => void } | PressEvent) => {
+    if (e && "preventDefault" in e) {
+      e?.preventDefault?.()
+    }
+
     // if the text is empty, we should just delete the item instead of updating
     if (text === "") {
       removeStep()

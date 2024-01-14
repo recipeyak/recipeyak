@@ -16,7 +16,7 @@ function UserProfileImage({
   onClick: (() => void) | undefined
   tabIndex?: number
   className?: string
-  size: 30 | 72 | 96
+  size: 20 | 30 | 72 | 96
   src: string
   alt: string
 }) {
@@ -42,7 +42,7 @@ function UserProfileImagePlaceholder({
   onClick: (() => void) | undefined
   tabIndex?: number
   className?: string
-  size: 30 | 72 | 96
+  size: 20 | 30 | 72 | 96
 }) {
   return (
     <div
@@ -53,16 +53,18 @@ function UserProfileImagePlaceholder({
   )
 }
 
-function getAvatarCss(size: 30 | 72 | 96) {
+function getAvatarCss(size: 20 | 30 | 72 | 96) {
   return clx(
     avatarCss,
-    size === 30
-      ? "h-[30px] w-[30px] min-w-[30px]"
-      : size === 72
-        ? "h-[70px] w-[70px] min-w-[70px]"
-        : size === 96
-          ? "h-[96px] w-[96px] min-w-[96px]"
-          : assertNever(size),
+    size === 20
+      ? "h-[20px] w-[20px] min-w-[20px]"
+      : size === 30
+        ? "h-[30px] w-[30px] min-w-[30px]"
+        : size === 72
+          ? "h-[70px] w-[70px] min-w-[70px]"
+          : size === 96
+            ? "h-[96px] w-[96px] min-w-[96px]"
+            : assertNever(size),
   )
 }
 
@@ -75,7 +77,7 @@ export function Avatar({
   avatarURL: string | null
   onClick?: () => void
   tabIndex?: number
-  size?: 30 | 72 | 96
+  size?: 20 | 30 | 72 | 96
 }) {
   const cls = clx(onClick != null && "cursor-pointer")
   if (avatarURL == null) {
