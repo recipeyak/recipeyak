@@ -56,6 +56,7 @@ jobs:
       - name: Run tests
         working-directory: "backend"
         run: ./s/test --junitxml=~/test-results/backend_tests.xml
+      - run: echo "::remove-matcher::.github/matcher-pytest.json"
       - name: Store test results
         uses: actions/upload-artifact@v3
         with:
