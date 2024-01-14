@@ -358,7 +358,7 @@ function useFacetFiltersState() {
 }
 
 function useSearchState() {
-  const location = useLocation() as { search: string }
+  const location = useLocation()
   const [query, setQuery] = useState(() => {
     const query: string = new URLSearchParams(location.search).get("search")
     return query ?? ""

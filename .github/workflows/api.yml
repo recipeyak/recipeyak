@@ -95,9 +95,11 @@ jobs:
         working-directory: "./backend"
         run: poetry install
       - run: echo "::add-matcher::.github/problem-matcher-prettier.json"
+      - run: echo "::add-matcher::.github/problem-matcher-mypy.json"
       - name: Run lints
         working-directory: "backend"
         run: ./s/lint
+      - run: echo "::remove-matcher::.github/problem-matcher-mypy.json"
       - run: echo "::remove-matcher::.github/problem-matcher-prettier.json"
 
   lint_migrations:
