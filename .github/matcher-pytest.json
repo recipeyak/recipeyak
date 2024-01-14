@@ -2,7 +2,7 @@
   "owner": "pytest",
   "pattern": [
     {
-      "regexp": "^(.*):(\\d+): (.*)$",
+      "regexp": "^(.*):(\\d+): (.*)",
       "file": 1,
       "column": 2,
       "message": 3
