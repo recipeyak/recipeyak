@@ -190,6 +190,7 @@ function TabAnchor({
 }) {
   return (
     <a
+      // eslint-disable-next-line no-restricted-syntax
       style={{
         textUnderlineOffset: "0.25rem",
         paddingBottom: "0.25rem",
@@ -285,7 +286,7 @@ export function CookingFullscreen({
             </div>
           )}
           <div className="absolute inset-x-0 bottom-0 flex justify-around border-[thin] border-solid border-[--color-border] bg-[--color-background]">
-            <div className="flex items-center gap-2 ">
+            <div className="flex items-center gap-4 py-2">
               <TabAnchor href="#ingredients">ingredients</TabAnchor>
               <TabAnchor href="#steps">steps</TabAnchor>
               <TabAnchor href="#notes">notes</TabAnchor>
