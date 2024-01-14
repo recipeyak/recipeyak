@@ -55,6 +55,11 @@ module.exports = {
         message: "Avoid empty style={{}}.",
       },
       {
+        selector: "Literal[value=/var\\(--.*]/]",
+        message:
+          "Use tailwind css variable shorthand instead. eg. text-[--color-primary] instead of text-[var(--color-primary)]",
+      },
+      {
         selector: "JSXAttribute[name.name='className'][value.value='']",
         message: 'Avoid empty className="".',
       },

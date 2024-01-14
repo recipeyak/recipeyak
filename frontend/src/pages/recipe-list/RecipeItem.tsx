@@ -34,7 +34,7 @@ const Card = forwardRef(
     ref: ForwardedRef<HTMLDivElement>,
   ) => {
     const className = clx(
-      "flex flex-col rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-card)]",
+      "flex flex-col rounded-md border border-solid border-[--color-border] bg-[--color-background-card]",
       isDragging != null && "cursor-move",
       isDragging ? "opacity-50" : "opacity-100",
     )

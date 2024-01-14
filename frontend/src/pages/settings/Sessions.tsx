@@ -88,9 +88,7 @@ function SessionList() {
 
   if (sessions.isError) {
     return (
-      <div className="text-[var(--color-text-muted)]">
-        Failure fetching sessions
-      </div>
+      <div className="text-[--color-text-muted]">Failure fetching sessions</div>
     )
   }
 

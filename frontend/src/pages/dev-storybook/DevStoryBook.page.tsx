@@ -64,7 +64,7 @@ function ButtonSection({
   return (
     <div
       className={clx(
-        "rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background)] p-4 text-[var(--color-text)]",
+        "rounded-md border border-solid border-[--color-border] bg-[--color-background] p-4 text-[--color-text]",
         theme,
       )}
     >

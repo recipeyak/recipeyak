@@ -221,7 +221,7 @@ export function ProfilePage(props: RouteComponentProps<{ userId: string }>) {
                   key={name}
                   gap={1}
                   align="center"
-                  className="rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-calendar-day)] px-2 py-1"
+                  className="rounded-md border border-solid border-[--color-border] bg-[--color-background-calendar-day] px-2 py-1"
                 >
                   <Icon /> {name} · {formatNumber(value)}
                 </Box>

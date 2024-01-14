@@ -66,7 +66,7 @@ export function Image({
             }),
       }}
       className={clx(
-        "relative bg-[var(--color-background-empty-image)]",
+        "relative bg-[--color-background-empty-image]",
         rounded && "rounded-md",
         roundDesktop && "sm:rounded-md",
       )}
@@ -95,7 +95,7 @@ export function Image({
             className={clx(
               "relative h-full w-full bg-cover bg-center",
               // kind of tricky: https://stackoverflow.com/a/70810692/3720597
-              "bg-[image:var(--backgroundImage)]",
+              "bg-[image:--backgroundImage]",
               rounded && "rounded-md",
               roundDesktop && "sm:rounded-md",
               grayscale && "grayscale",

@@ -105,7 +105,7 @@ ban-relative-imports = "all"
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "recipeyak.django.settings"
 python_files = "*_test.py *_tests.py"
-addopts = "-s --pdbcls IPython.terminal.debugger:TerminalPdb --reuse-db -p no:warnings -p no:pastebin -p no:nose -p no:junitxml -p no:doctest -p no:freeze_support -p no:stepwise -p no:python_path -p no:setuponly -p no:setupplan -p no:legacypath-tmpdir -p no:unittest"
+addopts = "-s --pdbcls IPython.terminal.debugger:TerminalPdb --reuse-db -p no:warnings -p no:pastebin -p no:nose -p no:doctest -p no:freeze_support -p no:stepwise -p no:python_path -p no:setuponly -p no:setupplan -p no:legacypath-tmpdir -p no:unittest"
 testpaths = "recipeyak"
 
 

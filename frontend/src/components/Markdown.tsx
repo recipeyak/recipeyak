@@ -1,3 +1,4 @@
+import { omit } from "lodash-es"
 import { findAndReplace } from "mdast-util-find-and-replace"
 import React from "react"
 import ReactMarkdown, { Components } from "react-markdown"
@@ -41,10 +42,15 @@ function renderLink({
   if (href?.startsWith(settings.DOMAIN)) {
     const to = new URL(href).pathname
     return (
-      <Link {...props} to={to} children={to.substring(1)} className={linkCss} />
+      <Link
+        {...omit(props, "node")}
+        to={to}
+        children={to.substring(1)}
+        className={linkCss}
+      />
     )
   }
-  return <a {...props} href={href} className={linkCss} />
+  return <a {...omit(props, "node")} href={href} className={linkCss} />
 }
 
 function renderUl({
@@ -55,7 +61,9 @@ function renderUl({
   HTMLUListElement
 >) {
   return (
-    <ul {...props} className="mb-2 list-inside list-disc">
+    // avoid serializing react markdown node prop that gets passed down
+    // aka avoid [object Object] in the DOM
+    <ul {...omit(props, "node")} className="mb-2 list-inside list-disc">
       {children}
     </ul>
   )
@@ -69,7 +77,7 @@ function renderOl({
   HTMLOListElement
 >) {
   return (
-    <ol {...props} className="mb-2 list-inside list-decimal">
+    <ol {...omit(props, "node")} className="mb-2 list-inside list-decimal">
       {children}
     </ol>
   )
@@ -84,7 +92,7 @@ function renderP({
 >) {
   return (
     // eslint-disable-next-line react/forbid-elements
-    <p {...props} className="last-child:mb-0 mb-2">
+    <p {...omit(props, "node")} className="mb-2 last:mb-0">
       {children}
     </p>
   )
@@ -99,8 +107,8 @@ function renderBlockQuote({
 >) {
   return (
     <blockquote
-      {...props}
-      className="mb-2 border-y-0 border-l-[3px] border-r-0 border-solid border-l-[var(--color-border)] pl-2"
+      {...omit(props, "node")}
+      className="mb-2 border-y-0 border-l-[3px] border-r-0 border-solid border-l-[--color-border] pl-2"
     >
       {children}
     </blockquote>

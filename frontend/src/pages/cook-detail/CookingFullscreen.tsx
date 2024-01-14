@@ -221,7 +221,7 @@ export function CookingFullscreen({
     "ingredients",
   )
   return (
-    <div className="fixed inset-0 z-20 items-center justify-center bg-[var(--color-background)]">
+    <div className="fixed inset-0 z-20 items-center justify-center bg-[--color-background]">
       <div
         // eslint-disable-next-line no-restricted-syntax
         style={{

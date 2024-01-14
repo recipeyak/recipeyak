@@ -35,7 +35,7 @@ function ActionItem(props: Omit<MenuItemProps, "className">) {
     <MenuItem
       {...props}
       className={
-        "flex cursor-pointer rounded px-2 py-1 [transition:background_.12s_ease-out] hover:bg-[var(--color-border)] focus-visible:outline-[3px] focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)] "
+        "flex cursor-pointer rounded px-2 py-1 [transition:background_.12s_ease-out] hover:bg-[--color-border] focus-visible:outline-[3px] focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)] "
       }
     />
   )
@@ -173,7 +173,7 @@ export function RecipeTitleDropdown({
       <Button>
         Actions <Chevron />
       </Button>
-      <Popover className="w-56 origin-top-left overflow-auto rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-calendar-day)] p-2 shadow-lg outline-none">
+      <Popover className="w-56 origin-top-left overflow-auto rounded-md border border-solid border-[--color-border] bg-[--color-background-calendar-day] p-2 shadow-lg outline-none">
         <Menu
           className="outline-none"
           onAction={(key) => {
@@ -196,7 +196,7 @@ export function RecipeTitleDropdown({
                 <Separator
                   id={menuItem.id}
                   key={menuItem.id}
-                  className="my-1 h-[1px] bg-[var(--color-border)]"
+                  className="my-1 h-[1px] bg-[--color-border]"
                 />
               )
             }

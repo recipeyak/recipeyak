@@ -134,7 +134,7 @@ function NoteTimeStamp({ created }: { readonly created: string }) {
     <time
       title={prettyDate}
       dateTime={created}
-      className="text-[0.85rem] text-[var(--color-text-muted)] print:text-black"
+      className="text-[0.85rem] text-[--color-text-muted] print:text-black"
     >
       {humanizedDate}
     </time>
@@ -167,6 +167,33 @@ function SharedEntry({
     >
       {children}
     </div>
+  )
+}
+
+function Attachments({
+  attachments,
+  openImage,
+}: {
+  attachments: Note["attachments"]
+  openImage: (_: string) => void
+}) {
+  if (attachments.length === 0) {
+    return null
+  }
+  return (
+    <Box wrap gap={1}>
+      {attachments.map((attachment) => (
+        <FilePreview
+          key={attachment.id}
+          onClick={() => {
+            openImage(attachment.id)
+          }}
+          contentType={attachment.contentType}
+          src={attachment.url}
+          backgroundUrl={attachment.backgroundUrl}
+        />
+      ))}
+    </Box>
   )
 }
 
@@ -256,7 +283,7 @@ export function Note({
               />
               {note.created_by.id === userId ? (
                 <a
-                  className="ml-2 cursor-pointer text-[0.825rem] text-[var(--color-text-muted)] print:hidden"
+                  className="ml-2 cursor-pointer text-[0.825rem] text-[--color-text-muted] print:hidden"
                   data-testid="edit-note"
                   onClick={onNoteClick}
                 >
@@ -267,25 +294,16 @@ export function Note({
           )}
         </Box>
         {!isEditing ? (
-          <Box dir="col" className="gap-2">
+          <Box dir="col" className="gap-1">
             <Markdown>{note.text}</Markdown>
             {(note.attachments.length > 0 ||
               note.reactions.length > 0 ||
               !readonly) && (
               <Box gap={1} dir="col">
-                <Box wrap gap={1}>
-                  {note.attachments.map((attachment) => (
-                    <FilePreview
-                      key={attachment.id}
-                      onClick={() => {
-                        openImage(attachment.id)
-                      }}
-                      contentType={attachment.contentType}
-                      src={attachment.url}
-                      backgroundUrl={attachment.backgroundUrl}
-                    />
-                  ))}
-                </Box>
+                <Attachments
+                  attachments={note.attachments}
+                  openImage={openImage}
+                />
                 <ReactionsFooter
                   readonly={readonly}
                   reactions={note.reactions}
@@ -560,7 +578,7 @@ function FilePreview({
 }) {
   return (
     <div
-      className="grid rounded-md bg-[var(--color-background-empty-image)] print:!hidden"
+      className="grid rounded-md bg-[--color-background-empty-image] print:!hidden"
       onClick={onClick}
     >
       <img
@@ -764,7 +782,7 @@ function FileWithStatus({
               <progress
                 value={progress}
                 max="100"
-                className="h-[0.2rem] rounded-none accent-[var(--color-primary)]"
+                className="h-[0.2rem] rounded-none accent-[--color-primary]"
               />
             </div>
           )}
@@ -815,7 +833,7 @@ function FileUploader({
   return (
     <>
       {files.length > 0 && (
-        <div className="flex flex-wrap gap-1 border-[thin] border-solid border-[var(--color-border)] bg-[var(--color-background-card)] p-2 [border-top-style:none]">
+        <div className="flex flex-wrap gap-1 border-[thin] border-solid border-[--color-border] bg-[--color-background-card] p-2 [border-top-style:none]">
           {files.map((f) => (
             // NOTE(sbdchd): it's important that the `localId` is consistent
             // throughout the upload content, otherwise we'll wipe out the DOM
@@ -843,7 +861,7 @@ function FileUploader({
           ))}
         </div>
       )}
-      <label className="mb-2 cursor-pointer rounded-b-[3px] border-[thin] border-solid border-[var(--color-border)] bg-[var(--color-background-card)] px-[0.25rem] py-[0.1rem] text-sm font-medium text-[var(--color-text-muted)] [border-top-style:none]">
+      <label className="mb-2 cursor-pointer rounded-b-[3px] border-[thin] border-solid border-[--color-border] bg-[--color-background-card] px-[0.25rem] py-[0.1rem] text-sm font-medium text-[--color-text-muted] [border-top-style:none]">
         <input
           type="file"
           multiple

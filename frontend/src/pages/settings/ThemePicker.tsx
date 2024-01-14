@@ -16,10 +16,10 @@ function ThemeList(props: { value: Theme; onChange: (value: Theme) => void }) {
         return (
           <label
             key={themeId}
-            className="flex max-w-[250px] cursor-pointer flex-col items-start rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-calendar-day)]"
+            className="flex max-w-[250px] cursor-pointer flex-col items-start rounded-md border border-solid border-[--color-border] bg-[--color-background-calendar-day]"
           >
             <RecipeDetailSkeleton fgFill={theme.fgFill} bgFill={theme.bgFill} />
-            <div className="flex w-full items-center gap-1 border-[0] border-t border-solid border-[var(--color-border)] p-2 px-3">
+            <div className="flex w-full items-center gap-1 border-[0] border-t border-solid border-[--color-border] p-2 px-3">
               <RadioButton
                 className="mr-1"
                 checked={themeId === props.value}

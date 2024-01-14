@@ -27,7 +27,7 @@ export function BorderBox({
     }
 )) {
   const cls = clx(
-    "bg-[var(--color-background)] text-[var(--color-text)]",
+    "bg-[--color-background] text-[--color-text]",
     p == null ? "p-[1.2rem]" : p === 2 ? "p-2" : p === 3 ? "p-3" : undefined,
     minHeight != null ? "min-h-[74px]" : undefined,
     "rounded-none sm:rounded-md",

@@ -1,6 +1,4 @@
 import { Hit } from "@algolia/client-search"
-// import CheckIcon from "@spectrum-icons/workflow/Checkmark"
-// import ChevronUpDownIcon from "@spectrum-icons/workflow/ChevronUpDown"
 import { parseISO } from "date-fns"
 import { useState } from "react"
 import {
@@ -101,16 +99,16 @@ function RecipeSelect({
       >
         <Label className="cursor-default font-medium">Recipe</Label>
 
-        <Group className="flex rounded-md border border-solid border-[var(--color-border)]">
+        <Group className="flex rounded-md border border-solid border-[--color-border]">
           <Input
-            className="w-full flex-1 rounded-md border-none bg-transparent px-3 py-2 text-base leading-5 text-[var(--color-text)] outline-none placeholder:text-[var(--color-input-placeholder)]"
+            className="w-full flex-1 rounded-md border-none bg-transparent px-3 py-2 text-base leading-5 text-[--color-text] outline-none placeholder:text-[--color-input-placeholder]"
             placeholder={"search recipes"}
           />
           <Button className="flex items-center rounded-l-none rounded-r-md border-0 border-l border-solid px-3 transition">
             ▼
           </Button>
         </Group>
-        <Popover className="w-[--trigger-width] overflow-auto rounded-md border border-solid border-[var(--color-border)] bg-[--color-background-card] text-base shadow-lg ring-1 ring-black/5">
+        <Popover className="w-[--trigger-width] overflow-auto rounded-md border border-solid border-[--color-border] bg-[--color-background-card] text-base shadow-lg ring-1 ring-black/5">
           <ListBox<
             (typeof hits)[number]
           > className="max-h-[375px] p-1 outline-none">
@@ -182,7 +180,7 @@ function RecipeItem({
   hit?: Hit<{}>
 }) {
   const cls =
-    "h-[40px] w-[40px] rounded-md bg-[var(--color-background-empty-image)] object-cover"
+    "h-[40px] w-[40px] rounded-md bg-[--color-background-empty-image] object-cover"
   return (
     <div
       className="flex cursor-pointer items-center gap-2"

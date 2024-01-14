@@ -77,7 +77,7 @@ function UserDropdown() {
       <Button className="!rounded-full !border-none !p-0">
         <Avatar avatarURL={user.avatarURL} />
       </Button>
-      <Popover className="w-56 origin-top-left overflow-auto rounded-md border border-solid border-[var(--color-border)] bg-[var(--color-background-calendar-day)] p-2 shadow-lg outline-none">
+      <Popover className="w-56 origin-top-left overflow-auto rounded-md border border-solid border-[--color-border] bg-[--color-background-calendar-day] p-2 shadow-lg outline-none">
         <Menu
           className="outline-none"
           onAction={(key) => {
@@ -98,14 +98,14 @@ function UserDropdown() {
               <div className="text-sm ">{user.email}</div>
             </div>
           </MenuItem>
-          <Separator className="my-1 h-[1px] bg-[var(--color-border)]" />
+          <Separator className="my-1 h-[1px] bg-[--color-border]" />
           {menuItems.map((menuItem) => {
             if (menuItem.type === "separator") {
               return (
                 <Separator
                   id={menuItem.id}
                   key={menuItem.id}
-                  className="my-1 h-[1px] bg-[var(--color-border)]"
+                  className="my-1 h-[1px] bg-[--color-border]"
                 />
               )
             }
@@ -130,7 +130,7 @@ function ActionItem(props: Omit<MenuItemProps, "className">) {
     <MenuItem
       {...props}
       className={
-        "flex cursor-pointer rounded px-2 py-1 [transition:background_.12s_ease-out] hover:bg-[var(--color-border)] focus-visible:outline-[3px] focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)] "
+        "flex cursor-pointer rounded px-2 py-1 [transition:background_.12s_ease-out] hover:bg-[--color-border] focus-visible:outline-[3px] focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)] "
       }
     />
   )
@@ -186,8 +186,8 @@ function NavButtons() {
 }
 
 const navItemCss =
-  "flex shrink-0 grow-0 cursor-pointer items-center justify-center rounded-md px-2 py-1 text-[14px] font-medium leading-[1.5] text-[var(--color-text)] transition-all [transition:background_.12s_ease-out] hover:bg-[var(--color-background-calendar-day)] hover:text-[var(--color-link-hover)] active:bg-[var(--color-border)]"
-const activeNavItemCss = "bg-[var(--color-background-calendar-day)]"
+  "flex shrink-0 grow-0 cursor-pointer items-center justify-center rounded-md px-2 py-1 text-[14px] font-medium leading-[1.5] text-[--color-text] transition-all [transition:background_.12s_ease-out] hover:bg-[--color-background-calendar-day] hover:text-[--color-link-hover] active:bg-[--color-border]"
+const activeNavItemCss = "bg-[--color-background-calendar-day]"
 
 export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
   const isLoggedIn = useIsLoggedIn()
