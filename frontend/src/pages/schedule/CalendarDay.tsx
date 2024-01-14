@@ -4,7 +4,7 @@ import format from "date-fns/format"
 import isFirstDayOfMonth from "date-fns/isFirstDayOfMonth"
 import isWithinInterval from "date-fns/isWithinInterval"
 import startOfDay from "date-fns/startOfDay"
-import { sortBy, startCase } from "lodash-es"
+import { sortBy } from "lodash-es"
 import { useState } from "react"
 import { useDrop } from "react-dnd"
 import { useLocation } from "react-router"
@@ -115,16 +115,12 @@ export function CalendarDay({
         setShowScheduleRecipeModal(true)
       }}
       onDragOver={(e) => {
-        if (
-          e.dataTransfer.types.includes("text/uri-list") ||
-          e.dataTransfer.types.includes("recipeyak/recipe")
-        ) {
+        if (e.dataTransfer.types.includes("recipeyak/recipe")) {
           e.dataTransfer.dropEffect = "copy"
         }
       }}
       onDrop={(e) => {
         const recipe = e.dataTransfer.getData("recipeyak/recipe")
-        const uriList = e.dataTransfer.getData("text/uri-list")
         if (recipe) {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           const parsedRecipe: { id: number; name: string } = JSON.parse(recipe)
@@ -134,26 +130,6 @@ export function CalendarDay({
             recipeName: parsedRecipe.name,
           })
           return
-        }
-        // support dragging any recipe URL into the calendar page.
-        if (uriList) {
-          const uri = new URL(uriList)
-          if (uri.origin === window.location.origin) {
-            const match = /\/recipes\/(\d+)-?(.*)/gm.exec(uri.pathname)
-            const recipeId = match?.[1]
-            // For URLs, we try to extract the name from the slug to provide a
-            // better temporary name in the calendar. Once the recipe is
-            // scheduled, we'll have the correct name.
-            const recipeSlug = startCase(match?.[2].replace("-", " ") || "")
-
-            if (recipeId) {
-              scheduledRecipeCreate.mutate({
-                recipeID: parseInt(recipeId, 10),
-                on: date,
-                recipeName: recipeSlug || "(new recipe)",
-              })
-            }
-          }
         }
       }}
       className={clx(
