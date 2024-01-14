@@ -2,7 +2,6 @@ import { useState } from "react"
 
 import { Box } from "@/components/Box"
 import { Link } from "@/components/Routing"
-import { Tab, Tabs } from "@/components/Tabs"
 import { getInitialIngredients } from "@/ingredients"
 import { IngredientViewContent } from "@/pages/recipe-detail/IngredientView"
 import { Note } from "@/pages/recipe-detail/Notes"
@@ -60,13 +59,7 @@ function Ingredients({
   const combined = getInitialIngredients({ sections, ingredients })
 
   return (
-    <div
-      // eslint-disable-next-line no-restricted-syntax
-      style={{
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
+    <div>
       {combined.map((ingredientOrSection) => {
         if (ingredientOrSection.kind === "section") {
           return (
@@ -127,15 +120,7 @@ function Ingredients({
 function Steps({ steps }: { steps: readonly Step[] }) {
   const [selectedStep, setSelectedStep] = useState<number | undefined>()
   return (
-    <div
-      // eslint-disable-next-line no-restricted-syntax
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        lineHeight: "1.4",
-        maxWidth: 600,
-      }}
-    >
+    <div id="steps">
       {steps.map((i, idx) => {
         const isSelected = i.id === selectedStep
         return (
@@ -180,10 +165,10 @@ function Notes({
 }) {
   if (notes.length === 0) {
     // eslint-disable-next-line no-restricted-syntax
-    return <div style={{ fontSize: "16px" }}>no notes</div>
+    return <div id="notes">no notes</div>
   }
   return (
-    <div>
+    <div id="notes">
       {notes.map((note) => (
         <Note
           key={note.id}
@@ -193,6 +178,28 @@ function Notes({
         />
       ))}
     </div>
+  )
+}
+
+function TabAnchor({
+  children,
+  href,
+}: {
+  children: React.ReactNode
+  href: string
+}) {
+  return (
+    <a
+      style={{
+        textUnderlineOffset: "0.25rem",
+        paddingBottom: "0.25rem",
+        fontWeight: "500",
+        fontSize: "18px",
+      }}
+      href={href}
+    >
+      {children}
+    </a>
   )
 }
 
@@ -217,15 +224,12 @@ export function CookingFullscreen({
   readonly steps: readonly Step[]
   readonly notes: readonly Note[]
 }) {
-  const [tab, setTab] = useState<"ingredients" | "steps" | "notes">(
-    "ingredients",
-  )
   return (
     <div className="fixed inset-0 z-20 items-center justify-center bg-[--color-background]">
       <div
+        className="px-5"
         // eslint-disable-next-line no-restricted-syntax
         style={{
-          padding: "0.5rem 1.25rem",
           overflow: "auto",
           height: "100%",
         }}
@@ -238,18 +242,19 @@ export function CookingFullscreen({
         </Link>
 
         <Box
+          className="max-w-[1000px] pb-2"
           gap={2}
           dir="col"
           // eslint-disable-next-line no-restricted-syntax
           style={{
             fontSize: "18px",
-            maxWidth: 600,
             minWidth: "min(600px, 100%)",
             marginLeft: "auto",
             marginRight: "auto",
           }}
         >
           <div
+            id="ingredients"
             className="cursor-auto select-text"
             // eslint-disable-next-line no-restricted-syntax
             style={{
@@ -260,44 +265,17 @@ export function CookingFullscreen({
           >
             {recipeName}
           </div>
-          <Tabs>
-            <Tab
-              isActive={tab === "ingredients"}
-              onClick={() => {
-                setTab("ingredients")
-              }}
-            >
-              Ingredients
-            </Tab>
-            <Tab
-              isActive={tab === "steps"}
-              onClick={() => {
-                setTab("steps")
-              }}
-            >
-              Steps
-            </Tab>
-            <Tab
-              isActive={tab === "notes"}
-              onClick={() => {
-                setTab("notes")
-              }}
-            >
-              Notes
-            </Tab>
-          </Tabs>
-          <div>
-            {tab === "ingredients" ? (
-              <Ingredients
-                ingredients={ingredients}
-                sections={sections}
-                recipeId={recipeId}
-              />
-            ) : tab === "steps" ? (
-              <Steps steps={steps} />
-            ) : tab === "notes" ? (
-              <Notes notes={notes} recipeId={recipeId} />
-            ) : null}
+
+          <div className="grid grid-cols-1 gap-2 md:[grid-template-columns:minmax(350px,3fr)_5fr] ">
+            <Ingredients
+              ingredients={ingredients}
+              sections={sections}
+              recipeId={recipeId}
+            />
+
+            <Steps steps={steps} />
+            <div />
+            <Notes notes={notes} recipeId={recipeId} />
           </div>
           {notEmpty(recipeSource) && (
             // eslint-disable-next-line no-restricted-syntax
@@ -306,6 +284,13 @@ export function CookingFullscreen({
               <RecipeSource source={recipeSource} />
             </div>
           )}
+          <div className="absolute inset-x-0 bottom-0 flex justify-around border-[thin] border-solid border-[--color-border] bg-[--color-background]">
+            <div className="flex items-center gap-2 ">
+              <TabAnchor href="#ingredients">ingredients</TabAnchor>
+              <TabAnchor href="#steps">steps</TabAnchor>
+              <TabAnchor href="#notes">notes</TabAnchor>
+            </div>
+          </div>
         </Box>
       </div>
     </div>
