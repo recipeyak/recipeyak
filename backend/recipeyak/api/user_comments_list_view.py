@@ -29,7 +29,7 @@ def user_comments_list_view(request: AuthedHttpRequest, user_id: str) -> JsonRes
         raise Http404
     team = get_team(request.user)
 
-    notes = [
+    notes: str = [
         Comment(
             recipe=Recipe(id=note.recipe.id, name=note.recipe.name),
             note=serialize_note(note, primary_image_id=0),
