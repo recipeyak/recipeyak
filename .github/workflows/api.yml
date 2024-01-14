@@ -52,6 +52,7 @@ jobs:
       - name: Install dependencies
         working-directory: "./backend"
         run: poetry install
+      - run: echo "::add-matcher::.github/matcher-pytest.json"
       - name: Run tests
         working-directory: "backend"
         run: ./s/test --junitxml=~/test-results/backend_tests.xml

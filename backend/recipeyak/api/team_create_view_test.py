@@ -38,7 +38,7 @@ def test_creating_team(client: Client, user: User, user2: User) -> None:
 
     client.force_login(user2)
     assert (
-        client.get(url).status_code == 404
+        client.get(url).status_code == 401
     ), "user2 cannnot access team since they aren't members"
 
 
