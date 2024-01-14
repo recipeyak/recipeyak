@@ -126,7 +126,7 @@ function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
   }
 }
 
-function NoteTimeStamp({ created }: { readonly created: string }) {
+export function NoteTimeStamp({ created }: { readonly created: string }) {
   const date = new Date(created)
   const prettyDate = formatAbsoluteDateTime(date, { includeYear: true })
   const humanizedDate = formatHumanDateTime(date)

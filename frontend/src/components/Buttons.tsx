@@ -1,7 +1,7 @@
 import { LocationDescriptor } from "history"
 import * as React from "react"
 // eslint-disable-next-line no-restricted-imports
-import { Button as AriaButton } from "react-aria-components"
+import { Button as AriaButton, PressEvent } from "react-aria-components"
 
 import { clx } from "@/classnames"
 import { Link } from "@/components/Routing"
@@ -16,7 +16,6 @@ export const Button = ({
   disabled,
   hover,
   focus,
-  to,
   type,
   ...props
 }: {
@@ -32,9 +31,16 @@ export const Button = ({
   readonly hover?: boolean
   readonly focus?: boolean
   readonly disabled?: boolean
-  readonly onClick?: () => void
-  readonly to?: string | LocationDescriptor<unknown>
-}) => {
+} & (
+  | {
+      readonly onClick?: undefined
+      readonly to: string | LocationDescriptor<unknown>
+    }
+  | {
+      readonly onClick?: (e: PressEvent) => void
+      readonly to?: undefined
+    }
+)) => {
   const variantStyles = clx(
     variant === undefined &&
       "border-[--color-normal-default-border] bg-[--color-normal-default-bg] text-[--color-normal-default-text] enabled:hover:border-[--color-normal-hover-border] enabled:hover:bg-[--color-normal-hover-bg] enabled:hover:text-[--color-normal-hover-text] enabled:active:border-[--color-normal-active-border] enabled:active:bg-[--color-normal-active-bg] enabled:active:text-[--color-normal-active-text] disabled:border-[--color-normal-disabled-border] disabled:bg-[--color-normal-disabled-bg] disabled:text-[--color-normal-disabled-text] enabled:data-[force-active='true']:border-[--color-normal-active-border] enabled:data-[force-hover='true']:border-[--color-normal-hover-border] enabled:data-[force-active='true']:bg-[--color-normal-active-bg] enabled:data-[force-hover='true']:bg-[--color-normal-hover-bg] enabled:data-[force-active='true']:text-[--color-normal-active-text] enabled:data-[force-hover='true']:text-[--color-normal-hover-text]",
@@ -64,9 +70,9 @@ export const Button = ({
     variantStyles,
     textSize,
   )
-  if (to != null) {
+  if (props.to != null) {
     return (
-      <Link {...props} to={to} className={clx(className, buttonCss)}>
+      <Link {...props} to={props.to} className={clx(className, buttonCss)}>
         {children}
       </Link>
     )

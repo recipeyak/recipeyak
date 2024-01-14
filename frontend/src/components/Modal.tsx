@@ -25,15 +25,28 @@ export function Modal({
     >
       <AriaModal className="h-full w-full overflow-hidden bg-[--color-background-card] p-6 shadow-xl outline-none sm:mt-[8vh] sm:h-[max-content] sm:max-w-md sm:rounded-md">
         <Dialog className="outline-none">
-          <div className="flex items-center justify-between">
-            <div>{title}</div>
-            <CloseButton
-              onClose={() => {
-                onOpenChange(false)
-              }}
-            />
+          <div
+            onClick={(e) => {
+              // disable clicking so we can put this anywhere in the DOM and
+              // ensure we don't click stuff behind it
+              e.stopPropagation()
+            }}
+            onDoubleClick={(e) => {
+              // disable click propagation so we can put this anywhere in the
+              // DOM and ensure we don't click stuff behind it
+              e.stopPropagation()
+            }}
+          >
+            <div className="flex items-center justify-between">
+              <div>{title}</div>
+              <CloseButton
+                onClose={() => {
+                  onOpenChange(false)
+                }}
+              />
+            </div>
+            {children}
           </div>
-          {children}
         </Dialog>
       </AriaModal>
     </ModalOverlay>

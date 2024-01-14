@@ -2,12 +2,13 @@ import { addDays, addWeeks, format } from "date-fns"
 import React from "react"
 import { Link } from "react-router-dom"
 
+import { Avatar } from "@/components/Avatar"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { Select } from "@/components/Forms"
 import { Modal } from "@/components/Modal"
 import { formatAbsoluteDate, toISODateString } from "@/date"
-import { TimelineEvent } from "@/pages/recipe-detail/Notes"
+import { NoteTimeStamp } from "@/pages/recipe-detail/Notes"
 import { useScheduledRecipeDelete } from "@/queries/scheduledRecipeDelete"
 import { useScheduledRecipeFindNextOpen } from "@/queries/scheduledRecipeFindNextOpen"
 import { useScheduledRecipeUpdate } from "@/queries/scheduledRecipeUpdate"
@@ -31,20 +32,34 @@ function RecipeItem({
   name,
   author,
   to,
+  createdAt,
+  createdBy,
 }: {
   src: string
   name: string
   author: string | null
   to: string
+  createdBy: {
+    readonly id: number | string
+    readonly name: string
+    readonly avatar_url: string
+  } | null
+  createdAt: string
 }) {
   const cls =
-    "h-[40px] w-[40px] rounded-md bg-[--color-background-empty-image] object-cover"
+    "h-[60px] w-[60px] rounded-md bg-[--color-background-empty-image] object-cover"
   return (
     <Link to={to} className="flex cursor-pointer items-center gap-2">
       {src !== "" ? <img src={src} className={cls} /> : <div className={cls} />}
       <div>
         <div className="line-clamp-1 text-ellipsis">{name}</div>
         <div className="line-clamp-1 text-ellipsis text-sm">{author}</div>
+        <div className="flex items-center gap-1">
+          <Avatar avatarURL={createdBy?.avatar_url ?? null} size={20} />
+          <div>
+            {createdBy?.name} · <NoteTimeStamp created={createdAt} />
+          </div>
+        </div>
       </div>
     </Link>
   )
@@ -93,35 +108,17 @@ export function ScheduledRecipeEditModal({
       title={prettyDate}
     >
       <div className="flex flex-col gap-2">
-        <RecipeItem
-          to={to}
-          src={primaryImage?.url != null ? imgixFmt(primaryImage.url) : ""}
-          name={recipeName}
-          author={recipeAuthor}
-        />
-
-        {reschedulerOpen && (
-          <RescheduleSection
-            onClose={() => {
-              onClose(false)
-            }}
-            date={date}
-            scheduledId={scheduledId}
-            recipeName={recipeName}
+        <div className="flex flex-col gap-1">
+          <RecipeItem
+            to={to}
+            src={primaryImage?.url != null ? imgixFmt(primaryImage.url) : ""}
+            name={recipeName}
+            author={recipeAuthor}
+            createdAt={createdAt}
+            createdBy={createdBy}
           />
-        )}
-        <hr className="my-1" />
+        </div>
 
-        <TimelineEvent
-          enableLinking={false}
-          event={{
-            id: scheduledId,
-            action: "scheduled",
-            created_by: createdBy,
-            created: createdAt,
-            is_scraped: false,
-          }}
-        />
         <div className="flex flex-col gap-2">
           <Button
             size="normal"
@@ -132,6 +129,16 @@ export function ScheduledRecipeEditModal({
           >
             Reschedule
           </Button>
+          {reschedulerOpen && (
+            <RescheduleSection
+              onClose={() => {
+                onClose(false)
+              }}
+              date={date}
+              scheduledId={scheduledId}
+              recipeName={recipeName}
+            />
+          )}
           <Button size="normal" variant="primary" to={to}>
             View Recipe
           </Button>
@@ -265,13 +272,7 @@ function RescheduleSection({
                 value={toISODateString(localDate)}
                 onChange={handleDateChange}
                 type="date"
-                className="w-full"
-                // eslint-disable-next-line no-restricted-syntax
-                style={{
-                  border: "1px solid var(--color-border)",
-                  borderRadius: 5,
-                  padding: "0.25rem",
-                }}
+                className="w-full rounded-md border border-solid border-[--color-border] p-1"
               />
               <details>
                 <summary>shortcuts</summary>
@@ -296,7 +297,7 @@ function RescheduleSection({
                       onClick={handleFindNextOpen}
                       disabled={findNextOpen.isPending}
                     >
-                      {!findNextOpen.isPending ? "find" : "finding..."}
+                      {!findNextOpen.isPending ? "Find" : "Finding..."}
                     </Button>
                   </div>
                 </Box>
@@ -315,7 +316,7 @@ function RescheduleSection({
             }}
             disabled={scheduledRecipeUpdate.isPending}
           >
-            {!scheduledRecipeUpdate.isPending ? "save" : "saving..."}
+            {!scheduledRecipeUpdate.isPending ? "Save" : "Saving..."}
           </Button>
         )}
       </Box>
