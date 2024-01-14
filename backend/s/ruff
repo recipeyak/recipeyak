@@ -3,9 +3,9 @@ set -e
 
 main() {
   if [ "$CI" ]; then
-    ./.venv/bin/ruff format . --check
+    ./.venv/bin/ruff .
   else
-    ./.venv/bin/ruff format .
+    ./.venv/bin/ruff . --fix
   fi
   
 }

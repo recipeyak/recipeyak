@@ -61,7 +61,76 @@ jobs:
           name: test-results
           path: ~/test-results
 
-  lint:
+  format:
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install poetry
+        run: |
+          pipx install poetry==1.7.1
+          poetry config virtualenvs.in-project true
+      - uses: actions/setup-python@v4
+        with:
+          python-version-file: "./backend/.python-version"
+          cache: poetry
+          cache-dependency-path: "./backend/poetry.lock"
+      - name: Install dependencies
+        working-directory: "./backend"
+        run: poetry install
+      - name: Check formatting with Ruff
+        working-directory: "backend"
+        run: ./s/format
+
+  ruff:
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install poetry
+        run: |
+          pipx install poetry==1.7.1
+          poetry config virtualenvs.in-project true
+      - uses: actions/setup-python@v4
+        with:
+          python-version-file: "./backend/.python-version"
+          cache: poetry
+          cache-dependency-path: "./backend/poetry.lock"
+      - name: Install dependencies
+        working-directory: "./backend"
+        run: poetry install
+      - name: Lint with Ruff
+        working-directory: "backend"
+        run: ./s/ruff
+
+  typecheck:
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install poetry
+        run: |
+          pipx install poetry==1.7.1
+          poetry config virtualenvs.in-project true
+      - uses: actions/setup-python@v4
+        with:
+          python-version-file: "./backend/.python-version"
+          cache: poetry
+          cache-dependency-path: "./backend/poetry.lock"
+      - name: Install dependencies
+        working-directory: "./backend"
+        run: poetry install
+      - name: Typecheck with mypy
+        working-directory: "backend"
+        run: ./s/typecheck
+
+  check_missing_migrations:
     needs: pre_job
     if: needs.pre_job.outputs.should_skip != 'true'
 
@@ -94,9 +163,9 @@ jobs:
       - name: Install dependencies
         working-directory: "./backend"
         run: poetry install
-      - name: Run lints
+      - name: Check for missing migrations
         working-directory: "backend"
-        run: ./s/lint
+        run: ./s/check_migrations
 
   lint_migrations:
     needs: pre_job
