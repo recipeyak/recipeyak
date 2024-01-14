@@ -2,18 +2,8 @@
 set -ex
 
 main() {
-  if [ "$CI" ]; then
-    ./s/check_migrations
-  fi
-
-  if [ "$CI" ]; then
-    ./.venv/bin/ruff format . --check
-    ./.venv/bin/ruff .
-  else
-    ./.venv/bin/ruff format .
-    ./.venv/bin/ruff . --fix
-  fi
-
+  ./s/fmt
+  ./s/ruff
   ./s/typecheck
 }
 
