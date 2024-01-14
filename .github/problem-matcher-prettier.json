@@ -4,7 +4,7 @@
       "owner": "prettier",
       "pattern": [
         {
-          "regexp": "^prettier-violation:(.+):(.+)$",
+          "regexp": "^formatting-violation:(.+):(.+)$",
           "file": 1,
           "message": 2
         }

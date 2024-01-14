@@ -9,7 +9,7 @@ from recipeyak import config
 from recipeyak.models.base import CommonInfo
 
 if TYPE_CHECKING:
-    from recipeyak.models import Note, Recipe, User  # noqa: F401
+    from recipeyak.models import Note, Recipe, User 
 
 
 def public_url(key: str) -> str:

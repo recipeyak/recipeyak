@@ -4,7 +4,7 @@ set -o pipefail
 
 prettier() {
   if [ "$CI" ]; then
-    node_modules/.bin/prettier '**/*.{js,jsx,scss,css,ts,tsx,json,yaml,yml,md}' --list-different | awk -v prefix="$PWD" '{print "prettier-violation:"  prefix "/" $0 ":formatting required"}'
+    node_modules/.bin/prettier '**/*.{js,jsx,scss,css,ts,tsx,json,yaml,yml,md}' --list-different | awk -v prefix="$PWD" '{print "formatting-violation:"  prefix "/" $0 ":formatting required"}'
   else
     node_modules/.bin/prettier '**/*.{js,jsx,scss,css,ts,tsx,json,yaml,yml,md}' --write --cache
   fi
@@ -32,7 +32,9 @@ tsc() {
 }
 
 main() {
-    (trap 'kill 0' SIGINT; prettier & eslint & tsc & wait)
+    prettier
+    eslint
+    tsc
 }
 
 main "$@"

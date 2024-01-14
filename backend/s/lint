@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 set -ex
+set -o pipefail
 
 format() {
   if [ "$CI" ]; then
-    ./.venv/bin/ruff format . --check
+    ./.venv/bin/ruff format . --check | grep  '^Would reformat:' |  awk -v prefix="$PWD" '{print "formatting-violation:" prefix "/" $3 ":formatting required"}'
   else
     ./.venv/bin/ruff format .
   fi
@@ -11,7 +12,7 @@ format() {
 
 ruff() {
  if [ "$CI" ]; then
-    ./.venv/bin/ruff .
+    ./.venv/bin/ruff . | grep -E '.*:\d+:\d+.*' | awk -v prefix="$PWD" '{print prefix "/" $0}'
   else
     ./.venv/bin/ruff . --fix
   fi
@@ -24,11 +25,18 @@ migrations() {
 }
 
 typecheck() {
+ if [ "$CI" ]; then
+    ./s/typecheck | grep -E '.*:\d+:\d+.*' | awk -v prefix="$PWD" '{print prefix "/" $0}'
+  else
     ./s/typecheck
+  fi
 }
 
 main() {
-  (trap 'kill 0' SIGINT; format & ruff & migrations & typecheck & wait)
+  format
+  ruff
+  migrations
+  typecheck
 }
 
 main "$@"
