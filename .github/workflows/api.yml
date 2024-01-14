@@ -94,9 +94,11 @@ jobs:
       - name: Install dependencies
         working-directory: "./backend"
         run: poetry install
+      - run: echo "::add-matcher::.github/problem-matcher-prettier.json"
       - name: Run lints
         working-directory: "backend"
         run: ./s/lint
+      - run: echo "::remove-matcher::.github/problem-matcher-prettier.json"
 
   lint_migrations:
     needs: pre_job
