@@ -44,28 +44,28 @@ from recipe_index_queue
             res = await connection.fetch(
                 """
         SELECT
-            json_build_object(
-                'objectID', id,
-                'id', id,
-                'name', name,
-                'author', author,
-                'source', source,
-                'time', time,
-                'servings', servings,
-                'archived', archived_at is distinct from null,
-                'archived_at', archived_at,
-                'tags', tags,
-                'team_id', team_id,
-                'primary_image', (
-                    select json_build_object(
-                        'url', 'https://images-cdn.recipeyak.com/' || "key" ,
-                        'background_url', "background_url",
-                        'created_by_id', "created_by_id"
+            json_object(
+                'objectID': id,
+                'id': id,
+                'name': name,
+                'author': author,
+                'source': source,
+                'time': time,
+                'servings': servings,
+                'archived': archived_at is distinct from null,
+                'archived_at': archived_at,
+                'tags': tags,
+                'team_id': team_id,
+                'primary_image': (
+                    select json_object(
+                        'url': 'https://images-cdn.recipeyak.com/' || "key" ,
+                        'background_url': "background_url",
+                        'created_by_id': "created_by_id"
                     )
                     from core_upload
                     where core_upload.id = core_recipe.primary_image_id
                 ),
-                'archived_by_id', (
+                'archived_by_id': (
                     select
                         created_by_id
                     from (
@@ -86,7 +86,7 @@ from recipe_index_queue
                         and created_by_id is not null
                         and recipe_id = core_recipe.id
                 ),
-                'created_by_id', (
+                'created_by_id': (
                     select
                         created_by_id
                     from
@@ -95,13 +95,13 @@ from recipe_index_queue
                         and action = 'created'
                     limit 1
                 ),
-                'scheduled_by_id', (
+                'scheduled_by_id': (
                     select json_agg(distinct created_by_id)
                     from core_scheduledrecipe
                     where recipe_id = core_recipe.id
                         and created_by_id is not null
                 ),
-                'scheduled_count', (
+                'scheduled_count': (
                     SELECT
                         count(*)
                     FROM
@@ -111,7 +111,7 @@ from recipe_index_queue
                         and core_scheduledrecipe.on > (now() - '1.5 years'::interval)
                         and core_scheduledrecipe.on < now()
                 ),
-                'scheduled_count_all_time', (
+                'scheduled_count_all_time': (
                     SELECT
                         count(*)
                     FROM
@@ -119,20 +119,20 @@ from recipe_index_queue
                     WHERE
                         core_scheduledrecipe.recipe_id = core_recipe.id
                 ),
-                'ingredients', (
+                'ingredients': (
                     SELECT
                         json_agg(ingredient)
                     FROM (
                         SELECT
-                            json_build_object(
-                                'id', id,
-                                'description', "description",
-                                'quantity_name', "quantity" || ' ' || "name",
-                                'quantity_name_description', "quantity" || ' ' || "name" || ', ' || "description",
-                                'recipe_id', "recipe_id",
-                                'quantity', "quantity",
-                                'name', "name",
-                                'optional', "optional"
+                            json_object(
+                                'id': id,
+                                'description': "description",
+                                'quantity_name': "quantity" || ' ' || "name",
+                                'quantity_name_description': "quantity" || ' ' || "name" || ', ' || "description",
+                                'recipe_id': "recipe_id",
+                                'quantity': "quantity",
+                                'name': "name",
+                                'optional': "optional"
                             ) AS ingredient
                         FROM
                             core_ingredient

@@ -87,10 +87,10 @@ select
     (
         select json_agg(sub.ingredient) ingredients
         from (
-            select json_build_object(
-                'id', id,
-                'quantity', quantity,
-                'name', name
+            select json_object(
+                'id': id,
+                'quantity': quantity,
+                'name': name
             ) ingredient
             from core_ingredient
             where recipe_id = core_recipe.id
@@ -98,10 +98,10 @@ select
     ) ingredients,
     (
         select
-            json_build_object(
-                'id', id,
-                'key', key,
-                'background_url', background_url
+            json_object(
+                'id': id,
+                'key': key,
+                'background_url': background_url
             ) primary_image
         from
             core_upload
