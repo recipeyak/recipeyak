@@ -8,7 +8,7 @@ import { useTeamId } from "@/useTeamId"
 export function useSearchRecipes({
   query,
   indexName = "recipes",
-  facetFilters,
+  facetFilters = [],
   limit = 20,
 }: {
   query: string
