@@ -27,7 +27,9 @@ class Config(BaseSettings):
     ALGOLIA_ADMIN_API_KEY: str
 
 
-async def process_queue(connection: asyncpg.Connection[Any], config: Config) -> None:
+async def process_queue(
+    connection: asyncpg.Connection[Any], config: Config, backfill_all: bool
+) -> None:
     async with SearchClient.create(
         app_id=config.ALGOLIA_APPLICATION_ID, api_key=config.ALGOLIA_ADMIN_API_KEY
     ) as client:
@@ -145,9 +147,10 @@ from recipe_index_queue
             core_recipe
         WHERE
             team_id IS NOT NULL
-            and core_recipe.id = ANY($1);
+            and (core_recipe.id = ANY($1) or $2);
         """,
                 [x["recipe_id"] for x in recipes_to_index],
+                backfill_all,
             )
             updated_recipes = [json.loads(row["recipe"]) for row in res]
             await index.save_objects_async(updated_recipes)
@@ -171,12 +174,12 @@ delete from recipe_index_queue where id = ANY($1)
             )
 
 
-async def job(config: Config, single_run: bool) -> None:
+async def job(config: Config, backfill_all: bool) -> None:
     dsn = str(config.DATABASE_URL)
     pg = await asyncpg.connect(dsn=dsn)
 
-    if single_run:
-        await process_queue(pg, config=config)
+    if backfill_all:
+        await process_queue(pg, config=config, backfill_all=backfill_all)
         return
 
     async def callback(
@@ -185,9 +188,10 @@ async def job(config: Config, single_run: bool) -> None:
         channel: str,
         payload: object,
     ) -> None:
-        await process_queue(conn, config=config)
+        await process_queue(conn, config=config, backfill_all=backfill_all)
 
     await pg.add_listener("recipe_enqueued_for_indexing", callback)  # type: ignore[arg-type]
+    await pg.execute("notify recipe_enqueued_for_indexing")
 
     while True:
         await asyncio.sleep(0.5)
@@ -195,7 +199,7 @@ async def job(config: Config, single_run: bool) -> None:
             logger.info("tick")
 
 
-def main(single_run: bool = False) -> None:
+def main(backfill_all: bool = False) -> None:
     logger.info("initiate")
     sentry_sdk.init(
         send_default_pii=True,
@@ -203,7 +207,7 @@ def main(single_run: bool = False) -> None:
     )
     config = Config()
     start = time.monotonic()
-    asyncio.run(job(config=config, single_run=single_run))
+    asyncio.run(job(config=config, backfill_all=backfill_all))
     logger.info("done!", total_time_sec=time.monotonic() - start)
     logger.info("exiting")
 
