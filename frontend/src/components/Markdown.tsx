@@ -83,6 +83,20 @@ function renderOl({
   )
 }
 
+function renderLi({
+  children,
+  ...props
+}: React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLLIElement>,
+  HTMLLIElement
+>) {
+  return (
+    <li {...omit(props, "node")} className="mb-1 last:mb-0">
+      {children}
+    </li>
+  )
+}
+
 function renderP({
   children,
   ...props
@@ -120,6 +134,7 @@ const renderers = {
   a: renderLink,
   ul: renderUl,
   ol: renderOl,
+  li: renderLi,
   p: renderP,
   blockquote: renderBlockQuote,
 }

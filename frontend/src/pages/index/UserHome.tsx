@@ -146,7 +146,7 @@ function SchedulePreview() {
 
 function CreatedBy({ createdBy }: { createdBy: NonNullable<CreatedBy> }) {
   const imageCss =
-    "w-[20px] h-[20px] rounded-full bg-[--color-background-empty-image]"
+    "w-[20px] h-[20px] min-w-[20px] rounded-full bg-[--color-background-empty-image]"
   return (
     <div className="flex gap-1">
       {createdBy.avatarUrl ? (
