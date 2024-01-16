@@ -61,9 +61,8 @@ export default function IngredientView({
   dragRef,
 }: IIngredientVIewProps) {
   return (
-    // eslint-disable-next-line react/forbid-elements
-    <p
-      className="cursor-auto select-text justify-between whitespace-pre-wrap pb-[0.4rem] leading-5"
+    <div
+      className="cursor-auto select-text justify-between whitespace-pre-wrap pb-2 leading-5"
       ref={dragRef}
     >
       <IngredientViewContent
@@ -72,6 +71,6 @@ export default function IngredientView({
         name={name}
         optional={optional}
       />
-    </p>
+    </div>
   )
 }
