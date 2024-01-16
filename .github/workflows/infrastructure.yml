@@ -94,7 +94,7 @@ jobs:
           FRONTEND_GIT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         working-directory: "frontend"
         run: |
-          export API_GIT_TREE_SHA=$(git rev-parse HEAD:backend)
+          export FRONTEND_API_GIT_TREE_SHA=$(git rev-parse HEAD:backend)
           s/build
       - name: Build and push
         working-directory: "./frontend"

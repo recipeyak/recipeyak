@@ -96,7 +96,14 @@ Sentry.init({
   tracesSampleRate: 1.0,
 })
 // eslint-disable-next-line no-console
-console.log("version:", GIT_SHA, "\nsentry:", SENTRY_DSN)
+console.log(
+  "version:",
+  GIT_SHA,
+  "\nsentry:",
+  SENTRY_DSN,
+  "\ntree sha:",
+  API_GIT_TREE_SHA,
+)
 
 const client = new Ably.Realtime.Promise({ authUrl: "/api/v1/auth/ably/" })
 
