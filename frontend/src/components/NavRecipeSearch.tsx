@@ -52,7 +52,7 @@ function SearchResultsPopover({
           stylesSuggestion,
           isFocusVisible &&
             !isMobile() &&
-            "rounded-md outline outline-2 outline-[rgb(47,129,247)]",
+            "rounded-md outline outline-[3px] outline-[rgb(47,129,247)]",
           hit.archived_at != null && "text-[--color-text-muted] line-through",
         )}
         onDragStart={(e) => {
