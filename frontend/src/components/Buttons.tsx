@@ -22,27 +22,27 @@ export const Button = forwardRef(
       type,
       ...props
     }: {
-      readonly size?: "small" | "normal" | "large"
-
-      readonly style?: React.CSSProperties
-      readonly className?: string
-      readonly children: React.ReactNode
-      readonly variant?: "primary" | "danger" | "gradient" | "nostyle"
-      readonly type?: "submit" | "reset" | "button" | undefined
-      readonly loading?: boolean
-      readonly active?: boolean
-      readonly hover?: boolean
-      readonly focus?: boolean
-      readonly disabled?: boolean
+      size?: "small" | "normal" | "large"
+      style?: React.CSSProperties
+      className?: string
+      children: React.ReactNode
+      variant?: "primary" | "danger" | "gradient" | "nostyle"
+      type?: "submit" | "reset" | "button" | undefined
+      loading?: boolean
+      active?: boolean
+      hover?: boolean
+      focus?: boolean
+      disabled?: boolean
     } & (
       | {
-          readonly onClick?: undefined
-          readonly to: string | LocationDescriptor<unknown>
+          onClick?: undefined
+          to: string | LocationDescriptor<unknown>
         }
       | {
-          readonly onClick?: (e: PressEvent) => void
-          readonly onPressStart?: (e: PressEvent) => void
-          readonly to?: undefined
+          onClick?: (e: PressEvent) => void
+          onKeyDown?: ((e: React.KeyboardEvent) => void) | undefined
+          onPressStart?: (e: PressEvent) => void
+          to?: undefined
         }
     ),
     ref: ForwardedRef<HTMLButtonElement>,
@@ -88,6 +88,7 @@ export const Button = forwardRef(
     return (
       <AriaButton
         ref={ref}
+        onKeyDown={props.onKeyDown}
         onPressStart={props.onPressStart}
         style={props.style}
         onPress={props.onClick}
