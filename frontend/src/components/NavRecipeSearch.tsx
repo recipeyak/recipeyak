@@ -1,5 +1,6 @@
 import { clamp } from "lodash-es"
 import React, { useRef, useState } from "react"
+import { useFocusVisible } from "react-aria"
 import { Link, useHistory } from "react-router-dom"
 import useOnClickOutside from "use-onclickoutside"
 
@@ -7,7 +8,6 @@ import { isMobile } from "@/browser"
 import { clx } from "@/classnames"
 import { Button } from "@/components/Buttons"
 import { CustomHighlight } from "@/components/CustomHighlight"
-import { SearchInput } from "@/components/Forms"
 import { Image } from "@/components/Image"
 import { pathRecipesList } from "@/paths"
 import { ResponseFromUse } from "@/queries/queryUtilTypes"
@@ -41,15 +41,17 @@ function SearchResultsPopover({
   selectedIndex: number
   hits: Hits
 }) {
+  // Used to avoid showing focus ring on mobile (devices without keyboards)
+  const { isFocusVisible } = useFocusVisible()
   const suggestions = hits.map((hit, index) => {
-    const isFocusVisible = index === selectedIndex
+    const isCurrentSelection = index === selectedIndex && isFocusVisible
     return (
       <Link
         key={hit.id}
         to={recipeURL(hit.id, hit.name)}
         className={clx(
           stylesSuggestion,
-          isFocusVisible &&
+          isCurrentSelection &&
             !isMobile() &&
             "rounded-md outline outline-[3px] outline-[rgb(47,129,247)]",
           hit.archived_at != null && "text-[--color-text-muted] line-through",
@@ -93,7 +95,7 @@ function SearchResultsPopover({
     <div className="pointer-events-none absolute inset-x-0 top-[2px] z-10 flex w-full justify-center">
       <div
         onClick={onClick}
-        className="flex w-full flex-col gap-2 rounded-xl border border-solid border-[--color-border] bg-[--color-background-card] px-3 pb-1 pt-3 sm:inset-x-[unset] sm:max-w-[600px]"
+        className="pointer-events-auto flex w-full flex-col gap-2 rounded-xl border border-solid border-[--color-border] bg-[--color-background-card] px-3 pb-1 pt-3 sm:inset-x-[unset] sm:max-w-[600px]"
       >
         {searchInput}
         {hits.length === 0 && (
@@ -269,9 +271,10 @@ export function NavRecipeSearch() {
           </>
         }
         variant="nostyle"
-        className={
-          "w-full !cursor-default !justify-start gap-2 border border-solid border-[--color-border] bg-[--color-background-card] !px-2 !py-[5px] !pr-3 !text-base !font-normal text-[--color-text] sm:!cursor-text"
-        }
+        className={clx(
+          "w-full !cursor-default !justify-start gap-2 border border-solid border-[--color-border] bg-[--color-background-card] !px-2 !py-[5px] !pr-3 !text-base !font-normal text-[--color-text] sm:!cursor-text",
+          "-outline-offset-1 focus-within:outline focus-within:outline-[2px] focus-within:outline-[rgb(47,129,247)]",
+        )}
       />
       {showPopover && (
         <SearchResultsPopover
@@ -280,20 +283,34 @@ export function NavRecipeSearch() {
           selectedIndex={selectedIndex}
           query={query}
           searchInput={
-            <SearchInput
-              value={query}
-              autoFocus
-              placeholder="Press / to search"
-              onChange={(e) => {
-                setQuery(e.target.value)
-                // If we start searching after we already selected a
-                // suggestion, we should reset back to the initial state aka 0
-                if (selectedIndex !== 0) {
-                  setSelectedIndex(0)
-                }
+            <div
+              className={clx(
+                "relative z-[1] flex w-full appearance-none items-center justify-start gap-2 rounded-md border border-solid border-[--color-border] bg-[--color-background-card] pl-2 align-top shadow-none transition-[border-color,box-shadow] duration-200 [box-shadow:inset_0_1px_2px_rgba(10,10,10,0.1)]",
+                "-outline-offset-1 focus-within:outline focus-within:outline-[2px] focus-within:outline-[rgb(47,129,247)]",
+              )}
+              onClick={(e) => {
+                // Allow clicking on the input -- it shouldn't close the modal
+                e.stopPropagation()
               }}
-              onKeyDown={handleSearchKeydown}
-            />
+            >
+              <SearchIcon />
+              <input
+                value={query}
+                type="search"
+                autoFocus
+                className="w-full border-none bg-transparent py-[5px] pr-2 text-base text-[--color-text] outline-none placeholder:text-[--color-input-placeholder]"
+                placeholder=""
+                onChange={(e) => {
+                  setQuery(e.target.value)
+                  // If we start searching after we already selected a
+                  // suggestion, we should reset back to the initial state aka 0
+                  if (selectedIndex !== 0) {
+                    setSelectedIndex(0)
+                  }
+                }}
+                onKeyDown={handleSearchKeydown}
+              />
+            </div>
           }
           onClick={() => {
             resetForm()
