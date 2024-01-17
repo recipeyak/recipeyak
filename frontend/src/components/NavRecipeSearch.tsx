@@ -103,7 +103,7 @@ function SearchResultsPopover({
     )
   })
   return (
-    <div className="absolute inset-x-0 top-[2px] z-10 flex w-full justify-center">
+    <div className="pointer-events-none absolute inset-x-0 top-[2px] z-10 flex w-full justify-center">
       <div
         onClick={onClick}
         className="flex w-full flex-col gap-2 rounded-xl border border-solid border-[--color-border] bg-[--color-background-card] px-3 pb-1 pt-3 sm:inset-x-[unset] sm:max-w-[600px]"
