@@ -8,6 +8,7 @@ import { clx } from "@/classnames"
 import { Button } from "@/components/Buttons"
 import { CustomHighlight } from "@/components/CustomHighlight"
 import { SearchInput } from "@/components/Forms"
+import { Image } from "@/components/Image"
 import { pathRecipesList } from "@/paths"
 import { ResponseFromUse } from "@/queries/queryUtilTypes"
 import { useSearchRecipes } from "@/queries/searchRecipes"
@@ -40,8 +41,6 @@ function SearchResultsPopover({
   selectedIndex: number
   hits: Hits
 }) {
-  const cls = "h-[40px] w-[40px] min-w-[40px] rounded-md object-cover"
-
   const suggestions = hits.map((hit, index) => {
     const isFocusVisible = index === selectedIndex
     return (
@@ -61,29 +60,17 @@ function SearchResultsPopover({
         }}
       >
         <div className="flex items-center gap-2">
-          {hit.primary_image?.url !== "" && hit.primary_image?.url != null ? (
-            // Need to make sure we crunch down the image sizes to avoid costly compositing and painting on Mac Safari
-            <div className="grid">
-              <img
-                src={imgixFmtSmall(hit.primary_image?.url)}
-                // grid-row: 1 and grid-col: 1 place both img elements in the
-                // same grid space. We use z-index to place our full image above
-                // the background one.
-                className={clx(cls, "z-50 col-start-1 row-start-1")}
-              />
-              <img
-                className={clx(
-                  cls,
-                  // we set the background color here, or else we'd cover up our
-                  // background image.
-                  "col-start-1 row-start-1 bg-[--color-background-empty-image]",
-                )}
-                src={hit.primary_image.background_url ?? ""}
-              />
-            </div>
-          ) : (
-            <div className={clx(cls, "bg-[--color-background-empty-image]")} />
-          )}
+          <Image
+            width={40}
+            height={40}
+            sources={
+              hit.primary_image && {
+                url: imgixFmtSmall(hit.primary_image.url),
+                backgroundUrl: hit.primary_image.background_url,
+              }
+            }
+            rounded
+          />
           <div className="flex flex-col">
             <div
               className={clx(
