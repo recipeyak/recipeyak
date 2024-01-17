@@ -249,16 +249,24 @@ export function NavRecipeSearch() {
           // popover.
           //
           // Not sure this is a complete list.
-          if (
-            e.key === "Alt" ||
-            e.key === "Control" ||
-            e.key === "Meta" ||
-            e.key === "Shift" ||
-            e.key === "Tab" ||
-            e.key === "Delete" ||
-            e.key === "Backspace" ||
-            e.key === "CapsLock"
-          ) {
+          // Maybe we just want alphanumeric + enter? Probably want to ignore
+          // alphanumeric + modifier keys though
+          const ignoredKeys = new Set([
+            "ArrowDown",
+            "ArrowUp",
+            "ArrowLeft",
+            "ArrowRight",
+            "Alt",
+            "Control",
+            "Meta",
+            "Shift",
+            "Tab",
+            "Delete",
+            "Backspace",
+            "CapsLock",
+            "Escape",
+          ])
+          if (ignoredKeys.has(e.key)) {
             return
           }
           setShowPopover(true)
