@@ -11,7 +11,13 @@ export function AlgoliaProvider({ children }: { children: React.ReactNode }) {
   const res = useAlgoliaClient(teamId)
 
   return (
-    <AlgoliaContext.Provider value={res.data ?? null}>
+    <AlgoliaContext.Provider
+      value={
+        // when our data is stale, our token will be invalid. Return null while
+        // react-query fetches new data.
+        (!res.isStale ? res.data : null) ?? null
+      }
+    >
       {children}
     </AlgoliaContext.Provider>
   )

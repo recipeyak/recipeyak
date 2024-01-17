@@ -36,7 +36,8 @@
     "vitest-dom": "^0.1.1"
   },
   "dependencies": {
-    "@sentry/react": "^7.81.1",
+    "@sentry/integrations": "^7.93.0",
+    "@sentry/react": "^7.93.0",
     "@tanstack/query-sync-storage-persister": "^5.8.3",
     "@tanstack/react-query": "^5.8.4",
     "@tanstack/react-query-devtools": "^5.8.4",

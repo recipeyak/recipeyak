@@ -84,7 +84,11 @@ const handleResponseError = (error: AxiosError) => {
   if (maintenanceMode) {
     location.reload()
   } else if (serverError || requestTimeout) {
-    Sentry.captureException(error)
+    Sentry.captureException(error, (scope) =>
+      scope
+        .setTags({ responseStatus: error.response?.status, code: error.code })
+        .setExtras({ response: error.response }),
+    )
   } else if (unAuthenticated) {
     logout(queryClient)
   } else {

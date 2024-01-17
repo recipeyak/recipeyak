@@ -1,17 +1,22 @@
-import React from "react"
+import { clamp } from "lodash-es"
+import React, { useRef, useState } from "react"
 import { Link, useHistory } from "react-router-dom"
 import useOnClickOutside from "use-onclickoutside"
 
+import { isMobile } from "@/browser"
 import { clx } from "@/classnames"
+import { Button } from "@/components/Buttons"
 import { CustomHighlight } from "@/components/CustomHighlight"
 import { SearchInput } from "@/components/Forms"
 import { pathRecipesList } from "@/paths"
 import { ResponseFromUse } from "@/queries/queryUtilTypes"
 import { useSearchRecipes } from "@/queries/searchRecipes"
+import { imgixFmtSmall } from "@/url"
 import { recipeURL } from "@/urls"
 import { useGlobalEvent } from "@/useGlobalEvent"
 
-const stylesSuggestion = "p-1 overflow-x-hidden whitespace-nowrap text-ellipsis"
+const stylesSuggestion =
+  "px-1 overflow-x-hidden whitespace-nowrap text-ellipsis"
 
 const styleSuggestionInfo = clx(
   "text-center text-[--color-text-muted]",
@@ -19,80 +24,114 @@ const styleSuggestionInfo = clx(
 )
 
 type Hits = NonNullable<ResponseFromUse<typeof useSearchRecipes>>["hits"]
-function SearchResult({
+
+function SearchResultsPopover({
   query,
   hits,
   hitCount,
   onClick,
+  searchInput,
+  selectedIndex,
 }: {
   query: string
+  searchInput: React.ReactNode
   onClick?: () => void
   hitCount: number
+  selectedIndex: number
   hits: Hits
 }) {
-  const suggestions = hits
-    .map((hit, index) => {
-      return (
-        <Link
-          key={hit.id}
-          to={recipeURL(hit.id, hit.name)}
-          className={clx(
-            stylesSuggestion,
-            index === 0 && "underline",
-            hit.archived_at != null && "text-[--color-text-muted] line-through",
+  const cls = "h-[40px] w-[40px] min-w-[40px] rounded-md object-cover"
+
+  const suggestions = hits.map((hit, index) => {
+    const isFocusVisible = index === selectedIndex
+    return (
+      <Link
+        key={hit.id}
+        to={recipeURL(hit.id, hit.name)}
+        className={clx(
+          stylesSuggestion,
+          isFocusVisible &&
+            !isMobile() &&
+            "rounded-md outline outline-2 outline-[rgb(47,129,247)]",
+          hit.archived_at != null && "text-[--color-text-muted] line-through",
+        )}
+        onDragStart={(e) => {
+          e.dataTransfer.setData("recipeyak/recipe", JSON.stringify(hit))
+          e.dataTransfer.effectAllowed = "copyMove"
+        }}
+      >
+        <div className="flex items-center gap-2">
+          {hit.primary_image?.url !== "" && hit.primary_image?.url != null ? (
+            // Need to make sure we crunch down the image sizes to avoid costly compositing and painting on Mac Safari
+            <div className="grid">
+              <img
+                src={imgixFmtSmall(hit.primary_image?.url)}
+                // grid-row: 1 and grid-col: 1 place both img elements in the
+                // same grid space. We use z-index to place our full image above
+                // the background one.
+                className={clx(cls, "z-50 col-start-1 row-start-1")}
+              />
+              <img
+                className={clx(
+                  cls,
+                  // we set the background color here, or else we'd cover up our
+                  // background image.
+                  "col-start-1 row-start-1 bg-[--color-background-empty-image]",
+                )}
+                src={hit.primary_image.background_url ?? ""}
+              />
+            </div>
+          ) : (
+            <div className={clx(cls, "bg-[--color-background-empty-image]")} />
           )}
-          onDragStart={(e) => {
-            e.dataTransfer.setData("recipeyak/recipe", JSON.stringify(hit))
-            e.dataTransfer.effectAllowed = "copyMove"
-          }}
-        >
-          <div className="flex">
-            <span
+          <div className="flex flex-col">
+            <div
               className={clx(
                 "grow-0 overflow-x-hidden text-ellipsis whitespace-pre",
               )}
             >
               <CustomHighlight hit={hit} attribute="name" />{" "}
-            </span>
+            </div>
             {hit.author && (
-              <span className="grow">
-                by{" "}
-                <span>
-                  <CustomHighlight hit={hit} attribute="author" />
-                </span>
-              </span>
+              <div className="grow text-sm">
+                <CustomHighlight hit={hit} attribute="author" />
+              </div>
             )}
           </div>
-        </Link>
-      )
-    })
-    .slice(0, 7)
+        </div>
+      </Link>
+    )
+  })
   return (
-    <div
-      onClick={onClick}
-      className="inline-grid w-full rounded-[5px] border border-solid border-[--color-border] bg-[--color-background-card] p-1"
-    >
-      {hits.length === 0 && (
-        <div className={styleSuggestionInfo}>No Results Found</div>
-      )}
-      {suggestions}
+    <div className="absolute inset-x-0 top-[2px] z-10 flex w-full justify-center">
       <div
-        className={clx(
-          "mt-2 flex justify-between border-[0] border-t border-solid border-[--color-border]",
-          stylesSuggestion,
-        )}
+        onClick={onClick}
+        className="flex w-full flex-col gap-2 rounded-xl border border-solid border-[--color-border] bg-[--color-background-card] px-3 pb-1 pt-3 sm:inset-x-[unset] sm:max-w-[600px]"
       >
-        <span className="text-[--color-text-muted]">matches: {hitCount}</span>
-
-        <Link
-          to={{
-            pathname: pathRecipesList({}),
-            search: `search=${encodeURIComponent(query ?? "")}`,
-          }}
-          data-testid="search browse"
+        {searchInput}
+        {hits.length === 0 && (
+          <div className={clx(styleSuggestionInfo, "pt-2")}>
+            No Results Found
+          </div>
+        )}
+        <div className="flex w-full flex-col gap-1">{suggestions}</div>
+        <div
+          className={clx(
+            "flex justify-between border-[0] border-t border-solid border-[--color-border] py-1",
+            stylesSuggestion,
+          )}
         >
-          Browse
-        </Link>
+          <span className="text-[--color-text-muted]">results: {hitCount}</span>
+          <Link
+            to={{
+              pathname: pathRecipesList({}),
+              search: `search=${encodeURIComponent(query ?? "")}`,
+            }}
+            data-testid="search browse"
+          >
+            Browse
+          </Link>
+        </div>
       </div>
     </div>
   )
@@ -107,24 +146,46 @@ function isInputFocused() {
   )
 }
 
+function SearchIcon({ className }: { className: string }) {
+  const size = 16
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      className={className}
+    >
+      <circle cx="11" cy="11" r="8" />
+      <path d="m21 21-4.3-4.3" />
+    </svg>
+  )
+}
+
 export function NavRecipeSearch() {
   const history = useHistory()
 
-  const [query, setQuery] = React.useState("")
+  const [query, setQuery] = useState("")
+  const [selectedIndex, setSelectedIndex] = useState(0)
 
-  const results = useSearchRecipes({ query })
+  const results = useSearchRecipes({ query, limit: 7 })
 
   // If a user clicks outside of the dropdown, we want to hide the dropdown, but
   // keep their search query.
   //
   // The alternative would be to clear the search query when clicking outside,
   // but I'm not sure that's desirable.
-  const [isClosed, setIsClosed] = React.useState(false)
-  const searchInputRef = React.useRef<HTMLInputElement>(null)
+  const [showPopover, setShowPopover] = useState(false)
+  const searchInputRef = useRef<HTMLButtonElement>(null)
 
-  const searchContainerRef = React.useRef(null)
+  const searchContainerRef = useRef(null)
   useOnClickOutside(searchContainerRef, () => {
-    setIsClosed(true)
+    setShowPopover(false)
   })
 
   useGlobalEvent({
@@ -133,57 +194,93 @@ export function NavRecipeSearch() {
         (e.key === "k" && e.metaKey) ||
         (e.key === "/" && !isInputFocused())
       ) {
-        searchInputRef.current?.focus()
         e.preventDefault()
+        setShowPopover(true)
       }
     },
   })
 
   const resetForm = () => {
     setQuery("")
-    setIsClosed(false)
+    setSelectedIndex(0)
+    setShowPopover(false)
   }
+
+  const hits = results.data?.hits ?? []
 
   const handleSearchKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     // We need to extract the key from the synthetic event before we lose the
     // event.
-    const key = e.key
-
-    const suggestion = results.data?.hits?.[0]
-    if (!suggestion) {
-      return
-    }
-    if (key === "Enter") {
-      resetForm()
-      history.push(recipeURL(suggestion.id, suggestion.name))
+    switch (e.key) {
+      case "Escape": {
+        // end up with the trigger button focused when a user hits
+        // escape so they can press enter to open the modal again
+        setShowPopover(false)
+        searchInputRef.current?.focus()
+        break
+      }
+      case "ArrowUp":
+        setSelectedIndex((s) => clamp(s - 1, 0, hits.length - 1))
+        break
+      case "ArrowDown":
+        setSelectedIndex((s) => clamp(s + 1, 0, hits.length - 1))
+        break
+      case "Enter": {
+        const suggestion = results.data?.hits?.[selectedIndex]
+        if (suggestion) {
+          history.push(recipeURL(suggestion.id, suggestion.name))
+        }
+        resetForm()
+        break
+      }
     }
   }
 
   return (
-    <div ref={searchContainerRef} className="flex w-full">
-      <SearchInput
+    <div ref={searchContainerRef} className="flex sm:w-full">
+      <Button
         ref={searchInputRef}
-        value={query}
-        placeholder="Press / to search"
-        onChange={(e) => {
-          setQuery(e.target.value)
+        // more closely mimic the behavior of the search input vs onPress/onClick
+        onPressStart={() => {
+          setShowPopover(true)
         }}
-        onKeyDown={handleSearchKeydown}
-        onFocus={() => {
-          setIsClosed(false)
-        }}
+        children={
+          <>
+            <SearchIcon className="block sm:hidden" />
+            <span className="hidden sm:block">Press / to search</span>
+          </>
+        }
+        variant="nostyle"
+        className={
+          "w-full !cursor-default !justify-start border border-solid border-[--color-border] bg-[--color-background-card] !px-2 !py-[5px] !text-base !font-normal text-[--color-text] sm:!cursor-text"
+        }
       />
-      {query && !isClosed && (
-        <div className="absolute inset-x-0 top-[60px] z-10 w-full sm:inset-x-[unset] sm:max-w-[400px]">
-          <SearchResult
-            hits={results.data?.hits ?? []}
-            hitCount={results.data?.result.nbHits ?? 0}
-            query={query}
-            onClick={() => {
-              resetForm()
-            }}
-          />
-        </div>
+      {showPopover && (
+        <SearchResultsPopover
+          hits={hits}
+          hitCount={results.data?.result.nbHits ?? 0}
+          selectedIndex={selectedIndex}
+          query={query}
+          searchInput={
+            <SearchInput
+              value={query}
+              autoFocus
+              placeholder="Press / to search"
+              onChange={(e) => {
+                setQuery(e.target.value)
+                // If we start searching after we already selected a
+                // suggestion, we should reset back to the initial state aka 0
+                if (selectedIndex !== 0) {
+                  setSelectedIndex(0)
+                }
+              }}
+              onKeyDown={handleSearchKeydown}
+            />
+          }
+          onClick={() => {
+            resetForm()
+          }}
+        />
       )}
     </div>
   )

@@ -1,5 +1,6 @@
 import "@/components/scss/main.scss"
 
+import { ExtraErrorData } from "@sentry/integrations"
 import * as Sentry from "@sentry/react"
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister"
 import { useIsRestoring } from "@tanstack/react-query"
@@ -85,6 +86,7 @@ Sentry.init({
   dsn: SENTRY_DSN,
   release: GIT_SHA || "",
   integrations: [
+    new ExtraErrorData(),
     new Sentry.BrowserTracing({
       // See docs for support of different versions of variation of react router
       // https://docs.sentry.io/platforms/javascript/guides/react/configuration/integrations/react-router/
@@ -94,7 +96,14 @@ Sentry.init({
   tracesSampleRate: 1.0,
 })
 // eslint-disable-next-line no-console
-console.log("version:", GIT_SHA, "\nsentry:", SENTRY_DSN)
+console.log(
+  "version:",
+  GIT_SHA,
+  "\nsentry:",
+  SENTRY_DSN,
+  "\ntree sha:",
+  API_GIT_TREE_SHA,
+)
 
 const client = new Ably.Realtime.Promise({ authUrl: "/api/v1/auth/ably/" })
 

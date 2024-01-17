@@ -14,8 +14,8 @@ export function useAlgoliaClient(teamId: number) {
   return useQuery({
     queryKey: ["algolia", teamId],
     // refetch hourly. Tokens expire after 1 hour.
-    staleTime: 30 * 60 * 1000,
-    refetchInterval: 30 * 60 * 1000,
+    staleTime: 50 * 60 * 1000,
+    refetchInterval: 25 * 60 * 1000,
     queryFn: async () => {
       const res = await getAlgoliaApiKey().then(unwrapResult)
       return res
