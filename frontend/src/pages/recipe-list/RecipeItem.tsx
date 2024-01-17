@@ -119,10 +119,7 @@ export function RecipeListItem({
         />
       </div>
       <div className="h-full p-2 leading-5">
-        <div
-          tabIndex={0}
-          className={clx("mb-1", hit.archived_at != null && "line-through")}
-        >
+        <div className={clx("mb-1", hit.archived_at != null && "line-through")}>
           <CustomHighlight attribute="name" hit={hit} />
         </div>
         {hit.author && (
