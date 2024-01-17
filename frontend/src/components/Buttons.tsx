@@ -41,6 +41,7 @@ export const Button = forwardRef(
         }
       | {
           readonly onClick?: (e: PressEvent) => void
+          readonly onPressStart?: (e: PressEvent) => void
           readonly to?: undefined
         }
     ),
@@ -55,8 +56,6 @@ export const Button = forwardRef(
         "border-[--color-danger-default-border] bg-[--color-danger-default-bg] text-[--color-danger-default-text] enabled:hover:border-[--color-danger-hover-border] enabled:hover:bg-[--color-danger-hover-bg] enabled:hover:text-[--color-danger-hover-text] enabled:active:border-[--color-danger-active-border] enabled:active:bg-[--color-danger-active-bg] enabled:active:text-[--color-danger-active-text] disabled:border-[--color-danger-disabled-border] disabled:bg-[--color-danger-disabled-bg] disabled:text-[--color-danger-disabled-text] enabled:data-[force-active='true']:border-[--color-danger-active-border] enabled:data-[force-hover='true']:border-[--color-danger-hover-border] enabled:data-[force-active='true']:bg-[--color-danger-active-bg] enabled:data-[force-hover='true']:bg-[--color-danger-hover-bg] enabled:data-[force-active='true']:text-[--color-danger-active-text] enabled:data-[force-hover='true']:text-[--color-danger-hover-text]",
       variant === "gradient" &&
         "pointer-events-auto !border-none text-white !shadow-none backdrop-blur-[10px] ![background-color:rgba(0,0,0,0.46)]",
-      variant === "nostyle" &&
-        "w-full !cursor-text !justify-start border border-solid border-[--color-border] bg-[--color-background-card] !px-2 !py-[5px] !text-base !font-normal text-[--color-text]",
     )
 
     const focusCss = clx(
@@ -89,6 +88,7 @@ export const Button = forwardRef(
     return (
       <AriaButton
         ref={ref}
+        onPressStart={props.onPressStart}
         style={props.style}
         onPress={props.onClick}
         isDisabled={loading || disabled}
