@@ -211,9 +211,13 @@ export function NavRecipeSearch() {
         break
       }
       case "ArrowUp":
+        // prevent arrow key from moving cursor to start of input
+        e.preventDefault()
         setSelectedIndex((s) => clamp(s - 1, 0, hits.length - 1))
         break
       case "ArrowDown":
+        // prevent arrow key from moving cursor to end of input
+        e.preventDefault()
         setSelectedIndex((s) => clamp(s + 1, 0, hits.length - 1))
         break
       case "Enter": {
