@@ -13,7 +13,7 @@ __pycache__
 backend/.pytest_cache
 docker-compose-shipit.yml
 .terraform/
-*env*
+*.env
 .pytest_cache/
 *.egg*
 pip-wheel-metadata
