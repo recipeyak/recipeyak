@@ -129,11 +129,13 @@ function isInputFocused() {
   return (
     activeElement !== document.body &&
     activeElement !== null &&
-    (activeElement.tagName === "INPUT" || activeElement.tagName === "TEXTAREA")
+    ((activeElement.tagName === "INPUT" &&
+      activeElement.getAttribute("type") !== "button") ||
+      activeElement.tagName === "TEXTAREA")
   )
 }
 
-function SearchIcon({ className }: { className: string }) {
+function SearchIcon({ className }: { className?: string }) {
   const size = 16
   return (
     <svg
@@ -227,19 +229,48 @@ export function NavRecipeSearch() {
     <div ref={searchContainerRef} className="flex sm:w-full">
       <Button
         ref={searchInputRef}
+        onKeyDown={(e) => {
+          if (e.key === "/" || (e.key === "k" && e.metaKey)) {
+            // the other event handler takes care of this
+            e.preventDefault()
+            setShowPopover(true)
+            return
+          }
+          // Only want to open the search for keys that would result in an input
+          // in a search box since we're trying to mimic a <intut type="search"
+          // /> with our button.
+          // So if someone only presses a modifier, we don't want to open the
+          // popover.
+          //
+          // Not sure this is a complete list.
+          if (
+            e.key === "Alt" ||
+            e.key === "Control" ||
+            e.key === "Meta" ||
+            e.key === "Shift" ||
+            e.key === "Tab" ||
+            e.key === "Delete" ||
+            e.key === "Backspace" ||
+            e.key === "CapsLock"
+          ) {
+            return
+          }
+          setShowPopover(true)
+        }}
         // more closely mimic the behavior of the search input vs onPress/onClick
         onPressStart={() => {
           setShowPopover(true)
         }}
         children={
           <>
-            <SearchIcon className="block sm:hidden" />
+            <SearchIcon />
+            <div className="block sm:hidden">Search</div>
             <span className="hidden sm:block">Press / to search</span>
           </>
         }
         variant="nostyle"
         className={
-          "w-full !cursor-default !justify-start border border-solid border-[--color-border] bg-[--color-background-card] !px-2 !py-[5px] !text-base !font-normal text-[--color-text] sm:!cursor-text"
+          "w-full !cursor-default !justify-start gap-2 border border-solid border-[--color-border] bg-[--color-background-card] !px-2 !py-[5px] !pr-3 !text-base !font-normal text-[--color-text] sm:!cursor-text"
         }
       />
       {showPopover && (
