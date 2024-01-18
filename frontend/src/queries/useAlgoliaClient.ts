@@ -1,5 +1,15 @@
+import {
+  MultipleQueriesOptions,
+  MultipleQueriesQuery,
+  MultipleQueriesResponse,
+  SearchForFacetValuesQueryParams,
+  SearchForFacetValuesResponse,
+  SearchOptions,
+} from "@algolia/client-search"
+import { RequestOptions } from "@algolia/transporter"
 import { useQuery } from "@tanstack/react-query"
 import algoliasearch from "algoliasearch"
+import { SearchClient } from "algoliasearch/lite"
 
 import { http } from "@/http"
 import { unwrapResult } from "@/query"
@@ -11,7 +21,7 @@ const getAlgoliaApiKey = () =>
   }>(`/api/v1/auth/algolia/`)
 
 export function useAlgoliaClient(teamId: number) {
-  return useQuery({
+  const res = useQuery({
     queryKey: ["algolia", teamId],
     // refetch hourly. Tokens expire after 1 hour.
     staleTime: 50 * 60 * 1000,
@@ -20,8 +30,36 @@ export function useAlgoliaClient(teamId: number) {
       const res = await getAlgoliaApiKey().then(unwrapResult)
       return res
     },
-    select(data) {
-      return algoliasearch(data.app_id, data.api_key)
-    },
   })
+
+  return {
+    async getClient(): Promise<SearchClient> {
+      if (res.isStale || res.data == null) {
+        const newRes = await res.refetch()
+        if (newRes.data == null) {
+          throw Error("Should not be null")
+        }
+        return algoliasearch(newRes.data.app_id, newRes.data.api_key)
+      }
+      return algoliasearch(res.data.app_id, res.data.api_key)
+    },
+    async search<TObject>(
+      queries: readonly MultipleQueriesQuery[],
+      requestOptions?: RequestOptions & MultipleQueriesOptions,
+    ): Promise<MultipleQueriesResponse<TObject>> {
+      return (await this.getClient()).search(queries, requestOptions)
+    },
+    async searchForFacetValues(
+      queries: ReadonlyArray<{
+        readonly indexName: string
+        readonly params: SearchForFacetValuesQueryParams & SearchOptions
+      }>,
+      requestOptions?: RequestOptions,
+    ): Promise<readonly SearchForFacetValuesResponse[]> {
+      return (await this.getClient()).searchForFacetValues(
+        queries,
+        requestOptions,
+      )
+    },
+  }
 }
