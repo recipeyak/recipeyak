@@ -104,7 +104,7 @@ export function Select(props: {
   children?: React.ReactNode
 }) {
   return (
-    <div className="relative inline-block h-[2.25em] max-w-full rounded-md align-top text-xs after:pointer-events-none after:absolute after:right-[1.125em] after:top-[50%] after:z-[4] after:mt-[-0.375em] after:block after:h-[0.5em] after:w-[0.5em] after:-rotate-45 after:border after:border-r-0 after:border-t-0 after:border-solid after:border-[--color-accent] after:content-['_']">
+    <div className="relative inline-block h-[2.25em] max-w-max rounded-md align-top text-xs after:pointer-events-none after:absolute after:right-[1.125em] after:top-[50%] after:z-[4] after:mt-[-0.375em] after:block after:h-[0.5em] after:w-[0.5em] after:-rotate-45 after:border after:border-r-0 after:border-t-0 after:border-solid after:border-[--color-accent] after:content-['_']">
       {/* eslint-disable-next-line react/forbid-elements */}
       <select
         {...props}

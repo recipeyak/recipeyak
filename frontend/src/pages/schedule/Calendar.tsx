@@ -172,7 +172,7 @@ function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
           }}
           className="gap-2"
         >
-          <span>Shop</span>
+          <span className="hidden sm:block">Shop</span>
           <ShopIcon />
         </Button>
         <Button
@@ -182,7 +182,7 @@ function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
             setShowSchedule(true)
           }}
         >
-          <span>Schedule</span>
+          <span className="hidden sm:block">Schedule</span>
           <Plus />
         </Button>
       </Box>
