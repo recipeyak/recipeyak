@@ -1,8 +1,7 @@
 import { SearchResponse } from "@algolia/client-search"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import { useContext } from "react"
 
-import { AlgoliaContext } from "@/components/AlgoliaProvider"
+import { useAlgoliaContext } from "@/components/algoliaContext"
 import { useTeamId } from "@/useTeamId"
 
 export function useSearchRecipes({
@@ -16,7 +15,7 @@ export function useSearchRecipes({
   facetFilters?: Array<string | Array<string>>
   limit?: number
 }) {
-  const searchClient = useContext(AlgoliaContext)
+  const searchClient = useAlgoliaContext()
   const teamId = useTeamId()
   return useQuery({
     placeholderData: keepPreviousData,
@@ -25,7 +24,7 @@ export function useSearchRecipes({
       skipPersistence: true,
     },
     queryFn: () =>
-      searchClient?.search<{
+      searchClient.search<{
         readonly id: number
         readonly name: string
         readonly archived_at: string | null
