@@ -10,7 +10,6 @@ import { CustomHighlight } from "@/components/CustomHighlight"
 import { Image } from "@/components/Image"
 import { ResponseFromUse } from "@/queries/queryUtilTypes"
 import { useSearchRecipes } from "@/queries/searchRecipes"
-import { imgixFmt } from "@/url"
 import { recipeURL } from "@/urls"
 
 const Card = forwardRef(
@@ -102,10 +101,11 @@ export function RecipeListItem({
         <Image
           // lazy load everything after the first 20ish
           lazyLoad={index > 20}
+          imgixFmt="large"
           sources={
             hit.primary_image && {
-              url: imgixFmt(hit.primary_image.url ?? ""),
-              backgroundUrl: hit.primary_image.background_url ?? "",
+              url: hit.primary_image.url,
+              backgroundUrl: hit.primary_image.background_url,
             }
           }
           // TODO: add back background image with backdrop-filter: blur /

@@ -1,6 +1,7 @@
 import { useRef } from "react"
 
 import { clx } from "@/classnames"
+import { imgixFmt, imgixFmtSmall } from "@/url"
 import { useIntersectionObserver } from "@/useIntersectionObserver"
 
 export function Image({
@@ -14,6 +15,7 @@ export function Image({
   loading,
   onClick,
   lazyLoad,
+  imgixFmt: imgx,
   ...rest
 }: {
   readonly sources:
@@ -32,6 +34,7 @@ export function Image({
   readonly roundDesktop?: boolean
   readonly onClick?: () => void
   readonly lazyLoad?: boolean
+  readonly imgixFmt: "small" | "large" | "original"
   ariaLabel?: string
 }) {
   const ref = useRef<HTMLDivElement | null>(null)
@@ -43,6 +46,20 @@ export function Image({
     rootMargin: "500px",
   })
   const isVisible = !lazyLoad || entry?.isIntersecting
+
+  const formatSource = (source: string) => {
+    switch (imgx) {
+      case "large": {
+        return imgixFmt(source)
+      }
+      case "small": {
+        return imgixFmtSmall(source)
+      }
+      case "original": {
+        return source
+      }
+    }
+  }
   return (
     <div
       ref={ref}
@@ -75,8 +92,10 @@ export function Image({
       {sources != null && isVisible && (
         <>
           <img
-            src={sources.url ?? ""}
+            src={formatSource(sources.url ?? "")}
             loading={loading}
+            // set key to forcefull replace DOM node.
+            key={formatSource(sources.url ?? "")}
             className={clx(
               "absolute z-[1] h-full w-full object-cover",
               rounded && "rounded-md",
@@ -85,6 +104,8 @@ export function Image({
             )}
           />
           <div
+            // set key to forcefull replace DOM node.
+            key={sources.backgroundUrl ?? ""}
             // eslint-disable-next-line no-restricted-syntax
             style={{
               // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -93,7 +114,7 @@ export function Image({
                 : undefined,
             }}
             className={clx(
-              "relative h-full w-full bg-cover bg-center",
+              "absolute bottom-0 left-0 right-0 top-0 bg-cover bg-center",
               // kind of tricky: https://stackoverflow.com/a/70810692/3720597
               "bg-[image:--backgroundImage]",
               rounded && "rounded-md",

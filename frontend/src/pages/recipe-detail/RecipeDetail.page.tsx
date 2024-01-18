@@ -43,7 +43,7 @@ import {
 import { useRecipeUpdate } from "@/queries/recipeUpdate"
 import { useSectionUpdate } from "@/queries/sectionUpdate"
 import { notEmpty } from "@/text"
-import { formatImgOpenGraph, imgixFmt } from "@/url"
+import { formatImgOpenGraph } from "@/url"
 import { useAddSlugToUrl } from "@/useAddSlugToUrl"
 import { useGlobalEvent } from "@/useGlobalEvent"
 
@@ -652,10 +652,8 @@ function RecipeInfo(props: {
         <>
           <div className="relative -mx-3 aspect-[3/2] [grid-area:2/1] print:!hidden sm:mx-0 md:[grid-area:1/2]">
             <Image
-              sources={{
-                url: imgixFmt(props.recipe.primaryImage?.url ?? ""),
-                backgroundUrl: props.recipe.primaryImage?.backgroundUrl ?? "",
-              }}
+              sources={props.recipe.primaryImage}
+              imgixFmt="large"
               roundDesktop
               onClick={() => {
                 props.openImage()

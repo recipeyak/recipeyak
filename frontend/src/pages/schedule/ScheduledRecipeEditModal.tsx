@@ -6,13 +6,13 @@ import { Avatar } from "@/components/Avatar"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { Select } from "@/components/Forms"
+import { Image } from "@/components/Image"
 import { Modal } from "@/components/Modal"
 import { formatAbsoluteDate, toISODateString } from "@/date"
 import { NoteTimeStamp } from "@/pages/recipe-detail/Notes"
 import { useScheduledRecipeDelete } from "@/queries/scheduledRecipeDelete"
 import { useScheduledRecipeFindNextOpen } from "@/queries/scheduledRecipeFindNextOpen"
 import { useScheduledRecipeUpdate } from "@/queries/scheduledRecipeUpdate"
-import { imgixFmt } from "@/url"
 import { recipeURL } from "@/urls"
 
 const options = [
@@ -28,14 +28,17 @@ const options = [
 ] as const
 
 function RecipeItem({
-  src,
+  sources,
   name,
   author,
   to,
   createdAt,
   createdBy,
 }: {
-  src: string
+  sources: {
+    url: string
+    backgroundUrl: string | null
+  } | null
   name: string
   author: string | null
   to: string
@@ -46,11 +49,15 @@ function RecipeItem({
   } | null
   createdAt: string
 }) {
-  const cls =
-    "h-[60px] w-[60px] rounded-md bg-[--color-background-empty-image] object-cover"
   return (
     <Link to={to} className="flex cursor-pointer items-center gap-2">
-      {src !== "" ? <img src={src} className={cls} /> : <div className={cls} />}
+      <Image
+        sources={sources}
+        width={60}
+        height={60}
+        rounded
+        imgixFmt="large"
+      />
       <div>
         <div className="line-clamp-1 text-ellipsis">{name}</div>
         <div className="line-clamp-1 text-ellipsis text-sm">{author}</div>
@@ -111,7 +118,7 @@ export function ScheduledRecipeEditModal({
         <div className="flex flex-col gap-1">
           <RecipeItem
             to={to}
-            src={primaryImage?.url != null ? imgixFmt(primaryImage.url) : ""}
+            sources={primaryImage}
             name={recipeName}
             author={recipeAuthor}
             createdAt={createdAt}

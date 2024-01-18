@@ -18,7 +18,6 @@ import { ResponseFromUse } from "@/queries/queryUtilTypes"
 import { useRecentlyCreatedRecipesList } from "@/queries/recentlyCreatedRecipesList"
 import { useRecentlyViewedRecipesList } from "@/queries/recentlyViewedRecipesList"
 import { useSchedulePreviewList } from "@/queries/schedulePreviewList"
-import { imgixFmt } from "@/url"
 import { recipeURL } from "@/urls"
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
@@ -172,13 +171,9 @@ function RecipeSlide({
         <Image
           width={48}
           height={48}
+          imgixFmt="small"
           grayscale={!!r.archivedAt}
-          sources={
-            r.primaryImage && {
-              url: imgixFmt(r.primaryImage.url),
-              backgroundUrl: r.primaryImage.backgroundUrl,
-            }
-          }
+          sources={r.primaryImage}
           rounded
         />
         <Box dir="col" w={100}>

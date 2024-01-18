@@ -7,7 +7,6 @@ import { Image } from "@/components/Image"
 import { isInsideChangeWindow } from "@/date"
 import { DragDrop } from "@/dragDrop"
 import { ScheduledRecipeEditModal } from "@/pages/schedule/ScheduledRecipeEditModal"
-import { imgixFmt } from "@/url"
 import { recipeURL } from "@/urls"
 import { useGlobalEvent } from "@/useGlobalEvent"
 
@@ -104,12 +103,8 @@ export function CalendarItem({
           <Image
             width={25}
             height={25}
-            sources={
-              primaryImage && {
-                url: imgixFmt(primaryImage.url),
-                backgroundUrl: primaryImage.backgroundUrl,
-              }
-            }
+            imgixFmt="small"
+            sources={primaryImage}
             rounded
           />
           <div className="line-clamp-3 text-ellipsis break-words text-sm font-semibold leading-tight">

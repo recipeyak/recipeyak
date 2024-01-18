@@ -16,11 +16,11 @@ import { clx } from "@/classnames"
 import { Button } from "@/components/Buttons"
 import { CustomHighlight } from "@/components/CustomHighlight"
 import { DateInput } from "@/components/Forms"
+import { Image } from "@/components/Image"
 import { Modal } from "@/components/Modal"
 import { toISODateString } from "@/date"
 import { useScheduleRecipeCreate } from "@/queries/scheduledRecipeCreate"
 import { useSearchRecipes } from "@/queries/searchRecipes"
-import { imgixFmt } from "@/url"
 
 const CheckIcon = () => (
   <svg
@@ -62,11 +62,7 @@ function RecipeSelect({
         <div className="flex items-center justify-between">
           <RecipeItem
             key={value.id}
-            src={
-              value.primary_image?.url != null
-                ? imgixFmt(value.primary_image.url)
-                : ""
-            }
+            sources={value.primary_image}
             name={value.name}
             author={value.author ?? ""}
           />
@@ -115,11 +111,7 @@ function RecipeSelect({
               <UserItem textValue={hit.name}>
                 <RecipeItem
                   key={hit.id}
-                  src={
-                    hit.primary_image?.url != null
-                      ? imgixFmt(hit.primary_image.url)
-                      : ""
-                  }
+                  sources={hit.primary_image}
                   hit={hit}
                   name={hit.name}
                   author={hit.author ?? ""}
@@ -164,20 +156,21 @@ function UserItem(props: ListBoxItemProps & { children: React.ReactNode }) {
 }
 
 function RecipeItem({
-  src,
+  sources,
   name,
   author,
   onClick,
   hit,
 }: {
-  src: string
+  sources: {
+    readonly url: string
+    readonly background_url: string | null
+  } | null
   name: string
   author: string
   onClick?: () => void
   hit?: Hit<{}>
 }) {
-  const cls =
-    "h-[40px] w-[40px] min-w-[40px] rounded-md bg-[--color-background-empty-image] object-cover"
   return (
     <div
       className="flex cursor-pointer items-center gap-2"
@@ -188,7 +181,17 @@ function RecipeItem({
         }
       }}
     >
-      {src !== "" ? <img src={src} className={cls} /> : <div className={cls} />}
+      <Image
+        imgixFmt="large"
+        sources={
+          sources
+            ? { backgroundUrl: sources.background_url, url: sources.url }
+            : null
+        }
+        height={40}
+        rounded
+        width={40}
+      />
       <div>
         <div className="line-clamp-1 text-ellipsis">
           {hit ? <CustomHighlight hit={hit} attribute="name" /> : name}

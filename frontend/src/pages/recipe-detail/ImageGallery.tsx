@@ -86,6 +86,7 @@ export const Gallery = (props: {
               // larger size when a larger srcset image is loaded.
               className="m-auto h-full object-contain"
               loading="eager"
+              // set key to forcefull replace DOM node.
               key={imgixFmt(props.imageUrl)}
               src={imgixFmt(props.imageUrl)}
               onLoad={(e) => {
