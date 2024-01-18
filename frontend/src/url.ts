@@ -26,8 +26,8 @@ export function imgixFmtSmall(url: string) {
     return url
   }
   const u = new URL(url)
-  u.searchParams.set("w", "100")
-  u.searchParams.set("q", "75")
+  u.searchParams.set("w", "200")
+  u.searchParams.set("q", "100")
   u.searchParams.set("fit", "clip")
   return u.toString()
 }

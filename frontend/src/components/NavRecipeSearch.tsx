@@ -12,7 +12,6 @@ import { Image } from "@/components/Image"
 import { pathRecipesList } from "@/paths"
 import { ResponseFromUse } from "@/queries/queryUtilTypes"
 import { useSearchRecipes } from "@/queries/searchRecipes"
-import { imgixFmtSmall } from "@/url"
 import { recipeURL } from "@/urls"
 import { useGlobalEvent } from "@/useGlobalEvent"
 
@@ -65,9 +64,10 @@ function SearchResultsPopover({
           <Image
             width={40}
             height={40}
+            imgixFmt="small"
             sources={
               hit.primary_image && {
-                url: imgixFmtSmall(hit.primary_image.url),
+                url: hit.primary_image.url,
                 backgroundUrl: hit.primary_image.background_url,
               }
             }
