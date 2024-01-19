@@ -6,6 +6,7 @@ import remarkBreaks from "remark-breaks"
 import remarkGfm, { Root } from "remark-gfm"
 import smartypants from "remark-smartypants"
 
+import { clx } from "@/classnames"
 import { Link } from "@/components/Routing"
 import * as settings from "@/settings"
 import { normalizeUnitsFracs } from "@/text"
@@ -40,7 +41,7 @@ const ALLOWED_INLINE_MARKDOWN_TYPES: (keyof Components)[] = [
   "s",
 ]
 
-function renderLink({
+function renderA({
   href,
   ...props
 }: React.DetailedHTMLProps<
@@ -49,12 +50,17 @@ function renderLink({
 >) {
   const linkCss = "underline hover:no-underline"
   if (href?.startsWith(settings.DOMAIN)) {
+    // If someone has pasted a raw RecipeYak link, simplify it, otherwise use
+    // the actual children which is the `name` in markdown, i.e., [name](url)
     const to = new URL(href).pathname
+    const isRecipeYakRecipeLink =
+      Array.isArray(props.children) && props.children[0] === href
+    const children = isRecipeYakRecipeLink ? to.substring(1) : props.children
     return (
       <Link
         {...omit(props, "node")}
         to={to}
-        children={to.substring(1)}
+        children={children}
         className={linkCss}
       />
     )
@@ -140,7 +146,7 @@ function renderBlockQuote({
 
 // setup a lot of renderers so we can style the individual tags
 const renderers = {
-  a: renderLink,
+  a: renderA,
   ul: renderUl,
   ol: renderOl,
   li: renderLi,
@@ -181,9 +187,11 @@ function remarkHighlightBakingSodaAndPowder() {
 export function Markdown({
   children: text,
   inline,
+  className,
 }: {
   children: string
   inline?: boolean
+  className?: string
 }) {
   const allowedElements = inline
     ? ALLOWED_INLINE_MARKDOWN_TYPES
@@ -219,9 +227,9 @@ export function Markdown({
       unwrapDisallowed
     />
   )
-  const className = "cursor-auto select-text [word-break:break-word]"
+  const cls = clx("cursor-auto select-text [word-break:break-word]", className)
   if (inline) {
-    return <span children={markdown} className={className} />
+    return <span children={markdown} className={cls} />
   }
-  return <div children={markdown} className={className} />
+  return <div children={markdown} className={cls} />
 }

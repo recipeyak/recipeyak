@@ -14,4 +14,4 @@ export const API_GIT_TREE_SHA: string = DEBUG
 export const SENTRY_DSN =
   "https://9168fb38e6d2ec1e1731d68867bb6d94@o64108.ingest.sentry.io/4506287122939904"
 
-export const DOMAIN = DEBUG ? "http://localhost:3000" : "https://recipeyak.com"
+export const DOMAIN = DEBUG ? "http://localhost" : "https://recipeyak.com"

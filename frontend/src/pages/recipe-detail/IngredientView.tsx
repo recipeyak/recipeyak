@@ -33,15 +33,18 @@ export function IngredientViewContent({
   const isBakingPowder = name.toLocaleLowerCase() === "baking powder"
   return (
     <>
-      <span className="font-medium">{quantity}</span>{" "}
-      <span
+      <Markdown inline className="font-medium">
+        {quantity}
+      </Markdown>{" "}
+      <Markdown
+        inline
         className={clx(
           isBakingSoda && THEME_CSS_BAKING_SODA,
           isBakingPowder && THEME_CSS_BAKING_POWDER,
         )}
       >
         {name}
-      </span>
+      </Markdown>
       <Markdown inline>{description}</Markdown>{" "}
       {optional ? (
         <span className="text-[--color-text-muted] print:!text-black">
