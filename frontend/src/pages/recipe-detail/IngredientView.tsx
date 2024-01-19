@@ -1,6 +1,7 @@
 import { DragElementWrapper, DragSourceOptions } from "react-dnd"
 
 import { clx } from "@/classnames"
+import { Markdown } from "@/components/Markdown"
 import { RecipeFetchResponse as Recipe } from "@/queries/recipeFetch"
 import { normalizeUnitsFracs } from "@/text"
 import {
@@ -41,7 +42,7 @@ export function IngredientViewContent({
       >
         {name}
       </span>
-      {description}{" "}
+      <Markdown inline>{description}</Markdown>{" "}
       {optional ? (
         <span className="text-[--color-text-muted] print:!text-black">
           [optional]
