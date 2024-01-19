@@ -24,11 +24,20 @@ const ALLOWED_MARKDOWN_TYPES: (keyof Components)[] = [
   "em",
   "li",
   "a",
-  "link",
   "ol",
   "ul",
   // allow our baking soda, baking powder replacer thing to work
   "span",
+]
+
+// Want to support all the styling related tags, but not ones that result in
+// layout changing
+const ALLOWED_INLINE_MARKDOWN_TYPES: (keyof Components)[] = [
+  "text",
+  "a",
+  "em",
+  "strong",
+  "s",
 ]
 
 function renderLink({
@@ -169,38 +178,50 @@ function remarkHighlightBakingSodaAndPowder() {
   }
 }
 
-export function Markdown({ children: text }: { children: string }) {
-  return (
-    <div className="cursor-auto select-text [word-break:break-word]">
-      <ReactMarkdown
-        allowedElements={ALLOWED_MARKDOWN_TYPES}
-        remarkPlugins={[
-          // enable auto-linking of urls & other github flavored markdown features
-          remarkGfm,
-          // make new lines behave like github comments
-          //
-          //   Mars is
-          //   the fourth planet
-          //
-          // becomes:
-          //
-          //   <p>Mars is<br>
-          //   the fourth planet</p>
-          //
-          // instead of without the plugin:
-          //
-          //   <p>Mars is
-          //   the fourth planet</p>
-          //
-          remarkBreaks,
-          // auto convert -- to em dash and similar
-          smartypants,
-          remarkHighlightBakingSodaAndPowder,
-        ]}
-        children={normalizeUnitsFracs(text)}
-        components={renderers}
-        unwrapDisallowed
-      />
-    </div>
+export function Markdown({
+  children: text,
+  inline,
+}: {
+  children: string
+  inline?: boolean
+}) {
+  const allowedElements = inline
+    ? ALLOWED_INLINE_MARKDOWN_TYPES
+    : ALLOWED_MARKDOWN_TYPES
+  const markdown = (
+    <ReactMarkdown
+      allowedElements={allowedElements}
+      remarkPlugins={[
+        // enable auto-linking of urls & other github flavored markdown features
+        remarkGfm,
+        // make new lines behave like github comments
+        //
+        //   Mars is
+        //   the fourth planet
+        //
+        // becomes:
+        //
+        //   <p>Mars is<br>
+        //   the fourth planet</p>
+        //
+        // instead of without the plugin:
+        //
+        //   <p>Mars is
+        //   the fourth planet</p>
+        //
+        remarkBreaks,
+        // auto convert -- to em dash and similar
+        smartypants,
+        remarkHighlightBakingSodaAndPowder,
+      ]}
+      children={normalizeUnitsFracs(text)}
+      components={renderers}
+      unwrapDisallowed
+    />
   )
+  const className = "cursor-auto select-text [word-break:break-word]"
+  if (inline) {
+    return <span children={markdown} className={className} />
+  }
+  return <div children={markdown} className={className} />
 }
