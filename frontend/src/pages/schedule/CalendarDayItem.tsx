@@ -110,7 +110,12 @@ export function CalendarItem({
             grayscale={archived}
             rounded
           />
-          <div className="line-clamp-3 text-ellipsis break-words text-sm font-semibold leading-tight">
+          <div
+            className={clx(
+              "line-clamp-3 text-ellipsis break-words text-sm font-semibold leading-tight",
+              archived && "line-through",
+            )}
+          >
             {recipeName}
           </div>
         </Link>

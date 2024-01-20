@@ -3,6 +3,7 @@ import { orderBy } from "lodash-es"
 import React from "react"
 import { Link } from "react-router-dom"
 
+import { clx } from "@/classnames"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { DateInput } from "@/components/Forms"
@@ -42,7 +43,14 @@ function RecipeItem({
         rounded
       />
       <div>
-        <div className="line-clamp-1 text-ellipsis">{name}</div>
+        <div
+          className={clx(
+            "line-clamp-1 text-ellipsis",
+            archived && "line-through",
+          )}
+        >
+          {name}
+        </div>
         <div className="line-clamp-1 text-ellipsis text-sm">{author}</div>
       </div>
     </div>
