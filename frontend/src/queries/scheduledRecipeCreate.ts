@@ -37,6 +37,7 @@ function toCalRecipe(
       id: recipe.id,
       name: recipe.name,
       author: null,
+      archivedAt: null,
       primaryImage: null,
     },
     on: toISODateString(on),
