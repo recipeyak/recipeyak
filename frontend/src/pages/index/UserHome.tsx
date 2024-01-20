@@ -8,6 +8,7 @@ import {
 import React from "react"
 import { Link } from "react-router-dom"
 
+import { clx } from "@/classnames"
 import { Box } from "@/components/Box"
 import { Helmet } from "@/components/Helmet"
 import { Image } from "@/components/Image"
@@ -177,7 +178,14 @@ function RecipeSlide({
           rounded
         />
         <Box dir="col" w={100}>
-          <div className="line-clamp-1 text-ellipsis">{r.name}</div>
+          <div
+            className={clx(
+              "line-clamp-1 text-ellipsis",
+              r.archivedAt != null && "line-through",
+            )}
+          >
+            {r.name}
+          </div>
           <small className="line-clamp-1 text-ellipsis">{r.author}</small>
           {createdBy && <CreatedBy createdBy={createdBy} />}
         </Box>
