@@ -115,6 +115,7 @@ export function useScheduleRecipeCreate() {
       ]
 
       weekIds.forEach((weekId) => {
+        // eslint-disable-next-line no-restricted-syntax
         queryClient.setQueryData<CalendarResponse>(
           [teamID, "calendar", weekId.getTime()],
           (data) => {
@@ -138,6 +139,8 @@ export function useScheduleRecipeCreate() {
       }
       context.weekIds.forEach((weekId) => {
         // TODO: replace with type safe wrapper function
+
+        // eslint-disable-next-line no-restricted-syntax
         queryClient.setQueryData<CalendarResponse>(
           [teamID, "calendar", weekId.getTime()],
           (data) => {
@@ -166,6 +169,8 @@ export function useScheduleRecipeCreate() {
       }
       context.weekIds.forEach((weekId) => {
         // TODO: replace with type safe wrapper function
+
+        // eslint-disable-next-line no-restricted-syntax
         queryClient.setQueryData<CalendarResponse>(
           [teamID, "calendar", weekId.getTime()],
           (data) => {

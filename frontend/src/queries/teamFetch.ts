@@ -31,5 +31,6 @@ export function setQueryDataTeam(
     ) => TeamFetchResponse | undefined
   },
 ) {
+  // eslint-disable-next-line no-restricted-syntax
   client.setQueryData<TeamFetchResponse>(getQueryKey({ teamId }), updater)
 }

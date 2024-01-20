@@ -13,6 +13,7 @@ export const updateChecklistItemCache = (
   recipeId: number,
   queryClient: QueryClient,
 ) => {
+  // eslint-disable-next-line no-restricted-syntax
   queryClient.setQueryData<CookChecklist>(
     ["updateCookChecklist", recipeId],
     (old) => ({ ...old, [params.ingredientId]: params.checked }),
@@ -42,6 +43,7 @@ export function useCookChecklistUpdate({ recipeId }: { recipeId: number }) {
       return { previousData }
     },
     onError: (_err, _newData, context) => {
+      // eslint-disable-next-line no-restricted-syntax
       queryClient.setQueryData(
         ["updateCookChecklist", recipeId],
         context?.previousData,

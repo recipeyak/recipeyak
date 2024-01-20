@@ -47,5 +47,6 @@ export function setQueryDataUser(
     ) => UserFetchResponse | undefined
   },
 ) {
+  // eslint-disable-next-line no-restricted-syntax
   client.setQueryData<UserFetchResponse>(getQueryKey(), updater)
 }

@@ -45,5 +45,6 @@ export function setQueryDataInviteList(
     ) => InviteListResponse | undefined
   },
 ) {
+  // eslint-disable-next-line no-restricted-syntax
   client.setQueryData<InviteListResponse>(getQueryKey(), updater)
 }

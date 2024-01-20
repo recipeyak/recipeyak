@@ -22,6 +22,7 @@ export function useScheduledRecipeSettingsRegenerateLink() {
   return useMutation({
     mutationFn: () => generateCalendarLink().then(unwrapEither),
     onSuccess: (response) => {
+      // eslint-disable-next-line no-restricted-syntax
       queryClient.setQueryData<CalendarResponse>(
         [teamID, "calendar-settings"],
         (prev) => {

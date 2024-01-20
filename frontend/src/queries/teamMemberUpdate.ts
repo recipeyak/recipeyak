@@ -46,8 +46,6 @@ export function useTeamMemberUpdate() {
           })
         },
       })
-      // TODO: ban
-      // queryClient.setQueryData<IMember[]>(
       return { prevLevel }
     },
     onSuccess: (res, vars) => {

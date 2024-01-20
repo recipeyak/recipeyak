@@ -145,6 +145,7 @@ export function setQueryDataRecipe(
     ) => RecipeFetchResponse | undefined
   },
 ) {
+  // eslint-disable-next-line no-restricted-syntax
   client.setQueryData<RecipeFetchResponse>(
     getQueryKey({ teamId, recipeId }),
     updater,

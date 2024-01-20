@@ -11,6 +11,7 @@ export function useSessionDeleteAll() {
   return useMutation({
     mutationFn: () => deleteAllSessions().then(unwrapResult),
     onSuccess: () => {
+      // eslint-disable-next-line no-restricted-syntax
       queryClient.setQueryData<readonly ISession[]>(["sessions"], (prev) => {
         return prev?.filter((x) => x.current)
       })

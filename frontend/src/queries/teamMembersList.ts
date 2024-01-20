@@ -44,5 +44,6 @@ export function setQueryDataTeamMemberList(
     ) => TeamMemberListResponse | undefined
   },
 ) {
+  // eslint-disable-next-line no-restricted-syntax
   client.setQueryData<TeamMemberListResponse>(getQueryKey({ teamId }), updater)
 }
