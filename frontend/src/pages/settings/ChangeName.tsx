@@ -2,8 +2,8 @@ import React from "react"
 
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
-import { TextInput } from "@/components/Forms"
 import { BetterLabel } from "@/components/Label"
+import { TextInput } from "@/components/TextInput"
 import { useUserUpdate } from "@/queries/userUpdate"
 import { toast } from "@/toast"
 

@@ -7,10 +7,10 @@ import { clx } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
-import { Textarea } from "@/components/Forms"
 import { Markdown } from "@/components/Markdown"
 import { RotatingLoader } from "@/components/RoatingLoader"
 import { Link } from "@/components/Routing"
+import { Textarea } from "@/components/Textarea"
 import { formatAbsoluteDateTime, formatHumanDateTime } from "@/date"
 import {
   ReactionPopover,

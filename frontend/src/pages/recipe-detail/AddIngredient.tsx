@@ -1,7 +1,8 @@
 import React, { useState } from "react"
 
 import { Button } from "@/components/Buttons"
-import { CheckBox, TextInput } from "@/components/Forms"
+import { CheckBox } from "@/components/Checkbox"
+import { TextInput } from "@/components/TextInput"
 import { AddSectionForm } from "@/pages/recipe-detail/AddSectionForm"
 import { useIngredientCreate } from "@/queries/ingredientCreate"
 

@@ -3,9 +3,9 @@ import React, { useState } from "react"
 import { useHistory } from "react-router"
 
 import { Button } from "@/components/Buttons"
-import { TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { NavPage } from "@/components/Page"
+import { TextInput } from "@/components/TextInput"
 import { useRecipeCreate } from "@/queries/recipeCreate"
 import { recipeURL } from "@/urls"
 

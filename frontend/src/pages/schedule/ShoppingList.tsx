@@ -13,7 +13,7 @@ import { clx } from "@/classnames"
 import { BorderBox } from "@/components/BorderBox"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
-import { DateInput } from "@/components/Forms"
+import { DateInput } from "@/components/DateInput"
 import { toISODateString } from "@/date"
 import {
   IGetShoppingListResponse,

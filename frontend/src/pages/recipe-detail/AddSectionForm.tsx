@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 
 import { Button } from "@/components/Buttons"
-import { TextInput } from "@/components/Forms"
+import { TextInput } from "@/components/TextInput"
 import { useSectionCreate } from "@/queries/sectionCreate"
 
 export function AddSectionForm({

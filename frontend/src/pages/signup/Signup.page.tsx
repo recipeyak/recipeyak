@@ -6,10 +6,12 @@ import { Link, useHistory } from "react-router-dom"
 import { login } from "@/auth"
 import { BorderBox } from "@/components/BorderBox"
 import { Button } from "@/components/Buttons"
-import { EmailInput, FormErrorHandler, PasswordInput } from "@/components/Forms"
+import { EmailInput } from "@/components/EmailInput"
+import { FormErrorHandler } from "@/components/FormErrorHandler"
 import { Helmet } from "@/components/Helmet"
 import { Label } from "@/components/Label"
 import { AuthPage } from "@/components/Page"
+import { PasswordInput } from "@/components/PasswordInput"
 import { Tab, Tabs } from "@/components/Tabs"
 import {
   pathLogin,

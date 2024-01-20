@@ -3,8 +3,8 @@ import { Link } from "react-router-dom"
 import { assertNever } from "@/assert"
 import { Avatar } from "@/components/Avatar"
 import { Button } from "@/components/Buttons"
-import { Select } from "@/components/Forms"
 import { Loader } from "@/components/Loader"
+import { Select } from "@/components/Select"
 import {
   Cell,
   Column,
