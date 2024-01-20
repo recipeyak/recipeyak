@@ -64,6 +64,7 @@ const scheduleRecipe = (recipeID: number, on: Date | string) => {
         readonly id: number
         readonly name: string
         readonly author: string | null
+        readonly archivedAt: string | null
         readonly primaryImage: {
           readonly url: string
           readonly backgroundUrl: string | null

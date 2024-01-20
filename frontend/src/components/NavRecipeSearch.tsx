@@ -53,7 +53,6 @@ function SearchResultsPopover({
           isCurrentSelection &&
             !isMobile() &&
             "rounded-md outline outline-[3px] outline-[rgb(47,129,247)]",
-          hit.archived_at != null && "text-[--color-text-muted] line-through",
         )}
         onDragStart={(e) => {
           e.dataTransfer.setData("recipeyak/recipe", JSON.stringify(hit))
@@ -65,6 +64,7 @@ function SearchResultsPopover({
             width={40}
             height={40}
             imgixFmt="small"
+            grayscale={hit.archived_at != null}
             sources={
               hit.primary_image && {
                 url: hit.primary_image.url,
@@ -77,6 +77,7 @@ function SearchResultsPopover({
             <div
               className={clx(
                 "grow-0 overflow-x-hidden text-ellipsis whitespace-pre",
+                hit.archived_at != null && "line-through",
               )}
             >
               <CustomHighlight hit={hit} attribute="name" />{" "}

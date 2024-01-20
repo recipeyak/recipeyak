@@ -216,6 +216,7 @@ export function RecipeTitleDropdown({
         isOpen={showScheduleModal}
         recipeId={recipeId}
         recipeName={recipeName}
+        isArchived={isArchived}
         recipeImageUrl={recipeImageUrl}
         recipeAuthor={recipeAuthor}
         scheduleHistory={recipeRecentScheduleHistory}

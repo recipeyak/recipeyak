@@ -7,6 +7,7 @@ import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { DateInput } from "@/components/Forms"
 import Clock from "@/components/icons"
+import { Image } from "@/components/Image"
 import { Modal } from "@/components/Modal"
 import { formatDistanceToNow, formatHumanDate, toISODateString } from "@/date"
 import { pathSchedule } from "@/paths"
@@ -17,19 +18,29 @@ import { addQueryParams } from "@/querystring"
 type RecentSchedule = Recipe["recentSchedules"][number]
 
 function RecipeItem({
-  src,
+  sources,
   name,
   author,
+  archived,
 }: {
-  src: string
+  sources: {
+    url: string
+    backgroundUrl: string | null
+  } | null
   name: string
   author: string | null
+  archived: boolean
 }) {
-  const cls =
-    "h-[40px] w-[40px] rounded-md bg-[--color-background-empty-image] object-cover"
   return (
     <div className="flex items-center gap-2">
-      {src !== "" ? <img src={src} className={cls} /> : <div className={cls} />}
+      <Image
+        width={40}
+        height={40}
+        imgixFmt="small"
+        sources={sources}
+        grayscale={archived}
+        rounded
+      />
       <div>
         <div className="line-clamp-1 text-ellipsis">{name}</div>
         <div className="line-clamp-1 text-ellipsis text-sm">{author}</div>
@@ -42,6 +53,7 @@ export function ScheduleModal({
   isOpen,
   recipeName,
   recipeId,
+  isArchived,
   scheduleHistory,
   onOpenChange,
   recipeAuthor,
@@ -53,6 +65,7 @@ export function ScheduleModal({
   readonly onOpenChange: (_: boolean) => void
   readonly scheduleHistory: readonly RecentSchedule[]
   readonly recipeAuthor: string | null
+  readonly isArchived: boolean
   readonly recipeImageUrl: {
     id: string
     url: string
@@ -90,8 +103,9 @@ export function ScheduleModal({
       children={
         <div className="flex h-full flex-col gap-2">
           <RecipeItem
-            src={recipeImageUrl?.url ?? ""}
+            sources={recipeImageUrl}
             name={recipeName}
+            archived={isArchived}
             author={recipeAuthor}
           />
           <DateInput

@@ -42,14 +42,8 @@ function RecipeSelect({
   onSelect,
   value,
 }: {
-  onSelect: (
-    _:
-      | Pick<RecipeSearchItem, "name" | "id" | "primary_image" | "author">
-      | undefined,
-  ) => void
-  value:
-    | Pick<RecipeSearchItem, "id" | "name" | "primary_image" | "author">
-    | undefined
+  onSelect: (_: RecipeSearchItemSelection | undefined) => void
+  value: RecipeSearchItemSelection | undefined
 }) {
   const [query, setQuery] = useState("")
   const { data } = useSearchRecipes({ query })
@@ -63,6 +57,7 @@ function RecipeSelect({
           <RecipeItem
             key={value.id}
             sources={value.primary_image}
+            archived={value.archived_at != null}
             name={value.name}
             author={value.author ?? ""}
           />
@@ -112,6 +107,7 @@ function RecipeSelect({
                 <RecipeItem
                   key={hit.id}
                   sources={hit.primary_image}
+                  archived={hit.archived_at != null}
                   hit={hit}
                   name={hit.name}
                   author={hit.author ?? ""}
@@ -159,6 +155,7 @@ function RecipeItem({
   sources,
   name,
   author,
+  archived,
   onClick,
   hit,
 }: {
@@ -168,6 +165,7 @@ function RecipeItem({
   } | null
   name: string
   author: string
+  archived: boolean
   onClick?: () => void
   hit?: Hit<{}>
 }) {
@@ -190,10 +188,16 @@ function RecipeItem({
         }
         height={40}
         rounded
+        grayscale={archived}
         width={40}
       />
       <div>
-        <div className="line-clamp-1 text-ellipsis">
+        <div
+          className={clx(
+            "line-clamp-1 text-ellipsis",
+            archived && "line-through",
+          )}
+        >
           {hit ? <CustomHighlight hit={hit} attribute="name" /> : name}
         </div>
         <div className="line-clamp-1 text-ellipsis text-sm">
@@ -208,11 +212,17 @@ type RecipeSearchItem = {
   readonly id: number
   readonly name: string
   readonly author: string | null
+  readonly archived_at: string | null
   readonly primary_image: {
     readonly url: string
     readonly background_url: string | null
   } | null
 }
+
+type RecipeSearchItemSelection = Pick<
+  RecipeSearchItem,
+  "id" | "name" | "primary_image" | "author" | "archived_at"
+>
 
 export function ScheduleRecipeModal({
   isOpen,
@@ -231,10 +241,7 @@ export function ScheduleRecipeModal({
     setFormError("")
     setIsoDate(e.target.value)
   }
-  const [selectedItem, setSelectedItem] =
-    useState<
-      Pick<RecipeSearchItem, "id" | "name" | "primary_image" | "author">
-    >()
+  const [selectedItem, setSelectedItem] = useState<RecipeSearchItemSelection>()
   const scheduledRecipeCreate = useScheduleRecipeCreate()
 
   const handleSubmit = () => {
