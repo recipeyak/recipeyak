@@ -2,8 +2,8 @@ import React from "react"
 
 import { Box } from "@/components/Box"
 import { CloseButton } from "@/components/CloseButton"
-import { TextInput } from "@/components/Forms"
 import { Tag } from "@/components/Tag"
+import { TextInput } from "@/components/TextInput"
 
 export function TagEditor({
   tags,

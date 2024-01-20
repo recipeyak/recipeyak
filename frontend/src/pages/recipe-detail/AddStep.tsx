@@ -1,8 +1,8 @@
 import { useState } from "react"
 
 import { Button } from "@/components/Buttons"
-import { Textarea } from "@/components/Forms"
 import { BetterLabel } from "@/components/Label"
+import { Textarea } from "@/components/Textarea"
 import { useStepCreate } from "@/queries/stepCreate"
 
 interface IAddStepProps {

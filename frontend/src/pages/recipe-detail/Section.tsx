@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { useDrag, useDrop } from "react-dnd"
 
 import { Button } from "@/components/Buttons"
-import { TextInput } from "@/components/Forms"
+import { TextInput } from "@/components/TextInput"
 import { DragDrop, handleDndHover } from "@/dragDrop"
 import { useSectionDelete } from "@/queries/sectionDelete"
 import { useSectionUpdate } from "@/queries/sectionUpdate"

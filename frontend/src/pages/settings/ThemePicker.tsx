@@ -1,8 +1,9 @@
 import { useState } from "react"
 
 import { Box } from "@/components/Box"
-import { RadioButton, Select } from "@/components/Forms"
 import { BetterLabel } from "@/components/Label"
+import { RadioButton } from "@/components/RadioButton"
+import { Select } from "@/components/Select"
 import { useUserUpdate } from "@/queries/userUpdate"
 import { themeSet } from "@/theme"
 import { Theme, THEME_IDS, THEME_META, ThemeMode } from "@/themeConstants"

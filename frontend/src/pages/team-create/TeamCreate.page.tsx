@@ -1,9 +1,10 @@
 import React, { useState } from "react"
 
 import { Button } from "@/components/Buttons"
-import { RadioButton, TextInput } from "@/components/Forms"
 import { Helmet } from "@/components/Helmet"
 import { NavPage } from "@/components/Page"
+import { RadioButton } from "@/components/RadioButton"
+import { TextInput } from "@/components/TextInput"
 import { ROLES } from "@/pages/team-invite/teamConstants"
 import { useTeamCreate } from "@/queries/teamCreate"
 
