@@ -2,6 +2,7 @@ import { addDays, addWeeks, format } from "date-fns"
 import React from "react"
 import { Link } from "react-router-dom"
 
+import { clx } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
@@ -31,6 +32,7 @@ function RecipeItem({
   sources,
   name,
   author,
+  archived,
   to,
   createdAt,
   createdBy,
@@ -41,6 +43,7 @@ function RecipeItem({
   } | null
   name: string
   author: string | null
+  archived: boolean
   to: string
   createdBy: {
     readonly id: number | string
@@ -56,10 +59,18 @@ function RecipeItem({
         width={60}
         height={60}
         rounded
+        grayscale={archived}
         imgixFmt="large"
       />
       <div>
-        <div className="line-clamp-1 text-ellipsis">{name}</div>
+        <div
+          className={clx(
+            "line-clamp-1 text-ellipsis",
+            archived && "line-through",
+          )}
+        >
+          {name}
+        </div>
         <div className="line-clamp-1 text-ellipsis text-sm">{author}</div>
         <div className="flex items-center gap-1">
           <Avatar avatarURL={createdBy?.avatar_url ?? null} size={20} />
@@ -79,6 +90,7 @@ export function ScheduledRecipeEditModal({
   primaryImage,
   recipeId,
   date,
+  archived,
   isOpen,
   onClose,
   createdAt,
@@ -89,6 +101,7 @@ export function ScheduledRecipeEditModal({
   readonly recipeName: string
   readonly recipeAuthor: string | null
   readonly date: Date
+  readonly archived: boolean
   readonly isOpen: boolean
   readonly onClose: (_: boolean) => void
   readonly createdAt: string
@@ -119,6 +132,7 @@ export function ScheduledRecipeEditModal({
           <RecipeItem
             to={to}
             sources={primaryImage}
+            archived={archived}
             name={recipeName}
             author={recipeAuthor}
             createdAt={createdAt}

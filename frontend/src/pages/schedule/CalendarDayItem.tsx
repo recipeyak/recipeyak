@@ -16,6 +16,7 @@ interface ICalendarItemProps {
   readonly recipeID: number | string
   readonly recipeName: string
   readonly recipeAuthor: string | null
+  readonly archived: boolean
   readonly scheduledId: number
   readonly createdAt: string
   readonly createdBy: {
@@ -37,6 +38,7 @@ export function CalendarItem({
   recipeID,
   primaryImage,
   scheduledId,
+  archived,
   createdAt,
   createdBy,
 }: ICalendarItemProps) {
@@ -105,6 +107,7 @@ export function CalendarItem({
             height={25}
             imgixFmt="small"
             sources={primaryImage}
+            grayscale={archived}
             rounded
           />
           <div className="line-clamp-3 text-ellipsis break-words text-sm font-semibold leading-tight">
@@ -119,6 +122,7 @@ export function CalendarItem({
         createdBy={createdBy}
         recipeName={recipeName}
         recipeAuthor={recipeAuthor}
+        archived={archived}
         primaryImage={primaryImage}
         recipeId={recipeID}
         date={date}

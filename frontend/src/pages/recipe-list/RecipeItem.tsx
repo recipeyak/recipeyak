@@ -116,6 +116,7 @@ export function RecipeListItem({
           // rel: https://stackoverflow.com/questions/31713468/css-blur-filter-performance
           blur="none"
           rounded={true}
+          grayscale={hit.archived_at != null}
         />
       </div>
       <div className="h-full p-2 leading-5">

@@ -160,6 +160,7 @@ export function CalendarDay({
             date={date}
             recipeName={x.recipe.name}
             recipeAuthor={x.recipe.author}
+            archived={x.recipe.archivedAt != null}
             recipeID={x.recipe.id}
             primaryImage={x.recipe.primaryImage}
             remove={() => {
