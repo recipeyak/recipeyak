@@ -68,6 +68,10 @@ module.exports = {
           "JSXAttribute[name.name='style'][value.type='JSXExpressionContainer'][value.expression.type='ObjectExpression']",
         message: "Avoid inline styles.",
       },
+      {
+        selector: "CallExpression[callee.property.name='setQueryData']",
+        message: "Use a type safe wrapper instead.",
+      },
     ],
     "no-restricted-globals": [
       "error",

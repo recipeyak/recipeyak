@@ -76,6 +76,7 @@ export function useScheduledRecipeDelete() {
         addWeeks(initialWeekId, 2),
       ]
       weekIds.forEach((weekId) => {
+        // eslint-disable-next-line no-restricted-syntax
         queryClient.setQueryData<CalendarResponse>(
           [teamId, "calendar", weekId.getTime()],
           (data) => {

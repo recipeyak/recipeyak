@@ -227,9 +227,14 @@ export function Markdown({
       unwrapDisallowed
     />
   )
-  const cls = clx("cursor-auto select-text [word-break:break-word]", className)
-  if (inline) {
-    return <span children={markdown} className={cls} />
-  }
-  return <div children={markdown} className={cls} />
+  return (
+    <div
+      children={markdown}
+      className={clx(
+        "cursor-auto select-text [word-break:break-word]",
+        inline && "inline",
+        className,
+      )}
+    />
+  )
 }

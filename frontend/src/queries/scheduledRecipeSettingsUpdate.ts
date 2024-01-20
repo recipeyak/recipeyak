@@ -33,6 +33,8 @@ export function useScheduledRecipeSettingsUpdate() {
     },
     onMutate: (variables) => {
       let prevSettings: CalendarResponse["settings"] | undefined
+
+      // eslint-disable-next-line no-restricted-syntax
       queryClient.setQueryData<CalendarResponse>(
         [teamID, "calendar-settings"],
         (prev) => {
@@ -52,6 +54,7 @@ export function useScheduledRecipeSettingsUpdate() {
       return { prevSettings }
     },
     onSuccess: (response) => {
+      // eslint-disable-next-line no-restricted-syntax
       queryClient.setQueryData<CalendarResponse>(
         [teamID, "calendar-settings"],
         (prev) => {
@@ -63,6 +66,7 @@ export function useScheduledRecipeSettingsUpdate() {
       )
     },
     onError: (_error, _variables, context) => {
+      // eslint-disable-next-line no-restricted-syntax
       queryClient.setQueryData<CalendarResponse>(
         [teamID, "calendar-settings"],
         (prev) => {

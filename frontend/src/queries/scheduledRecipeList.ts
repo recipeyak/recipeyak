@@ -145,6 +145,7 @@ export function useScheduledRecipeList({
         weekIds.add(weekId)
       })
       weekIds.forEach((weekId) => {
+        // eslint-disable-next-line no-restricted-syntax
         queryClient.setQueryData<CalendarResponse>(
           [teamID, "calendar", weekId],
           response,
