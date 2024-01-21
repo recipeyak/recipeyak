@@ -1,3 +1,4 @@
+import { omit } from "lodash-es"
 import { ForwardedRef, forwardRef } from "react"
 
 import { inputStyles } from "@/components/inputStyles"
@@ -10,7 +11,12 @@ export const EmailInput = forwardRef(
     ref: ForwardedRef<HTMLInputElement>,
   ) => {
     return (
-      <input type="email" className={inputStyles(props)} {...props} ref={ref} />
+      <input
+        type="email"
+        className={inputStyles(props)}
+        {...omit(props, "className")}
+        ref={ref}
+      />
     )
   },
 )

@@ -1,3 +1,4 @@
+import { omit } from "lodash-es"
 import { ForwardedRef, forwardRef } from "react"
 
 import { inputStyles } from "@/components/inputStyles"
@@ -10,7 +11,12 @@ export const TextInput = forwardRef(
     ref: ForwardedRef<HTMLInputElement>,
   ) => {
     return (
-      <input type="text" className={inputStyles(props)} {...props} ref={ref} />
+      <input
+        type="text"
+        className={inputStyles(props)}
+        {...omit(props, "className")}
+        ref={ref}
+      />
     )
   },
 )
