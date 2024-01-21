@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import { useFocusVisible, usePress } from "react-aria"
 import { useDrag } from "react-dnd"
 import { Link } from "react-router-dom"
 
@@ -85,21 +86,47 @@ export function CalendarItem({
 
   drag(ref)
 
+  // We're doing some sketchy stuff here so that we can support clicking on the
+  // schedule recipe to open the modal but also allow shift clicking to open in
+  // a new tab
+  const { pressProps } = usePress({
+    onPress: (e) => {
+      if (e.shiftKey || e.metaKey) {
+        return
+      }
+      setShow(true)
+    },
+  })
+
+  const { isFocusVisible } = useFocusVisible()
+
   return (
     <>
       <li
         ref={ref}
+        onDoubleClick={(e) => {
+          // double clicking on the list items shouldn't result in the schedule
+          // modal popping open, only clicking on the empty space of a day
+          // should do that
+          e.preventDefault()
+        }}
         className={clx(visibility === "visible" ? "visible" : "invisible")}
       >
         <Link
-          className="flex w-full items-center gap-2 rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)]"
+          className={clx(
+            "flex w-full items-center gap-2 rounded-md",
+            // only want to show focus outline on devices with a keyboard aka not most phones
+            isFocusVisible
+              ? "focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)]"
+              : "outline-none",
+          )}
           to={recipeURL(recipeID, recipeName)}
+          {...pressProps}
           onClick={(e) => {
             if (e.shiftKey || e.metaKey) {
               return
             }
             e.preventDefault()
-            setShow(true)
           }}
         >
           <Image

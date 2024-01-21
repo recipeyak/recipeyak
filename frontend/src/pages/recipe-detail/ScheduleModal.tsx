@@ -121,6 +121,16 @@ export function ScheduleModal({
             value={toISODateString(isoDate)}
             onChange={handleDateChange}
           />
+          <div className="mt-auto flex flex-col gap-2">
+            <Button
+              size="normal"
+              variant="primary"
+              onClick={handleSave}
+              disabled={scheduledRecipeCreate.isPending}
+            >
+              {!scheduledRecipeCreate.isPending ? "Schedule" : "Scheduling..."}
+            </Button>
+          </div>
 
           {/* we intentionally hide from view when there are no scheduled
           recipes in the history window -- avoids having an empty state
@@ -171,17 +181,6 @@ export function ScheduleModal({
               </div>
             </>
           )}
-
-          <div className="mt-auto flex flex-col gap-2">
-            <Button
-              size="normal"
-              variant="primary"
-              onClick={handleSave}
-              disabled={scheduledRecipeCreate.isPending}
-            >
-              {!scheduledRecipeCreate.isPending ? "Schedule" : "Scheduling..."}
-            </Button>
-          </div>
         </div>
       }
     />

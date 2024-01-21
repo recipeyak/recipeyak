@@ -1,6 +1,7 @@
 import { Hit } from "@algolia/client-search"
 import { parseISO } from "date-fns"
 import { useState } from "react"
+import { useFocusVisible } from "react-aria"
 import {
   ComboBox,
   Group,
@@ -48,6 +49,7 @@ function RecipeSelect({
   const [query, setQuery] = useState("")
   const { data } = useSearchRecipes({ query })
   const hits = data?.hits ?? []
+  const { isFocusVisible } = useFocusVisible()
 
   if (value != null) {
     return (
@@ -90,7 +92,13 @@ function RecipeSelect({
 
       <Group className="flex rounded-md border border-solid border-[--color-border]">
         <Input
-          className="w-full flex-1 rounded-md border-none bg-transparent px-3 py-2 text-base leading-5 text-[--color-text] outline-none placeholder:text-[--color-input-placeholder]"
+          className={() =>
+            clx(
+              "w-full flex-1 rounded-md border-none bg-transparent px-3 py-2 text-base leading-5 text-[--color-text] outline-none -outline-offset-1 placeholder:text-[--color-input-placeholder]",
+              isFocusVisible &&
+                "focus-within:outline focus-within:outline-[2px] focus-within:outline-[rgb(47,129,247)]",
+            )
+          }
           placeholder={"search recipes"}
         />
         <Button className="flex items-center rounded-l-none rounded-r-md border-0 border-l border-solid px-3 transition">
