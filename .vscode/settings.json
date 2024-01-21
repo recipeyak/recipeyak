@@ -107,5 +107,9 @@
     ".*css.*",
     ".*cls.*"
   ],
-  "mypy.dmypyExecutable": "${workspaceFolder}/backend/.venv/bin/dmypy"
+  "mypy.dmypyExecutable": "${workspaceFolder}/backend/.venv/bin/dmypy",
+  "mypy-type-checker.importStrategy": "fromEnvironment",
+  "mypy-type-checker.args": [
+    "--config-file=${workspaceFolder}/backend/pyproject.toml"
+  ]
 }
