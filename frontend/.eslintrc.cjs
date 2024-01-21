@@ -106,6 +106,11 @@ module.exports = {
             importNames: ["Button"],
             message: "Please import @/components/Button instead.",
           },
+          {
+            name: "react-aria-components",
+            importNames: ["MenuItem"],
+            message: "Please import @/components/MenuItem instead.",
+          },
         ],
         patterns: [
           {
