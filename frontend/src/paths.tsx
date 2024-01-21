@@ -3,7 +3,7 @@ import { path } from "static-path"
 export const pathLogin = path("/login")
 export const pathSignup = path("/signup")
 export const pathPasswordReset = path("/password-reset")
-export const pathPasswordConfirm = path("/password-confirm")
+export const pathPasswordConfirm = path("/password-reset/confirm/:uid/:token")
 export const pathHome = path("/")
 export const pathSchedule = path("/schedule")
 export const pathRecipesExportYaml = path("/recipes.yaml")
