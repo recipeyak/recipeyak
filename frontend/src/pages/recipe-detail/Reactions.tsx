@@ -1,7 +1,6 @@
 import Tippy from "@tippyjs/react"
 import groupBy from "lodash/groupBy"
 import orderBy from "lodash-es/orderBy"
-import slice from "lodash-es/slice"
 import { useState } from "react"
 import { Smile } from "react-feather"
 
@@ -38,16 +37,14 @@ function reactionTitle(reactions: Reaction[]): string {
       reaction.type,
     )}`
   }
-  const initialNames = slice(
-    reactions.map((x) => x.user.name),
-    reactions.length - 1,
-  )
-  const lastReaction = reactions[reactions.length - 1]
+
+  const names = reactions.map((x) => x.user.name)
+
   return (
-    initialNames.join(", ") +
-    ", and " +
-    lastReaction.user.name +
-    ` reacted with ${reactionTypeToName(lastReaction.type)}`
+    names.slice(0, names.length - 1).join(", ") +
+    " and " +
+    names[names.length - 1] +
+    ` reacted with ${reactionTypeToName(reactions[0].type)}`
   )
 }
 
@@ -111,6 +108,7 @@ export function ReactionsFooter(props: {
   reactions: readonly Reaction[]
   onClick: (_: ReactionType) => void
   onPick: (_: ReactionType) => void
+  userId: number | null
   readonly?: boolean
 }) {
   const reactionsGroup = groupBy(props.reactions, (x) => x.type)
@@ -135,7 +133,11 @@ export function ReactionsFooter(props: {
             props.onClick(emoji)
           }}
           className={clx(
-            "mr-2 inline-flex  rounded-[15px] border border-solid border-[--color-border] bg-[--color-background-card] px-[0.3rem] py-0 pr-2 text-center text-[--color-text-muted]",
+            "mr-2 inline-flex rounded-[15px]  bg-[--color-background-card] px-[0.3rem] py-0 pr-2 text-center text-[--color-text-muted]",
+            reactions.find((reaction) => reaction.user.id === props.userId) !=
+              null
+              ? "border border-solid border-[--color-border] "
+              : "m-[1px]",
             !props.readonly && "cursor-pointer",
           )}
         >
