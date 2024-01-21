@@ -15,9 +15,13 @@ async def get_token(user_id: str, team_ids: list[int]) -> dict[str, object]:
     async with AblyRest(ABLY_API_KEY) as ably:
         res = await ably.auth.create_token_request(
             {
-                "clientId": user_id,
+                "client_id": user_id,
                 "capability": {
                     f"scheduled_recipe:{team_id}": ["subscribe"] for team_id in team_ids
+                }
+                | {
+                    f"recipe:{team_id}:*": ["subscribe", "presence"]
+                    for team_id in team_ids
                 }
                 | {
                     f"cook_checklist:{team_id}:*": ["subscribe"] for team_id in team_ids

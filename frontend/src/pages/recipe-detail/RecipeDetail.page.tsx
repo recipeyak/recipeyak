@@ -1,9 +1,11 @@
+import { usePresence } from "ably/react"
 import { flatten, last, sortBy } from "lodash-es"
 import React, { useMemo, useState } from "react"
 import { RouteComponentProps, useHistory } from "react-router"
 import { Link } from "react-router-dom"
 
 import { clx } from "@/classnames"
+import { Avatar } from "@/components/Avatar"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { Helmet } from "@/components/Helmet"
@@ -42,10 +44,12 @@ import {
 } from "@/queries/recipeFetch"
 import { useRecipeUpdate } from "@/queries/recipeUpdate"
 import { useSectionUpdate } from "@/queries/sectionUpdate"
+import { useUserFetch } from "@/queries/userFetch"
 import { notEmpty } from "@/text"
 import { formatImgOpenGraph } from "@/url"
 import { useAddSlugToUrl } from "@/useAddSlugToUrl"
 import { useGlobalEvent } from "@/useGlobalEvent"
+import { useTeamId } from "@/useTeamId"
 
 type Ingredient = Recipe["ingredients"]
 
@@ -534,6 +538,26 @@ function isNote(x: TimelineItem): x is Note {
   return x.type === "note"
 }
 
+function RecipePresence({
+  recipeId,
+  user,
+}: {
+  recipeId: number
+  user: { avatar_url: string; id: number }
+}) {
+  const teamId = useTeamId()
+  const { presenceData } = usePresence<{ avatarUrl: string }>(
+    {
+      channelName: `recipe:${teamId}:${recipeId}`,
+    },
+    { avatarUrl: user.avatar_url },
+  )
+  const peers = presenceData
+    .filter((msg) => msg.clientId !== user.id.toString())
+    .map((msg, index) => <Avatar key={index} avatarURL={msg.data.avatarUrl} />)
+  return <div className="flex flex-wrap gap-2">{peers}</div>
+}
+
 function RecipeInfo(props: {
   recipe: Recipe
   editingEnabled: boolean
@@ -542,6 +566,7 @@ function RecipeInfo(props: {
 }) {
   const [showEditor, setShowEditor] = useState(false)
   const inlineLayout = !props.recipe.primaryImage && !props.editingEnabled
+  const user = useUserFetch()
 
   return (
     <>
@@ -551,17 +576,22 @@ function RecipeInfo(props: {
           inlineLayout && "md:[grid-area:1_/_span_2]",
         )}
       >
-        <RecipeTitleDropdown
-          recipeIsArchived={props.recipe.archived_at != null}
-          recipeId={props.recipe.id}
-          recipeAuthor={props.recipe.author}
-          recipeImageUrl={props.recipe.primaryImage}
-          recipeName={props.recipe.name}
-          recipeIngredients={props.recipe.ingredients}
-          recipeRecentScheduleHistory={props.recipe.recentSchedules}
-          editingEnabled={props.editingEnabled}
-          toggleEditing={props.toggleEditMode}
-        />
+        <div className="flex w-full justify-between pr-4">
+          <RecipeTitleDropdown
+            recipeIsArchived={props.recipe.archived_at != null}
+            recipeId={props.recipe.id}
+            recipeAuthor={props.recipe.author}
+            recipeImageUrl={props.recipe.primaryImage}
+            recipeName={props.recipe.name}
+            recipeIngredients={props.recipe.ingredients}
+            recipeRecentScheduleHistory={props.recipe.recentSchedules}
+            editingEnabled={props.editingEnabled}
+            toggleEditing={props.toggleEditMode}
+          />
+          {user.data && (
+            <RecipePresence recipeId={props.recipe.id} user={user.data} />
+          )}
+        </div>
         {showEditor ? (
           <RecipeEditor
             recipe={props.recipe}
