@@ -1,5 +1,5 @@
 import { usePresence } from "ably/react"
-import { flatten, last, sortBy } from "lodash-es"
+import { flatten, last, sortBy, uniqBy } from "lodash-es"
 import React, { useMemo, useState } from "react"
 import { RouteComponentProps, useHistory } from "react-router"
 import { Link } from "react-router-dom"
@@ -552,9 +552,10 @@ function RecipePresence({
     },
     { avatarUrl: user.avatar_url },
   )
-  const peers = presenceData
-    .filter((msg) => msg.clientId !== user.id.toString())
-    .map((msg, index) => <Avatar key={index} avatarURL={msg.data.avatarUrl} />)
+  const peers = uniqBy(
+    presenceData.filter((msg) => msg.clientId !== user.id.toString()),
+    (x) => x.clientId,
+  ).map((msg, index) => <Avatar key={index} avatarURL={msg.data.avatarUrl} />)
   return <div className="flex flex-wrap gap-2">{peers}</div>
 }
 
