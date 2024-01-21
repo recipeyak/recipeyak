@@ -32,7 +32,6 @@ import { queryClient } from "@/components/queryClient"
 import { ScrollRestore } from "@/components/ScrollRestore"
 import { NotFoundPage } from "@/pages/404/404.page"
 import { CookDetailPage } from "@/pages/cook-detail/CookDetail.page"
-import { DevStoryBook } from "@/pages/dev-storybook/DevStoryBook.page"
 import { HomePage } from "@/pages/index/Index.page"
 import { LoginPage } from "@/pages/login/Login.page"
 import { PasswordChangePage } from "@/pages/password-change/PasswordChange.page"
@@ -53,7 +52,6 @@ import { UserCommentsPage } from "@/pages/user-comments/UserComments.page"
 import {
   pathCookDetail,
   pathDeprecatedSchedule,
-  pathDevStorybook,
   pathHome,
   pathLogin,
   pathPassword,
@@ -304,11 +302,6 @@ function Routes() {
               exact
               path={pathTeamList.pattern}
               component={TeamListPage}
-            />
-            <PrivateRoute
-              exact
-              path={pathDevStorybook.pattern}
-              component={DevStoryBook}
             />
             <Route component={NotFoundPage} />
           </Switch>
