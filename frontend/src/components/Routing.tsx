@@ -1,25 +1,6 @@
-import { LocationDescriptor } from "history"
-import {
-  Link as RRLink,
-  LinkProps as RRLinkProps,
-  NavLinkProps,
-  useLocation,
-} from "react-router-dom"
+import { Link as RRLink, NavLinkProps, useLocation } from "react-router-dom"
 
-interface ILinkProps extends RRLinkProps {
-  readonly isRaw?: boolean
-  readonly to: string | LocationDescriptor<unknown>
-}
-
-export function Link({ to, replace, isRaw, ...rest }: ILinkProps) {
-  if (isRaw) {
-    if (typeof to !== "string") {
-      throw new Error("invalid param passed to link with href")
-    }
-    return <a href={to} {...rest} />
-  }
-  return <RRLink to={to} replace={replace} {...rest} />
-}
+export const Link = RRLink
 
 export const NavLink = ({
   to,

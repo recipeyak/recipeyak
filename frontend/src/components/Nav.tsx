@@ -129,8 +129,13 @@ function ActionItem(props: Omit<MenuItemProps, "className">) {
   return (
     <MenuItem
       {...props}
-      className={
-        "flex cursor-pointer rounded px-2 py-1 [transition:background_.12s_ease-out] hover:bg-[--color-border] focus-visible:outline-[3px] focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)] "
+      className={(p) =>
+        clx(
+          "flex cursor-pointer rounded px-2 py-1 [transition:background_.12s_ease-out] hover:bg-[--color-border]",
+          // Only show the focus ring on keyboard devices
+          p.isFocusVisible &&
+            "focus-visible:outline-[3px] focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)]",
+        )
       }
     />
   )

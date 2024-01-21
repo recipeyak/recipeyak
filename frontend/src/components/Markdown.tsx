@@ -58,7 +58,11 @@ function renderA({
     const children = isRecipeYakRecipeLink ? to.substring(1) : props.children
     return (
       <Link
-        {...omit(props, "node")}
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        {...(omit(props, "node") as Omit<
+          typeof props,
+          "ref" | "onFocus" | "onBlur"
+        >)}
         to={to}
         children={children}
         className={linkCss}
