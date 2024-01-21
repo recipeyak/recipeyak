@@ -4,10 +4,10 @@ import { ForwardedRef, forwardRef, useRef } from "react"
 import { useButton, useFocusVisible, useHover } from "react-aria"
 // eslint-disable-next-line no-restricted-imports
 import { Button as AriaButton, PressEvent } from "react-aria-components"
+import { Link } from "react-router-dom"
 
 import { assertNever } from "@/assert"
 import { clx } from "@/classnames"
-import { Link } from "@/components/Routing"
 
 type Variant = "primary" | "danger" | "gradient" | "nostyle" | undefined
 type Size = "normal" | "small" | "large"
@@ -157,8 +157,6 @@ function LinkButton({
       {...hoverProps}
       to={to}
       ref={linkRef}
-      data-hovered={isLinkHovered}
-      data-pressed={isLinkPressed}
       className={clx(
         className,
         getButtonStyles({

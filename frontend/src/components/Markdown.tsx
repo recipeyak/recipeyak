@@ -2,12 +2,12 @@ import { omit } from "lodash-es"
 import { findAndReplace } from "mdast-util-find-and-replace"
 import React from "react"
 import ReactMarkdown, { Components } from "react-markdown"
+import { Link } from "react-router-dom"
 import remarkBreaks from "remark-breaks"
 import remarkGfm, { Root } from "remark-gfm"
 import smartypants from "remark-smartypants"
 
 import { clx } from "@/classnames"
-import { Link } from "@/components/Routing"
 import * as settings from "@/settings"
 import { normalizeUnitsFracs } from "@/text"
 import {

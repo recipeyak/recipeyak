@@ -1,7 +1,7 @@
 import { useState } from "react"
+import { Link } from "react-router-dom"
 
 import { Box } from "@/components/Box"
-import { Link } from "@/components/Routing"
 import { getInitialIngredients } from "@/ingredients"
 import { IngredientViewContent } from "@/pages/recipe-detail/IngredientView"
 import { Note } from "@/pages/recipe-detail/Notes"

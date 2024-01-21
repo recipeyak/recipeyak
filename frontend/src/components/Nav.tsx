@@ -148,12 +148,12 @@ function WordMark() {
 function AuthButtons() {
   return (
     <div className="flex justify-self-end">
-      <NavLink className={navItemCss} to={pathLogin({})}>
+      <Link className={navItemCss} to={pathLogin({})}>
         Login
-      </NavLink>
-      <NavLink className={navItemCss} to={pathSignup({})}>
+      </Link>
+      <Link className={navItemCss} to={pathSignup({})}>
         Signup
-      </NavLink>
+      </Link>
     </div>
   )
 }

@@ -1,26 +1,25 @@
 import { Link as RRLink, NavLinkProps, useLocation } from "react-router-dom"
 
-export const Link = RRLink
+import { clx } from "@/classnames"
 
 export const NavLink = ({
   to,
-  className = "",
-  activeClassName = "active",
+  className,
+  activeClassName,
   onClick,
   children,
 }: {
   className?: string
-  activeClassName?: string
+  activeClassName: string
   to: NavLinkProps["to"]
   onClick?: () => void
   children?: React.ReactNode
 }) => {
   const location = useLocation()
-  const activeClass = location.pathname === to ? activeClassName : ""
   return (
     <RRLink
       to={to}
-      className={className + " " + activeClass}
+      className={clx(className, location.pathname === to && activeClassName)}
       onClick={onClick}
       children={children}
     />

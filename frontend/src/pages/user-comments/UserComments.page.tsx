@@ -1,12 +1,12 @@
 import { parseISO } from "date-fns"
 import { RouteComponentProps } from "react-router"
+import { Link } from "react-router-dom"
 
 import { Avatar } from "@/components/Avatar"
 import { Box } from "@/components/Box"
 import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
 import { NavPage } from "@/components/Page"
-import { Link } from "@/components/Routing"
 import { Note } from "@/pages/recipe-detail/Notes"
 import { useUserById } from "@/queries/userById"
 import { useUserCommentsList } from "@/queries/userCommentsList"
