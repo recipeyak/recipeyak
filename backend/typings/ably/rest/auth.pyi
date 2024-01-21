@@ -3,7 +3,7 @@ from typing import Any, TypedDict
 from ably.rest.rest import AblyRest
 from ably.types.tokenrequest import TokenRequest
 
-class _TokenParams(TypedDict, partial=True):
+class _TokenParams(TypedDict):
     client_id: str
     capability: dict[str, Any]
 
