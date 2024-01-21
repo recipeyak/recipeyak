@@ -33,7 +33,7 @@ const Card = forwardRef(
     ref: ForwardedRef<HTMLDivElement>,
   ) => {
     const className = clx(
-      "flex flex-col rounded-md border border-solid border-[--color-border] bg-[--color-background-card]",
+      "flex flex-col overflow-hidden rounded-md border border-solid border-[--color-border] bg-[--color-background-card]",
       isDragging != null && "cursor-move",
       isDragging ? "opacity-50" : "opacity-100",
     )
@@ -115,7 +115,6 @@ export function RecipeListItem({
           // rel: https://graffino.com/til/CjT2jrcLHP-how-to-fix-filter-blur-performance-issue-in-safari
           // rel: https://stackoverflow.com/questions/31713468/css-blur-filter-performance
           blur="none"
-          rounded={true}
           grayscale={hit.archived_at != null}
         />
       </div>

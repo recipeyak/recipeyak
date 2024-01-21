@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -ex
 
-yarn vite "$@"
+yarn vite "$@" --open

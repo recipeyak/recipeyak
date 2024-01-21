@@ -1,6 +1,7 @@
 import { LocationDescriptor } from "history"
 import * as React from "react"
 import { ForwardedRef, forwardRef } from "react"
+import { useFocusVisible } from "react-aria"
 // eslint-disable-next-line no-restricted-imports
 import { Button as AriaButton, PressEvent } from "react-aria-components"
 
@@ -58,12 +59,17 @@ export const Button = forwardRef(
         "pointer-events-auto !border-none text-white !shadow-none backdrop-blur-[10px] ![background-color:rgba(0,0,0,0.46)]",
     )
 
-    const focusCss = clx(
-      variant !== "nostyle" &&
-        "focus-visible:outline focus-visible:outline-[3px] focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)]",
-      focus &&
-        "!outline !outline-[3px] !-outline-offset-2 !outline-[rgb(47,129,247)]",
-    )
+    // We don't want focus rings to appear on non-keyboard devices like iOS, so
+    // we have to do some JS land stuff
+    const { isFocusVisible } = useFocusVisible()
+    const focusCss = isFocusVisible
+      ? clx(
+          variant !== "nostyle" &&
+            "focus-visible:outline focus-visible:outline-[3px] focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)]",
+          focus &&
+            "!outline !outline-[3px] !-outline-offset-2 !outline-[rgb(47,129,247)]",
+        )
+      : "outline-none"
 
     const textSize = clx(
       size === "normal" && "text-base",
