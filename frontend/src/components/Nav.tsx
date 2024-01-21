@@ -1,11 +1,4 @@
-import {
-  Menu,
-  MenuItem,
-  MenuItemProps,
-  MenuTrigger,
-  Popover,
-  Separator,
-} from "react-aria-components"
+import { Menu, MenuTrigger, Separator } from "react-aria-components"
 import { Link } from "react-router-dom"
 
 import { useIsLoggedIn } from "@/auth"
@@ -13,6 +6,8 @@ import { clx } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
 import { Button } from "@/components/Buttons"
 import Logo from "@/components/Logo"
+import { MenuItem } from "@/components/MenuItem"
+import { MenuPopover } from "@/components/MenuPopover"
 import { NavRecipeSearch } from "@/components/NavRecipeSearch"
 import { NavLink } from "@/components/Routing"
 import {
@@ -77,7 +72,7 @@ function UserDropdown() {
       <Button className="!rounded-full !border-none !p-0">
         <Avatar avatarURL={user.avatarURL} />
       </Button>
-      <Popover className="w-56 origin-top-left overflow-auto rounded-md border border-solid border-[--color-border] bg-[--color-background-calendar-day] p-2 shadow-lg outline-none">
+      <MenuPopover>
         <Menu
           className="outline-none"
           onAction={(key) => {
@@ -90,7 +85,7 @@ function UserDropdown() {
           }}
           disabledKeys={["meta-info"]}
         >
-          <MenuItem id="meta-info" className="pl-2">
+          <MenuItem id="meta-info" isInfo>
             <div className="pb-1 ">
               <span>{user.name ?? user.email}</span>
               <span> · </span>
@@ -110,34 +105,18 @@ function UserDropdown() {
               )
             }
             return (
-              <ActionItem
+              <MenuItem
                 id={menuItem.label}
                 key={menuItem.label}
                 href={menuItem.to}
               >
                 {menuItem.label}
-              </ActionItem>
+              </MenuItem>
             )
           })}
         </Menu>
-      </Popover>
+      </MenuPopover>
     </MenuTrigger>
-  )
-}
-
-function ActionItem(props: Omit<MenuItemProps, "className">) {
-  return (
-    <MenuItem
-      {...props}
-      className={(p) =>
-        clx(
-          "flex cursor-pointer rounded px-2 py-1 [transition:background_.12s_ease-out] hover:bg-[--color-border]",
-          // Only show the focus ring on keyboard devices
-          p.isFocusVisible &&
-            "focus-visible:outline-[3px] focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)]",
-        )
-      }
-    />
   )
 }
 

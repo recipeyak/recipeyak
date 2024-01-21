@@ -1,17 +1,11 @@
 import { useState } from "react"
-import {
-  Menu,
-  MenuItem,
-  MenuItemProps,
-  MenuTrigger,
-  Popover,
-  Separator,
-} from "react-aria-components"
+import { Menu, MenuTrigger, Separator } from "react-aria-components"
 
-import { clx } from "@/classnames"
 import { copyToClipboard } from "@/clipboard"
 import { Button } from "@/components/Buttons"
 import { Chevron } from "@/components/icons"
+import { MenuItem } from "@/components/MenuItem"
+import { MenuPopover } from "@/components/MenuPopover"
 import { ScheduleModal } from "@/pages/recipe-detail/ScheduleModal"
 import { pathCookDetail, pathRecipeDetail } from "@/paths"
 import { useRecipeDelete } from "@/queries/recipeDelete"
@@ -29,23 +23,6 @@ function ingredientToString(ingre: Ingredient) {
     return s + ", " + ingre.description.trim()
   }
   return s
-}
-
-function ActionItem(props: Omit<MenuItemProps, "className">) {
-  return (
-    <MenuItem
-      {...props}
-      className={(p) =>
-        clx(
-          "flex cursor-pointer rounded px-2 py-1 [transition:background_.12s_ease-out] hover:bg-[--color-border]",
-          // Only show the focus ring on keyboard devices
-          p.isFocusVisible
-            ? "focus-visible:outline-[3px] focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)]"
-            : "outline-none",
-        )
-      }
-    />
-  )
 }
 
 export function RecipeTitleDropdown({
@@ -180,7 +157,7 @@ export function RecipeTitleDropdown({
       <Button>
         Actions <Chevron />
       </Button>
-      <Popover className="w-56 origin-top-left overflow-auto rounded-md border border-solid border-[--color-border] bg-[--color-background-calendar-day] p-2 shadow-lg outline-none">
+      <MenuPopover>
         <Menu
           className="outline-none"
           onAction={(key) => {
@@ -208,17 +185,17 @@ export function RecipeTitleDropdown({
               )
             }
             return (
-              <ActionItem
+              <MenuItem
                 id={menuItem.label}
                 key={menuItem.label}
                 href={menuItem.to}
               >
                 {menuItem.label}
-              </ActionItem>
+              </MenuItem>
             )
           })}
         </Menu>
-      </Popover>
+      </MenuPopover>
       <ScheduleModal
         isOpen={showScheduleModal}
         recipeId={recipeId}
