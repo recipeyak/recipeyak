@@ -1,3 +1,4 @@
+import { omit } from "lodash-es"
 import { ForwardedRef, forwardRef } from "react"
 
 import { inputStyles } from "@/components/inputStyles"
@@ -13,7 +14,7 @@ export const PasswordInput = forwardRef(
       <input
         type="password"
         className={inputStyles(props)}
-        {...props}
+        {...omit(props, "className")}
         ref={ref}
       />
     )
