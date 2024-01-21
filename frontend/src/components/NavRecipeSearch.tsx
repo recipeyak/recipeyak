@@ -305,6 +305,8 @@ export function NavRecipeSearch() {
               <input
                 value={query}
                 type="search"
+                autoComplete="off"
+                spellCheck="false"
                 autoFocus
                 className="w-full border-none bg-transparent py-[5px] pr-2 text-base text-[--color-text] outline-none placeholder:text-[--color-input-placeholder]"
                 placeholder=""

@@ -5,16 +5,21 @@ import { inputStyles } from "@/components/inputStyles"
 
 export const SearchInput = forwardRef(
   (
-    props: Omit<React.ComponentProps<"input">, "type"> & {
+    props: Omit<
+      React.ComponentProps<"input">,
+      "type" | "autoComplete" | "spellCheck"
+    > & {
       error?: boolean
     },
     ref: ForwardedRef<HTMLInputElement>,
   ) => {
     return (
       <input
-        type="search"
-        className={inputStyles(props)}
         {...omit(props, "className")}
+        type="search"
+        autoComplete="off"
+        spellCheck="false"
+        className={inputStyles(props)}
         ref={ref}
       />
     )
