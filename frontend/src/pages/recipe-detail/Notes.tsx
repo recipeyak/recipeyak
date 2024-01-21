@@ -306,6 +306,7 @@ export function Note({
                 />
                 <ReactionsFooter
                   readonly={readonly}
+                  userId={userId}
                   reactions={note.reactions}
                   onPick={(emoji) => {
                     addOrRemoveReaction(emoji)
