@@ -1,6 +1,7 @@
+import { Link } from "react-router-dom"
+
 import { assertNever } from "@/assert"
 import { Loader } from "@/components/Loader"
-import { Link } from "@/components/Routing"
 import {
   Cell,
   Column,
