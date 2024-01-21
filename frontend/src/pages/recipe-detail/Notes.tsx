@@ -1,7 +1,7 @@
 import produce from "immer"
 import orderBy from "lodash-es/orderBy"
 import React, { useEffect, useRef, useState } from "react"
-import { useLocation } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 
 import { clx } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
@@ -9,7 +9,6 @@ import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { Markdown } from "@/components/Markdown"
 import { RotatingLoader } from "@/components/RoatingLoader"
-import { Link } from "@/components/Routing"
 import { Textarea } from "@/components/Textarea"
 import { formatAbsoluteDateTime, formatHumanDateTime } from "@/date"
 import {
