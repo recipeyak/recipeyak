@@ -41,7 +41,10 @@ function SearchResultsPopover({
   hits: Hits
 }) {
   // Used to avoid showing focus ring on mobile (devices without keyboards)
-  const { isFocusVisible } = useFocusVisible()
+  const { isFocusVisible } = useFocusVisible({
+    autoFocus: true,
+  })
+
   const suggestions = hits.map((hit, index) => {
     const isCurrentSelection = index === selectedIndex && isFocusVisible
     return (
