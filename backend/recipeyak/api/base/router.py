@@ -3,6 +3,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Any, Literal, Protocol
 
+import sentry_sdk
 from django.http import HttpRequest, HttpResponse, HttpResponseNotAllowed
 from django.urls import URLPattern, path, re_path
 
@@ -35,7 +36,8 @@ def _method_router(
     )
     if view is None:
         return HttpResponseNotAllowed(method_to_view.keys())
-    return view(request, *args, **kwargs)
+    with sentry_sdk.start_span(op="recipeyak.view"):
+        return view(request, *args, **kwargs)
 
 
 def routes(*routes: Route) -> list[URLPattern]:
