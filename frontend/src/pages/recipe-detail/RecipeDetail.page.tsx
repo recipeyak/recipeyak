@@ -1,6 +1,6 @@
 import { usePresence } from "ably/react"
-import { flatten, last, sortBy, uniqBy } from "lodash-es"
-import React, { useMemo, useState } from "react"
+import { flatten, last, sortBy } from "lodash-es"
+import React, { useEffect, useMemo, useState } from "react"
 import { RouteComponentProps, useHistory } from "react-router"
 import { Link } from "react-router-dom"
 
@@ -27,6 +27,7 @@ import AddStep from "@/pages/recipe-detail/AddStep"
 import { Gallery } from "@/pages/recipe-detail/ImageGallery"
 import { Ingredient } from "@/pages/recipe-detail/Ingredient"
 import { NoteContainer } from "@/pages/recipe-detail/Notes"
+import { uniqPresense } from "@/pages/recipe-detail/presenceUtils"
 import { SectionTitle } from "@/pages/recipe-detail/RecipeHelpers"
 import { RecipeSource } from "@/pages/recipe-detail/RecipeSource"
 import { RecipeTimeline } from "@/pages/recipe-detail/RecipeTimeline"
@@ -546,16 +547,39 @@ function RecipePresence({
   user: { avatar_url: string; id: number }
 }) {
   const teamId = useTeamId()
-  const { presenceData } = usePresence<{ avatarUrl: string }>(
+  const avatarUrl = user.avatar_url
+  const { presenceData, updateStatus } = usePresence<{
+    avatarUrl: string
+    active?: boolean
+  }>(
     {
       channelName: `recipe:${teamId}:${recipeId}`,
     },
-    { avatarUrl: user.avatar_url },
+    { avatarUrl, active: true },
   )
-  const peers = uniqBy(
+  const peers = uniqPresense(
     presenceData.filter((msg) => msg.clientId !== user.id.toString()),
-    (x) => x.clientId,
-  ).map((msg, index) => <Avatar key={index} avatarURL={msg.data.avatarUrl} />)
+  ).map((msg, index) => (
+    <Avatar
+      key={index}
+      avatarURL={msg.data.avatarUrl}
+      grayscale={!msg.data.active}
+    />
+  ))
+
+  useEffect(() => {
+    const listener = () => {
+      if (document.visibilityState === "visible") {
+        updateStatus({ avatarUrl, active: true })
+      } else {
+        updateStatus({ avatarUrl, active: false })
+      }
+    }
+    document.addEventListener("visibilitychange", listener)
+    return () => {
+      document.removeEventListener("visibilitychange", listener)
+    }
+  }, [avatarUrl, updateStatus])
   return <div className="flex flex-wrap gap-2">{peers}</div>
 }
 
