@@ -149,12 +149,7 @@ export function ScheduleModal({
                     }
                     return (
                       <Box space="between" align="center" key={i}>
-                        <Link
-                          to={to}
-                          className="grow"
-                          // eslint-disable-next-line no-restricted-syntax
-                          style={{ lineHeight: "1.3" }}
-                        >
+                        <Link to={to} className="grow leading-[1.3]">
                           <div className="font-medium">
                             {format(on, "E")} ∙ {formatHumanDate(on)}
                           </div>
