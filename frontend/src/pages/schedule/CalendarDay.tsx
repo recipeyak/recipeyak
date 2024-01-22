@@ -5,8 +5,8 @@ import isFirstDayOfMonth from "date-fns/isFirstDayOfMonth"
 import isWithinInterval from "date-fns/isWithinInterval"
 import startOfDay from "date-fns/startOfDay"
 import { sortBy } from "lodash-es"
-import { useState } from "react"
-import { useDrop } from "react-dnd"
+import { useRef, useState } from "react"
+import { mergeProps, useDrop } from "react-aria"
 import { useLocation } from "react-router"
 
 import { assertNever } from "@/assert"
@@ -73,64 +73,68 @@ export function CalendarDay({
   const scheduledRecipeDelete = useScheduledRecipeDelete()
   const scheduledRecipeUpdate = useScheduledRecipeUpdate()
 
-  const [{ isOver, canDrop }, drop] = useDrop({
-    accept: [DragDrop.CAL_RECIPE],
-    canDrop: () => {
-      return isInsideChangeWindow(date)
-    },
-    drop: (dropped) => {
+  const ref = useRef<HTMLDivElement>(null)
+  const { dropProps, isDropTarget: isOver } = useDrop({
+    ref,
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    async onDrop(e) {
+      const dropItem = e.items[0]
+      const data =
+        dropItem.kind === "text"
+          ? await dropItem.getText("recipeyak/scheduled-recipe")
+          : ""
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      const item = dropped as ICalendarDragItem
+      const item = JSON.parse(data) as ICalendarDragItem
       if (item.type === DragDrop.CAL_RECIPE) {
-        scheduledRecipeUpdate.mutate({
-          scheduledRecipeId: item.scheduledId,
-          update: {
-            on: toISODateString(date),
-          },
-        })
+        if (isDroppable) {
+          scheduledRecipeUpdate.mutate({
+            scheduledRecipeId: item.scheduledId,
+            update: {
+              on: toISODateString(date),
+            },
+          })
+        }
       } else {
         assertNever(item.type)
-      }
-    },
-    collect: (monitor) => {
-      return {
-        isOver: monitor.isOver(),
-        canDrop: monitor.canDrop(),
       }
     },
   })
 
   const scheduled = sortBy(scheduledRecipes, (x) => new Date(x.created))
 
-  const isDroppable = isOver && canDrop
+  const isDroppable = isOver && isInsideChangeWindow(date)
 
   const isSelectedDay = isSelected || isDroppable
   const [showScheduleRecipeModal, setShowScheduleRecipeModal] = useState(false)
   const scheduledRecipeCreate = useScheduleRecipeCreate()
 
+  const dropCreateProps = {
+    onDragOver: (e: React.DragEvent<HTMLDivElement>) => {
+      if (e.dataTransfer.types.includes("recipeyak/recipe")) {
+        e.dataTransfer.dropEffect = "copy"
+      }
+    },
+    onDrop: (e: React.DragEvent<HTMLDivElement>) => {
+      const recipe = e.dataTransfer.getData("recipeyak/recipe")
+      if (recipe) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const parsedRecipe: { id: number; name: string } = JSON.parse(recipe)
+        scheduledRecipeCreate.mutate({
+          recipeID: parsedRecipe.id,
+          on: date,
+          recipeName: parsedRecipe.name,
+        })
+        return
+      }
+    },
+  }
+
   return (
     <div
-      ref={drop}
+      {...mergeProps(dropProps, dropCreateProps)}
+      ref={ref}
       onDoubleClick={() => {
         setShowScheduleRecipeModal(true)
-      }}
-      onDragOver={(e) => {
-        if (e.dataTransfer.types.includes("recipeyak/recipe")) {
-          e.dataTransfer.dropEffect = "copy"
-        }
-      }}
-      onDrop={(e) => {
-        const recipe = e.dataTransfer.getData("recipeyak/recipe")
-        if (recipe) {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          const parsedRecipe: { id: number; name: string } = JSON.parse(recipe)
-          scheduledRecipeCreate.mutate({
-            recipeID: parsedRecipe.id,
-            on: date,
-            recipeName: parsedRecipe.name,
-          })
-          return
-        }
       }}
       className={clx(
         "flex shrink-0 grow basis-0 flex-col border-2 border-solid border-transparent bg-[--color-background-calendar-day] p-1 transition-[background-color,border] duration-200 [word-break:break-word]",

@@ -1,9 +1,7 @@
 import React, { useState } from "react"
-import { useFocusVisible, usePress } from "react-aria"
-import { useDrag } from "react-dnd"
+import { useDrag, useFocusVisible, usePress } from "react-aria"
 import { Link } from "react-router-dom"
 
-import { isMobile } from "@/browser"
 import { clx } from "@/classnames"
 import { Image } from "@/components/Image"
 import { isInsideChangeWindow } from "@/date"
@@ -68,15 +66,13 @@ export function CalendarItem({
     date,
   }
 
-  const [{ isDragging }, drag] = useDrag({
-    type: DragDrop.CAL_RECIPE,
-    item: dragItem,
-    // don't do anything when on drop
-    end: () => {},
-    collect: (monitor) => {
-      return {
-        isDragging: monitor.isDragging(),
-      }
+  const { dragProps, isDragging } = useDrag({
+    getItems() {
+      return [
+        {
+          "recipeyak/scheduled-recipe": JSON.stringify(dragItem),
+        },
+      ]
     },
   })
 
@@ -85,12 +81,11 @@ export function CalendarItem({
 
   useGlobalEvent({ keyUp: handleKeyPress })
 
-  drag(ref)
-
   // We're doing some sketchy stuff here so that we can support clicking on the
   // schedule recipe to open the modal but also allow shift clicking to open in
   // a new tab
   const { pressProps } = usePress({
+    ...dragProps,
     onPress: (e) => {
       if (e.shiftKey || e.metaKey) {
         return
@@ -105,6 +100,7 @@ export function CalendarItem({
     <>
       <li
         ref={ref}
+        {...dragProps}
         onDoubleClick={(e) => {
           // double clicking on the list items shouldn't result in the schedule
           // modal popping open, only clicking on the empty space of a day
@@ -122,11 +118,7 @@ export function CalendarItem({
               : "outline-none",
           )}
           to={recipeURL(recipeID, recipeName)}
-          // TODO: hack until we switch to a better drag and drop setup, this
-          // makes it work on desktop at the cost of usePress not working,
-          // ideally we'd merge the callbacks together but the way react-dnd is
-          // built makes that tricky
-          {...(isMobile() ? pressProps : {})}
+          {...pressProps}
           onClick={(e) => {
             if (e.shiftKey || e.metaKey) {
               return
