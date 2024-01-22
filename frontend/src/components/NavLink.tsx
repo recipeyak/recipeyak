@@ -24,6 +24,10 @@ export const NavLink = ({
           p.isHovered &&
             "bg-[--color-background-calendar-day] text-[--color-link-hover]",
           p.isPressed && "bg-[--color-border]",
+          // Only show the focus ring on keyboard devices
+          p.isFocusVisible
+            ? "focus-visible:outline-[3px] focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)]"
+            : "outline-none",
           !noActiveState &&
             location.pathname === to &&
             "bg-[--color-background-calendar-day]",
