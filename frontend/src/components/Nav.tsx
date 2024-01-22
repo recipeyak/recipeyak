@@ -2,14 +2,13 @@ import { Menu, MenuTrigger, Separator } from "react-aria-components"
 import { Link } from "react-router-dom"
 
 import { useIsLoggedIn } from "@/auth"
-import { clx } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
 import { Button } from "@/components/Buttons"
 import Logo from "@/components/Logo"
 import { MenuItem } from "@/components/MenuItem"
 import { MenuPopover } from "@/components/MenuPopover"
+import { NavLink } from "@/components/NavLink"
 import { NavRecipeSearch } from "@/components/NavRecipeSearch"
-import { NavLink } from "@/components/Routing"
 import {
   pathHome,
   pathLogin,
@@ -127,12 +126,8 @@ function WordMark() {
 function AuthButtons() {
   return (
     <div className="flex justify-self-end">
-      <Link className={navItemCss} to={pathLogin({})}>
-        Login
-      </Link>
-      <Link className={navItemCss} to={pathSignup({})}>
-        Signup
-      </Link>
+      <NavLink to={pathLogin({})}>Login</NavLink>
+      <NavLink to={pathSignup({})}>Signup</NavLink>
     </div>
   )
 }
@@ -141,37 +136,15 @@ function NavButtons() {
   return (
     <div className="relative flex items-center justify-center gap-2 justify-self-end">
       <div className="flex print:!hidden sm:gap-2">
-        <NavLink
-          to={pathRecipeAdd({})}
-          className={navItemCss}
-          activeClassName={activeNavItemCss}
-        >
-          Add
-        </NavLink>
-        <NavLink
-          to={pathRecipesList({})}
-          className={navItemCss}
-          activeClassName={activeNavItemCss}
-        >
-          Browse
-        </NavLink>
-        <NavLink
-          to={pathSchedule({})}
-          className={navItemCss}
-          activeClassName={activeNavItemCss}
-        >
-          Calendar
-        </NavLink>
+        <NavLink to={pathRecipeAdd({})}>Add</NavLink>
+        <NavLink to={pathRecipesList({})}>Browse</NavLink>
+        <NavLink to={pathSchedule({})}>Calendar</NavLink>
       </div>
 
       <UserDropdown />
     </div>
   )
 }
-
-const navItemCss =
-  "flex shrink-0 grow-0 cursor-pointer items-center justify-center rounded-md px-2 py-1 text-[14px] font-medium leading-[1.5] text-[--color-text] transition-all [transition:background_.12s_ease-out] hover:bg-[--color-background-calendar-day] hover:text-[--color-link-hover] active:bg-[--color-border]"
-const activeNavItemCss = "bg-[--color-background-calendar-day]"
 
 export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
   const isLoggedIn = useIsLoggedIn()
@@ -186,13 +159,17 @@ export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
         >
           <Logo width="40px" />
         </Link>
-        <Link to={pathHome({})} className={clx(navItemCss, "hidden sm:block")}>
+        <NavLink
+          to={pathHome({})}
+          className="hidden sm:block"
+          noActiveState={!isLoggedIn}
+        >
           {isLoggedIn ? (
             <span className="font-medium ">Home</span>
           ) : (
             <WordMark />
           )}
-        </Link>
+        </NavLink>
       </div>
       <div className="flex grow items-center">
         {includeSearch && <NavRecipeSearch />}
