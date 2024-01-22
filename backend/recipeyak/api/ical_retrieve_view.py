@@ -2,6 +2,7 @@ from collections.abc import Sequence
 from datetime import date, datetime, timedelta
 from typing import cast
 
+import sentry_sdk
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -98,11 +99,14 @@ def ical_retrieve_view(
                 created=scheduled_recipe.created,
             )
         )
-    cal = create_calendar(
-        name="Scheduled Recipes",
-        description=f"Recipe Yak Schedule for Team {team.name}",
-        events=events,
-    )
+    with sentry_sdk.start_span(
+        op="recipeyak.ical.render", description="create icalendar"
+    ):
+        cal = create_calendar(
+            name="Scheduled Recipes",
+            description=f"Recipe Yak Schedule for Team {team.name}",
+            events=events,
+        )
 
     last_modified_scheduled = (
         ScheduledRecipe.objects.filter(team=team).order_by("-modified").first()
@@ -111,8 +115,10 @@ def ical_retrieve_view(
     response = HttpResponse()
     response["Content-Type"] = "text/calendar"
     if last_modified_scheduled is not None:
+        # TODO: this is buggy because it doesn't take into account deleted Scheduled Recipes
         response["Last-Modified"] = http_date(
             last_modified_scheduled.modified.timestamp()
         )
-    response.content = cal.to_ical()
+    with sentry_sdk.start_span(op="recipeyak.ical.render", description="render ical"):
+        response.content = cal.to_ical()
     return response
