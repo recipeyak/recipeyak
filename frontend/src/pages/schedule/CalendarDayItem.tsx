@@ -3,6 +3,7 @@ import { useFocusVisible, usePress } from "react-aria"
 import { useDrag } from "react-dnd"
 import { Link } from "react-router-dom"
 
+import { isMobile } from "@/browser"
 import { clx } from "@/classnames"
 import { Image } from "@/components/Image"
 import { isInsideChangeWindow } from "@/date"
@@ -121,7 +122,11 @@ export function CalendarItem({
               : "outline-none",
           )}
           to={recipeURL(recipeID, recipeName)}
-          {...pressProps}
+          // TODO: hack until we switch to a better drag and drop setup, this
+          // makes it work on desktop at the cost of usePress not working,
+          // ideally we'd merge the callbacks together but the way react-dnd is
+          // built makes that tricky
+          {...(isMobile() ? pressProps : {})}
           onClick={(e) => {
             if (e.shiftKey || e.metaKey) {
               return
