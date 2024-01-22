@@ -72,12 +72,14 @@ export function Avatar({
   avatarURL,
   onClick,
   tabIndex,
+  grayscale,
   size = 30,
 }: {
   avatarURL: string | null
   onClick?: () => void
   tabIndex?: number
   size?: 20 | 30 | 72 | 96
+  grayscale?: boolean
 }) {
   const cls = clx(onClick != null && "cursor-pointer")
   if (avatarURL == null) {
@@ -85,6 +87,7 @@ export function Avatar({
       <UserProfileImagePlaceholder
         size={size}
         onClick={onClick}
+        className={clx(grayscale && "grayscale")}
         tabIndex={tabIndex}
       />
     )
@@ -96,7 +99,7 @@ export function Avatar({
       src={avatarURL}
       alt="avatar"
       tabIndex={tabIndex}
-      className={cls}
+      className={clx(cls, grayscale && "grayscale")}
     />
   )
 }
