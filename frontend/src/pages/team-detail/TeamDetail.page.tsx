@@ -70,15 +70,27 @@ export function TeamDetailPage(props: RouteComponentProps<{ teamId: string }>) {
   const id = parseInt(props.match.params.teamId, 10)
   const teamInfo = useTeam({ teamId: id })
   if (is404(teamInfo.error)) {
-    return <div>team not found</div>
+    return (
+      <NavPage>
+        <div className="text-center">team not found</div>
+      </NavPage>
+    )
   }
 
   if (teamInfo.isError) {
-    return <div>error fetching team</div>
+    return (
+      <NavPage>
+        <div className="text-center">error fetching team</div>
+      </NavPage>
+    )
   }
 
   if (teamInfo.isPending) {
-    return <div>loading team...</div>
+    return (
+      <NavPage>
+        <div className="text-center">loading team...</div>
+      </NavPage>
+    )
   }
 
   const isSettings = props.match.url.endsWith("settings")
