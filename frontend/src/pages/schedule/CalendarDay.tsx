@@ -137,8 +137,7 @@ export function CalendarDay({
         setShowScheduleRecipeModal(true)
       }}
       className={clx(
-        "flex shrink-0 grow basis-0 flex-col border-2 border-solid border-transparent bg-[--color-background-calendar-day] p-1 transition-[background-color,border] duration-200 [word-break:break-word]",
-        isDroppable && "opacity-50",
+        "flex shrink-0 grow basis-0 flex-col border-2 border-solid border-transparent bg-[--color-background-calendar-day] p-1 transition-[background-color,border] duration-75 [word-break:break-word]",
         isSelectedDay &&
           // Could avoid the important here if we were using stylex
           "rounded-md border-2 border-solid !border-[--color-border-selected-day]",
