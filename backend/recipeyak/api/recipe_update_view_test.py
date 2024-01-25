@@ -57,7 +57,7 @@ def test_step_update(
     assert data["text"] != step.text, "Ensure we are changing the step with our update."
     client.force_login(user)
     res = client.patch(
-        f"/api/v1/recipes/{recipe.id}/steps/{step.id}/",
+        f"/api/v1/steps/{step.id}/",
         data,
         content_type="application/json",
     )
@@ -83,7 +83,7 @@ def test_step_delete(
         RecipeChange.objects.count() == 0
     ), "We shouldn't have any changes recorded yet."
     client.force_login(user)
-    res = client.delete(f"/api/v1/recipes/{recipe.id}/steps/{step.id}/")
+    res = client.delete(f"/api/v1/steps/{step.id}/")
     assert res.status_code == 204
 
     assert RecipeChange.objects.count() == 1, "We should have our step delete change."
@@ -246,7 +246,7 @@ def test_ingredient_update(
     ingredient_data = {"quantity": "3 cups", "optional": True}
     client.force_login(user)
     res = client.patch(
-        f"/api/v1/recipes/{recipe.id}/ingredients/{ingredient.id}/",
+        f"/api/v1/ingredients/{ingredient.id}/",
         ingredient_data,
         content_type="application/json",
     )
@@ -273,7 +273,7 @@ def test_ingredient_delete(
     ), "We shouldn't have any changes recorded yet."
 
     client.force_login(user)
-    res = client.delete(f"/api/v1/recipes/{recipe.id}/ingredients/{ingredient.id}/")
+    res = client.delete(f"/api/v1/ingredients/{ingredient.id}/")
     assert res.status_code == 204
 
     assert RecipeChange.objects.count() == 1

@@ -13,7 +13,7 @@ def test_cal_updating_settings_view(
     """
     Ensure we can update the `syncEnabled` setting for the UI to work.
     """
-    url = f"/api/v1/t/{team.pk}/calendar/settings/"
+    url = "/api/v1/calendar/settings/"
 
     membership = Membership.objects.filter(user=user).get(team=team)
     assert membership.calendar_sync_enabled is False

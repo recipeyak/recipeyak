@@ -14,7 +14,7 @@ def test_cal_next_open(
     """
     client.force_login(user)
     res = client.get(
-        f"/api/v1/t/{team.pk}/calendar/next_open/",
+        "/api/v1/calendar/next_open/",
         data={"day": "Wednesday", "now": "2022-04-15"},
     )
     assert res.status_code == 200

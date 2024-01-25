@@ -28,14 +28,14 @@ def test_fetching_shoppinglist(
     end = start + timedelta(days=1)
     params = {"start": start, "end": end}
 
-    res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
+    res = client.get("/api/v1/shoppinglist/", params)
     assert res.status_code == 200
     assert res.json()["ingredients"] == {}
     assert ShoppingList.objects.count() == 1
 
     recipe.schedule(user=user, on=start, team=team)
 
-    res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
+    res = client.get("/api/v1/shoppinglist/", params)
     assert res.status_code == 200
     assert res.json()["ingredients"] == {
         "egg": {
@@ -67,13 +67,13 @@ def test_fetching_shoppinglist_with_team_recipe(
     end = start + timedelta(days=1)
     params = {"start": start, "end": end}
 
-    res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
+    res = client.get("/api/v1/shoppinglist/", params)
     assert res.status_code == 200
     assert res.json()["ingredients"] == {}
 
     recipe.schedule(user=user, on=start, team=team)
 
-    res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
+    res = client.get("/api/v1/shoppinglist/", params)
     assert res.status_code == 200
     assert res.json()["ingredients"] != []
 
@@ -96,7 +96,7 @@ def test_fetching_shoppinglist_with_invalid_dates(
 ) -> None:
     params = {"start": "", "end": "invalid date"}
     client.force_login(user)
-    res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
+    res = client.get("/api/v1/shoppinglist/", params)
     assert res.status_code == 400
 
 
@@ -123,7 +123,7 @@ def test_scheduling_multiple_times_some_ingredient(
     end = start + timedelta(days=1)
     params = {"start": start, "end": end}
     client.force_login(user)
-    res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
+    res = client.get("/api/v1/shoppinglist/", params)
     assert res.status_code == 200
     assert res.json()["ingredients"] == {
         "black pepper": {
@@ -349,7 +349,7 @@ def test_combining_feta(user: User, team: Team, client: Client) -> None:
     end = start + timedelta(days=1)
     params = {"start": start, "end": end}
     client.force_login(user)
-    res = client.get(f"/api/v1/t/{team.id}/shoppinglist/", params)
+    res = client.get("/api/v1/shoppinglist/", params)
     assert res.status_code == 200
 
     assert res.json()["ingredients"] == {
@@ -392,7 +392,7 @@ def test_fetching_team_shopping_list(
     end = start + timedelta(days=1)
     params = {"start": start, "end": end}
 
-    url = f"/api/v1/t/{team.pk}/shoppinglist/"
+    url = "/api/v1/shoppinglist/"
     client.force_login(user)
     res = client.get(url, params)
     assert res.status_code == 200

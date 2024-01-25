@@ -209,7 +209,7 @@ def test_updating_step_of_recipe(
         "position": ordering.position_after(step.position),
     }
 
-    url = f"/api/v1/recipes/{recipe.id}/steps/{step.id}/"
+    url = f"/api/v1/steps/{step.id}/"
 
     res = client.patch(url, step_data, content_type="application/json")
     assert res.status_code == 200
@@ -239,7 +239,7 @@ def test_deleting_step_from_recipe(
 
     assert isinstance(step_id, int)
 
-    res = client.delete(f"/api/v1/recipes/{recipe.id}/steps/{step_id}/")
+    res = client.delete(f"/api/v1/steps/{step_id}/")
     assert res.status_code == 204
 
     res = client.get(f"/api/v1/recipes/{recipe.id}/")
@@ -388,7 +388,7 @@ def test_updating_ingredient_of_recipe(
     ingredient = {"name": "black pepper"}
 
     res = client.patch(
-        f"/api/v1/recipes/{recipe.id}/ingredients/{ingredient_id}/",
+        f"/api/v1/ingredients/{ingredient_id}/",
         ingredient,
         content_type="application/json",
     )
@@ -422,7 +422,7 @@ def test_updating_ingredient_position(
     assert data["position"] != ingredient.position
 
     res = client.patch(
-        f"/api/v1/recipes/{recipe.id}/ingredients/{ingredient.id}/",
+        f"/api/v1/ingredients/{ingredient.id}/",
         data,
         content_type="application/json",
     )
@@ -443,7 +443,7 @@ def test_deleting_ingredient_from_recipe(
 
     ingredient_id = recipe.ingredient_set.all()[0].id
 
-    res = client.delete(f"/api/v1/recipes/{recipe.id}/ingredients/{ingredient_id}/")
+    res = client.delete(f"/api/v1/ingredients/{ingredient_id}/")
     assert res.status_code == 204
 
     res = client.get(f"/api/v1/recipes/{recipe.id}/")

@@ -13,7 +13,7 @@ def test_creating_scheduled_recipe(
 ) -> None:
     recipe.team = team
     recipe.save()
-    url = f"/api/v1/t/{team.id}/calendar/"
+    url = "/api/v1/calendar/"
     data = {"recipe": recipe.id, "on": date(1976, 7, 6)}
     client.force_login(user)
     res = client.post(url, data, content_type="application/json")
@@ -27,7 +27,7 @@ def test_creating_scheduled_recipe(
 def test_adding_to_team_calendar(
     client: Client, user: User, team: Team, recipe: Recipe
 ) -> None:
-    url = f"/api/v1/t/{team.pk}/calendar/"
+    url = "/api/v1/calendar/"
     recipe.team = team
     recipe.save()
     data = {"recipe": recipe.id, "on": date(1976, 7, 6)}
