@@ -1,8 +1,10 @@
 import { useQueryClient } from "@tanstack/react-query"
 import React from "react"
+import { DialogTrigger } from "react-aria-components"
 
 import { Button } from "@/components/Buttons"
 import { BetterLabel } from "@/components/Label"
+import { Modal } from "@/components/Modal"
 import { Select } from "@/components/Select"
 import { TextInput } from "@/components/TextInput"
 import { useScheduledRecipeSettingsFetch } from "@/queries/scheduledRecipeSettingsFetch"
@@ -81,21 +83,34 @@ export function ChangeTeam() {
                   }}
                   className="min-w-0 grow"
                 />
-                <Button
-                  size="small"
-                  loading={regenLink.isPending}
-                  onClick={() => {
-                    if (
-                      confirm(
-                        "Are you sure you want to reset the calendar link?",
-                      )
-                    ) {
-                      regenLink.mutate()
-                    }
-                  }}
-                >
-                  Reset
-                </Button>
+                <DialogTrigger>
+                  <Button size="small">Reset</Button>
+                  <Modal title="Reset Calendar Link">
+                    {({ close }) => (
+                      <div className="flex flex-col gap-2">
+                        <div>
+                          Are you sure you want to reset the calendar link?
+                        </div>
+                        <div className="flex gap-2">
+                          <Button>Cancel</Button>
+                          <Button
+                            variant="danger"
+                            loading={regenLink.isPending}
+                            onClick={() => {
+                              regenLink.mutate(undefined, {
+                                onSuccess: () => {
+                                  close()
+                                },
+                              })
+                            }}
+                          >
+                            {!regenLink.isPending ? "Reset" : "Reseting..."}
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </Modal>
+                </DialogTrigger>
                 <Button
                   size="small"
                   onClick={() => {

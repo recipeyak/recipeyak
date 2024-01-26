@@ -72,6 +72,21 @@ module.exports = {
         selector: "CallExpression[callee.property.name='setQueryData']",
         message: "Use a type safe wrapper instead.",
       },
+      {
+        selector:
+          "CallExpression[callee.object.name='window'][callee.property.name='confirm']",
+        message: "window.confirm is buggy in Safari",
+      },
+      {
+        selector:
+          "CallExpression[callee.object.name='window'][callee.property.name='prompt']",
+        message: "window.prompt is buggy in Safari",
+      },
+      {
+        selector:
+          "CallExpression[callee.object.name='window'][callee.property.name='alert']",
+        message: "window.alert is buggy in Safari",
+      },
     ],
     "no-restricted-globals": [
       "error",
@@ -84,6 +99,9 @@ module.exports = {
       "event",
       "localStorage",
       "focus",
+      "confirm",
+      "prompt",
+      "alert",
     ],
     "no-restricted-imports": [
       "error",

@@ -6,6 +6,7 @@ import { Button } from "@/components/Buttons"
 import { Chevron } from "@/components/icons"
 import { MenuItem } from "@/components/MenuItem"
 import { MenuPopover } from "@/components/MenuPopover"
+import { Modal } from "@/components/Modal"
 import { ScheduleModal } from "@/pages/recipe-detail/ScheduleModal"
 import { pathCookDetail, pathRecipeDetail } from "@/paths"
 import { useRecipeDelete } from "@/queries/recipeDelete"
@@ -53,6 +54,8 @@ export function RecipeTitleDropdown({
   const [showScheduleModal, setShowScheduleModal] = useState(false)
   const updateRecipe = useRecipeUpdate()
   const deleteRecipe = useRecipeDelete()
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [isArchiveModalOpen, setIsArchiveModalOpen] = useState(false)
 
   const menuItems: Array<
     | {
@@ -105,21 +108,9 @@ export function RecipeTitleDropdown({
       label: !isArchived ? "Archive" : "Unarchive",
       onClick: () => {
         if (!isArchived) {
-          if (confirm("Are you sure you want to archive this recipe?")) {
-            updateRecipe.mutate(
-              {
-                recipeId,
-                update: {
-                  // TODO: this api should support something like 'now'
-                  archived_at: new Date().toISOString(),
-                },
-              },
-              {
-                onSuccess: () => {},
-              },
-            )
-          }
+          setIsArchiveModalOpen(true)
         } else {
+          // Don't need to confirm for unarchiving
           updateRecipe.mutate(
             {
               recipeId,
@@ -143,11 +134,9 @@ export function RecipeTitleDropdown({
     },
     {
       type: "menuitem",
-      label: !deleteRecipe.isPending ? "Delete" : "Deleting...",
+      label: "Delete",
       onClick: () => {
-        if (confirm("Are you sure you want to delete this recipe?")) {
-          deleteRecipe.mutate({ recipeId })
-        }
+        setIsDeleteModalOpen(true)
       },
     },
   ]
@@ -196,6 +185,58 @@ export function RecipeTitleDropdown({
           })}
         </Menu>
       </MenuPopover>
+      <Modal
+        title="Delete Recipe"
+        isOpen={isDeleteModalOpen}
+        onOpenChange={setIsDeleteModalOpen}
+      >
+        <div className="flex flex-col gap-2">
+          <div>Are you sure you want to delete this recipe?</div>
+          <div className="flex gap-2">
+            <Button>Cancel</Button>
+            <Button
+              variant="danger"
+              loading={deleteRecipe.isPending}
+              onClick={() => {
+                deleteRecipe.mutate({ recipeId })
+              }}
+            >
+              {!deleteRecipe.isPending ? "Delete" : "Deleting..."}
+            </Button>
+          </div>
+        </div>
+      </Modal>
+      <Modal
+        title="Archive Recipe"
+        isOpen={isArchiveModalOpen}
+        onOpenChange={setIsArchiveModalOpen}
+      >
+        <div className="flex flex-col gap-2">
+          <div>Are you sure you want to archive this recipe?</div>
+          <div className="flex gap-2">
+            <Button>Cancel</Button>
+            <Button
+              variant="danger"
+              loading={updateRecipe.isPending}
+              onClick={() => {
+                void updateRecipe
+                  .mutateAsync({
+                    recipeId,
+                    update: {
+                      // TODO: this api should support something like 'now'
+                      archived_at: new Date().toISOString(),
+                    },
+                  })
+                  .then(() => {
+                    setIsArchiveModalOpen(false)
+                  })
+              }}
+            >
+              {!updateRecipe.isPending ? "Archive" : "Archiving..."}
+            </Button>
+          </div>
+        </div>
+      </Modal>
       <ScheduleModal
         isOpen={showScheduleModal}
         recipeId={recipeId}
@@ -204,9 +245,7 @@ export function RecipeTitleDropdown({
         recipeImageUrl={recipeImageUrl}
         recipeAuthor={recipeAuthor}
         scheduleHistory={recipeRecentScheduleHistory}
-        onOpenChange={(value) => {
-          setShowScheduleModal(value)
-        }}
+        onOpenChange={setShowScheduleModal}
       />
     </MenuTrigger>
   )

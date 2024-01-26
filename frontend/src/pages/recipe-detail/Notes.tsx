@@ -1,6 +1,7 @@
 import produce from "immer"
 import orderBy from "lodash-es/orderBy"
 import React, { useEffect, useRef, useState } from "react"
+import { DialogTrigger } from "react-aria-components"
 import { Link, useLocation } from "react-router-dom"
 
 import { clx } from "@/classnames"
@@ -8,13 +9,13 @@ import { Avatar } from "@/components/Avatar"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { Markdown } from "@/components/Markdown"
+import { Modal } from "@/components/Modal"
 import { RotatingLoader } from "@/components/RoatingLoader"
 import { Textarea } from "@/components/Textarea"
 import { formatAbsoluteDateTime, formatHumanDateTime } from "@/date"
 import {
   ReactionPopover,
   ReactionsFooter,
-  ReactionType,
 } from "@/pages/recipe-detail/Reactions"
 import { findReaction } from "@/pages/recipe-detail/reactionUtils"
 import { SectionTitle } from "@/pages/recipe-detail/RecipeHelpers"
@@ -37,93 +38,6 @@ type RecipeTimelineItem = Recipe["timelineItems"][number]
 
 type Note = PickVariant<RecipeTimelineItem, "note">
 type Upload = Note["attachments"][number]
-
-interface IUseNoteEditHandlers {
-  readonly note: Note
-  readonly recipeId: number
-}
-function useNoteEditHandlers({ note, recipeId }: IUseNoteEditHandlers) {
-  const [draftText, setNewText] = useState(note.text)
-  useEffect(() => {
-    setNewText(note.text)
-  }, [note.text])
-  const [isEditing, setIsEditing] = React.useState(false)
-  const [uploads, setUploads] = React.useState<readonly UploadSuccess[]>(
-    note.attachments.map((x) => ({ ...x, localId: x.id })),
-  )
-
-  const deleteNote = useNoteDelete()
-  const updateNote = useNoteUpdate()
-
-  const onSave = () => {
-    updateNote.mutate(
-      {
-        recipeId,
-        noteId: note.id,
-        note: draftText,
-        attachmentUploadIds: uploads.map((x) => x.id),
-      },
-      {
-        onSuccess: () => {
-          setIsEditing(false)
-        },
-      },
-    )
-  }
-  const setEditing = (value: boolean) => {
-    setIsEditing(value)
-  }
-  const onCancel = () => {
-    setEditing(false)
-  }
-  const onDelete = () => {
-    if (confirm("Are you sure you want to delete this note?")) {
-      deleteNote.mutate({
-        recipeId,
-        noteId: note.id,
-      })
-    }
-  }
-  const onEditorKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Escape") {
-      onCancel()
-    }
-    if (e.key === "Enter" && e.metaKey) {
-      onSave()
-    }
-  }
-  const onEditorChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setNewText(e.target.value)
-  }
-  const onNoteClick = () => {
-    setEditing(true)
-  }
-  return {
-    draftText,
-    isEditing,
-    isUpdating: updateNote.isPending,
-    onCancel,
-    onDelete,
-    onEditorChange,
-    onEditorKeyDown,
-    onNoteClick,
-    onSave,
-    uploads,
-    addUploads: (upload: UploadSuccess) => {
-      setUploads((s) => [upload, ...s])
-    },
-    removeUploads: (localIds: string[]) => {
-      setUploads((s) => {
-        return s.filter(
-          (u) => u.localId == null || !localIds.includes(u.localId),
-        )
-      })
-    },
-    resetUploads: () => {
-      setUploads(note.attachments)
-    },
-  }
-}
 
 export function NoteTimeStamp({ created }: { readonly created: string }) {
   const date = new Date(created)
@@ -210,21 +124,28 @@ export function Note({
   openImage,
   readonly,
 }: INoteProps) {
-  const {
-    draftText,
-    isEditing,
-    isUpdating,
-    onCancel,
-    onDelete,
-    onEditorChange,
-    onEditorKeyDown,
-    onNoteClick,
-    onSave,
-    addUploads,
-    removeUploads,
-    uploads,
-    resetUploads,
-  } = useNoteEditHandlers({ note, recipeId })
+  const [draftText, setNewText] = useState(note.text)
+  useEffect(() => {
+    setNewText(note.text)
+  }, [note.text])
+  const [isEditing, setIsEditing] = React.useState(false)
+  const [uploads, setUploads] = React.useState<readonly UploadSuccess[]>(
+    note.attachments.map((x) => ({ ...x, localId: x.id })),
+  )
+  const deleteNote = useNoteDelete()
+  const updateNote = useNoteUpdate()
+
+  const addUploads = (upload: UploadSuccess) => {
+    setUploads((s) => [upload, ...s])
+  }
+  const removeUploads = (localIds: string[]) => {
+    setUploads((s) => {
+      return s.filter((u) => u.localId == null || !localIds.includes(u.localId))
+    })
+  }
+  const resetUploads = () => {
+    setUploads([])
+  }
 
   const userId = useUserId()
 
@@ -235,24 +156,6 @@ export function Note({
 
   const createReaction = useReactionCreate()
   const deleteReaction = useReactionDelete()
-
-  const addOrRemoveReaction = (emoji: ReactionType) => {
-    const existingReaction = findReaction(note.reactions, emoji, userId ?? 0)
-    if (existingReaction != null) {
-      // remove reaction
-      deleteReaction.mutate({
-        recipeId,
-        noteId: note.id,
-        reactionId: existingReaction.id,
-      })
-    } else {
-      createReaction.mutate({
-        recipeId,
-        noteId: note.id,
-        type: emoji,
-      })
-    }
-  }
 
   return (
     <SharedEntry
@@ -276,7 +179,25 @@ export function Note({
               <ReactionPopover
                 className="ml-auto print:!hidden"
                 onPick={(emoji) => {
-                  addOrRemoveReaction(emoji)
+                  const existingReaction = findReaction(
+                    note.reactions,
+                    emoji,
+                    userId ?? 0,
+                  )
+                  if (existingReaction != null) {
+                    // remove reaction
+                    deleteReaction.mutate({
+                      recipeId,
+                      noteId: note.id,
+                      reactionId: existingReaction.id,
+                    })
+                  } else {
+                    createReaction.mutate({
+                      recipeId,
+                      noteId: note.id,
+                      type: emoji,
+                    })
+                  }
                 }}
                 reactions={note.reactions}
               />
@@ -284,7 +205,9 @@ export function Note({
                 <a
                   className="ml-2 cursor-pointer text-[0.825rem] text-[--color-text-muted] print:hidden"
                   data-testid="edit-note"
-                  onClick={onNoteClick}
+                  onClick={() => {
+                    setIsEditing(true)
+                  }}
                 >
                   edit
                 </a>
@@ -308,10 +231,46 @@ export function Note({
                   userId={userId}
                   reactions={note.reactions}
                   onPick={(emoji) => {
-                    addOrRemoveReaction(emoji)
+                    const existingReaction = findReaction(
+                      note.reactions,
+                      emoji,
+                      userId ?? 0,
+                    )
+                    if (existingReaction != null) {
+                      // remove reaction
+                      deleteReaction.mutate({
+                        recipeId,
+                        noteId: note.id,
+                        reactionId: existingReaction.id,
+                      })
+                    } else {
+                      createReaction.mutate({
+                        recipeId,
+                        noteId: note.id,
+                        type: emoji,
+                      })
+                    }
                   }}
                   onClick={(emoji) => {
-                    addOrRemoveReaction(emoji)
+                    const existingReaction = findReaction(
+                      note.reactions,
+                      emoji,
+                      userId ?? 0,
+                    )
+                    if (existingReaction != null) {
+                      // remove reaction
+                      deleteReaction.mutate({
+                        recipeId,
+                        noteId: note.id,
+                        reactionId: existingReaction.id,
+                      })
+                    } else {
+                      createReaction.mutate({
+                        recipeId,
+                        noteId: note.id,
+                        type: emoji,
+                      })
+                    }
                   }}
                 />
               </Box>
@@ -323,10 +282,31 @@ export function Note({
               <Textarea
                 autoFocus
                 bottomFlat
-                onKeyDown={onEditorKeyDown}
+                onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+                  if (e.key === "Escape") {
+                    setIsEditing(false)
+                  }
+                  if (e.key === "Enter" && e.metaKey) {
+                    updateNote.mutate(
+                      {
+                        recipeId,
+                        noteId: note.id,
+                        note: draftText,
+                        attachmentUploadIds: uploads.map((x) => x.id),
+                      },
+                      {
+                        onSuccess: () => {
+                          setIsEditing(false)
+                        },
+                      },
+                    )
+                  }
+                }}
                 minRows={5}
                 value={draftText}
-                onChange={onEditorChange}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+                  setNewText(e.target.value)
+                }}
                 placeholder="Add a note..."
               />
               {isEditing ? (
@@ -357,19 +337,40 @@ export function Note({
 
             {isEditing && (
               <Box space="between" align="center">
-                <Button
-                  variant="danger"
-                  size="small"
-                  onClick={onDelete}
-                  aria-label="delete note"
-                >
-                  Delete
-                </Button>
+                <DialogTrigger>
+                  <Button
+                    variant="danger"
+                    size="small"
+                    aria-label="delete note"
+                  >
+                    Delete
+                  </Button>
+                  <Modal title="Delete Note">
+                    <div className="flex flex-col gap-2">
+                      <div>Are you sure you want to delete this note?</div>
+                      <div className="flex gap-2">
+                        <Button>Cancel</Button>
+                        <Button
+                          variant="danger"
+                          loading={deleteNote.isPending}
+                          onClick={() => {
+                            deleteNote.mutate({
+                              recipeId,
+                              noteId: note.id,
+                            })
+                          }}
+                        >
+                          Delete
+                        </Button>
+                      </div>
+                    </div>
+                  </Modal>
+                </DialogTrigger>
                 <Box gap={3} space="between" align="center">
                   <Button
                     size="small"
                     onClick={() => {
-                      onCancel()
+                      setIsEditing(false)
                       reset()
                     }}
                     aria-label="cancel note"
@@ -380,8 +381,22 @@ export function Note({
                     variant="primary"
                     size="small"
                     aria-label="save note"
-                    onClick={onSave}
-                    loading={isUpdating}
+                    onClick={() => {
+                      updateNote.mutate(
+                        {
+                          recipeId,
+                          noteId: note.id,
+                          note: draftText,
+                          attachmentUploadIds: uploads.map((x) => x.id),
+                        },
+                        {
+                          onSuccess: () => {
+                            setIsEditing(false)
+                          },
+                        },
+                      )
+                    }}
+                    loading={updateNote.isPending}
                     disabled={hasUnsavedImages}
                   >
                     Save
@@ -821,6 +836,41 @@ type FileUpload = {
   state: "loading" | "failed" | "success"
 }
 
+function DeleteFileButton({
+  removeFile,
+  fileId,
+}: {
+  fileId: string | undefined
+  removeFile: (fileId: string | undefined) => void
+}) {
+  return (
+    <DialogTrigger>
+      <Button
+        className="absolute right-0 top-[-4px] z-10 aspect-[1] cursor-pointer rounded-[100%] border-[0px] bg-[#4a4a4a] p-[0.3rem] font-bold leading-[0] text-[#dbdbdb]"
+        variant="nostyle"
+      >
+        &times;
+      </Button>
+      <Modal title="Delete File">
+        <div className="flex flex-col gap-2">
+          <div>Are you sure you want to delete this file?</div>
+          <div className="flex gap-2">
+            <Button>Cancel</Button>
+            <Button
+              variant="danger"
+              onClick={() => {
+                removeFile(fileId)
+              }}
+            >
+              Delete
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    </DialogTrigger>
+  )
+}
+
 function FileUploader({
   addFiles,
   removeFile,
@@ -846,17 +896,7 @@ function FileUploader({
                 state={f.state}
                 backgroundUrl={null}
               />
-              {/* eslint-disable-next-line react/forbid-elements */}
-              <button
-                className="absolute right-0 top-[-4px] z-10 aspect-[1] cursor-pointer rounded-[100%] border-[0px] bg-[#4a4a4a] p-[0.3rem] font-bold leading-[0] text-[#dbdbdb]"
-                onClick={() => {
-                  if (confirm("Delete file?")) {
-                    removeFile(f.localId)
-                  }
-                }}
-              >
-                &times;
-              </button>
+              <DeleteFileButton fileId={f.localId} removeFile={removeFile} />
             </div>
           ))}
         </div>

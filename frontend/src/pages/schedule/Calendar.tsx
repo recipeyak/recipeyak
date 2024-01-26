@@ -5,6 +5,7 @@ import isValid from "date-fns/isValid"
 import parseISO from "date-fns/parseISO"
 import { chunk, first } from "lodash-es"
 import { useState } from "react"
+import { DialogTrigger } from "react-aria-components"
 import { useHistory, useLocation } from "react-router-dom"
 
 import { clx } from "@/classnames"
@@ -136,55 +137,35 @@ interface INavProps {
 }
 
 function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
-  const [showShopping, setShowShopping] = useState(false)
-  const [showSchedule, setShowSchedule] = useState(false)
-
   return (
     <Box space="between" align="center" shrink={0}>
-      <Modal
-        isOpen={showShopping}
-        onOpenChange={(value) => {
-          setShowShopping(value)
-        }}
-        title="Shopping List"
-        children={
-          <div className="flex">
-            <ShoppingList />
-          </div>
-        }
-      />
-
-      <ScheduleRecipeModal
-        key={showSchedule.toString()}
-        isOpen={showSchedule}
-        onOpenChange={(value) => {
-          setShowSchedule(value)
-        }}
-      />
-
       <Box gap={1} className="items-center">
         <CalTitle dayTs={dayTs} />
-        <Button
-          size="small"
-          data-testid="open shopping list modal"
-          onClick={() => {
-            setShowShopping(true)
-          }}
-          className="gap-2"
-        >
-          <span className="hidden sm:block">Shop</span>
-          <ShopIcon />
-        </Button>
-        <Button
-          size="small"
-          className="gap-2"
-          onClick={() => {
-            setShowSchedule(true)
-          }}
-        >
-          <span className="hidden sm:block">Schedule</span>
-          <Plus />
-        </Button>
+        <DialogTrigger>
+          <Button
+            size="small"
+            data-testid="open shopping list modal"
+            className="gap-2"
+          >
+            <span className="hidden sm:block">Shop</span>
+            <ShopIcon />
+          </Button>
+          <Modal
+            title="Shopping List"
+            children={
+              <div className="flex">
+                <ShoppingList />
+              </div>
+            }
+          />
+        </DialogTrigger>
+        <DialogTrigger>
+          <Button size="small" className="gap-2">
+            <span className="hidden sm:block">Schedule</span>
+            <Plus />
+          </Button>
+          <ScheduleRecipeModal />
+        </DialogTrigger>
       </Box>
       <Box gap={1}>
         <Button size="small" onClick={onPrev} aria-label="previous week">
@@ -226,12 +207,7 @@ function HelpPrompt() {
       >
         press <Kbd>?</Kbd> for help
       </div>
-      <HelpMenuModal
-        show={show}
-        onOpenChange={(value) => {
-          setShow(value)
-        }}
-      />
+      <HelpMenuModal show={show} onOpenChange={setShow} />
     </>
   )
 }

@@ -1,5 +1,6 @@
 import { addDays, addWeeks, format } from "date-fns"
 import React from "react"
+import { DialogTrigger } from "react-aria-components"
 import { Link } from "react-router-dom"
 
 import { clx } from "@/classnames"
@@ -205,20 +206,6 @@ function RescheduleSection({
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setDay(e.target.value)
   }
-  const handleDelete = () => {
-    if (confirm(`Are you sure you want to delete '${recipeName}'?`)) {
-      scheduledRecipeDelete.mutate(
-        {
-          scheduledRecipeId: scheduledId,
-        },
-        {
-          onSuccess: () => {
-            onClose()
-          },
-        },
-      )
-    }
-  }
   const handleSave = ({ on }: { on: string | number | Date }) => {
     scheduledRecipeUpdate.mutate({
       scheduledRecipeId: scheduledId,
@@ -277,14 +264,39 @@ function RescheduleSection({
               })}
             </div>
 
-            <Button
-              size="small"
-              variant="danger"
-              onClick={handleDelete}
-              disabled={scheduledRecipeDelete.isPending}
-            >
-              {!scheduledRecipeDelete.isPending ? "Delete" : "Deleting..."}
-            </Button>
+            <DialogTrigger>
+              <Button size="small" variant="danger">
+                Delete
+              </Button>
+              <Modal title="Delete Recipe">
+                <div className="flex flex-col gap-2">
+                  <div>Are you sure you want to delete '{recipeName}'?</div>
+                  <div className="flex gap-2">
+                    <Button>Cancel</Button>
+                    <Button
+                      variant="danger"
+                      loading={scheduledRecipeDelete.isPending}
+                      onClick={() => {
+                        scheduledRecipeDelete.mutate(
+                          {
+                            scheduledRecipeId: scheduledId,
+                          },
+                          {
+                            onSuccess: () => {
+                              onClose()
+                            },
+                          },
+                        )
+                      }}
+                    >
+                      {!scheduledRecipeDelete.isPending
+                        ? "Delete"
+                        : "Deleting..."}
+                    </Button>
+                  </div>
+                </div>
+              </Modal>
+            </DialogTrigger>
           </div>
 
           {showCustom && (

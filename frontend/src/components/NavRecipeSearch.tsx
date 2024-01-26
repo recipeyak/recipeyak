@@ -280,8 +280,7 @@ export function NavRecipeSearch() {
         }
         variant="nostyle"
         className={clx(
-          "w-full !cursor-default !justify-start gap-2 border border-solid border-[--color-border] bg-[--color-background-card] !px-2 !py-[5px] !pr-3 !text-base !font-normal text-[--color-text] sm:!cursor-text",
-          "-outline-offset-1 focus-within:outline focus-within:outline-[2px] focus-within:outline-[rgb(47,129,247)]",
+          "relative inline-flex w-full !cursor-default select-none items-center !justify-start gap-2 whitespace-nowrap rounded-md border border-solid border-[--color-border] bg-[--color-background-card] px-2 py-[5px] !pr-3 text-center align-top text-base font-normal leading-[1.5] text-[--color-text] no-underline outline-none -outline-offset-1 transition-[border-color,background-color] duration-75 focus-within:outline focus-within:outline-[2px] focus-within:outline-[rgb(47,129,247)] disabled:cursor-default print:!hidden sm:!cursor-text",
         )}
       />
       {showPopover && (

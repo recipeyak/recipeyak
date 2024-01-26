@@ -1,9 +1,11 @@
+import { DialogTrigger } from "react-aria-components"
 import { Link } from "react-router-dom"
 
 import { assertNever } from "@/assert"
 import { Avatar } from "@/components/Avatar"
 import { Button } from "@/components/Buttons"
 import { Loader } from "@/components/Loader"
+import { Modal } from "@/components/Modal"
 import { Select } from "@/components/Select"
 import {
   Cell,
@@ -109,23 +111,36 @@ function MembersList({
                   return (
                     <Cell>
                       {member.user.id === userId || isTeamAdmin ? (
-                        <Button
-                          variant="danger"
-                          size="small"
-                          onClick={() => {
-                            if (
-                              confirm(`Remove member: ${member.user.name}?`)
-                            ) {
-                              deleteTeamMember.mutate({
-                                teamId: teamID,
-                                memberId: member.id,
-                              })
-                            }
-                          }}
-                          loading={deleteTeamMember.isPending}
-                        >
-                          {member.user.id === userId ? "Leave" : "Remove"}
-                        </Button>
+                        <DialogTrigger>
+                          <Button variant="danger" size="small">
+                            {member.user.id === userId ? "Leave" : "Remove"}
+                          </Button>
+                          <Modal title="Delete Note">
+                            <div className="flex flex-col gap-2">
+                              <div>
+                                Are you sure you want to remove this member:{" "}
+                                {member.user.name}?
+                              </div>
+                              <div className="flex gap-2">
+                                <Button>Cancel</Button>
+                                <Button
+                                  variant="danger"
+                                  loading={deleteTeamMember.isPending}
+                                  onClick={() => {
+                                    deleteTeamMember.mutate({
+                                      teamId: teamID,
+                                      memberId: member.id,
+                                    })
+                                  }}
+                                >
+                                  {!deleteTeamMember.isPending
+                                    ? "Remove"
+                                    : "Removing..."}
+                                </Button>
+                              </div>
+                            </div>
+                          </Modal>
+                        </DialogTrigger>
                       ) : (
                         <div>–</div>
                       )}

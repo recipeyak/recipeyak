@@ -104,9 +104,7 @@ export function ScheduleModal({
   return (
     <Modal
       isOpen={isOpen}
-      onOpenChange={(value) => {
-        onOpenChange(value)
-      }}
+      onOpenChange={onOpenChange}
       title={"Schedule"}
       children={
         <div className="flex h-full flex-col gap-2">
