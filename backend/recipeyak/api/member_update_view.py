@@ -56,7 +56,7 @@ def member_update_view(request: AuthedHttpRequest, *, member_id: int) -> JsonRes
     try:
         membership.save()
     except DemoteLastAdminError as e:
-        return JsonResponse(str(e), status=400)
+        return JsonResponse(str(e), status=403)
 
     return JsonResponse(
         TeamMemberResponse(
