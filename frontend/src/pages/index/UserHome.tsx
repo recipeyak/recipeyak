@@ -186,7 +186,9 @@ function RecipeSlide({
           >
             {r.name}
           </div>
-          <small className="line-clamp-1 text-ellipsis">{r.author}</small>
+          <div className="line-clamp-1 text-ellipsis text-[0.875em]">
+            {r.author}
+          </div>
           {createdBy && <CreatedBy createdBy={createdBy} />}
         </Box>
       </Box>

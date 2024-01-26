@@ -175,7 +175,22 @@ module.exports = {
     "react/jsx-fragments": "error",
     "react/forbid-elements": [
       "error",
-      { forbid: ["p", "style", "section", "b", "em", "i", "select", "button"] },
+      {
+        forbid: [
+          // use a div instead
+          "p",
+          "style",
+          "section",
+          // use css instead
+          "b",
+          "em",
+          "i",
+          "small",
+          // use the components instead
+          "select",
+          "button",
+        ],
+      },
     ],
     "no-lonely-if": "error",
     "object-shorthand": ["error", "always"],
