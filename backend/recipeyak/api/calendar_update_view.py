@@ -18,7 +18,7 @@ class ScheduledRecipeUpdateParams(RequestParams):
 
 @endpoint()
 def calendar_update_view(
-    request: AuthedHttpRequest, scheduled_recipe_id: int, team_id: object = ()
+    request: AuthedHttpRequest, scheduled_recipe_id: int
 ) -> JsonResponse:
     params = ScheduledRecipeUpdateParams.parse_raw(request.body)
     team_id = get_team(request.user).id

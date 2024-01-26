@@ -19,9 +19,7 @@ class StepPatchParams(RequestParams):
 
 
 @endpoint()
-def step_update_view(
-    request: AuthedHttpRequest, step_id: int, recipe_id: object = ()
-) -> JsonResponse:
+def step_update_view(request: AuthedHttpRequest, step_id: int) -> JsonResponse:
     team = get_team(request.user)
     params = StepPatchParams.parse_raw(request.body)
     step = get_object_or_404(filter_steps(team=team), pk=step_id)

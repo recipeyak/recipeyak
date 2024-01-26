@@ -23,7 +23,7 @@ def get_memberships(user: User) -> QuerySet[Membership]:
 
 @endpoint()
 def member_delete_view(
-    request: AuthedHttpRequest, *, team_id: int = -1, member_id: int
+    request: AuthedHttpRequest, *, member_id: int
 ) -> JsonResponse:
     team = get_team_by_id(user_id=request.user.id, team_id=team_id)
     membership = get_object_or_404(get_memberships(request.user), pk=member_id)

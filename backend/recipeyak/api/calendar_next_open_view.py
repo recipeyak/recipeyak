@@ -29,9 +29,7 @@ class CalendarNexOpenParams(RequestParams):
 
 
 @endpoint()
-def calendar_next_open_view(
-    request: AuthedHttpRequest, team_id: int = -1
-) -> JsonResponse:
+def calendar_next_open_view(request: AuthedHttpRequest) -> JsonResponse:
     params = CalendarNexOpenParams.parse_obj(request.GET.dict())
     team_id = get_team(request.user).id
     with connection.cursor() as cursor:

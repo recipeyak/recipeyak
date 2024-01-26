@@ -45,9 +45,7 @@ class UpdateMembershipParams(RequestParams):
 
 
 @endpoint()
-def member_update_view(
-    request: AuthedHttpRequest, *, team_id: int = -1, member_id: int
-) -> JsonResponse:
+def member_update_view(request: AuthedHttpRequest, *, member_id: int) -> JsonResponse:
     params = UpdateMembershipParams.parse_raw(request.body)
     if not is_team_admin(team_id=team_id, user_id=request.user.id):
         return JsonResponse(status=403)

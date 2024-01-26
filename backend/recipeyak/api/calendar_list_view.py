@@ -52,9 +52,7 @@ class StartEndDateParams(RequestParams):
 
 
 @endpoint()
-def calendar_list_view(
-    request: AuthedHttpRequest, team_id: object = ()
-) -> JsonResponse:
+def calendar_list_view(request: AuthedHttpRequest) -> JsonResponse:
     params = StartEndDateParams.parse_obj(request.GET.dict())
     start = params.start
     end = params.end
