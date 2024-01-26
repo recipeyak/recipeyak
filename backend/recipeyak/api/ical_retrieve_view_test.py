@@ -193,7 +193,7 @@ def test_get_ical_view_with_schedule_endpoint(
     """
     Ensure the url from the schedule endpoint is valid.
     """
-    url = url = f"/api/v1/t/{team.pk}/calendar/"
+    url = "/api/v1/calendar/"
     client.force_login(user)
 
     res = client.get(url, {"start": date(1976, 1, 1), "end": date(1977, 1, 1), "v2": 1})

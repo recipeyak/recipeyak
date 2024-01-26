@@ -16,14 +16,14 @@ def test_cal_generate_link_view(
     """
     client.force_login(user)
     res = client.get(
-        f"/api/v1/t/{team.pk}/calendar/",
+        "/api/v1/calendar/",
         {"start": date(1976, 1, 1), "end": date(1977, 1, 1), "v2": 1},
     )
     assert res.status_code == 200
     initial_link = res.json()["settings"]["calendarLink"]
 
     res = client.post(
-        f"/api/v1/t/{team.pk}/calendar/generate_link/", content_type="application/json"
+        "/api/v1/calendar/generate_link/", content_type="application/json"
     )
     assert res.status_code == 200
     assert isinstance(res.json()["calendarLink"], str)

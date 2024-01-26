@@ -228,7 +228,7 @@ table {
   --color-text: #4a4a4a;
   --color-text-muted: rgba(115, 115, 115, 1);
 
-  --color-input-placeholder: var(--color-text-muted);
+  --color-input-placeholder: rgb(151, 151, 154);
 
   --color-link: var(--color-text);
   --color-link-hover: var(--color-link);
@@ -311,7 +311,7 @@ table {
   --color-text: rgb(230, 237, 243);
   --color-text-muted: var(--color-text);
 
-  --color-input-placeholder: var(--color-text-muted);
+  --color-input-placeholder: rgb(151, 151, 154);
 
   --color-border: #2f353c;
   --color-border-selected-day: var(--color-border);
@@ -388,7 +388,7 @@ table {
   --color-text: rgb(173, 186, 199);
   --color-text-muted: var(--color-text);
 
-  --color-input-placeholder: var(--color-text-muted);
+  --color-input-placeholder: rgb(151, 151, 154);
 
   --color-border: rgb(68, 76, 86);
   --color-border-selected-day: var(--color-accent);

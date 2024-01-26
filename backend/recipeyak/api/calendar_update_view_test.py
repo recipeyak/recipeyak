@@ -17,7 +17,7 @@ def test_updating_scheduled_recipe(
 ) -> None:
     scheduled_recipe.team = team
     scheduled_recipe.save()
-    url = f"/api/v1/t/{team.id}/calendar/{scheduled_recipe.id}/"
+    url = f"/api/v1/calendar/{scheduled_recipe.id}/"
     data = {"on": date(1976, 1, 3)}
     client.force_login(user)
     res = client.patch(url, data, content_type="application/json")
@@ -44,7 +44,7 @@ def test_updating_scheduled_recipe_on_date(
     )
     client.force_login(user)
     res = client.patch(
-        f"/api/v1/t/{team.id}/calendar/{scheduled_recipe.id}/",
+        f"/api/v1/calendar/{scheduled_recipe.id}/",
         {"on": datetime.now(UTC).date()},
         content_type="application/json",
     )
@@ -63,7 +63,7 @@ def test_updating_team_schedule_recipe(
     patch_publish_calendar_event: object,
 ) -> None:
     scheduled = recipe.schedule(on=date(1976, 1, 2), team=team, user=user)
-    url = f"/api/v1/t/{team.pk}/calendar/{scheduled.id}/"
+    url = f"/api/v1/calendar/{scheduled.id}/"
     data = {"on": date(1976, 1, 3)}
     client.force_login(user)
     res = client.patch(url, data, content_type="application/json")

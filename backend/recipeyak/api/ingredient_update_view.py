@@ -23,7 +23,7 @@ class IngredientsPatchParams(RequestParams):
 
 @endpoint()
 def ingredient_update_view(
-    request: AuthedHttpRequest, ingredient_id: int, recipe_id: object = ()
+    request: AuthedHttpRequest, ingredient_id: int
 ) -> JsonResponse:
     team = get_team(request.user)
     params = IngredientsPatchParams.parse_raw(request.body)

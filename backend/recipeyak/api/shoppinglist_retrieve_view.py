@@ -41,9 +41,7 @@ class ShoppingListRecipe(pydantic.BaseModel):
 
 
 @endpoint()
-def shoppinglist_retrieve_view(
-    request: AuthedHttpRequest, team_id: int = -1
-) -> JsonResponse:
+def shoppinglist_retrieve_view(request: AuthedHttpRequest) -> JsonResponse:
     team_id = get_team(request.user).id
     params = ShoppingListParams.parse_obj(request.GET.dict())
     scheduled_recipes = get_scheduled_recipes(params=params, team_id=team_id)

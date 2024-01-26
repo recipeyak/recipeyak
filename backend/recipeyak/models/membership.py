@@ -37,7 +37,9 @@ class Membership(CommonInfo):
     )
 
     team = models.ForeignKey["Team"]("Team", on_delete=models.CASCADE)
+    team_id: int
     user = models.ForeignKey["User"]("User", on_delete=models.CASCADE)
+    user_id: int
 
     calendar_sync_enabled = models.BooleanField(
         default=False,

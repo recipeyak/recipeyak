@@ -102,7 +102,7 @@ def test_ingredient_field_trimming(
 
     ingredient_id = res.json()["id"]
     res = client.patch(
-        f"/api/v1/recipes/{recipe.pk}/ingredients/{ingredient_id}/",
+        f"/api/v1/ingredients/{ingredient_id}/",
         payload,
         content_type="application/json",
     )
@@ -135,7 +135,7 @@ def test_step_field_trimming(
 
     step_id = res.json()["id"]
     res = client.patch(
-        f"/api/v1/recipes/{recipe.pk}/steps/{step_id}/",
+        f"/api/v1/steps/{step_id}/",
         payload,
         content_type="application/json",
     )

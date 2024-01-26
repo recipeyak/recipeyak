@@ -20,9 +20,7 @@ class ScheduledRecipeCreateParams(RequestParams):
 
 
 @endpoint()
-def scheduled_recipe_create_view(
-    request: AuthedHttpRequest, team_id: object = ()
-) -> JsonResponse:
+def scheduled_recipe_create_view(request: AuthedHttpRequest) -> JsonResponse:
     params = ScheduledRecipeCreateParams.parse_raw(request.body)
 
     team = get_team(request.user)

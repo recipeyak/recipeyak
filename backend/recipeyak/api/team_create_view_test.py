@@ -185,8 +185,7 @@ def test_destory_team_member(
     assert not team.is_member(user2)
     client.force_login(user2)
     assert (
-        client.delete(f"/api/v1/t/{team.pk}/members/{user_membership.id}/").status_code
-        == 404
+        client.delete(f"/api/v1/members/{user_membership.id}/").status_code == 403
     ), "non-member should not be able to delete member"
 
     # non-admins cannot delete team members
@@ -195,14 +194,13 @@ def test_destory_team_member(
     assert team.is_member(user3)
     client.force_login(user3)
     assert (
-        client.delete(f"/api/v1/t/{team.pk}/members/{user_membership.id}/").status_code
-        == 403
+        client.delete(f"/api/v1/members/{user_membership.id}/").status_code == 403
     ), "non-admin member should not be able to revoke admin user's membership"
 
     user3_membership = user3.membership_set.get(team=team)
     # admins can remove memberships of members
     client.force_login(user)
-    res = client.delete(f"/api/v1/t/{team.pk}/members/{user3_membership.id}/")
+    res = client.delete(f"/api/v1/members/{user3_membership.id}/")
     assert res.status_code == 204
     assert not Membership.objects.filter(
         id=user3_membership.id
@@ -212,9 +210,7 @@ def test_destory_team_member(
     team.force_join_admin(user3)
     assert team.is_admin(user3)
     client.force_login(user3)
-    res = client.delete(
-        f"/api/v1/t/{team.pk}/members/{user.membership_set.get(team=team).id}/"
-    )
+    res = client.delete(f"/api/v1/members/{user.membership_set.get(team=team).id}/")
     assert res.status_code == 204, "Team admins can remove other admins"
 
     # admins cannot remove members of other teams
@@ -222,12 +218,9 @@ def test_destory_team_member(
     assert empty_team.is_member(user)
     assert team.is_admin(user3)
     client.force_login(user3)
-    assert (
-        client.delete(
-            f"/api/v1/t/{empty_team.pk}/members/{user.membership_set.get(team=empty_team).id}/"
-        ).status_code
-        == 404
-    ), "Admin users cannot remove member of another team"
+    user_membership_id = user.membership_set.get(team=empty_team).id
+    res = client.delete(f"/api/v1/members/{user_membership_id}/")
+    assert res.status_code == 403, "Admin users cannot remove member of another team"
 
     # members can remove their own membership
     empty_team.force_join(user2)
@@ -235,7 +228,7 @@ def test_destory_team_member(
     client.force_login(user2)
     assert (
         client.delete(
-            f"/api/v1/t/{empty_team.pk}/members/{user2.membership_set.get(team=empty_team).id}/"
+            f"/api/v1/members/{user2.membership_set.get(team=empty_team).id}/"
         ).status_code
         == 204
     )
@@ -253,7 +246,7 @@ def test_update_team_member(
     Only admins should be able to update the membership of team members
     """
     user1_membership = user.membership_set.get(team=team)
-    url = f"/api/v1/t/{team.pk}/members/{user1_membership.id}/"
+    url = f"/api/v1/members/{user1_membership.id}/"
     data = {"level": "contributor"}
 
     # non-members cannot edit member
@@ -269,21 +262,24 @@ def test_update_team_member(
     # members cannot edit their membership
     assert team.is_member(user2) and not team.is_admin(user2)
     user2_membership = user2.membership_set.get(team=team)
-    url = f"/api/v1/t/{team.pk}/members/{user2_membership.id}/"
+    url = f"/api/v1/members/{user2_membership.id}/"
     assert client.patch(url, data, content_type="application/json").status_code == 403
 
     # admins can edit memberships
     client.force_login(user)
     assert team.is_admin(user)
     assert team.is_member(user2)
-    assert client.patch(url, data, content_type="application/json").status_code == 200
+    res = client.patch(url, data, content_type="application/json")
+    assert res.status_code == 200
 
     # admins cannot edit memberships on other teams
     empty_team.force_join(user2)
     assert not empty_team.is_member(user) and team.is_admin(user)
     assert empty_team.is_member(user2)
-    url = f"/api/v1/t/{empty_team.pk}/members/{user2_membership.id}/"
-    assert client.patch(url, data, content_type="application/json").status_code == 403
+    empty_team_membership = user2.membership_set.get(team=empty_team)
+    url = f"/api/v1/members/{empty_team_membership.id}/"
+    res = client.patch(url, data, content_type="application/json")
+    assert res.status_code == 403
 
 
 def test_create_team_invite(
@@ -559,13 +555,13 @@ def test_demoting_self_in_team_from_admin(
 
     user_membership = user.membership_set.get(team=team)
 
-    url = f"/api/v1/t/{team.pk}/members/{user_membership.id}/"
+    url = f"/api/v1/members/{user_membership.id}/"
 
     client.force_login(user)
     res = client.patch(
         url, {"level": Membership.CONTRIBUTOR}, content_type="application/json"
     )
-    assert res.status_code == 400
+    assert res.status_code == 403
 
     assert team.is_member(user)
 
@@ -577,7 +573,7 @@ def test_deleting_last_membership_of_team(
     assert team.membership_set.count() == 1
     user_membership = user.membership_set.get(team=team)
 
-    url = f"/api/v1/t/{team.pk}/members/{user_membership.id}/"
+    url = f"/api/v1/members/{user_membership.id}/"
 
     client.force_login(user)
     res = client.delete(url)

@@ -45,18 +45,18 @@ class UpdateMembershipParams(RequestParams):
 
 
 @endpoint()
-def member_update_view(
-    request: AuthedHttpRequest, *, team_id: int = -1, member_id: int
-) -> JsonResponse:
+def member_update_view(request: AuthedHttpRequest, *, member_id: int) -> JsonResponse:
     params = UpdateMembershipParams.parse_raw(request.body)
-    if not is_team_admin(team_id=team_id, user_id=request.user.id):
-        return JsonResponse(status=403)
-    membership = get_object_or_404(get_memberships(request.user), pk=member_id)
+    membership = get_object_or_404(Membership, pk=member_id)
+    if not is_team_admin(team_id=membership.team_id, user_id=request.user.id):
+        return JsonResponse(
+            {"error": "must be an admin to edit a membership level"}, status=403
+        )
     membership.level = params.level
     try:
         membership.save()
     except DemoteLastAdminError as e:
-        return JsonResponse(str(e), status=400)
+        return JsonResponse(str(e), status=403)
 
     return JsonResponse(
         TeamMemberResponse(

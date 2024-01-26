@@ -16,7 +16,7 @@ def test_fetching_team_calendar_v2(
     Updated response type to include config options for the icalendar
     syncing.
     """
-    url = url = f"/api/v1/t/{team.pk}/calendar/"
+    url = "/api/v1/calendar/"
     client.force_login(user)
     recipe.schedule(on=date(1976, 1, 2), team=team, user=user)
 
@@ -38,7 +38,7 @@ def test_fetching_team_cal_v2_content(
     """
     Ensure changing the rows updates the response.
     """
-    url = url = f"/api/v1/t/{team.pk}/calendar/"
+    url = "/api/v1/calendar/"
     client.force_login(user)
 
     res = client.get(url, {"start": date(1976, 1, 1), "end": date(1977, 1, 1), "v2": 1})

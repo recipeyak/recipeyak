@@ -183,7 +183,7 @@ function RecipeAccordian({
             setShow(!show)
           }}
         >
-          {show ? "hide" : "show"}
+          {show ? "Hide" : "Show"}
         </Button>
       </Box>
       {show && (
