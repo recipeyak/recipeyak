@@ -2,7 +2,6 @@ import {
   HitAttributeHighlightResult,
   HitHighlightResult,
 } from "instantsearch.js"
-import { ForwardedRef, forwardRef } from "react"
 import { Link } from "react-router-dom"
 
 import { clx } from "@/classnames"
@@ -11,49 +10,6 @@ import { Image } from "@/components/Image"
 import { ResponseFromUse } from "@/queries/queryUtilTypes"
 import { useSearchRecipes } from "@/queries/searchRecipes"
 import { recipeURL } from "@/urls"
-
-const Card = forwardRef(
-  (
-    {
-      children,
-      isDragging,
-      tabIndex,
-      ...rest
-    }: { children: React.ReactNode; tabIndex?: number } & (
-      | {
-          as: "Link"
-          to: string
-          isDragging?: undefined
-        }
-      | {
-          as?: undefined
-          isDragging: boolean
-        }
-    ),
-    ref: ForwardedRef<HTMLDivElement>,
-  ) => {
-    const className = clx(
-      "flex flex-col overflow-hidden rounded-md border border-solid border-[--color-border] bg-[--color-background-card]",
-      isDragging != null && "cursor-move",
-      isDragging ? "opacity-50" : "opacity-100",
-    )
-    if (rest.as === "Link") {
-      return (
-        <Link
-          className={className}
-          to={rest.to}
-          children={children}
-          tabIndex={tabIndex}
-        />
-      )
-    }
-    return (
-      <div ref={ref} className={className} tabIndex={tabIndex}>
-        {children}
-      </div>
-    )
-  },
-)
 
 function HighlightIngredients({ hit }: { hit: Hit }) {
   const ingredientHighlights =
@@ -96,7 +52,7 @@ export function RecipeListItem({
   const url = recipeURL(hit.id, hit.name)
 
   return (
-    <Card as={"Link"} tabIndex={0} to={url}>
+    <Link tabIndex={0} to={url} className="flex flex-col">
       <div className="max-h-[128px] min-h-[128px] sm:max-h-[180px] sm:min-h-[180px]">
         <Image
           // lazy load everything after the first 20ish
@@ -118,17 +74,22 @@ export function RecipeListItem({
           grayscale={hit.archived_at != null}
         />
       </div>
-      <div className="h-full p-2 leading-5">
-        <div className={clx("mb-1", hit.archived_at != null && "line-through")}>
+      <div className="flex h-full flex-col gap-1 pb-2 pt-1 leading-5">
+        <div
+          className={clx(
+            hit.archived_at != null && "line-through",
+            "line-clamp-2 text-ellipsis",
+          )}
+        >
           <CustomHighlight attribute="name" hit={hit} />
         </div>
         {hit.author && (
-          <small className={clx("block")}>
+          <div className="block text-sm">
             <CustomHighlight attribute="author" hit={hit} />
-          </small>
+          </div>
         )}
         <HighlightIngredients hit={hit} />
       </div>
-    </Card>
+    </Link>
   )
 }
