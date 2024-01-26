@@ -13,7 +13,7 @@ type Variant = "primary" | "danger" | "gradient" | "nostyle" | undefined
 type Size = "normal" | "small" | "large"
 
 function getVariantStyles(
-  variant: Variant,
+  variant: Exclude<Variant, "nostyle">,
   isHovered: boolean,
   isPressed: boolean,
   isDisabled: boolean,
@@ -57,8 +57,6 @@ function getVariantStyles(
     }
     case "gradient":
       return "pointer-events-auto !border-none text-white !shadow-none backdrop-blur-[10px] ![background-color:rgba(0,0,0,0.46)]"
-    case "nostyle":
-      return ""
     default:
       assertNever(variant)
   }
@@ -77,15 +75,10 @@ function getSizeStyles(size: Size): string {
   }
 }
 
-function getBaseStyles(
-  variant: Variant,
-  size: Size,
-  isFocusVisible: boolean,
-): string {
+function getBaseStyles(size: Size, isFocusVisible: boolean): string {
   const focusCss = isFocusVisible
     ? clx(
-        variant !== "nostyle" &&
-          "focus-visible:outline focus-visible:outline-[3px] focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)]",
+        "focus-visible:outline focus-visible:outline-[3px] focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)]",
       )
     : "outline-none"
 
@@ -111,8 +104,11 @@ function getButtonStyles({
   isPressed: boolean
   isDisabled: boolean
 }) {
+  if (variant === "nostyle") {
+    return ""
+  }
   return clx(
-    getBaseStyles(variant, size, isFocusVisible),
+    getBaseStyles(size, isFocusVisible),
     getVariantStyles(variant, isHovered, isPressed, isDisabled),
   )
 }

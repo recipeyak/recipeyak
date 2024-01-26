@@ -10,43 +10,43 @@ export function Modal({
   title,
 }: {
   title: React.ReactNode
-  isOpen: boolean
-  onOpenChange: (_: boolean) => void
-  children: React.ReactNode
+  isOpen?: boolean
+  onOpenChange?: ((_: boolean) => void) | undefined
+  children: React.ReactNode | ((_: { close: () => void }) => React.ReactNode)
 }) {
   return (
     <ModalOverlay
       className="fixed inset-0 z-10 flex min-h-full justify-center overflow-y-auto bg-[--color-modal-background] sm:p-3"
       isDismissable
       isOpen={isOpen}
-      onOpenChange={(change) => {
-        onOpenChange(change)
-      }}
+      onOpenChange={onOpenChange}
     >
       <AriaModal className="h-full w-full overflow-hidden bg-[--color-background-card] p-6 shadow-xl outline-none sm:mt-[8vh] sm:h-[max-content] sm:max-w-md sm:rounded-md">
         <Dialog className="outline-none">
-          <div
-            onClick={(e) => {
-              // disable clicking so we can put this anywhere in the DOM and
-              // ensure we don't click stuff behind it
-              e.stopPropagation()
-            }}
-            onDoubleClick={(e) => {
-              // disable click propagation so we can put this anywhere in the
-              // DOM and ensure we don't click stuff behind it
-              e.stopPropagation()
-            }}
-          >
-            <div className="flex items-center justify-between">
-              <div>{title}</div>
-              <CloseButton
-                onClose={() => {
-                  onOpenChange(false)
-                }}
-              />
+          {({ close }) => (
+            <div
+              onClick={(e) => {
+                // disable clicking so we can put this anywhere in the DOM and
+                // ensure we don't click stuff behind it
+                e.stopPropagation()
+              }}
+              onDoubleClick={(e) => {
+                // disable click propagation so we can put this anywhere in the
+                // DOM and ensure we don't click stuff behind it
+                e.stopPropagation()
+              }}
+            >
+              <div className="flex items-center justify-between">
+                <div>{title}</div>
+                <CloseButton
+                  onClose={() => {
+                    close()
+                  }}
+                />
+              </div>
+              {typeof children === "function" ? children({ close }) : children}
             </div>
-            {children}
-          </div>
+          )}
         </Dialog>
       </AriaModal>
     </ModalOverlay>

@@ -146,7 +146,6 @@ export function CalendarDay({
     >
       <Title date={date} />
       <ScheduleRecipeModal
-        key={showScheduleRecipeModal.toString()}
         isOpen={showScheduleRecipeModal}
         onOpenChange={() => {
           setShowScheduleRecipeModal(false)

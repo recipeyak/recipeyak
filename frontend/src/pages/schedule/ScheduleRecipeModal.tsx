@@ -237,8 +237,8 @@ export function ScheduleRecipeModal({
   onOpenChange,
   defaultValue,
 }: {
-  isOpen: boolean
-  onOpenChange: (_: boolean) => void
+  isOpen?: boolean
+  onOpenChange?: (_: boolean) => void
   defaultValue?: string
 }) {
   const [isoDate, setIsoDate] = useState(
@@ -252,29 +252,29 @@ export function ScheduleRecipeModal({
   const [selectedItem, setSelectedItem] = useState<RecipeSearchItemSelection>()
   const scheduledRecipeCreate = useScheduleRecipeCreate()
 
-  const handleSubmit = () => {
-    if (selectedItem == null) {
-      setFormError("Please select a recipe to schedule.")
-      return
-    }
-    scheduledRecipeCreate.mutate({
-      recipeID: selectedItem.id,
-      recipeName: selectedItem.name,
-      on: parseISO(isoDate),
-    })
-    onOpenChange(false)
-  }
   return (
     <Modal
+      title="Schedule a Recipe"
       isOpen={isOpen}
       onOpenChange={onOpenChange}
-      title="Schedule a Recipe"
-      children={
+      children={({ close }) => (
         <form
           className="flex h-full flex-col items-start gap-2"
           onSubmit={(e) => {
             e.preventDefault()
-            handleSubmit()
+            if (selectedItem == null) {
+              setFormError("Please select a recipe to schedule.")
+              return
+            }
+            scheduledRecipeCreate.mutate({
+              recipeID: selectedItem.id,
+              recipeName: selectedItem.name,
+              on: parseISO(isoDate),
+            })
+            close()
+            setFormError("")
+            setIsoDate("")
+            setSelectedItem(undefined)
           }}
         >
           <RecipeSelect onSelect={setSelectedItem} value={selectedItem} />
@@ -297,7 +297,7 @@ export function ScheduleRecipeModal({
           </div>
           {formError && <div className="text-rose-400">{formError}</div>}
         </form>
-      }
+      )}
     />
   )
 }
