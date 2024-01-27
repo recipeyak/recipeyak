@@ -49,6 +49,7 @@ import { TeamDetailPage } from "@/pages/team-detail/TeamDetail.page"
 import { TeamInvitePage } from "@/pages/team-invite/TeamInvite.page"
 import { TeamListPage } from "@/pages/team-list/TeamList.page"
 import { UserCommentsPage } from "@/pages/user-comments/UserComments.page"
+import { UserUploadsPage } from "@/pages/user-comments/UserUploads.page"
 import {
   pathCookDetail,
   pathDeprecatedSchedule,
@@ -271,7 +272,7 @@ function Routes() {
             <PrivateRoute
               exact
               path={pathProfileByIdPhotos.pattern}
-              component={() => <div>Coming soon</div>}
+              component={UserUploadsPage}
             />
             <PrivateRoute
               exact

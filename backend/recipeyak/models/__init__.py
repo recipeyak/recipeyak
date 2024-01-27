@@ -24,7 +24,7 @@ from recipeyak.models.shopping_list import ShoppingList  # noqa: F401
 from recipeyak.models.step import Step
 from recipeyak.models.team import Team
 from recipeyak.models.timeline_event import TimelineEvent  # noqa: F401
-from recipeyak.models.upload import Upload  # noqa: F401
+from recipeyak.models.upload import Upload
 from recipeyak.models.user import User
 
 
@@ -92,6 +92,10 @@ def filter_steps(*, team: Team) -> QuerySet[Step]:
 
 def filter_notes(*, team: Team) -> QuerySet[Note]:
     return Note.objects.filter(recipe__in=filter_recipes(team=team))
+
+
+def filter_uploads(*, team: Team, user: User) -> QuerySet[Upload]:
+    return Upload.objects.filter(recipe__in=filter_recipes(team=team), created_by=user)
 
 
 def user_reactions(*, user: User) -> QuerySet[Reaction]:
