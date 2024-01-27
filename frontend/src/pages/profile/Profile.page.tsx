@@ -136,6 +136,51 @@ function formatNumber(val: number) {
   return new Intl.NumberFormat().format(val)
 }
 
+export function ProfilePageContainer(props: {
+  children?: React.ReactNode
+  userId: string
+}) {
+  const userInfo = useUserById({ id: props.userId })
+
+  if (userInfo.isPending) {
+    return (
+      <NavPage>
+        <Loader />
+      </NavPage>
+    )
+  }
+
+  if (userInfo.isError) {
+    return (
+      <NavPage>
+        <div>error loading profile</div>
+      </NavPage>
+    )
+  }
+
+  // e.g., in US locale: Nov 27, 2017
+  const joinedDateStr = parseISO(userInfo.data.created).toLocaleDateString(
+    undefined,
+    { year: "numeric", month: "short", day: "numeric" },
+  )
+
+  return (
+    <NavPage>
+      <Box dir="col" className="mx-auto mt-8 max-w-[700px] gap-2">
+        <Helmet title="Profile" />
+
+        <Box dir="col" align="center">
+          <Avatar avatarURL={userInfo.data.avatar_url} size={96} />
+          <span className="text-2xl">{userInfo.data.name}</span>
+          <span>Joined {joinedDateStr}</span>
+        </Box>
+
+        {props.children}
+      </Box>
+    </NavPage>
+  )
+}
+
 export function ProfilePage(props: RouteComponentProps<{ userId: string }>) {
   const userInfo = useUserById({ id: props.match.params.userId })
 
@@ -194,48 +239,32 @@ export function ProfilePage(props: RouteComponentProps<{ userId: string }>) {
     },
   ] as const
 
-  // e.g., in US locale: Nov 27, 2017
-  const joinedDateStr = parseISO(userInfo.data.created).toLocaleDateString(
-    undefined,
-    { year: "numeric", month: "short", day: "numeric" },
-  )
-
   return (
-    <NavPage>
-      <Box dir="col" className="mx-auto mt-8 max-w-[700px] gap-2">
-        <Helmet title="Profile" />
+    <ProfilePageContainer userId={props.match.params.userId}>
+      <div>
+        <span className="text-2xl">Stats</span>
 
-        <Box dir="col" align="center">
-          <Avatar avatarURL={userInfo.data.avatar_url} size={96} />
-          <span className="text-2xl">{userInfo.data.name}</span>
-          <span>Joined {joinedDateStr}</span>
+        <Box dir="row" align="start" wrap gap={2}>
+          {allStats.map(({ value, name, icon: Icon, pathName }) => (
+            <Link key={name} to={pathName}>
+              <Box
+                key={name}
+                gap={1}
+                align="center"
+                className="rounded-md border border-solid border-[--color-border] bg-[--color-background-calendar-day] px-2 py-1"
+              >
+                <Icon /> {name} · {formatNumber(value)}
+              </Box>
+            </Link>
+          ))}
         </Box>
+      </div>
 
-        <div>
-          <span className="text-2xl">Stats</span>
-
-          <Box dir="row" align="start" wrap gap={2}>
-            {allStats.map(({ value, name, icon: Icon, pathName }) => (
-              <Link key={name} to={pathName}>
-                <Box
-                  key={name}
-                  gap={1}
-                  align="center"
-                  className="rounded-md border border-solid border-[--color-border] bg-[--color-background-calendar-day] px-2 py-1"
-                >
-                  <Icon /> {name} · {formatNumber(value)}
-                </Box>
-              </Link>
-            ))}
-          </Box>
-        </div>
-
-        <div>
-          <div className="text-2xl">Activity</div>
-          <ActivityLog activity={userInfo.data.activity} />
-        </div>
-      </Box>
-    </NavPage>
+      <div>
+        <div className="text-2xl">Activity</div>
+        <ActivityLog activity={userInfo.data.activity} />
+      </div>
+    </ProfilePageContainer>
   )
 }
 
