@@ -69,6 +69,7 @@ from recipeyak.api.user_password_update_view import user_password_update_view
 from recipeyak.api.user_retrieve_by_id_view import user_retrieve_by_id_view
 from recipeyak.api.user_retrieve_view import user_retrieve_view
 from recipeyak.api.user_update_view import user_update_view
+from recipeyak.api.user_uploads_list_view import user_uploads_list_view
 
 urlpatterns = routes(
     route(
@@ -389,6 +390,11 @@ urlpatterns = routes(
         "api/v1/user/<str:user_id>/comments/",
         method="get",
         view=user_comments_list_view,
+    ),
+    route(
+        "api/v1/user/<str:user_id>/uploads/",
+        method="get",
+        view=user_uploads_list_view,
     ),
     route(
         "t/<int:team_id>/ical/<str:ical_id>/schedule.ics",
