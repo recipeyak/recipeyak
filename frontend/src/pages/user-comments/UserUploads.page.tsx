@@ -37,7 +37,10 @@ export function UserUploadsPage(
           <Link
             key={upload.id}
             className="max-h-[100px] max-w-[100px]"
-            to={recipeURL(upload.recipe.id, upload.recipe.name)}
+            to={
+              recipeURL(upload.note.recipe.id, upload.note.recipe.name) +
+              `#note-${upload.note.id}`
+            }
           >
             <Image imgixFmt="small" sources={upload} height={100} width={100} />
           </Link>

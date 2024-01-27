@@ -94,8 +94,10 @@ def filter_notes(*, team: Team) -> QuerySet[Note]:
     return Note.objects.filter(recipe__in=filter_recipes(team=team))
 
 
-def filter_uploads(*, team: Team, user: User) -> QuerySet[Upload]:
-    return Upload.objects.filter(recipe__in=filter_recipes(team=team), created_by=user)
+def filter_uploads(*, team: Team, user_id: str) -> QuerySet[Upload]:
+    return Upload.objects.filter(
+        recipe__in=filter_recipes(team=team), created_by=user_id
+    )
 
 
 def user_reactions(*, user: User) -> QuerySet[Reaction]:

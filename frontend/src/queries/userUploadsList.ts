@@ -9,9 +9,12 @@ type UserById = {
     url: string
     backgroundUrl: string | null
     contentType: string
-    recipe: {
+    note: {
       id: number
-      name: string
+      recipe: {
+        id: number
+        name: string
+      }
     }
   }>
 }
