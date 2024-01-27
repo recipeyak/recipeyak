@@ -14,22 +14,32 @@ class RecipeResponse(pydantic.BaseModel):
     name: str
 
 
+class NoteResponse(pydantic.BaseModel):
+    id: int
+    recipe: RecipeResponse
+
+
 class UploadResponse(pydantic.BaseModel):
     id: int
     url: str
     backgroundUrl: str | None
     contentType: str
-    recipe: RecipeResponse
+    note: NoteResponse
 
 
 class UserPhotosListResponse(pydantic.BaseModel):
     uploads: list[UploadResponse]
 
 
-def serialize_recipe(upload: Upload) -> RecipeResponse:
+def serialize_note(upload: Upload) -> NoteResponse:
     if upload.recipe is None:
         raise ValueError("Expected recipe to exist")
-    return RecipeResponse(id=upload.recipe.id, name=upload.recipe.name)
+    if upload.note_id is None:
+        raise ValueError("Expected note to exist")
+    return NoteResponse(
+        id=upload.note_id,
+        recipe=RecipeResponse(id=upload.recipe.id, name=upload.recipe.name),
+    )
 
 
 @endpoint()
@@ -44,9 +54,9 @@ def user_uploads_list_view(request: AuthedHttpRequest, user_id: str) -> JsonResp
             url=upload.public_url(),
             backgroundUrl=upload.background_url,
             contentType=upload.content_type,
-            recipe=serialize_recipe(upload),
+            note=serialize_note(upload),
         )
-        for upload in filter_uploads(team=team, user=request.user)
+        for upload in filter_uploads(team=team, user_id=user_id)
         .prefetch_related("recipe")
         .exclude(recipe_id=None)
         .exclude(note=None)
