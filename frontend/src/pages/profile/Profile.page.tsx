@@ -10,6 +10,7 @@ import { Box } from "@/components/Box"
 import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
 import { NavPage } from "@/components/Page"
+import { pathProfileById } from "@/paths"
 import { useUserById } from "@/queries/userById"
 import { recipeURL } from "@/urls"
 
@@ -169,11 +170,13 @@ export function ProfilePageContainer(props: {
       <Box dir="col" className="mx-auto mt-8 max-w-[700px] gap-2">
         <Helmet title="Profile" />
 
-        <Box dir="col" align="center">
-          <Avatar avatarURL={userInfo.data.avatar_url} size={96} />
-          <span className="text-2xl">{userInfo.data.name}</span>
-          <span>Joined {joinedDateStr}</span>
-        </Box>
+        <Link to={pathProfileById({ userId: props.userId })}>
+          <Box dir="col" align="center">
+            <Avatar avatarURL={userInfo.data.avatar_url} size={96} />
+            <span className="text-2xl">{userInfo.data.name}</span>
+            <span>Joined {joinedDateStr}</span>
+          </Box>
+        </Link>
 
         {props.children}
       </Box>
