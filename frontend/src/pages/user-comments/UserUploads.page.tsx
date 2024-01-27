@@ -24,15 +24,15 @@ export function UserUploadsPage(
   if (uploads.isError) {
     return (
       <NavPage>
-        <div>error loading comments</div>
+        <div>error loading photos</div>
       </NavPage>
     )
   }
 
   return (
     <ProfilePageContainer userId={props.match.params.userId}>
-      <span className="text-2xl">Comments</span>
-      <div className="flex flex-wrap  gap-2">
+      <span className="text-2xl">Photos</span>
+      <div className="flex flex-wrap gap-[0.125rem]">
         {uploads.data?.uploads.map((upload) => (
           <Link
             key={upload.id}
