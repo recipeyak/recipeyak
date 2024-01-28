@@ -503,22 +503,17 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
 
   const createNote = useNoteCreate()
 
-  const onCreate = () => {
-    createNote.mutate(
-      {
+  const onCreate = async () => {
+    try {
+      await createNote.mutateAsync({
         recipeId,
         note: draftText,
         uploadIds: uploadedImages.map((x) => x.id),
-      },
-      {
-        onSuccess: () => {
-          cancelEditingNote()
-        },
-        onError: () => {
-          toast.error("Problem adding note to recipe")
-        },
-      },
-    )
+      })
+      cancelEditingNote()
+    } catch (e) {
+      toast.error("Problem adding note to recipe")
+    }
   }
   const onCancel = () => {
     cancelEditingNote()
@@ -528,7 +523,7 @@ function useNoteCreatorHandlers({ recipeId }: IUseNoteCreatorHandlers) {
       cancelEditingNote()
     }
     if (e.key === "Enter" && e.metaKey) {
-      onCreate()
+      void onCreate()
     }
   }
   const onEditorFocus = () => {
@@ -1019,7 +1014,12 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
           <Button
             variant="primary"
             size="small"
-            onClick={onCreate}
+            onClick={() => {
+              void onCreate().then(() => {
+                // ensure we clear out the local state of images
+                reset()
+              })
+            }}
             loading={isLoading}
             disabled={isDisabled || hasUnsavedImages}
           >
