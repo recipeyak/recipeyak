@@ -130,7 +130,7 @@ function NavButtons() {
 
 export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
   return (
-    <nav className="flex h-[3.5rem] shrink-0 justify-between gap-1 pb-1 pl-1 pr-2 print:!hidden md:grid md:grid-cols-3">
+    <nav className="flex h-[3.5rem] shrink-0 justify-between gap-1 pb-1 pl-1 pr-2 print:!hidden sm:pl-2 md:grid md:grid-cols-3">
       <div className="flex items-center justify-start gap-2">
         <NavLink to={pathHome({})} noActiveState={!true}>
           <span className="font-medium ">Home</span>
