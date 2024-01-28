@@ -305,7 +305,7 @@ function RescheduleSection({
                 value={toISODateString(localDate)}
                 onChange={handleDateChange}
                 type="date"
-                className="w-full rounded-md border border-solid border-[--color-border] p-1"
+                className="w-full rounded-md border border-solid border-[--color-border] p-1 text-base"
               />
               <details>
                 <summary>shortcuts</summary>
