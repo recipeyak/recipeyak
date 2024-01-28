@@ -1,23 +1,18 @@
 import { Menu, MenuTrigger, Separator } from "react-aria-components"
-import { Link } from "react-router-dom"
 
-import { useIsLoggedIn } from "@/auth"
 import { Avatar } from "@/components/Avatar"
 import { Button } from "@/components/Buttons"
-import Logo from "@/components/Logo"
 import { MenuItem } from "@/components/MenuItem"
 import { MenuPopover } from "@/components/MenuPopover"
 import { NavLink } from "@/components/NavLink"
 import { NavRecipeSearch } from "@/components/NavRecipeSearch"
 import {
   pathHome,
-  pathLogin,
   pathProfileById,
   pathRecipeAdd,
   pathRecipesList,
   pathSchedule,
   pathSettings,
-  pathSignup,
   pathTeamList,
 } from "@/paths"
 import { useAuthLogout } from "@/queries/authLogout"
@@ -119,19 +114,6 @@ function UserDropdown() {
   )
 }
 
-function WordMark() {
-  return <span className="hidden text-2xl sm:block">Recipe Yak</span>
-}
-
-function AuthButtons() {
-  return (
-    <div className="flex justify-self-end">
-      <NavLink to={pathLogin({})}>Login</NavLink>
-      <NavLink to={pathSignup({})}>Signup</NavLink>
-    </div>
-  )
-}
-
 function NavButtons() {
   return (
     <div className="relative flex items-center justify-center gap-2 justify-self-end">
@@ -147,34 +129,17 @@ function NavButtons() {
 }
 
 export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
-  const isLoggedIn = useIsLoggedIn()
   return (
-    <nav className="flex h-[3.5rem] shrink-0 justify-between gap-1 px-3 pb-1 print:!hidden md:grid md:grid-cols-3">
+    <nav className="flex h-[3.5rem] shrink-0 justify-between gap-1 pb-1 pl-1 pr-2 print:!hidden md:grid md:grid-cols-3">
       <div className="flex items-center justify-start gap-2">
-        <Link
-          to={pathHome({})}
-          className={
-            "flex shrink-0 grow-0 cursor-pointer items-center justify-center rounded-md"
-          }
-        >
-          <Logo width="40px" />
-        </Link>
-        <NavLink
-          to={pathHome({})}
-          className="hidden sm:block"
-          noActiveState={!isLoggedIn}
-        >
-          {isLoggedIn ? (
-            <span className="font-medium ">Home</span>
-          ) : (
-            <WordMark />
-          )}
+        <NavLink to={pathHome({})} noActiveState={!true}>
+          <span className="font-medium ">Home</span>
         </NavLink>
       </div>
       <div className="flex grow items-center">
         {includeSearch && <NavRecipeSearch />}
       </div>
-      {isLoggedIn ? <NavButtons /> : <AuthButtons />}
+      <NavButtons />
     </nav>
   )
 }

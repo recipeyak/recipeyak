@@ -3,9 +3,10 @@ import { Link } from "react-router-dom"
 
 import { clx } from "@/classnames"
 import { Button } from "@/components/Buttons"
+import { ErrorBoundary } from "@/components/ErrorBoundary"
 import { Footer } from "@/components/Footer"
-import { NavPage } from "@/components/Page"
-import { pathRecipeAdd, pathSignup } from "@/paths"
+import { NavLink } from "@/components/NavLink"
+import { pathHome, pathLogin, pathRecipeAdd, pathSignup } from "@/paths"
 import addRecipeImg from "@/static/images/pages/add-recipe.png"
 import copyShoppingList from "@/static/images/pages/copy-shopping-list.png"
 import landingImg from "@/static/images/pages/schedule.png"
@@ -187,54 +188,65 @@ const howToSteps = [
   },
 ]
 
-const LandingPage = () => {
+export const LandingPage = () => {
   return (
-    <NavPage includeSearch={false} noContainer>
-      <HomeContainer className="grid gap-4 px-4 pb-4">
-        {/* eslint-disable-next-line react/forbid-elements */}
-        <section className="mb-2 flex justify-center">
-          <h1 className="max-w-[900px] text-center text-[4rem] leading-[4rem]">
-            A place to store, share, and create recipes
-          </h1>
-        </section>
-        <Button
-          to={pathSignup({})}
-          variant="primary"
-          size="large"
-          className="justify-self-center"
-        >
-          Create Account
-        </Button>
-      </HomeContainer>
-
-      {/* eslint-disable-next-line react/forbid-elements */}
-      <section className="bg-gradient-to-b from-[--color-background] from-50% to-[--color-primary] to-50% px-4 pt-4">
-        <HomeContainer>
-          <img className="shadow" src={landingImg} alt="" />
+    <>
+      <nav className="flex h-[3.5rem] shrink-0 justify-between gap-1 pb-1 pl-1 pr-2 print:!hidden">
+        <div className="flex items-center justify-start">
+          <NavLink to={pathHome({})} noActiveState>
+            <span className="text-2xl">Recipe Yak</span>
+          </NavLink>
+        </div>
+        <div className="flex justify-self-end">
+          <NavLink to={pathLogin({})}>Login</NavLink>
+          <NavLink to={pathSignup({})}>Signup</NavLink>
+        </div>
+      </nav>
+      <ErrorBoundary>
+        <HomeContainer className="grid gap-4 px-4 pb-4">
+          {/* eslint-disable-next-line react/forbid-elements */}
+          <section className="mb-2 flex justify-center">
+            <h1 className="max-w-[900px] text-center text-[4rem] leading-[4rem]">
+              A place to store, share, and create recipes
+            </h1>
+          </section>
+          <Button
+            to={pathSignup({})}
+            variant="primary"
+            size="large"
+            className="justify-self-center"
+          >
+            Create Account
+          </Button>
         </HomeContainer>
-      </section>
-      <FeaturesContainer>
-        {features.map(({ text, imgURL }, i) => (
-          <Feature key={imgURL} text={text} imageURL={imgURL} index={i} />
-        ))}
-      </FeaturesContainer>
-      <HowItWorksContainer>
-        {howToSteps.map(({ text, imgURL }, i) => (
-          <HowTo key={imgURL} content={text} imageURL={imgURL} index={i} />
-        ))}
 
-        <Button
-          to={pathSignup({})}
-          variant="primary"
-          size="large"
-          className="mb-2 mt-4 justify-self-center"
-        >
-          Create Account
-        </Button>
-      </HowItWorksContainer>
-      <Footer />
-    </NavPage>
+        {/* eslint-disable-next-line react/forbid-elements */}
+        <section className="bg-gradient-to-b from-[--color-background] from-50% to-[--color-primary] to-50% px-4 pt-4">
+          <HomeContainer>
+            <img className="shadow" src={landingImg} alt="" />
+          </HomeContainer>
+        </section>
+        <FeaturesContainer>
+          {features.map(({ text, imgURL }, i) => (
+            <Feature key={imgURL} text={text} imageURL={imgURL} index={i} />
+          ))}
+        </FeaturesContainer>
+        <HowItWorksContainer>
+          {howToSteps.map(({ text, imgURL }, i) => (
+            <HowTo key={imgURL} content={text} imageURL={imgURL} index={i} />
+          ))}
+
+          <Button
+            to={pathSignup({})}
+            variant="primary"
+            size="large"
+            className="mb-2 mt-4 justify-self-center"
+          >
+            Create Account
+          </Button>
+        </HowItWorksContainer>
+        <Footer />
+      </ErrorBoundary>
+    </>
   )
 }
-
-export default LandingPage

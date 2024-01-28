@@ -4,7 +4,6 @@ import { Link } from "react-router-dom"
 import { ErrorBoundary } from "@/components/ErrorBoundary"
 import { Footer } from "@/components/Footer"
 import { Helmet } from "@/components/Helmet"
-import Logo from "@/components/Logo"
 import { Navbar } from "@/components/Nav"
 import { pathHome } from "@/paths"
 
@@ -83,7 +82,6 @@ export function AuthPage(props: { children: React.ReactNode }) {
         to={pathHome({})}
         className="flex items-center justify-center px-0 pb-3 text-[2rem] font-normal text-white no-underline"
       >
-        <Logo light />
         <span className="font-medium">Recipe Yak</span>
       </Link>
       {props.children}
