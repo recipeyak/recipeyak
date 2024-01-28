@@ -170,7 +170,10 @@ export function ProfilePageContainer(props: {
       <Box dir="col" className="mx-auto mt-8 max-w-[700px] gap-2">
         <Helmet title="Profile" />
 
-        <Link to={pathProfileById({ userId: props.userId })}>
+        <Link
+          to={pathProfileById({ userId: props.userId })}
+          className="self-center"
+        >
           <Box dir="col" align="center">
             <Avatar avatarURL={userInfo.data.avatar_url} size={96} />
             <span className="text-2xl">{userInfo.data.name}</span>

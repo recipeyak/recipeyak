@@ -16,7 +16,11 @@ const MAX_WIDTH = 700
 const PADDING_X = 12 * 2
 function getPageWidth() {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  return Math.min(window.visualViewport!.width - PADDING_X, MAX_WIDTH)
+  const viewportWidth = window.visualViewport!.width
+  const gridWidth =
+    // we remove the padding with -mx-3 on viewports less than small
+    viewportWidth >= 640 ? viewportWidth - PADDING_X : viewportWidth
+  return Math.min(gridWidth, MAX_WIDTH)
 }
 
 export function UserUploadsPage(
@@ -90,7 +94,7 @@ function ImageGrid({
 }) {
   const imageSize = getImageSize(innerPageWidth)
   return (
-    <div className="flex flex-wrap gap-[2px]">
+    <div className="-mx-3 flex flex-wrap gap-[2px] sm:mx-0">
       {uploads.map((upload) => (
         <Link
           key={upload.id}
