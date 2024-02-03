@@ -44,7 +44,7 @@ def step_update_view(
             after=step.text,
             change_type=ChangeType.STEP_UPDATE,
         )
-    
-    publish_recipe(recipe_id=recipe.id, team_id=recipe.team_id)
+
+    publish_recipe(recipe_id=step.recipe.id, team_id=step.recipe.team_id)
 
     return JsonResponse(serialize_step(step))

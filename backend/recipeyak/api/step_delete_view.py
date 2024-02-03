@@ -34,5 +34,5 @@ def step_delete_view(
             change_type=ChangeType.STEP_DELETE,
         )
         step.delete()
-    publish_recipe(recipe_id=recipe.id, team_id=recipe.team_id)
+    publish_recipe(recipe_id=step.recipe.id, team_id=step.recipe.team_id)
     return JsonResponse(None, status=204)

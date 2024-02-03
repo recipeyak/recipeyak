@@ -52,7 +52,7 @@ def section_create_view(
                 section.position = ordering.FIRST_POSITION
 
         section.save()
-        
+
     publish_recipe(recipe_id=recipe.id, team_id=recipe.team_id)
 
     return JsonResponse(serialize_section(section), status=201)
