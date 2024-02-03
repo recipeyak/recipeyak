@@ -8,10 +8,12 @@ from recipeyak.realtime import publish_recipe
 
 
 @endpoint()
-def reaction_delete_view(request: AuthedHttpRequest, reaction_id: int) -> JsonResponse:
+def reaction_delete_view(
+    request: AuthedHttpRequest[None], reaction_id: int
+) -> JsonResponse:
     if reaction := user_reactions(user=request.user).filter(pk=reaction_id).first():
         recipe = reaction.note.recipe
         reaction.delete()
         if recipe.team_id:
             publish_recipe(recipe_id=recipe.id, team_id=recipe.team_id)
-    return JsonResponse(status=204)
+    return JsonResponse(None, status=204)

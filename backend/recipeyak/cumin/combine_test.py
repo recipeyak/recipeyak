@@ -7,8 +7,6 @@ import pytest
 from recipeyak.api.base.json import json_dumps
 from recipeyak.cumin.combine import (
     Ingredient,
-    IngredientItem,
-    IngredientList,
     Quantity,
     combine_ingredients,
 )
@@ -25,12 +23,10 @@ from recipeyak.cumin.quantity import Unit
                 Ingredient(quantity="some", name="Soy Sauce"),
             ],
             {
-                "soy sauce": IngredientItem(
-                    quantities=[
-                        Quantity(quantity=Decimal(4), unit=Unit.TEASPOON),
-                        Quantity(quantity=Decimal(1), unit=Unit.SOME),
-                    ]
-                )
+                "soy sauce": [
+                    Quantity(quantity=Decimal(4), unit=Unit.TEASPOON),
+                    Quantity(quantity=Decimal(1), unit=Unit.SOME),
+                ]
             },
         ),
         (
@@ -41,20 +37,18 @@ from recipeyak.cumin.quantity import Unit
                 Ingredient(quantity="2 cup", name="flour"),
             ],
             {
-                "flour": IngredientItem(
-                    quantities=[
-                        # mass != volume so we get two separate quantities
-                        Quantity(quantity=Decimal(3), unit=Unit.CUP),
-                        Quantity(quantity=Decimal(1), unit=Unit.SOME),
-                        Quantity(quantity=Decimal(250), unit=Unit.GRAM),
-                    ]
-                )
+                "flour": [
+                    # mass != volume so we get two separate quantities
+                    Quantity(quantity=Decimal(3), unit=Unit.CUP),
+                    Quantity(quantity=Decimal(1), unit=Unit.SOME),
+                    Quantity(quantity=Decimal(250), unit=Unit.GRAM),
+                ]
             },
         ),
     ],
 )
 def test_combining_ingredients(
-    ingredients: Sequence[Ingredient], expected: IngredientList
+    ingredients: Sequence[Ingredient], expected: dict[str, list[Quantity]]
 ) -> None:
     assert combine_ingredients(ingredients) == expected
 
