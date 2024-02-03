@@ -11,7 +11,7 @@ async def _publish_calendar_event_async(
     scheduled_recipe: ScheduleRecipeSerializer, team_id: int
 ) -> None:
     async with AblyRest(ABLY_API_KEY) as ably:
-        channel = ably.channels[f"team_id:{team_id}:scheduled_recipe"]
+        channel = ably.channels[f"team:{team_id}:scheduled_recipe"]
         await channel.publish(
             "scheduled_recipe_updated", json_dumps(scheduled_recipe).decode()
         )
@@ -25,7 +25,7 @@ def publish_calendar_event(
 
 async def _publish_calendar_event_delete_async(recipe_id: int, team_id: int) -> None:
     async with AblyRest(ABLY_API_KEY) as ably:
-        channel = ably.channels[f"team_id:{team_id}:scheduled_recipe"]
+        channel = ably.channels[f"team:{team_id}:scheduled_recipe"]
         await channel.publish(
             "scheduled_recipe_delete",
             json_dumps({"recipeId": recipe_id}).decode(),
