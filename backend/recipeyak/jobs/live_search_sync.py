@@ -5,6 +5,7 @@ import json
 import random
 import time
 from typing import Any
+from uuid import uuid4
 
 import asyncpg
 import sentry_sdk
@@ -14,6 +15,7 @@ from algoliasearch.search_client import SearchClient
 from dotenv import load_dotenv
 from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings
+from structlog.stdlib import BoundLogger
 
 logger = structlog.stdlib.get_logger()
 
@@ -28,7 +30,11 @@ class Config(BaseSettings):
 
 
 async def process_queue(
-    connection: asyncpg.Connection[Any], config: Config, backfill_all: bool
+    connection: asyncpg.Connection[Any],
+    *,
+    config: Config,
+    backfill_all: bool,
+    log: BoundLogger,
 ) -> None:
     async with SearchClient.create(
         app_id=config.ALGOLIA_APPLICATION_ID, api_key=config.ALGOLIA_ADMIN_API_KEY
@@ -167,19 +173,19 @@ delete from recipe_index_queue where id = ANY($1)
 """,
                 ids_to_delete,
             )
-            logger.info(
+            log.info(
                 "indexed",
                 deleted=len(deleted_recipe_ids),
                 upserted=len(updated_recipes),
             )
 
 
-async def job(config: Config, backfill_all: bool) -> None:
+async def job(*, log: BoundLogger, config: Config, backfill_all: bool) -> None:
     dsn = str(config.DATABASE_URL)
     pg = await asyncpg.connect(dsn=dsn)
 
     if backfill_all:
-        await process_queue(pg, config=config, backfill_all=backfill_all)
+        await process_queue(pg, config=config, backfill_all=backfill_all, log=log)
         return
 
     async def callback(
@@ -188,7 +194,7 @@ async def job(config: Config, backfill_all: bool) -> None:
         channel: str,
         payload: object,
     ) -> None:
-        await process_queue(conn, config=config, backfill_all=backfill_all)
+        await process_queue(conn, config=config, backfill_all=backfill_all, log=log)
 
     await pg.add_listener("recipe_enqueued_for_indexing", callback)  # type: ignore[arg-type]
     await pg.execute("notify recipe_enqueued_for_indexing")
@@ -196,20 +202,21 @@ async def job(config: Config, backfill_all: bool) -> None:
     while True:
         await asyncio.sleep(0.5)
         if random.random() < 0.005:
-            logger.info("tick")
+            log.info("tick")
 
 
 def main(backfill_all: bool = False) -> None:
-    logger.info("initiate")
+    log = logger.bind(run_id=uuid4().hex)
+    log.info("initiate")
     sentry_sdk.init(
         send_default_pii=True,
         traces_sample_rate=1.0,
     )
     config = Config()
     start = time.monotonic()
-    asyncio.run(job(config=config, backfill_all=backfill_all))
-    logger.info("done!", total_time_sec=time.monotonic() - start)
-    logger.info("exiting")
+    asyncio.run(job(log=log, config=config, backfill_all=backfill_all))
+    log.info("done!", total_time_sec=time.monotonic() - start)
+    log.info("exiting")
 
 
 if __name__ == "__main__":
