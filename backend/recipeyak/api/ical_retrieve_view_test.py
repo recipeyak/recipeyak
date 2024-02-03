@@ -6,7 +6,6 @@ from urllib.parse import urlparse
 import pytest
 from django.test.client import Client
 
-from recipeyak.api.ical_retrieve_view import to_ical_time
 from recipeyak.models import Recipe, ScheduledRecipe, Team, User, get_random_ical_id
 from recipeyak.models.membership import Membership
 
