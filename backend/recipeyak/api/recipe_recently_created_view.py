@@ -33,7 +33,9 @@ class RecipeRecentlyCreatedViewResponse(pydantic.BaseModel):
 
 
 @endpoint()
-def recipe_recently_created_view(request: AuthedHttpRequest) -> JsonResponse:
+def recipe_recently_created_view(
+    request: AuthedHttpRequest[None]
+) -> JsonResponse[list[RecipeRecentlyCreatedViewResponse]]:
     team = get_team(request.user)
     recipes = list[RecipeRecentlyCreatedViewResponse]()
     for r in filter_recipes(team=team).order_by("-created")[:6]:

@@ -11,10 +11,12 @@ from recipe_scrapers._exceptions import RecipeScrapersExceptions
 
 from recipeyak import ordering
 from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.recipe import (
+    RecipeResponse,
     serialize_recipe,
 )
 from recipeyak.cumin.quantity import parse_ingredient
@@ -94,18 +96,16 @@ def create_recipe_from_scrape(*, scrape: ScrapeResult, team: Team) -> Recipe:
 
 
 @endpoint()
-def recipe_create_view(request: AuthedHttpRequest) -> JsonResponse:
+def recipe_create_view(
+    request: AuthedHttpRequest[RecipePostParams]
+) -> JsonResponse[RecipeResponse]:
     log = logger.bind(user_id=request.user.id)
     params = RecipePostParams.parse_raw(request.body)
 
     # validate params
     team = Team.objects.filter(id=params.team, membership__user=request.user).first()
     if team is None:
-        return JsonResponse(
-            # TODO(sbdchd): figure out error format
-            {"error": True, "message": "Unknown Team"},
-            status=400,
-        )
+        raise APIError(code="unknown_team", message="Unknown Team")
 
     scrape_result: ScrapeResult | None = None
     if params.from_url is not None:
@@ -116,12 +116,9 @@ def recipe_create_view(request: AuthedHttpRequest) -> JsonResponse:
             advocate.exceptions.UnacceptableAddressException,
             ValidationError,
             RecipeScrapersExceptions,
-        ):
+        ) as e:
             log.info("invalid url")
-            return JsonResponse(
-                {"error": True, "message": "invalid url"},
-                status=400,
-            )
+            raise APIError(code="invalid_url", message="Invalid url.") from e
 
     with transaction.atomic():
         if scrape_result is not None:

@@ -11,8 +11,8 @@ from recipeyak.models import ChangeType, RecipeChange, filter_ingredients, get_t
 
 @endpoint()
 def ingredient_delete_view(
-    request: AuthedHttpRequest, ingredient_id: int
-) -> JsonResponse:
+    request: AuthedHttpRequest[None], ingredient_id: int
+) -> JsonResponse[None]:
     team = get_team(request.user)
     ingredient = get_object_or_404(filter_ingredients(team=team), pk=ingredient_id)
     RecipeChange.objects.create(
@@ -23,4 +23,4 @@ def ingredient_delete_view(
         change_type=ChangeType.INGREDIENT_DELETE,
     )
     filter_ingredients(team=team).filter(pk=ingredient_id).delete()
-    return JsonResponse(status=204)
+    return JsonResponse(None, status=204)

@@ -8,6 +8,7 @@ from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 
 from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
@@ -45,18 +46,26 @@ class UpdateMembershipParams(RequestParams):
 
 
 @endpoint()
-def member_update_view(request: AuthedHttpRequest, *, member_id: int) -> JsonResponse:
+def member_update_view(
+    request: AuthedHttpRequest[UpdateMembershipParams], *, member_id: int
+) -> JsonResponse[TeamMemberResponse]:
     params = UpdateMembershipParams.parse_raw(request.body)
     membership = get_object_or_404(Membership, pk=member_id)
     if not is_team_admin(team_id=membership.team_id, user_id=request.user.id):
-        return JsonResponse(
-            {"error": "must be an admin to edit a membership level"}, status=403
+        raise APIError(
+            code="insufficient_permissions",
+            message="must be an admin to edit a membership level",
+            status=403,
         )
     membership.level = params.level
     try:
         membership.save()
     except DemoteLastAdminError as e:
-        return JsonResponse(str(e), status=403)
+        raise APIError(
+            code="demote_last_admin_error",
+            message="Can't demote last admin",
+            status=403,
+        ) from e
 
     return JsonResponse(
         TeamMemberResponse(

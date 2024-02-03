@@ -1,16 +1,20 @@
 from datetime import date
+from decimal import Decimal
 
 import pydantic
 from django.core.exceptions import ValidationError
 from django.db.models import QuerySet
+from typing_extensions import TypedDict
 
 from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.json import json_dumps
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.cumin.cat import category
 from recipeyak.cumin.combine import Ingredient, combine_ingredients
+from recipeyak.cumin.quantity import Unit
 from recipeyak.models import Ingredient as DBIngredient
 from recipeyak.models import ScheduledRecipe, ShoppingList, Team, get_team
 
@@ -40,14 +44,31 @@ class ShoppingListRecipe(pydantic.BaseModel):
     recipeName: str
 
 
+class QuantityResponse(TypedDict):
+    quantity: Decimal
+    unit: Unit
+    unknown_unit: str | None
+
+
+class IngredientResponse(TypedDict):
+    quantities: list[QuantityResponse]
+    category: str | None
+
+
+class ShoppingListResponse(TypedDict):
+    ingredients: dict[str, IngredientResponse]
+    recipes: list[ShoppingListRecipe]
+
+
 @endpoint()
-def shoppinglist_retrieve_view(request: AuthedHttpRequest) -> JsonResponse:
+def shoppinglist_retrieve_view(
+    request: AuthedHttpRequest[ShoppingListParams]
+) -> JsonResponse[ShoppingListResponse]:
     team_id = get_team(request.user).id
     params = ShoppingListParams.parse_obj(request.GET.dict())
     scheduled_recipes = get_scheduled_recipes(params=params, team_id=team_id)
     if scheduled_recipes is None:
-        return JsonResponse(status=400)
-
+        raise APIError(code="invalid_params", message="Couldn't find scheduled recipes")
     recipes = dict[int, ShoppingListRecipe]()
     db_ingredients: list[DBIngredient] = []
     for scheduled_recipe in scheduled_recipes:
@@ -71,6 +92,6 @@ def shoppinglist_retrieve_view(request: AuthedHttpRequest) -> JsonResponse:
     ShoppingList.objects.create(ingredients=json_dumps(ingredient_mapping).decode())
 
     return JsonResponse(
-        {"ingredients": ingredient_mapping, "recipes": recipes.values()},
+        {"ingredients": ingredient_mapping, "recipes": list(recipes.values())},
         status=200,
     )

@@ -5,6 +5,7 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404
 
 from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
@@ -21,10 +22,16 @@ class UpdateTeamParams(RequestParams):
 
 
 @endpoint()
-def team_update_view(request: AuthedHttpRequest, team_id: int) -> JsonResponse:
+def team_update_view(
+    request: AuthedHttpRequest[UpdateTeamParams], team_id: int
+) -> JsonResponse[UpdateTeamResponse]:
     team = get_object_or_404(get_teams(request.user), pk=team_id)
     if not is_team_admin(team_id=team.id, user_id=request.user.id):
-        return JsonResponse(status=403)
+        raise APIError(
+            code="insufficent_permissions",
+            message="Must be a team admin for updates.",
+            status=403,
+        )
 
     params = UpdateTeamParams.parse_raw(request.body)
 

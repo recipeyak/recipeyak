@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing_extensions import TypedDict
+
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
@@ -34,8 +36,14 @@ class SearchClickCreateParams(RequestParams):
     matches: list[SearchClickMatchParams]
 
 
+class SearchClickResponse(TypedDict):
+    id: int
+
+
 @endpoint()
-def search_click_create_view(request: AuthedHttpRequest) -> JsonResponse:
+def search_click_create_view(
+    request: AuthedHttpRequest[SearchClickCreateParams]
+) -> JsonResponse[SearchClickResponse]:
     params = SearchClickCreateParams.parse_raw(request.body)
 
     search_click = SearchClick.objects.create(content=params.dict())

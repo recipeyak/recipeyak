@@ -25,7 +25,9 @@ class TeamCreateParams(RequestParams):
 
 
 @endpoint()
-def team_create_view(request: AuthedHttpRequest) -> JsonResponse:
+def team_create_view(
+    request: AuthedHttpRequest[TeamCreateParams]
+) -> JsonResponse[RetrieveTeamResponse]:
     params = TeamCreateParams.parse_raw(request.body)
     with transaction.atomic():
         team = Team.objects.create(name=params.name)

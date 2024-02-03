@@ -267,7 +267,9 @@ where a.user_id = %(user_a_id)s
 
 
 @endpoint()
-def user_retrieve_by_id_view(request: AuthedHttpRequest, user_id: str) -> JsonResponse:
+def user_retrieve_by_id_view(
+    request: AuthedHttpRequest[None], user_id: str
+) -> JsonResponse[UserDetailByIdResponse]:
     user = get_object_or_404(User, id=user_id)
     if not has_team_connection(user_id, request.user.id):
         raise Http404

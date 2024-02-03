@@ -7,7 +7,7 @@ from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
-from recipeyak.api.serializers.recipe import serialize_note
+from recipeyak.api.serializers.recipe import NoteResponse, serialize_note
 from recipeyak.models import Note, Upload, filter_recipes, get_team
 
 
@@ -23,7 +23,9 @@ class CreateNoteParams(RequestParams):
 
 
 @endpoint()
-def note_create_view(request: AuthedHttpRequest, recipe_id: int) -> JsonResponse:
+def note_create_view(
+    request: AuthedHttpRequest[CreateNoteParams], recipe_id: int
+) -> JsonResponse[NoteResponse]:
     team = get_team(request.user)
     recipe = get_object_or_404(filter_recipes(team=team), pk=recipe_id)
     params = CreateNoteParams.parse_raw(request.body)

@@ -27,7 +27,9 @@ class SessionResponse(pydantic.BaseModel):
 
 
 @endpoint()
-def session_list_view(request: AuthedHttpRequest) -> JsonResponse:
+def session_list_view(
+    request: AuthedHttpRequest[None]
+) -> JsonResponse[list[SessionResponse]]:
     query_set = request.user.session_set
 
     qs = query_set.filter(expire_date__gt=timezone.now()).order_by("-last_activity")

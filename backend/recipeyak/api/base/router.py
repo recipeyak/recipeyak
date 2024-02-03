@@ -13,6 +13,10 @@ class View(Protocol):
     def __call__(self, request: Any, *args: Any, **kwargs: Any) -> HttpResponse:
         ...
 
+    @property
+    def __name__(self) -> str:
+        ...
+
 
 @dataclass(frozen=True, slots=True)
 class Route:
@@ -38,7 +42,7 @@ def _method_router(
     return view(request, *args, **kwargs)
 
 
-def routes(*routes: Route) -> list[URLPattern]:
+def create_urlpatterns(*routes: Route) -> list[URLPattern]:
     path_to_routes = defaultdict[str, list[Route]](list)
     for route in routes:
         path_to_routes[route.path].append(route)

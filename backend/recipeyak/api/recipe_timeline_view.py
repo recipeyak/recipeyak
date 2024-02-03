@@ -6,6 +6,7 @@ import pydantic
 from django.shortcuts import get_object_or_404
 
 from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.permissions import has_recipe_access
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
@@ -18,7 +19,9 @@ class RecipeTimelineResponse(pydantic.BaseModel):
 
 
 @endpoint()
-def recipe_timline_view(request: AuthedHttpRequest, recipe_id: int) -> JsonResponse:
+def recipe_timline_view(
+    request: AuthedHttpRequest[None], recipe_id: int
+) -> JsonResponse[list[RecipeTimelineResponse]]:
     user: User = request.user
     # TODO: we probably don't want to rely on this so we can support multiple
     # sessions with different teams for a given user.
@@ -27,7 +30,7 @@ def recipe_timline_view(request: AuthedHttpRequest, recipe_id: int) -> JsonRespo
     recipe = get_object_or_404(Recipe, pk=recipe_id)
 
     if not has_recipe_access(recipe=recipe, user=user):
-        return JsonResponse(status=403)
+        raise APIError(code="no_access", message="No access to recipe", status=403)
 
     scheduled_recipes = ScheduledRecipe.objects.filter(team=team).filter(
         recipe=recipe_id

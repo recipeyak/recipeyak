@@ -7,6 +7,7 @@ import pydantic
 
 from recipeyak import config
 from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
@@ -36,13 +37,15 @@ class StartUploadParams(RequestParams):
 
 
 class StartUploadResponse(pydantic.BaseModel):
-    id: str
+    id: int
     upload_url: str
     upload_headers: dict[str, str]
 
 
 @endpoint()
-def upload_start_view(request: AuthedHttpRequest) -> JsonResponse:
+def upload_start_view(
+    request: AuthedHttpRequest[StartUploadParams]
+) -> JsonResponse[StartUploadResponse]:
     params = StartUploadParams.parse_raw(request.body)
     key = f"{request.user.id}/{uuid4().hex}/{params.file_name}"
     team = get_team(request.user)
@@ -52,9 +55,9 @@ def upload_start_view(request: AuthedHttpRequest) -> JsonResponse:
     if params.purpose == "recipe":
         recipe = filter_recipes(team=team).filter(id=params.recipe_id).first()
         if recipe is None:
-            return JsonResponse(
-                {"error": {"message": "Could not find recipe with provided ID."}},
-                status=400,
+            raise APIError(
+                code="recipe_not_found",
+                message="Could not find recipe with provided ID.",
             )
     elif params.purpose == "profile":
         profile = request.user
@@ -84,7 +87,7 @@ def upload_start_view(request: AuthedHttpRequest) -> JsonResponse:
 
     return JsonResponse(
         StartUploadResponse(
-            id=str(upload.pk),
+            id=upload.pk,
             upload_url=upload_url,
             upload_headers={"x-amz-meta-db_id": str(upload.pk)},
         )

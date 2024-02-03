@@ -4,6 +4,7 @@ from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 
 from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.team_update_view import is_team_admin
@@ -28,7 +29,9 @@ def is_team_member(*, team_id: int, user_id: int) -> bool:
 
 
 @endpoint()
-def member_delete_view(request: AuthedHttpRequest, *, member_id: int) -> JsonResponse:
+def member_delete_view(
+    request: AuthedHttpRequest[None], *, member_id: int
+) -> JsonResponse[None]:
     """
     1. Admins of the team can edit any other member of the team
     2. Non-admins can edit themselves
@@ -36,16 +39,22 @@ def member_delete_view(request: AuthedHttpRequest, *, member_id: int) -> JsonRes
     membership = get_object_or_404(Membership, pk=member_id)
     # Must be part of the team
     if not is_team_member(user_id=request.user.id, team_id=membership.team_id):
-        return JsonResponse({"error": "Not a member of the team"}, status=403)
+        raise APIError(
+            code="not_a_team_member",
+            message="Not a member of the team",
+            status=403,
+        )
     # To edit non-members, must be an admin
     if membership.user != request.user and not is_team_admin(
         team_id=membership.team_id, user_id=request.user.id
     ):
-        return JsonResponse(
-            {"error": "Must be an admin to edit another member"}, status=403
+        raise APIError(
+            code="admin_required",
+            message="Must be an admin to edit another member",
+            status=403,
         )
     try:
         membership.delete()
     except DemoteLastAdminError as e:
-        return JsonResponse(str(e), status=400)
-    return JsonResponse(status=204)
+        raise APIError(code="demote_last_admin", message=str(e)) from e
+    return JsonResponse(None, status=204)

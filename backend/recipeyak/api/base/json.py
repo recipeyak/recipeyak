@@ -30,10 +30,13 @@ def default(o: object) -> Any:
     raise TypeError
 
 
-def json_dumps(data: Any) -> bytes:
+def json_dumps(data: Any, indent: bool = False) -> bytes:
     """
     Serialize `data` to a JSON formatted byte string.
     """
     if data is None:
         return b""
-    return orjson.dumps(data, default=default, option=orjson.OPT_NON_STR_KEYS)
+    options = orjson.OPT_NON_STR_KEYS
+    if indent:
+        options |= orjson.OPT_INDENT_2
+    return orjson.dumps(data, default=default, option=options)

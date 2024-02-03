@@ -10,7 +10,7 @@ from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
-from recipeyak.api.serializers.recipe import serialize_reactions
+from recipeyak.api.serializers.recipe import ReactionResponse, serialize_reactions
 from recipeyak.models import filter_notes, get_team, user_reactions
 from recipeyak.models.reaction import Reaction
 
@@ -22,7 +22,9 @@ class ReactToNoteViewParams(RequestParams):
 
 
 @endpoint()
-def reaction_create_view(request: AuthedHttpRequest, note_id: int) -> JsonResponse:
+def reaction_create_view(
+    request: AuthedHttpRequest[ReactToNoteViewParams], note_id: int
+) -> JsonResponse[ReactionResponse]:
     params = ReactToNoteViewParams.parse_raw(request.body)
 
     team = get_team(request.user)

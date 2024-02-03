@@ -43,7 +43,9 @@ def serialize_note(upload: Upload) -> NoteResponse:
 
 
 @endpoint()
-def user_uploads_list_view(request: AuthedHttpRequest, user_id: str) -> JsonResponse:
+def user_uploads_list_view(
+    request: AuthedHttpRequest[None], user_id: str
+) -> JsonResponse[UserPhotosListResponse]:
     if not has_team_connection(user_id, request.user.id):
         raise Http404
     team = get_team(request.user)

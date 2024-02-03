@@ -6,12 +6,13 @@ from django.contrib.auth import login
 from django.utils.http import urlsafe_base64_decode
 
 from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.request import (
     AnonymousHttpRequest,
 )
 from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
-from recipeyak.api.user_retrieve_view import serialize_user
+from recipeyak.api.user_retrieve_view import UserSerializer, serialize_user
 from recipeyak.models.user import User
 
 if TYPE_CHECKING:
@@ -37,26 +38,26 @@ class ResetPasswordViewParams(RequestParams):
 
 
 @endpoint(auth_required=False)
-def user_password_reset_confirm_view(request: AnonymousHttpRequest) -> JsonResponse:
+def user_password_reset_confirm_view(
+    request: AnonymousHttpRequest[ResetPasswordViewParams]
+) -> JsonResponse[UserSerializer]:
     params = ResetPasswordViewParams.parse_raw(request.body)
 
     user_id = urlsafe_base64_decode(params.uid)
     user = User.objects.filter(pk=user_id).first()
     if user is None:
-        return JsonResponse(
-            {"error": {"message": "Invalid token. Could not find user."}},
-            status=400,
+        raise APIError(
+            code="invalid_token", message="Invalid token. Could not find user."
         )
-
     if not default_token_generator.check_token(user, token=params.token):
-        return JsonResponse(
-            {"error": {"message": "Invalid or expired token."}},
-            status=400,
+        raise APIError(
+            code="invalid_or_expired_token",
+            message="Invalid or expired token.",
         )
     if params.new_password1 != params.new_password2:
-        return JsonResponse(
-            {"error": {"message": "Passwords don't match"}},
-            status=400,
+        raise APIError(
+            code="passwords_mismatch",
+            message="Passwords don't match",
         )
     user.set_password(params.new_password1)
     user.save()

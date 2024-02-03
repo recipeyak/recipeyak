@@ -28,7 +28,9 @@ class TeamMemberResponse(pydantic.BaseModel):
 
 
 @endpoint()
-def member_list_view(request: AuthedHttpRequest, team_id: int) -> JsonResponse:
+def member_list_view(
+    request: AuthedHttpRequest[None], team_id: int
+) -> JsonResponse[list[TeamMemberResponse]]:
     team = get_team_by_id(user_id=request.user.id, team_id=team_id)
     with connection.cursor() as cursor:
         cursor.execute(

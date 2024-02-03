@@ -21,7 +21,9 @@ class ListTeamResponse(BaseModel):
 
 
 @endpoint()
-def team_list_view(request: AuthedHttpRequest) -> JsonResponse:
+def team_list_view(
+    request: AuthedHttpRequest[None]
+) -> JsonResponse[list[ListTeamResponse]]:
     with connection.cursor() as cursor:
         cursor.execute(
             """

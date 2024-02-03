@@ -14,7 +14,7 @@ from django.db import connection
 from django.http import HttpRequest, HttpResponse, HttpResponseServerError, JsonResponse
 from django.utils.deprecation import MiddlewareMixin
 
-from recipeyak.api.base.exceptions import RequestValidationError
+from recipeyak.api.base.exceptions import APIError, RequestValidationError
 from recipeyak.api.base.request_state import State
 
 log = logging.getLogger(__name__)
@@ -197,10 +197,39 @@ class ExceptionMiddleware(MiddlewareMixin):
     ) -> HttpResponse | None:
         # return a 400 response if we encounter a pydantic validation error.
         if isinstance(exception, RequestValidationError):
-            return JsonResponse({"message": exception.errors}, status=400)
+            return JsonResponse(
+                {
+                    "error": {
+                        "message": exception.errors,
+                        "code": "validation_error",
+                    },
+                    "message": exception.errors,
+                },
+                status=400,
+            )
+        if isinstance(exception, APIError):
+            return JsonResponse(
+                {
+                    "error": {
+                        "message": exception.message,
+                        "code": exception.code,
+                    },
+                    # backwards compat with some UI stuff
+                    "message": exception.message,
+                    "non_field_errors": [exception.message],
+                },
+                status=exception.status,
+            )
         if isinstance(exception, ValidationError):
             return JsonResponse(
-                {"message": exception.messages, "non_field_errors": exception.messages},
+                {
+                    "error": {
+                        "message": exception.messages,
+                        "code": "django_validation_error",
+                    },
+                    "message": exception.messages,
+                    "non_field_errors": exception.messages,
+                },
                 status=400,
             )
         return None

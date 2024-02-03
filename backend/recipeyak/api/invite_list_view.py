@@ -30,7 +30,9 @@ class InviteResponse(pydantic.BaseModel):
 
 
 @endpoint()
-def invite_list_view(request: AuthedHttpRequest) -> JsonResponse:
+def invite_list_view(
+    request: AuthedHttpRequest[None]
+) -> JsonResponse[list[InviteResponse]]:
     with connection.cursor() as cursor:
         cursor.execute(
             """

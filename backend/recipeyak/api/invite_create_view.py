@@ -21,7 +21,9 @@ class CreateInviteResponse(pydantic.BaseModel):
 
 
 @endpoint()
-def invite_create_view(request: AuthedHttpRequest, team_id: int) -> JsonResponse:
+def invite_create_view(
+    request: AuthedHttpRequest[CreateInviteParams], team_id: int
+) -> JsonResponse[CreateInviteResponse]:
     """
     for creating, we want: level, user_id
     for response, we want: id, user data, team

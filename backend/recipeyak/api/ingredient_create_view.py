@@ -10,7 +10,11 @@ from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
-from recipeyak.api.serializers.recipe import ingredient_to_text, serialize_ingredient
+from recipeyak.api.serializers.recipe import (
+    IngredientResponse,
+    ingredient_to_text,
+    serialize_ingredient,
+)
 from recipeyak.models import (
     ChangeType,
     Ingredient,
@@ -30,7 +34,9 @@ class IngredientCreateParams(RequestParams):
 
 
 @endpoint()
-def ingredient_create_view(request: AuthedHttpRequest, recipe_id: int) -> JsonResponse:
+def ingredient_create_view(
+    request: AuthedHttpRequest[IngredientCreateParams], recipe_id: int
+) -> JsonResponse[IngredientResponse]:
     params = IngredientCreateParams.parse_raw(request.body)
     team = get_team(request.user)
     recipe = get_object_or_404(filter_recipes(team=team), pk=recipe_id)

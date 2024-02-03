@@ -8,6 +8,8 @@ from recipeyak.api.base.response import JsonResponse
 
 
 @endpoint()
-def session_delete_view(request: AuthedHttpRequest, session_id: str) -> JsonResponse:
+def session_delete_view(
+    request: AuthedHttpRequest[None], session_id: str
+) -> JsonResponse[None]:
     get_object_or_404(request.user.session_set, pk=session_id).delete()
-    return JsonResponse(status=204)
+    return JsonResponse(None, status=204)

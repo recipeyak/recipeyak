@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Annotated
 
+from django.db import transaction
 from django.shortcuts import get_object_or_404
 from pydantic import StringConstraints
 
@@ -18,15 +19,18 @@ class StepPatchParams(RequestParams):
 
 
 @endpoint()
-def step_delete_view(request: AuthedHttpRequest, step_id: int) -> JsonResponse:
+def step_delete_view(
+    request: AuthedHttpRequest[None], step_id: int
+) -> JsonResponse[None]:
     team = get_team(request.user)
     step = get_object_or_404(filter_steps(team=team), pk=step_id)
-    RecipeChange.objects.create(
-        recipe=step.recipe,
-        actor=request.user,
-        before=step.text,
-        after="",
-        change_type=ChangeType.STEP_DELETE,
-    )
-    step.delete()
-    return JsonResponse(status=204)
+    with transaction.atomic():
+        RecipeChange.objects.create(
+            recipe=step.recipe,
+            actor=request.user,
+            before=step.text,
+            after="",
+            change_type=ChangeType.STEP_DELETE,
+        )
+        step.delete()
+    return JsonResponse(None, status=204)

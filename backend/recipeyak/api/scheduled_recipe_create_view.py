@@ -8,7 +8,10 @@ from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
-from recipeyak.api.calendar_serialization import serialize_scheduled_recipe
+from recipeyak.api.calendar_serialization import (
+    ScheduleRecipeSerializer,
+    serialize_scheduled_recipe,
+)
 from recipeyak.api.team_update_view import get_teams
 from recipeyak.models import filter_recipes, get_team
 from recipeyak.realtime import publish_calendar_event
@@ -20,7 +23,9 @@ class ScheduledRecipeCreateParams(RequestParams):
 
 
 @endpoint()
-def scheduled_recipe_create_view(request: AuthedHttpRequest) -> JsonResponse:
+def scheduled_recipe_create_view(
+    request: AuthedHttpRequest[ScheduledRecipeCreateParams]
+) -> JsonResponse[ScheduleRecipeSerializer]:
     params = ScheduledRecipeCreateParams.parse_raw(request.body)
 
     team = get_team(request.user)

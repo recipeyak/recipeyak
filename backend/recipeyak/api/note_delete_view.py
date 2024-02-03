@@ -7,7 +7,9 @@ from recipeyak.models import filter_notes, get_team
 
 
 @endpoint()
-def note_delete_view(request: AuthedHttpRequest, note_id: str) -> JsonResponse:
+def note_delete_view(
+    request: AuthedHttpRequest[None], note_id: str
+) -> JsonResponse[None]:
     team = get_team(request.user)
     filter_notes(team=team).filter(pk=note_id, created_by=request.user).delete()
-    return JsonResponse(status=204)
+    return JsonResponse(None, status=204)

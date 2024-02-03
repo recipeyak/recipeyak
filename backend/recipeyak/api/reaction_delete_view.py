@@ -7,6 +7,8 @@ from recipeyak.models import user_reactions
 
 
 @endpoint()
-def reaction_delete_view(request: AuthedHttpRequest, reaction_id: int) -> JsonResponse:
+def reaction_delete_view(
+    request: AuthedHttpRequest[None], reaction_id: int
+) -> JsonResponse[None]:
     user_reactions(user=request.user).filter(pk=reaction_id).delete()
-    return JsonResponse(status=204)
+    return JsonResponse(None, status=204)

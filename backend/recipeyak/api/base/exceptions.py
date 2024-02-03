@@ -21,3 +21,10 @@ class RequestValidationError(Exception):
             for error in error_details
         ]
         self.errors = errors
+
+
+class APIError(Exception):
+    def __init__(self, *, code: str, message: str, status: int = 400) -> None:
+        self.code = code
+        self.message = message
+        self.status = status

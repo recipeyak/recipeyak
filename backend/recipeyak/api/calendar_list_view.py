@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import date
+from typing import Any
 
 from django.db.models import QuerySet
 from typing_extensions import TypedDict
@@ -9,7 +10,10 @@ from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
-from recipeyak.api.calendar_serialization import serialize_scheduled_recipe
+from recipeyak.api.calendar_serialization import (
+    ScheduleRecipeSerializer,
+    serialize_scheduled_recipe,
+)
 from recipeyak.models import Membership, ScheduledRecipe, get_team
 
 
@@ -18,7 +22,11 @@ class CalSettings(TypedDict):
     calendarLink: str
 
 
-def get_cal_settings(*, team_id: int, request: AuthedHttpRequest) -> CalSettings:
+def get_cal_settings(
+    *,
+    team_id: int,
+    request: AuthedHttpRequest[Any],
+) -> CalSettings:
     membership = Membership.objects.get(team=team_id, user=request.user)
 
     method = "https" if request.is_secure() else "http"
@@ -51,8 +59,15 @@ class StartEndDateParams(RequestParams):
     end: date
 
 
+class CalendarListResponse(TypedDict):
+    scheduledRecipes: list[ScheduleRecipeSerializer]
+    settings: CalSettings
+
+
 @endpoint()
-def calendar_list_view(request: AuthedHttpRequest) -> JsonResponse:
+def calendar_list_view(
+    request: AuthedHttpRequest[StartEndDateParams]
+) -> JsonResponse[CalendarListResponse]:
     params = StartEndDateParams.parse_obj(request.GET.dict())
     start = params.start
     end = params.end
@@ -69,4 +84,5 @@ def calendar_list_view(request: AuthedHttpRequest) -> JsonResponse:
 
     settings = get_cal_settings(request=request, team_id=team_id)
 
+    # TODO: split this into two endpoints
     return JsonResponse({"scheduledRecipes": scheduled_recipes, "settings": settings})

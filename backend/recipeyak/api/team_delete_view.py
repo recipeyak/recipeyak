@@ -5,6 +5,7 @@ from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 
 from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
 from recipeyak.models import Team
@@ -23,7 +24,9 @@ def is_team_admin(*, team_id: int, user_id: int) -> bool:
 
 
 @endpoint()
-def team_delete_view(request: AuthedHttpRequest, team_id: int) -> JsonResponse:
+def team_delete_view(
+    request: AuthedHttpRequest[None], team_id: int
+) -> JsonResponse[None]:
     with transaction.atomic():
         team = get_object_or_404(get_teams(request.user), pk=team_id)
         if (
@@ -31,6 +34,8 @@ def team_delete_view(request: AuthedHttpRequest, team_id: int) -> JsonResponse:
             # don't allow deleting last team
             or get_teams(request.user).count() <= 1
         ):
-            return JsonResponse(status=403)
+            raise APIError(
+                code="forbidden", message="You cannot delete this team.", status=403
+            )
         team.delete()
-        return JsonResponse(status=204)
+        return JsonResponse(None, status=204)

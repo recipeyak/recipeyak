@@ -7,6 +7,7 @@ from django.core.mail import send_mail
 from django.utils.http import urlsafe_base64_encode
 
 from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.request import (
     AnonymousHttpRequest,
 )
@@ -38,16 +39,14 @@ class ResetPasswordViewResponse(pydantic.BaseModel):
 
 
 @endpoint(auth_required=False)
-def user_password_reset_view(request: AnonymousHttpRequest) -> JsonResponse:
+def user_password_reset_view(
+    request: AnonymousHttpRequest[ResetPasswordViewParams]
+) -> JsonResponse[ResetPasswordViewResponse]:
     params = ResetPasswordViewParams.parse_raw(request.body)
 
     user = User.objects.filter(email=params.email).first()
     if user is None:
-        return JsonResponse(
-            {"error": {"message": "email not found"}},
-            status=400,
-        )
-
+        raise APIError(code="email_not_found", message="email not found")
     token = default_token_generator.make_token(user)
     uid = urlsafe_base64_encode(str(user.pk).encode())
     send_mail(
