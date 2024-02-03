@@ -1,5 +1,6 @@
 from datetime import date, datetime
 from email.utils import parsedate_to_datetime
+from typing import Any
 from urllib.parse import urlparse
 
 import pytest
@@ -28,6 +29,14 @@ def omit_entry_ids(content: str) -> str:
             output += "\r\n"
         if line.startswith("UID"):
             output += "UID:<id-removed>"
+        elif line.startswith("CREATED"):
+            output += "CREATED:<timestamp-removed>"
+        elif line.startswith("DTSTAMP"):
+            output += "DTSTAMP:<timestamp-removed>"
+        elif line.startswith("LAST-MODIFIED"):
+            output += "LAST-MODIFIED:<timestamp-removed>"
+        elif line.startswith("URL"):
+            output += "URL:https://recipeyak.com/recipes/<id-removed>"
         else:
             output += line
     return output
@@ -60,7 +69,7 @@ def test_ical_ids_consistent(
 
 
 def test_ical_view_with_correct_id(
-    client: Client, user: User, recipe: Recipe, team: Team
+    client: Client, user: User, recipe: Recipe, team: Team, snapshot: Any
 ) -> None:
     """
     When the client passes in the correct id we should return the ical data.
@@ -68,17 +77,17 @@ def test_ical_view_with_correct_id(
     uuids used by the calendar entries.
     """
 
-    scheduled_a = ScheduledRecipe.objects.create(
+    ScheduledRecipe.objects.create(
         recipe=recipe,
         team=team,
         on=date(1976, 7, 6),
     )
-    scheduled_b = ScheduledRecipe.objects.create(
+    ScheduledRecipe.objects.create(
         recipe=recipe,
         team=team,
         on=date(1976, 7, 7),
     )
-    scheduled_c = ScheduledRecipe.objects.create(
+    ScheduledRecipe.objects.create(
         recipe=recipe,
         team=team,
         on=date(1976, 7, 10),
@@ -94,51 +103,7 @@ def test_ical_view_with_correct_id(
     assert res["Content-Type"] == "text/calendar"
     assert isinstance(parsedate_to_datetime(res["Last-Modified"]), datetime)
 
-    assert omit_entry_ids(res.content.decode()) == (
-        "BEGIN:VCALENDAR\r\n"
-        "VERSION:2.0\r\n"
-        "PRODID:-//Recipe Yak//Schedule//EN\r\n"
-        "CALSCALE:GREGORIAN\r\n"
-        "X-WR-CALDESC:Recipe Yak Schedule for Team Recipe Yak Team\r\n"
-        "X-WR-CALNAME:Scheduled Recipes\r\n"
-        "BEGIN:VEVENT\r\n"
-        "SUMMARY:Recipe name\r\n"
-        "DTSTART;VALUE=DATE:19760706\r\n"
-        "DTEND;VALUE=DATE:19760707\r\n"
-        f"DTSTAMP:{to_ical_time(scheduled_a.created)}\r\n"
-        "UID:<id-removed>\r\n"
-        f"CREATED:{to_ical_time(scheduled_a.created)}\r\n"
-        "DESCRIPTION:Takes about 1 hour\r\n"
-        f"LAST-MODIFIED:{to_ical_time(scheduled_a.created)}\r\n"
-        "TRANSP:TRANSPARENT\r\n"
-        f"URL:https://recipeyak.com/recipes/{scheduled_a.recipe_id}-recipe-name\r\n"
-        "END:VEVENT\r\n"
-        "BEGIN:VEVENT\r\n"
-        "SUMMARY:Recipe name\r\n"
-        "DTSTART;VALUE=DATE:19760707\r\n"
-        "DTEND;VALUE=DATE:19760708\r\n"
-        f"DTSTAMP:{to_ical_time(scheduled_b.created)}\r\n"
-        "UID:<id-removed>\r\n"
-        f"CREATED:{to_ical_time(scheduled_b.created)}\r\n"
-        "DESCRIPTION:Takes about 1 hour\r\n"
-        f"LAST-MODIFIED:{to_ical_time(scheduled_b.created)}\r\n"
-        "TRANSP:TRANSPARENT\r\n"
-        f"URL:https://recipeyak.com/recipes/{scheduled_b.recipe_id}-recipe-name\r\n"
-        "END:VEVENT\r\n"
-        "BEGIN:VEVENT\r\n"
-        "SUMMARY:Recipe name\r\n"
-        "DTSTART;VALUE=DATE:19760710\r\n"
-        "DTEND;VALUE=DATE:19760711\r\n"
-        f"DTSTAMP:{to_ical_time(scheduled_c.created)}\r\n"
-        "UID:<id-removed>\r\n"
-        f"CREATED:{to_ical_time(scheduled_c.created)}\r\n"
-        "DESCRIPTION:Takes about 1 hour\r\n"
-        f"LAST-MODIFIED:{to_ical_time(scheduled_c.created)}\r\n"
-        "TRANSP:TRANSPARENT\r\n"
-        f"URL:https://recipeyak.com/recipes/{scheduled_c.recipe_id}-recipe-name\r\n"
-        "END:VEVENT\r\n"
-        "END:VCALENDAR\r\n"
-    )
+    assert omit_entry_ids(res.content.decode()) == snapshot()
 
 
 def test_get_ical_view_works_with_accept_encoding(

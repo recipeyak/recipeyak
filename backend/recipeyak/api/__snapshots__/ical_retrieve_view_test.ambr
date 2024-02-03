@@ -1,0 +1,48 @@
+# name: test_ical_view_with_correct_id
+  '''
+  BEGIN:VCALENDAR
+  PRODID:-//Recipe Yak//Schedule//EN
+  CALSCALE:GREGORIAN
+  VERSION:2.0
+  X-WR-CALNAME:Scheduled Recipes
+  X-WR-CALDESC:Recipe Yak Schedule for Team Recipe Yak Team
+  BEGIN:VEVENT
+  UID:<id-removed>
+  DTSTART;VALUE=DATE:19760706
+  DTEND;VALUE=DATE:19760707
+  SUMMARY:Recipe name
+  DESCRIPTION:Takes about 1 hour
+  URL:https://recipeyak.com/recipes/<id-removed>
+  TRANSP:TRANSPARENT
+  CREATED:<timestamp-removed>
+  DTSTAMP:<timestamp-removed>
+  LAST-MODIFIED:<timestamp-removed>
+  END:VEVENT
+  BEGIN:VEVENT
+  UID:<id-removed>
+  DTSTART;VALUE=DATE:19760707
+  DTEND;VALUE=DATE:19760708
+  SUMMARY:Recipe name
+  DESCRIPTION:Takes about 1 hour
+  URL:https://recipeyak.com/recipes/<id-removed>
+  TRANSP:TRANSPARENT
+  CREATED:<timestamp-removed>
+  DTSTAMP:<timestamp-removed>
+  LAST-MODIFIED:<timestamp-removed>
+  END:VEVENT
+  BEGIN:VEVENT
+  UID:<id-removed>
+  DTSTART;VALUE=DATE:19760710
+  DTEND;VALUE=DATE:19760711
+  SUMMARY:Recipe name
+  DESCRIPTION:Takes about 1 hour
+  URL:https://recipeyak.com/recipes/<id-removed>
+  TRANSP:TRANSPARENT
+  CREATED:<timestamp-removed>
+  DTSTAMP:<timestamp-removed>
+  LAST-MODIFIED:<timestamp-removed>
+  END:VEVENT
+  END:VCALENDAR
+  
+  '''
+# ---
