@@ -9,6 +9,7 @@ from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.recipe import serialize_note
 from recipeyak.models import Note, Upload, filter_recipes, get_team
+from recipeyak.realtime import publish_recipe
 
 
 class CreateNoteParams(RequestParams):
@@ -37,6 +38,8 @@ def note_create_view(request: AuthedHttpRequest, recipe_id: int) -> JsonResponse
     Upload.objects.filter(
         id__in=params.attachment_upload_ids, created_by=request.user
     ).update(note=note)
+
+    publish_recipe(recipe_id=recipe.id, team_id=team.id)
 
     return JsonResponse(
         serialize_note(note, primary_image_id=recipe.primary_image_id),

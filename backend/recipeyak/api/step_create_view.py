@@ -12,6 +12,7 @@ from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.recipe import serialize_step
 from recipeyak.models import ChangeType, RecipeChange, Step, filter_recipes, get_team
+from recipeyak.realtime import publish_recipe
 
 
 class StepCreateParams(RequestParams):
@@ -35,6 +36,7 @@ def step_create_view(request: AuthedHttpRequest, recipe_id: int) -> JsonResponse
         else:
             step.position = ordering.FIRST_POSITION
     step.save()
+    publish_recipe(recipe_id=recipe.id, team_id=recipe.team_id)
 
     RecipeChange.objects.create(
         recipe=recipe,

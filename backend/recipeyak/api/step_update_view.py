@@ -11,6 +11,7 @@ from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.recipe import serialize_step
 from recipeyak.models import ChangeType, RecipeChange, filter_steps, get_team
+from recipeyak.realtime import publish_recipe
 
 
 class StepPatchParams(RequestParams):
@@ -24,6 +25,7 @@ def step_update_view(request: AuthedHttpRequest, step_id: int) -> JsonResponse:
     params = StepPatchParams.parse_raw(request.body)
     step = get_object_or_404(filter_steps(team=team), pk=step_id)
     before_text = step.text
+    recipe = step.recipe
 
     if params.text is not None:
         step.text = params.text
@@ -31,6 +33,7 @@ def step_update_view(request: AuthedHttpRequest, step_id: int) -> JsonResponse:
         step.position = params.position
 
     step.save()
+    publish_recipe(recipe_id=recipe.id, team_id=recipe.team_id)
 
     RecipeChange.objects.create(
         recipe=step.recipe,

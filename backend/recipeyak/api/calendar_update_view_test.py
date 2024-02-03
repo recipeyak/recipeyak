@@ -13,7 +13,6 @@ def test_updating_scheduled_recipe(
     user: User,
     team: Team,
     scheduled_recipe: ScheduledRecipe,
-    patch_publish_calendar_event: object,
 ) -> None:
     scheduled_recipe.team = team
     scheduled_recipe.save()
@@ -31,7 +30,6 @@ def test_updating_scheduled_recipe_on_date(
     user: User,
     team: Team,
     scheduled_recipe: ScheduledRecipe,
-    patch_publish_calendar_event: object,
 ) -> None:
     """
     ensure updating schedule `on` date records a change event
@@ -60,7 +58,6 @@ def test_updating_team_schedule_recipe(
     user: User,
     team: Team,
     recipe: Recipe,
-    patch_publish_calendar_event: object,
 ) -> None:
     scheduled = recipe.schedule(on=date(1976, 1, 2), team=team, user=user)
     url = f"/api/v1/calendar/{scheduled.id}/"

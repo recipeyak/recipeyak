@@ -9,6 +9,7 @@ from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.recipe import serialize_section
 from recipeyak.models import ChangeType, RecipeChange, Section
+from recipeyak.realtime import publish_recipe
 
 
 class SectionUpdateParams(RequestParams):
@@ -36,5 +37,6 @@ def section_update_view(request: AuthedHttpRequest, section_id: int) -> JsonResp
         change_type=ChangeType.SECTION_UPDATE,
     )
     section.save()
+    publish_recipe(recipe_id=recipe.id, team_id=recipe.team_id)
 
     return JsonResponse(serialize_section(section))

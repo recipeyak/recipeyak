@@ -41,7 +41,6 @@ def test_update_checklist(
     user: User,
     team: Team,
     recipe: Recipe,
-    patch_publish_cook_checklist: object,
 ) -> None:
     recipe.team = team
     recipe.save()
