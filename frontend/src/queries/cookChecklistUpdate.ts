@@ -1,7 +1,6 @@
 import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { http } from "@/http"
-import { unwrapResult } from "@/query"
+import { cookChecklistCreate } from "@/api/cookChecklistCreate"
 
 export type CookChecklist = Record<string, boolean>
 
@@ -29,11 +28,12 @@ export function useCookChecklistUpdate({ recipeId }: { recipeId: number }) {
     }: {
       ingredientId: number
       checked: boolean
-    }) => {
-      return updateCookChecklist({ checked, recipeId, ingredientId }).then(
-        unwrapResult,
-      )
-    },
+    }) =>
+      cookChecklistCreate({
+        ingredient_id: ingredientId,
+        checked,
+        recipe_id: recipeId,
+      }),
     onMutate(variables) {
       const previousData = queryClient.getQueryData([
         "updateCookChecklist",
@@ -49,19 +49,5 @@ export function useCookChecklistUpdate({ recipeId }: { recipeId: number }) {
         context?.previousData,
       )
     },
-  })
-}
-
-export const updateCookChecklist = (params: {
-  readonly recipeId: number
-  readonly ingredientId: number
-  readonly checked: boolean
-}) => {
-  return http.post<{
-    readonly ingredient_id: number
-    readonly checked: boolean
-  }>(`/api/v1/cook-checklist/${params.recipeId}/`, {
-    ingredient_id: params.ingredientId,
-    checked: params.checked,
   })
 }

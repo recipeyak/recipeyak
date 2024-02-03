@@ -11,7 +11,7 @@ from recipeyak.models import (
 
 @endpoint()
 def recipe_delete_view(
-    request: AuthedHttpRequest[None], recipe_id: str
+    request: AuthedHttpRequest[None], recipe_id: int
 ) -> JsonResponse[None]:
     team = get_team(request.user)
     recipe = filter_recipe_or_404(team=team, recipe_id=recipe_id)

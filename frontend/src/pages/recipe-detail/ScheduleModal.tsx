@@ -77,7 +77,7 @@ export function ScheduleModal({
   readonly recipeImageUrl: {
     id: string
     url: string
-    backgroundUrl: string
+    backgroundUrl: string | null
   } | null
 }) {
   const [isoDate, setIsoDate] = React.useState(toISODateString(new Date()))

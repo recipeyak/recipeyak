@@ -1,23 +1,12 @@
 import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query"
 import { addWeeks, parseISO, startOfWeek, subWeeks } from "date-fns"
 
-import { http } from "@/http"
+import { calendarDelete } from "@/api/calendarDelete"
 import {
   CalendarResponse,
   ScheduledRecipe,
 } from "@/queries/scheduledRecipeCreate"
-import { unwrapResult } from "@/query"
 import { useTeamId } from "@/useTeamId"
-
-const deleteScheduledRecipe = (calId: number) => {
-  return http.delete(`/api/v1/calendar/${calId}/`)
-}
-
-function deleteScheduledRecipeV2(params: {
-  scheduledRecipeId: number
-}): Promise<void> {
-  return deleteScheduledRecipe(params.scheduledRecipeId).then(unwrapResult)
-}
 
 export function onRecipeDeletion(
   queryClient: QueryClient,
@@ -54,7 +43,8 @@ export function useScheduledRecipeDelete() {
   const teamId = useTeamId()
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: deleteScheduledRecipeV2,
+    mutationFn: ({ scheduledRecipeId }: { scheduledRecipeId: number }) =>
+      calendarDelete({ scheduled_recipe_id: scheduledRecipeId }),
     onMutate: (vars) => {
       return onRecipeDeletion(queryClient, {
         scheduledRecipeId: vars.scheduledRecipeId,

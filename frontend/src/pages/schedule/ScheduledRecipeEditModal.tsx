@@ -1,4 +1,4 @@
-import { addDays, addWeeks, format } from "date-fns"
+import { addDays, addWeeks, format, parseISO } from "date-fns"
 import React from "react"
 import { DialogTrigger } from "react-aria-components"
 import { Link } from "react-router-dom"
@@ -193,8 +193,18 @@ function RescheduleSection({
   const handleFindNextOpen = () => {
     findNextOpen.mutate(
       {
-        day,
-        now: localDate,
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        day: day as
+          | "Sunday"
+          | "Monday"
+          | "Tuesday"
+          | "Wednesday"
+          | "Thursday"
+          | "Friday"
+          | "Saturday"
+          | "Weekday"
+          | "Weekend",
+        now: parseISO(localDate),
       },
       {
         onSuccess: (data) => {
@@ -206,11 +216,11 @@ function RescheduleSection({
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setDay(e.target.value)
   }
-  const handleSave = ({ on }: { on: string | number | Date }) => {
+  const handleSave = ({ on }: { on: Date }) => {
     scheduledRecipeUpdate.mutate({
       scheduledRecipeId: scheduledId,
       update: {
-        on: toISODateString(on),
+        on,
       },
     })
     // assume it will work
@@ -345,7 +355,7 @@ function RescheduleSection({
             size="small"
             variant="primary"
             onClick={() => {
-              handleSave({ on: localDate })
+              handleSave({ on: parseISO(localDate) })
             }}
             disabled={scheduledRecipeUpdate.isPending}
           >

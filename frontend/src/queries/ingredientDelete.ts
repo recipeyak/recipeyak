@@ -1,13 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
 
-import { http } from "@/http"
+import { ingredientDelete } from "@/api/ingredientDelete"
 import { setQueryDataRecipe } from "@/queries/recipeFetch"
-import { unwrapResult } from "@/query"
 import { useTeamId } from "@/useTeamId"
-
-const deleteIngredient = (ingredientID: number) =>
-  http.delete(`/api/v1/ingredients/${ingredientID}/`)
 
 export function useIngredientDelete() {
   const queryClient = useQueryClient()
@@ -18,7 +14,7 @@ export function useIngredientDelete() {
     }: {
       recipeId: number
       ingredientId: number
-    }) => deleteIngredient(ingredientId).then(unwrapResult),
+    }) => ingredientDelete({ ingredient_id: ingredientId }),
     onSuccess: (_res, vars) => {
       setQueryDataRecipe(queryClient, {
         teamId,

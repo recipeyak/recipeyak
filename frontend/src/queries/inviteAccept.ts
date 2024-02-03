@@ -1,16 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { http } from "@/http"
+import { inviteAccept } from "@/api/inviteAccept"
 import { setQueryDataInviteList } from "@/queries/inviteList"
-import { unwrapResult } from "@/query"
-
-const acceptInvite = (id: number) => http.post(`/api/v1/invites/${id}/accept/`)
 
 export function useInviteAccept() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: ({ inviteId }: { inviteId: number }) =>
-      acceptInvite(inviteId).then(unwrapResult),
+      inviteAccept({ invite_id: inviteId }),
     onSuccess: (_response, vars) => {
       setQueryDataInviteList(queryClient, {
         updater: (prev) => {

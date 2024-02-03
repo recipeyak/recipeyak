@@ -1,16 +1,11 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useChannel } from "ably/react"
 
-import { http } from "@/http"
+import { cookChecklistRetrieve } from "@/api/cookChecklistRetrieve"
 import { updateChecklistItemCache } from "@/queries/cookChecklistUpdate"
-import { unwrapResult } from "@/query"
 import { useTeamId } from "@/useTeamId"
 
 export type CookChecklist = Record<string, boolean>
-
-const fetchCookChecklist = (params: { readonly recipeId: number }) => {
-  return http.get<CookChecklist>(`/api/v1/cook-checklist/${params.recipeId}/`)
-}
 
 type CheckmarkUpdated = {
   ingredientId: number
@@ -33,6 +28,6 @@ export function useCookChecklistFetch({ recipeId }: { recipeId: number }) {
 
   return useQuery({
     queryKey: ["updateCookChecklist", recipeId],
-    queryFn: () => fetchCookChecklist({ recipeId }).then(unwrapResult),
+    queryFn: () => cookChecklistRetrieve({ recipe_id: recipeId }),
   })
 }

@@ -36,7 +36,7 @@ class RecipePatchParams(RequestParams):
 
 @endpoint()
 def recipe_update_view(
-    request: AuthedHttpRequest[RecipePatchParams], recipe_id: str
+    request: AuthedHttpRequest[RecipePatchParams], recipe_id: int
 ) -> JsonResponse[RecipeResponse]:
     team = get_team(request.user)
     recipe = filter_recipe_or_404(recipe_id=recipe_id, team=team)

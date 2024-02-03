@@ -207,8 +207,8 @@ function RecipeAccordian({
 
 function ShoppingList() {
   const ref = useRef<HTMLDivElement>(null)
-  const [startDay, setStartDay] = useState(+startOfToday())
-  const [endDay, setEndDay] = useState(+addWeeks(startOfToday(), 1))
+  const [startDay, setStartDay] = useState(startOfToday())
+  const [endDay, setEndDay] = useState(addWeeks(startOfToday(), 1))
 
   const shoppingList = useShoppingListFetch({ startDay, endDay })
   const history = useHistory()
@@ -228,9 +228,9 @@ function ShoppingList() {
     if (!isValid(date)) {
       return
     }
-    setStartDay(+date)
+    setStartDay(date)
     if (isAfter(date, endDay)) {
-      setEndDay(+date)
+      setEndDay(date)
     }
   }
 
@@ -239,9 +239,9 @@ function ShoppingList() {
     if (!isValid(date)) {
       return
     }
-    setEndDay(+date)
+    setEndDay(date)
     if (isBefore(date, startDay)) {
-      setStartDay(+date)
+      setStartDay(date)
     }
   }
 

@@ -1,13 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
 
-import { http } from "@/http"
+import { sectionDelete } from "@/api/sectionDelete"
 import { setQueryDataRecipe } from "@/queries/recipeFetch"
-import { unwrapResult } from "@/query"
 import { useTeamId } from "@/useTeamId"
-
-const deleteSection = ({ sectionId }: { readonly sectionId: number }) =>
-  http.delete(`/api/v1/sections/${sectionId}/`)
 
 export function useSectionDelete() {
   const queryClient = useQueryClient()
@@ -15,7 +11,7 @@ export function useSectionDelete() {
   return useMutation({
     // recipeId to help with cache updates
     mutationFn: ({ sectionId }: { recipeId: number; sectionId: number }) =>
-      deleteSection({ sectionId }).then(unwrapResult),
+      sectionDelete({ section_id: sectionId }),
     onSuccess: (_res, vars) => {
       setQueryDataRecipe(queryClient, {
         teamId,

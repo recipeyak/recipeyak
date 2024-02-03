@@ -210,3 +210,72 @@ jobs:
         with:
           pattern: "backend/recipeyak/migrations/*.sql"
           version: "latest"
+
+  check_missing_api_schema_changes:
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install poetry
+        run: |
+          pipx install poetry==1.7.1
+          poetry config virtualenvs.in-project true
+      - uses: actions/setup-python@v4
+        with:
+          python-version-file: "./backend/.python-version"
+          cache: poetry
+          cache-dependency-path: "./backend/poetry.lock"
+      - name: Install dependencies
+        working-directory: "./backend"
+        run: poetry install
+      - name: Check for missing api schema changes
+        working-directory: "backend"
+        # TODO: add a script to check for missing api schema changes
+        run: exit 1
+
+  lint_api_schema:
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: "0"
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: "backend/package.json"
+          cache-dependency-path: "pnpm-lock.yaml"
+          cache: "pnpm"
+      - name: Install dependencies
+        working-directory: "backend"
+        run: pnpm install
+      - name: Lint API Schema
+        working-directory: "backend"
+        run: ./s/lint_api_schema
+
+  check_missing_codegen_changes:
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install poetry
+        run: |
+          pipx install poetry==1.7.1
+          poetry config virtualenvs.in-project true
+      - uses: actions/setup-python@v4
+        with:
+          python-version-file: "./backend/.python-version"
+          cache: poetry
+          cache-dependency-path: "./backend/poetry.lock"
+      - name: Install dependencies
+        working-directory: "./backend"
+        run: poetry install
+      - name: Check for missing codegen changes
+        working-directory: "backend"
+        # TODO: add a script to check for missing codegen changes
+        run: exit 1

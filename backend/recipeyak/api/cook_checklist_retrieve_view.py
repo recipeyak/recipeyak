@@ -11,7 +11,7 @@ from recipeyak.models import (
 
 @endpoint()
 def cook_checklist_retrieve_view(
-    request: AuthedHttpRequest[None], recipe_id: str
+    request: AuthedHttpRequest[None], recipe_id: int
 ) -> JsonResponse[dict[int, bool]]:
     team = get_team(request.user)
     recipe_checklist_items = filter_cook_checklist(team=team).filter(

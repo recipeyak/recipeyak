@@ -1,9 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { addWeeks, startOfWeek, subWeeks } from "date-fns"
 
+import { scheduledRecipeCreate } from "@/api/scheduledRecipeCreate"
 import { toISODateString } from "@/date"
-import { http } from "@/http"
-import { unwrapResult } from "@/query"
 import { toast } from "@/toast"
 import { useTeamId } from "@/useTeamId"
 import { useUser } from "@/useUser"
@@ -40,6 +39,8 @@ function toCalRecipe(
       archivedAt: null,
       primaryImage: null,
     },
+    team: null,
+    user: null,
     on: toISODateString(on),
     createdBy: {
       // TODO: we should preload user so it isn't possible for it to be null
@@ -50,35 +51,7 @@ function toCalRecipe(
   }
 }
 
-const scheduleRecipe = (recipeID: number, on: Date | string) => {
-  return http
-    .post<{
-      readonly id: number
-      readonly on: string
-      readonly created: string
-      readonly createdBy: {
-        readonly id: number | string
-        readonly name: string
-        readonly avatar_url: string
-      } | null
-      readonly recipe: {
-        readonly id: number
-        readonly name: string
-        readonly author: string | null
-        readonly archivedAt: string | null
-        readonly primaryImage: {
-          readonly url: string
-          readonly backgroundUrl: string | null
-        } | null
-      }
-    }>(`/api/v1/calendar/`, {
-      recipe: recipeID,
-      on: toISODateString(on),
-    })
-    .then(unwrapResult)
-}
-
-export type ScheduledRecipe = Awaited<ReturnType<typeof scheduleRecipe>>
+export type ScheduledRecipe = Awaited<ReturnType<typeof scheduledRecipeCreate>>
 
 export function useScheduleRecipeCreate() {
   const teamID = useTeamId()
@@ -92,7 +65,7 @@ export function useScheduleRecipeCreate() {
       recipeID: number
       recipeName: string
       on: Date
-    }) => scheduleRecipe(recipeID, on),
+    }) => scheduledRecipeCreate({ recipe: recipeID, on }),
     onMutate: (vars) => {
       const tempId = random32Id()
       const tempScheduledRecipe = toCalRecipe(

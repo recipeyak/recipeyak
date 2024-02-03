@@ -1,22 +1,18 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
 
-import { http } from "@/http"
+import { reactionDelete } from "@/api/reactionDelete"
 import { PickVariant } from "@/queries/queryUtilTypes"
 import {
   RecipeFetchResponse as Recipe,
   setQueryDataRecipe,
 } from "@/queries/recipeFetch"
-import { unwrapResult } from "@/query"
 import { useTeamId } from "@/useTeamId"
 
 type Reaction = PickVariant<
   Recipe["timelineItems"][number],
   "note"
 >["reactions"][number]
-
-const deleteReaction = ({ reactionId }: { reactionId: number | string }) =>
-  http.delete(`/api/v1/reactions/${reactionId}/`)
 
 export function useReactionDelete() {
   const queryClient = useQueryClient()
@@ -29,8 +25,8 @@ export function useReactionDelete() {
       recipeId: number
       // extra id to make updating cache easier
       noteId: number | string
-      reactionId: number | string
-    }) => deleteReaction({ reactionId }).then(unwrapResult),
+      reactionId: string
+    }) => reactionDelete({ reaction_id: reactionId }),
     onMutate: (vars) => {
       let previousReaction: Reaction | undefined
       setQueryDataRecipe(queryClient, {

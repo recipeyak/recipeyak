@@ -1,23 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
 
-import { http } from "@/http"
+import { stepUpdate } from "@/api/stepUpdate"
 import { setQueryDataRecipe } from "@/queries/recipeFetch"
-import { unwrapResult } from "@/query"
 import { useTeamId } from "@/useTeamId"
-
-const updateStep = (
-  stepID: number,
-  data: {
-    readonly text?: string
-    readonly position?: string
-  },
-) =>
-  http.patch<{
-    readonly id: number
-    readonly text: string
-    readonly position: string
-  }>(`/api/v1/steps/${stepID}/`, data)
 
 export function useStepUpdate() {
   const queryClient = useQueryClient()
@@ -33,7 +19,12 @@ export function useStepUpdate() {
         text?: string
         position?: string
       }
-    }) => updateStep(stepId, update).then(unwrapResult),
+    }) =>
+      stepUpdate({
+        step_id: stepId,
+        position: update.position,
+        text: update.text,
+      }),
     onMutate: (vars) => {
       let oldPosition: string | undefined
       if (vars.update.position !== undefined) {

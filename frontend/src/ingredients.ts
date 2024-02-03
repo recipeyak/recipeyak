@@ -24,7 +24,10 @@ export type Mutable<T> = { -readonly [P in keyof T]-?: T[P] }
 export function getInitialIngredients({
   sections,
   ingredients,
-}: Pick<Recipe, "sections" | "ingredients">): SectionsAndIngredients {
+}: {
+  sections: ReadonlyArray<Recipe["sections"][number]>
+  ingredients: ReadonlyArray<Recipe["ingredients"][number]>
+}): SectionsAndIngredients {
   const out: Mutable<SectionsAndIngredients> = []
   for (const s of sections) {
     out.push({

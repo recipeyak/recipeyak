@@ -1,4 +1,5 @@
 from datetime import date, datetime
+from typing import Literal
 
 import pydantic
 from django.db import connection
@@ -30,7 +31,14 @@ class Activity(pydantic.BaseModel):
     created_date: date
     created: datetime
     note_id: int
-    type: str
+    type: Literal[
+        "recipe_create",
+        "comment_create",
+        "recipe_archived",
+        "recipe_scheduled",
+        "photo_created",
+        "primary_photo_created",
+    ]
 
 
 class UserDetailByIdResponse(pydantic.BaseModel):

@@ -23,7 +23,7 @@ class ReactToNoteViewParams(RequestParams):
 
 @endpoint()
 def reaction_create_view(
-    request: AuthedHttpRequest[ReactToNoteViewParams], note_id: int
+    request: AuthedHttpRequest[ReactToNoteViewParams], note_id: str
 ) -> JsonResponse[ReactionResponse]:
     params = ReactToNoteViewParams.parse_raw(request.body)
 

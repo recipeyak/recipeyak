@@ -42,7 +42,7 @@ export function RecipeTitleDropdown({
   recipeImageUrl: {
     id: string
     url: string
-    backgroundUrl: string
+    backgroundUrl: string | null
   } | null
   recipeAuthor: string | null
   recipeIsArchived: boolean
@@ -224,7 +224,7 @@ export function RecipeTitleDropdown({
                     recipeId,
                     update: {
                       // TODO: this api should support something like 'now'
-                      archived_at: new Date().toISOString(),
+                      archived_at: new Date(),
                     },
                   })
                   .then(() => {

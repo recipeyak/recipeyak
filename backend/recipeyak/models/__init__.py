@@ -74,7 +74,7 @@ def filter_recipes(*, team: Team) -> QuerySet[Recipe]:
     )
 
 
-def filter_recipe_or_404(*, recipe_id: str, team: Team) -> Recipe:
+def filter_recipe_or_404(*, recipe_id: int, team: Team) -> Recipe:
     return get_object_or_404(filter_recipes(team=team), pk=recipe_id)
 
 

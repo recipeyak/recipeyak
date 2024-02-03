@@ -1,19 +1,16 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
 
-import { http } from "@/http"
+import { stepDelete } from "@/api/stepDelete"
 import { setQueryDataRecipe } from "@/queries/recipeFetch"
-import { unwrapResult } from "@/query"
 import { useTeamId } from "@/useTeamId"
-
-const deleteStep = (stepID: number) => http.delete(`/api/v1/steps/${stepID}/`)
 
 export function useStepDelete() {
   const queryClient = useQueryClient()
   const teamId = useTeamId()
   return useMutation({
     mutationFn: ({ stepId }: { recipeId: number; stepId: number }) =>
-      deleteStep(stepId).then(unwrapResult),
+      stepDelete({ step_id: stepId }),
     onSuccess: (_res, vars) => {
       setQueryDataRecipe(queryClient, {
         teamId,

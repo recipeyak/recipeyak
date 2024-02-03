@@ -183,22 +183,22 @@ routes = [
         view=team_create_view,
     ),
     route(
-        "api/v1/notes/<int:note_id>/",
+        "api/v1/notes/<str:note_id>/",
         method="patch",
         view=note_update_view,
     ),
     route(
-        "api/v1/notes/<int:note_id>/",
+        "api/v1/notes/<str:note_id>/",
         method="delete",
         view=note_delete_view,
     ),
     route(
-        "api/v1/notes/<int:note_id>/reactions/",
+        "api/v1/notes/<str:note_id>/reactions/",
         method="post",
         view=reaction_create_view,
     ),
     route(
-        "api/v1/reactions/<int:reaction_id>/",
+        "api/v1/reactions/<str:reaction_id>/",
         method="delete",
         view=reaction_delete_view,
     ),
