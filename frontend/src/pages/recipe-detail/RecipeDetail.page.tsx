@@ -553,7 +553,7 @@ function RecipePresence({
     active?: boolean
   }>(
     {
-      channelName: `recipe:${teamId}:${recipeId}`,
+      channelName: `team:${teamId}:recipe:${recipeId}`,
     },
     { avatarUrl, active: true },
   )

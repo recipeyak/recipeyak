@@ -101,7 +101,7 @@ export function useScheduledRecipeList({
 }) {
   const teamID = useTeamId()
   const queryClient = useQueryClient()
-  useChannel(`scheduled_recipe:${teamID}`, (message) => {
+  useChannel(`team:${teamID}:scheduled_recipe`, (message) => {
     switch (message.name) {
       case "scheduled_recipe_updated": {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument
