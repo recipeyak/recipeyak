@@ -1,5 +1,8 @@
 {
-	"dependencies": {
-		"@redocly/cli": "^1.8.1"
-	}
+  "volta": {
+    "node": "18.7.0"
+  },
+  "dependencies": {
+    "@redocly/cli": "^1.8.1"
+  }
 }
