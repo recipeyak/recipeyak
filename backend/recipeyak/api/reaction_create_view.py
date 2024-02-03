@@ -13,6 +13,7 @@ from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.recipe import ReactionResponse, serialize_reactions
 from recipeyak.models import filter_notes, get_team, user_reactions
 from recipeyak.models.reaction import Reaction
+from recipeyak.realtime import publish_recipe
 
 EMOJIS = Literal["❤️", "😆", "🤮"]
 
@@ -41,4 +42,5 @@ def reaction_create_view(
             reaction = user_reactions(user=request.user).filter(note=note).get()
         else:
             raise
+    publish_recipe(recipe_id=note.recipe_id, team_id=team.id)
     return JsonResponse(next(iter(serialize_reactions([reaction]))))

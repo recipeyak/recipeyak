@@ -53,3 +53,25 @@ def publish_cook_checklist(
     asyncio.run(
         _publish_cook_checklist_async(recipe_id, team_id, ingredient_id, checked)
     )
+
+
+async def _publish_recipe_async(recipe_id: int, team_id: int) -> None:
+    async with AblyRest(ABLY_API_KEY) as ably:
+        channel = ably.channels[f"team:{team_id}:recipe:{recipe_id}"]
+        await channel.publish("recipe_modified", {"id": recipe_id})
+
+
+def publish_recipe(*, recipe_id: int, team_id: int | None) -> None:
+    """
+    Trigger the frontend to refetch the recipe.
+
+    This isn't transactional and it'd be more "scalable" to publish a small object to all the clients. Ably LiveSync is probably the right way to do this.
+    https://ably.com/docs/products/livesync
+    """
+    if team_id:
+        asyncio.run(
+            _publish_recipe_async(
+                recipe_id,
+                team_id,
+            )
+        )

@@ -11,6 +11,7 @@ from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.models import ChangeType, RecipeChange, filter_steps, get_team
+from recipeyak.realtime import publish_recipe
 
 
 class StepPatchParams(RequestParams):
@@ -33,4 +34,5 @@ def step_delete_view(
             change_type=ChangeType.STEP_DELETE,
         )
         step.delete()
+    publish_recipe(recipe_id=recipe.id, team_id=recipe.team_id)
     return JsonResponse(None, status=204)

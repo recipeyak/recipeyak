@@ -33,6 +33,7 @@ class Recipe(CommonInfo):
     servings = models.CharField(max_length=255, blank=True, null=True)
 
     team = models.ForeignKey["Team"]("Team", on_delete=models.CASCADE, null=True)
+    team_id: int | None
 
     archived_at = models.DateTimeField(null=True)
 

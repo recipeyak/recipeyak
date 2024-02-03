@@ -23,6 +23,7 @@ from recipeyak.models import (
     get_team,
 )
 from recipeyak.models.section import Section
+from recipeyak.realtime import publish_recipe
 
 
 class IngredientCreateParams(RequestParams):
@@ -60,6 +61,7 @@ def ingredient_create_view(
         else:
             ingredient.position = ordering.FIRST_POSITION
     ingredient.save()
+    publish_recipe(recipe_id=recipe.id, team_id=team.id)
 
     RecipeChange.objects.create(
         recipe=recipe,

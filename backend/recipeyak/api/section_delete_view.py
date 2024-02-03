@@ -9,6 +9,7 @@ from recipeyak.api.base.permissions import has_recipe_access
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
 from recipeyak.models import ChangeType, RecipeChange, Section
+from recipeyak.realtime import publish_recipe
 
 
 @endpoint()
@@ -32,5 +33,7 @@ def section_delete_view(
         )
 
         section.delete()
+
+    publish_recipe(recipe_id=recipe.id, team_id=recipe.team_id)
 
     return JsonResponse(None, status=204)

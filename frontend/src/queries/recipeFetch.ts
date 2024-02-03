@@ -1,4 +1,5 @@
 import { QueryClient, useQuery } from "@tanstack/react-query"
+import { useChannel } from "ably/react"
 
 import { recipeRetrieve } from "@/api/recipeRetrieve"
 import { ResponseFromUse } from "@/queries/queryUtilTypes"
@@ -6,10 +7,18 @@ import { useTeamId } from "@/useTeamId"
 
 export function useRecipeFetch({ recipeId }: { recipeId: number }) {
   const teamId = useTeamId()
-  return useQuery({
+  const res = useQuery({
     queryKey: getQueryKey({ teamId, recipeId }),
     queryFn: () => recipeRetrieve({ recipe_id: recipeId }),
   })
+  useChannel(`team:${teamId}:recipe:${recipeId}`, (message) => {
+    switch (message.name) {
+      case "recipe_modified": {
+        void res.refetch()
+      }
+    }
+  })
+  return res
 }
 
 function getQueryKey({

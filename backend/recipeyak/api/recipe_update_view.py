@@ -19,6 +19,7 @@ from recipeyak.models import (
     get_team,
 )
 from recipeyak.models.upload import Upload
+from recipeyak.realtime import publish_recipe
 
 
 class RecipePatchParams(RequestParams):
@@ -113,6 +114,7 @@ def recipe_update_view(
                 upload=upload,
             ).save()
     recipe.save()
+    publish_recipe(recipe_id=recipe.id, team_id=team.id)
 
     team = get_team(request.user)
     recipe = filter_recipe_or_404(team=team, recipe_id=recipe_id)

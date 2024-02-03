@@ -12,6 +12,7 @@ from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.recipe import SectionResponse, serialize_section
 from recipeyak.models import ChangeType, Recipe, RecipeChange, Section
+from recipeyak.realtime import publish_recipe
 
 
 class SectionCreateParams(RequestParams):
@@ -51,5 +52,7 @@ def section_create_view(
                 section.position = ordering.FIRST_POSITION
 
         section.save()
+        
+    publish_recipe(recipe_id=recipe.id, team_id=recipe.team_id)
 
     return JsonResponse(serialize_section(section), status=201)
