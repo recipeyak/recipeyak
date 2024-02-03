@@ -120,5 +120,5 @@ def ical_retrieve_view(
             last_modified_scheduled.modified.timestamp()
         )
     with sentry_sdk.start_span(op="recipeyak.ical.render", description="render ical"):
-        response.content = cal.to_ical()
+        response.content = cal.to_ical(sorted=False)
     return response
