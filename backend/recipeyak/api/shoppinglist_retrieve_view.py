@@ -84,10 +84,19 @@ def shoppinglist_retrieve_view(
         for i in db_ingredients
     ]
 
-    ingredient_mapping = combine_ingredients(ingredients)
-
-    for ingredient in ingredient_mapping:
-        ingredient_mapping[ingredient].category = category(ingredient)
+    ingredient_mapping: dict[str, IngredientResponse] = {}
+    for ingredient, quantities in combine_ingredients(ingredients).items():
+        ingredient_mapping[ingredient] = {
+            "quantities": [
+                {
+                    "quantity": q.quantity,
+                    "unit": q.unit,
+                    "unknown_unit": q.unknown_unit,
+                }
+                for q in quantities
+            ],
+            "category": category(ingredient),
+        }
 
     ShoppingList.objects.create(ingredients=json_dumps(ingredient_mapping).decode())
 

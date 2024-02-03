@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from collections import defaultdict
 from collections.abc import Sequence
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from recipeyak.cumin.inflect import singularize
 from recipeyak.cumin.quantity import BaseUnit, Quantity, parse_quantity
 
 
-@dataclass
+@dataclass(frozen=True, kw_only=True, slots=True)
 class Ingredient:
     quantity: str
     name: str
@@ -19,16 +19,7 @@ def normalize_ingredient_name(*, name: str) -> str:
     return name.replace("-", " ").lower()
 
 
-@dataclass
-class IngredientItem:
-    quantities: list[Quantity] = field(default_factory=list)
-    category: str | None = None
-
-
-IngredientList = dict[str, IngredientItem]
-
-
-def combine_ingredients(ingredients: Sequence[Ingredient]) -> IngredientList:
+def combine_ingredients(ingredients: Sequence[Ingredient]) -> dict[str, list[Quantity]]:
     # being kind of dynamic with the types here so not the easiest on the eyes.
     ingredient_map: dict[str, dict[BaseUnit | str | None, Quantity]] = defaultdict(dict)
 
@@ -60,10 +51,8 @@ def combine_ingredients(ingredients: Sequence[Ingredient]) -> IngredientList:
             else:
                 ingredient_map[name][base_unit] = base_unit_quantity + quantity
 
-    output: IngredientList = defaultdict(IngredientItem)
-
+    output: dict[str, list[Quantity]] = defaultdict(list)
     for ingre_name, unit_to_quantity in ingredient_map.items():
         name = plural_name.get(ingre_name, ingre_name)
-        output[name].quantities += unit_to_quantity.values()
-
+        output[name] += unit_to_quantity.values()
     return output
