@@ -2,6 +2,7 @@ import asyncio
 import base64
 import time
 from io import BytesIO
+from uuid import uuid4
 
 import asyncpg
 import httpx
@@ -13,6 +14,7 @@ from PIL import Image, ImageOps, UnidentifiedImageError
 from pillow_heif import register_heif_opener
 from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings
+from structlog.stdlib import BoundLogger
 from yarl import URL
 
 logger = structlog.stdlib.get_logger()
@@ -55,8 +57,14 @@ def public_url(*, key: str, storage_hostname: str) -> str:
     return str(URL(f"https://{storage_hostname}").with_path(key))
 
 
-async def job(*, dry_run: bool, database_url: str, storage_hostname: str) -> None:
-    log = logger.bind(dry_run=dry_run)
+async def job(
+    *,
+    log: BoundLogger,
+    dry_run: bool,
+    database_url: str,
+    storage_hostname: str,
+) -> None:
+    log = log.bind(dry_run=dry_run)
     log.info("starting up", dry_run=dry_run)
     pg = await asyncpg.connect(dsn=database_url)
     log.info("fetching upload data")
@@ -115,7 +123,10 @@ async def job(*, dry_run: bool, database_url: str, storage_hostname: str) -> Non
 
 def main(dry_run: bool = False) -> None:
     config = Config()
-    logger.info("initiate")
+    # associate the execution of one instance of the job across log lines
+    # equivalent to the request_id used in the http server
+    log = logger.bind(run_id=uuid4().hex)
+    log.info("initiate")
     sentry_sdk.init(
         send_default_pii=True,
         traces_sample_rate=1.0,
@@ -125,13 +136,14 @@ def main(dry_run: bool = False) -> None:
         start = time.monotonic()
         asyncio.run(
             job(
+                log=log,
                 dry_run=dry_run,
                 database_url=str(config.DATABASE_URL),
                 storage_hostname=config.STORAGE_HOSTNAME,
             )
         )
-        logger.info("done!", total_time_sec=time.monotonic() - start)
-    logger.info("exiting")
+        log.info("done!", total_time_sec=time.monotonic() - start)
+    log.info("exiting")
 
 
 if __name__ == "__main__":
