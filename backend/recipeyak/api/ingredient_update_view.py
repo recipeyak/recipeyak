@@ -11,6 +11,7 @@ from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.recipe import ingredient_to_text, serialize_ingredient
 from recipeyak.models import ChangeType, RecipeChange, filter_ingredients, get_team
+from recipeyak.realtime import publish_recipe
 
 
 class IngredientsPatchParams(RequestParams):
@@ -44,8 +45,9 @@ def ingredient_update_view(
 
     ingredient.save()
 
-    after = ingredient_to_text(ingredient)
+    publish_recipe(recipe_id=ingredient.recipe_id, team_id=team.id)
 
+    after = ingredient_to_text(ingredient)
     RecipeChange.objects.create(
         recipe=ingredient.recipe,
         actor=request.user,

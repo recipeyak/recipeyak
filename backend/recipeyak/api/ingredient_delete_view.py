@@ -7,6 +7,7 @@ from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.serializers.recipe import ingredient_to_text
 from recipeyak.models import ChangeType, RecipeChange, filter_ingredients, get_team
+from recipeyak.realtime import publish_recipe
 
 
 @endpoint()
@@ -23,4 +24,5 @@ def ingredient_delete_view(
         change_type=ChangeType.INGREDIENT_DELETE,
     )
     filter_ingredients(team=team).filter(pk=ingredient_id).delete()
+    publish_recipe(recipe_id=ingredient.recipe_id, team_id=team.id)
     return JsonResponse(status=204)

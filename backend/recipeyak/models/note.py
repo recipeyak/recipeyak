@@ -29,6 +29,7 @@ class Note(CommonInfo):
     recipe = models.ForeignKey["Recipe"](
         "Recipe", related_name="notes", on_delete=models.CASCADE
     )
+    recipe_id: int
 
     uploads: RelatedManager[Upload]
     reactions: RelatedManager[Reaction]
