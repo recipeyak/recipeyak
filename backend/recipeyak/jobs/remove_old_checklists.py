@@ -1,5 +1,6 @@
 import asyncio
 import time
+from uuid import uuid4
 
 import asyncpg
 import sentry_sdk
@@ -8,6 +9,7 @@ import typer
 from dotenv import load_dotenv
 from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings
+from structlog.stdlib import BoundLogger
 
 logger = structlog.stdlib.get_logger()
 
@@ -19,7 +21,7 @@ class Config(BaseSettings):
     SENTRY_DSN: str
 
 
-async def job(database_url: str) -> None:
+async def job(database_url: str, log: BoundLogger) -> None:
     pg = await asyncpg.connect(dsn=database_url)
     res = await pg.execute(
         """
@@ -33,11 +35,12 @@ where recipe_id in (
 );
 """
     )
-    logger.info("deleted", response=res)
+    log.info("deleted", response=res)
 
 
 def main() -> None:
-    logger.info("initiate")
+    log = logger.bind(run_id=uuid4().hex)
+    log.info("initiate")
     sentry_sdk.init(
         send_default_pii=True,
         traces_sample_rate=1.0,
@@ -46,9 +49,9 @@ def main() -> None:
     config = Config()
     start = time.monotonic()
     with sentry_sdk.monitor(monitor_slug="remove-old-cook-checklists"):
-        asyncio.run(job(database_url=str(config.DATABASE_URL)))
-    logger.info("done!", total_time_sec=time.monotonic() - start)
-    logger.info("exiting")
+        asyncio.run(job(database_url=str(config.DATABASE_URL), log=log))
+    log.info("done!", total_time_sec=time.monotonic() - start)
+    log.info("exiting")
 
 
 if __name__ == "__main__":
