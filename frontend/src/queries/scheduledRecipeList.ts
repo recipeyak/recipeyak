@@ -75,7 +75,6 @@ export function useScheduledRecipeList({
       // We want to avoid dupes with our fetches
       const start = startOfWeek(subWeeks(startOfWeekMs, 3))
       const end = endOfWeek(addWeeks(startOfWeekMs, 3))
-      console.log("calender list")
       const response = await calendarList({
         start,
         end,

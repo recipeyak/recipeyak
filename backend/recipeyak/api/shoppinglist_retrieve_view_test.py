@@ -254,7 +254,7 @@ def test_scheduling_multiple_times_some_ingredient(
     ],
 )
 def test_combine_ingredients(
-    ingredients: list[tuple[str, str]], expected: list[Quantity]
+    ingredients: list[tuple[str, str]], expected: dict[str, list[Quantity]]
 ) -> None:
     ingres = []
     position = 1
