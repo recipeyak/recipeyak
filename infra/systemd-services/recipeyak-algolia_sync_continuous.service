@@ -7,6 +7,7 @@ ExecStart=/usr/bin/docker run \
         --network host \
         --log-driver=journald \
         --env-file=/root/.env-production \
+        --name live_search_sync_continuous \
         recipeyak/django:{{GIT_SHA}} \
         ./.venv/bin/python -m recipeyak.jobs.live_search_sync --no-backfill-all
 KillSignal=SIGINT

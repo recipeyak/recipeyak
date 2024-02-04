@@ -44,7 +44,7 @@ main() {
 
         # migrations
         step "running migrations"
-        docker run --network host --log-driver=journald --env-file=/root/.env-production recipeyak/django:"$SHA" /var/app/.venv/bin/python ./manage.py migrate
+        docker run --network host --name migrations --log-driver=journald --env-file=/root/.env-production recipeyak/django:"$SHA" /var/app/.venv/bin/python ./manage.py migrate
 
         step "updating api"
         docker stop django
