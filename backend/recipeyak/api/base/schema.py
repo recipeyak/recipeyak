@@ -395,7 +395,6 @@ def main(check: bool = False) -> None:
             "--cache",
             temp_file_path,
         ),
-        cwd="../frontend/",
         check=True,
     )
 

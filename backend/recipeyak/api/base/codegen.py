@@ -248,7 +248,6 @@ def main(check: bool = False) -> None:
             "--cache",
             tmpdir,
         ),
-        cwd="../frontend/",
         check=True,
     )
 
