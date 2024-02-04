@@ -311,6 +311,7 @@ function RescheduleSection({
 
           {showCustom && (
             <>
+              {/* eslint-disable-next-line react/forbid-elements */}
               <input
                 value={toISODateString(localDate)}
                 onChange={handleDateChange}

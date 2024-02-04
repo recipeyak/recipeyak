@@ -11,6 +11,7 @@ export const DateInput = forwardRef(
     ref: ForwardedRef<HTMLInputElement>,
   ) => {
     return (
+      // eslint-disable-next-line react/forbid-elements
       <input
         type="date"
         className={inputStyles(props)}

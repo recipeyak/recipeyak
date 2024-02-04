@@ -80,6 +80,7 @@ function Ingredients({
             style={{ fontSize: "18px" }}
             className="flex items-start"
           >
+            {/* eslint-disable-next-line react/forbid-elements */}
             <input
               id={`ingredient-${i.id}`}
               type="checkbox"

@@ -9,6 +9,7 @@ import { clx } from "@/classnames"
 import { Button } from "@/components/Buttons"
 import { CustomHighlight } from "@/components/CustomHighlight"
 import { Image } from "@/components/Image"
+import { SearchInput } from "@/components/SearchInput"
 import { pathRecipesList } from "@/paths"
 import { ResponseFromUse } from "@/queries/queryUtilTypes"
 import { useSearchRecipes } from "@/queries/searchRecipes"
@@ -301,11 +302,8 @@ export function NavRecipeSearch() {
               }}
             >
               <SearchIcon />
-              <input
+              <SearchInput
                 value={query}
-                type="search"
-                autoComplete="off"
-                spellCheck="false"
                 autoFocus
                 className="w-full border-none bg-transparent py-[5px] pr-2 text-base text-[--color-text] outline-none placeholder:text-[--color-input-placeholder]"
                 placeholder=""

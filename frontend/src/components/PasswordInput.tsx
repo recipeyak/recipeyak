@@ -11,6 +11,7 @@ export const PasswordInput = forwardRef(
     ref: ForwardedRef<HTMLInputElement>,
   ) => {
     return (
+      // eslint-disable-next-line react/forbid-elements
       <input
         type="password"
         className={inputStyles(props)}

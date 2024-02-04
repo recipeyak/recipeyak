@@ -189,6 +189,7 @@ module.exports = {
           // use the components instead
           "select",
           "button",
+          "input",
         ],
       },
     ],

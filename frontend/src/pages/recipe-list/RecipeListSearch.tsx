@@ -46,6 +46,7 @@ function CustomRefinement({
           const itemIsRefined = facetFilters[attribute].includes(item.value)
           return (
             <div key={item.value} className="flex items-center gap-2">
+              {/* eslint-disable-next-line react/forbid-elements */}
               <input
                 type="checkbox"
                 id={label + item.value}
@@ -95,6 +96,7 @@ function UserToggleFilter({
   }
   return (
     <div className="flex items-center gap-2">
+      {/* eslint-disable-next-line react/forbid-elements */}
       <input
         id={`user_toggle_filter_${snakeCase(prefixLabel)}`}
         type="checkbox"
@@ -126,6 +128,7 @@ function RecipesToggle({
     <div>
       <div className="font-medium">Recipes</div>
       <div className="flex items-center gap-2">
+        {/* eslint-disable-next-line react/forbid-elements */}
         <input
           id="archived_recipes"
           type="checkbox"
@@ -142,6 +145,7 @@ function RecipesToggle({
         <label htmlFor="archived_recipes">Archived recipes</label>
       </div>
       <div className="flex items-center gap-2">
+        {/* eslint-disable-next-line react/forbid-elements */}
         <input
           id="never_scheduled"
           type="checkbox"
@@ -427,6 +431,7 @@ export function RecipeSearchList() {
             <div className="flex flex-col">
               <label className="font-medium">Search by</label>
               <div className="flex items-center gap-2">
+                {/* eslint-disable-next-line react/forbid-elements */}
                 <input
                   type="radio"
                   id="name_author"
@@ -439,6 +444,7 @@ export function RecipeSearchList() {
                 <label htmlFor="name_author">name & author</label>
               </div>
               <div className="flex items-center gap-2">
+                {/* eslint-disable-next-line react/forbid-elements */}
                 <input
                   type="radio"
                   name="search_by"
