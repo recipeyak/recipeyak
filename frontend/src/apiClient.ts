@@ -12,12 +12,7 @@ function replacePathParams(
 ): string {
   for (const paramName of pathParamNames) {
     const paramValue = params[paramName]
-    if (typeof paramValue !== "string") {
-      throw new Error(
-        `Problem templating path params, expected 'string' for param: '${paramName}', got value ${paramValue}`,
-      )
-    }
-    url = url.replaceAll(`{${paramName}}`, paramValue)
+    url = url.replaceAll(`{${paramName}}`, String(paramValue))
   }
   return url
 }
