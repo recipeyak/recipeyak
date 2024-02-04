@@ -1,10 +1,14 @@
 # ruff: noqa: ERA001 T201
 from __future__ import annotations
 
+import filecmp
 import os
 import re
+import shutil
 import string
 import subprocess
+import sys
+import tempfile
 import typing
 import uuid
 from collections import defaultdict
@@ -15,6 +19,7 @@ from typing import Any, Literal, NotRequired, TypedDict
 import django
 import jsonref
 import pydantic
+import typer
 
 from recipeyak.api.base.json import json_dumps
 from recipeyak.api.base.router import Route
@@ -367,32 +372,50 @@ def _schema_from_routes(routes: list[Route]) -> dict[str, Any]:
     }
 
 
-def main() -> None:
-    path = "api-schema.json"
+def main(check: bool = False) -> None:
+    dest_path = "api-schema.json"
     print(
-        f"generating schema: {path=}",
+        f"generating schema: path={dest_path}",
     )
 
     schema = _schema_from_routes(routes)
-    Path(path).write_bytes(json_dumps(schema, indent=True) + b"\n")
+    _fd, temp_file_path = tempfile.mkstemp(suffix=".json")
+    Path(temp_file_path).write_bytes(json_dumps(schema, indent=True) + b"\n")
 
     print("formatting...")
 
     subprocess.run(
         (
             "../frontend/node_modules/.bin/prettier",
+            "--config",
+            "../frontend/.prettierrc.js",
             "-w",
             "--log-level",
             "warn",
             "--cache",
-            "../backend/" + path,
+            temp_file_path,
         ),
         cwd="../frontend/",
         check=True,
     )
 
+    print("checking for changes...")
+    unchanged = filecmp.cmp(temp_file_path, dest_path, shallow=False)
+    if unchanged:
+        print("no changes required!")
+        sys.exit(0)
+
+    if check:
+        print(
+            """
+schema has changed, regenerate with:
+./.venv/bin/python -m recipeyak.api.base.schema"""
+        )
+        sys.exit(1)
+
+    shutil.move(temp_file_path, dest_path)
     print("done!")
 
 
 if __name__ == "__main__":
-    main()
+    typer.run(main)

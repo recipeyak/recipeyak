@@ -9,7 +9,7 @@ from recipeyak.realtime import publish_recipe
 
 @endpoint()
 def reaction_delete_view(
-    request: AuthedHttpRequest[None], reaction_id: int
+    request: AuthedHttpRequest[None], reaction_id: str
 ) -> JsonResponse[None]:
     if reaction := user_reactions(user=request.user).filter(pk=reaction_id).first():
         recipe = reaction.note.recipe

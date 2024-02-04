@@ -1,11 +1,16 @@
 # ruff: noqa: T201
+import filecmp
 import json
 import shutil
 import subprocess
+import sys
 import tempfile
+from dataclasses import dataclass
 from pathlib import Path
 from textwrap import dedent, indent
 from typing import Any, NotRequired, TypedDict
+
+import typer
 
 
 def _dump_function(
@@ -197,7 +202,28 @@ def _funcs_from_path(path: str, methods: dict[str, Any]) -> list[tuple[str, str]
     return out_functions
 
 
-def main() -> None:
+@dataclass(frozen=True, kw_only=True, slots=True)
+class DirDiff:
+    missing_files: list[str]
+    files_to_delete: list[str]
+    diff_files: list[str]
+
+
+def _compare_directories(src_dir: str, dest_dir: str) -> DirDiff | None:
+    # Compare directories
+    dir_cmp = filecmp.dircmp(src_dir, dest_dir)
+    # Check if file lists are the same
+    if dir_cmp.left_only or dir_cmp.right_only or dir_cmp.diff_files:
+        return DirDiff(
+            missing_files=dir_cmp.left_only,
+            files_to_delete=dir_cmp.right_only,
+            diff_files=dir_cmp.diff_files,
+        )
+    else:
+        return None
+
+
+def main(check: bool = False) -> None:
     print("generating client...")
     schema = json.loads(Path("./api-schema.json").read_text())
 
@@ -227,6 +253,26 @@ def main() -> None:
     )
 
     client_path = "../frontend/src/api/"
+    print("checking for changes...")
+    diff = _compare_directories(tmpdir, client_path)
+    if diff is None:
+        print("no changes required!")
+        sys.exit(0)
+
+    if check:
+        if diff.files_to_delete:
+            print(f"delete: {diff.files_to_delete}")
+        if diff.missing_files:
+            print(f"add:    {diff.missing_files}")
+        if diff.diff_files:
+            print(f"update: {diff.diff_files}")
+        print(
+            """\
+client is not up to date, regenerate with:
+./.venv/bin/python -m recipeyak.api.base.codegen"""
+        )
+        sys.exit(1)
+
     shutil.rmtree(client_path)
     shutil.move(tmpdir, client_path)
 
@@ -234,4 +280,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    typer.run(main)

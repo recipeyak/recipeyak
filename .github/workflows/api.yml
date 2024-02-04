@@ -231,8 +231,7 @@ jobs:
         run: poetry install
       - name: Check for missing api schema changes
         working-directory: "backend"
-        # TODO: add a script to check for missing api schema changes
-        run: exit 1
+        run: ./s/check_missing_api_schema_changes
 
   lint_api_schema:
     needs: pre_job
@@ -277,5 +276,4 @@ jobs:
         run: poetry install
       - name: Check for missing codegen changes
         working-directory: "backend"
-        # TODO: add a script to check for missing codegen changes
-        run: exit 1
+        run: ./s/check_missing_codegen_changes

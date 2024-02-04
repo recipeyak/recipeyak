@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+main() {
+  exec ./.venv/bin/python -m recipeyak.api.base.schema --check 
+}
+
+main "$@"
