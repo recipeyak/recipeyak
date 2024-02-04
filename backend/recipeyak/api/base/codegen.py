@@ -239,9 +239,9 @@ def main(check: bool = False) -> None:
     print("formatting...")
     subprocess.run(
         (
-            "../frontend/node_modules/.bin/prettier",
+            "./node_modules/.bin/prettier",
             "--config",
-            "../frontend/.prettierrc.js",
+            ".prettierrc.js",
             "-w",
             "--log-level",
             "warn",
