@@ -296,7 +296,4 @@ jobs:
         run: pnpm install
       - name: Check for missing codegen changes
         working-directory: "backend"
-        run: |
-          echo $PWD
-          ls node_modules/.bin
-          ./s/check_missing_codegen_changes
+        run: ./s/check_missing_codegen_changes
