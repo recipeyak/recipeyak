@@ -8,10 +8,15 @@ from recipeyak.realtime import publish_recipe
 
 
 @endpoint()
-def note_delete_view(request: AuthedHttpRequest, note_id: str) -> JsonResponse:
+def note_delete_view(
+    request: AuthedHttpRequest[None], note_id: str
+) -> JsonResponse[None]:
     team = get_team(request.user)
-    note = filter_notes(team=team).filter(pk=note_id, created_by=request.user).first()
-    if note:
+    if (
+        note := filter_notes(team=team)
+        .filter(pk=note_id, created_by=request.user)
+        .first()
+    ):
         note.delete()
         publish_recipe(recipe_id=note.recipe_id, team_id=team.id)
-    return JsonResponse(status=204)
+    return JsonResponse(None, status=204)

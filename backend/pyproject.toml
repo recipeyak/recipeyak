@@ -36,6 +36,7 @@ aiohttp = "^3.9.1"
 ruamel-yaml = "^0.18.5"
 pydantic = {extras = ["email"], version = "^2.5.3"}
 pydantic-settings = "^2.1.0"
+jsonref = "^1.1.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "7.2.0"
@@ -50,6 +51,9 @@ types-urllib3 = "^1.26.23"
 types-dj-database-url = "^1.0.0"
 mypy = "^1.7.0"
 ruff = "^0.1.6"
+
+[tool.poetry.group.dev.dependencies]
+bpython = "^0.24"
 
 [tool.ruff]
 select = [

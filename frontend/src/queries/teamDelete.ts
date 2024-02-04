@@ -3,19 +3,16 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 import { useHistory } from "react-router"
 
-import { http } from "@/http"
+import { teamDelete } from "@/api/teamDelete"
 import { pathHome } from "@/paths"
-import { unwrapResult } from "@/query"
 import { toast } from "@/toast"
-
-const deleteTeam = (teamID: number) => http.delete(`/api/v1/t/${teamID}`)
 
 export function useTeamDelete() {
   const history = useHistory()
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: ({ teamId }: { teamId: number }) =>
-      deleteTeam(teamId).then(unwrapResult),
+      teamDelete({ team_id: teamId }),
     onSuccess: (_res, vars) => {
       history.push(pathHome({}))
       toast.success(`Team deleted`)

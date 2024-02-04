@@ -5,7 +5,7 @@ from django.db import connection
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.serializers.recipe import serialize_recipe
+from recipeyak.api.serializers.recipe import RecipeResponse, serialize_recipe
 from recipeyak.models import (
     filter_recipe_or_404,
     get_team,
@@ -13,7 +13,9 @@ from recipeyak.models import (
 
 
 @endpoint()
-def recipe_retrieve_view(request: AuthedHttpRequest, recipe_id: str) -> JsonResponse:
+def recipe_retrieve_view(
+    request: AuthedHttpRequest[None], recipe_id: int
+) -> JsonResponse[RecipeResponse]:
     team = get_team(request.user)
     recipe = filter_recipe_or_404(recipe_id=recipe_id, team=team)
     with connection.cursor() as cursor:

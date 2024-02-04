@@ -1,18 +1,8 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
-import { toISODateString } from "@/date"
-import { http } from "@/http"
-import { unwrapResult } from "@/query"
+import { shoppinglistRetrieve } from "@/api/shoppinglistRetrieve"
+import { ResponseFromUse } from "@/queries/queryUtilTypes"
 import { useTeamId } from "@/useTeamId"
-
-const getShoppingList = (start: Date | number, end: Date | number) => {
-  return http.get<IGetShoppingListResponse>(`/api/v1/shoppinglist/`, {
-    params: {
-      start: toISODateString(start),
-      end: toISODateString(end),
-    },
-  })
-}
 
 // eslint-disable-next-line no-restricted-syntax
 export const enum Unit {
@@ -34,41 +24,29 @@ export const enum Unit {
   NONE = "NONE",
 }
 
-export interface IQuantity {
-  readonly quantity: string
-  readonly unit: Unit
-  readonly unknown_unit?: string | null
-}
+export type IQuantity = IIngredientItem["quantities"][number]
 
-export interface IIngredientItem {
-  readonly category?: string
-  readonly quantities: ReadonlyArray<IQuantity>
-}
+export type IIngredientItem = IGetShoppingListResponse["ingredients"][number]
 
-type GetShoppingListV2ResponseRecipe = {
-  scheduledRecipeId: number
-  recipeId: number
-  recipeName: string
-}
-
-export interface IGetShoppingListResponse {
-  readonly recipes: GetShoppingListV2ResponseRecipe[]
-  readonly ingredients: {
-    readonly [_: string]: IIngredientItem | undefined
-  }
-}
+export type IGetShoppingListResponse = ResponseFromUse<
+  typeof useShoppingListFetch
+>
 
 export function useShoppingListFetch({
   startDay,
   endDay,
 }: {
-  startDay: Date | number
-  endDay: Date | number
+  startDay: Date
+  endDay: Date
 }) {
   const teamId = useTeamId()
   return useQuery({
     queryKey: [teamId, "shopping-list", startDay, endDay],
-    queryFn: () => getShoppingList(startDay, endDay).then(unwrapResult),
+    queryFn: () =>
+      shoppinglistRetrieve({
+        start: startDay,
+        end: endDay,
+      }),
     placeholderData: keepPreviousData,
   })
 }

@@ -1,6 +1,6 @@
 from recipeyak.api.ably_retrieve_view import ably_retrieve_view
 from recipeyak.api.algolia_retrieve_view import algolia_retrieve_view
-from recipeyak.api.base.router import route, routes
+from recipeyak.api.base.router import create_urlpatterns, route
 from recipeyak.api.calendar_delete_view import calendar_delete_view
 from recipeyak.api.calendar_generate_link_view import calendar_generate_link_view
 from recipeyak.api.calendar_list_view import calendar_list_view
@@ -71,7 +71,7 @@ from recipeyak.api.user_retrieve_view import user_retrieve_view
 from recipeyak.api.user_update_view import user_update_view
 from recipeyak.api.user_uploads_list_view import user_uploads_list_view
 
-urlpatterns = routes(
+routes = [
     route(
         "api/v1/t/<int:team_id>/members/",
         method="get",
@@ -183,22 +183,22 @@ urlpatterns = routes(
         view=team_create_view,
     ),
     route(
-        "api/v1/notes/<int:note_id>/",
+        "api/v1/notes/<str:note_id>/",
         method="patch",
         view=note_update_view,
     ),
     route(
-        "api/v1/notes/<int:note_id>/",
+        "api/v1/notes/<str:note_id>/",
         method="delete",
         view=note_delete_view,
     ),
     route(
-        "api/v1/notes/<int:note_id>/reactions/",
+        "api/v1/notes/<str:note_id>/reactions/",
         method="post",
         view=reaction_create_view,
     ),
     route(
-        "api/v1/reactions/<int:reaction_id>/",
+        "api/v1/reactions/<str:reaction_id>/",
         method="delete",
         view=reaction_delete_view,
     ),
@@ -419,4 +419,6 @@ urlpatterns = routes(
         view=export_recipes_list_view,
         regex=True,
     ),
-)
+]
+
+urlpatterns = create_urlpatterns(*routes)

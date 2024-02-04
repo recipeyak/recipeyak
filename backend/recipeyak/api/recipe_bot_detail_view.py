@@ -40,7 +40,9 @@ def _format_img_open_graph(x: str) -> str:
     )
 
 
-def _recipe_get_view(request: AnonymousHttpRequest, recipe_id: str) -> HttpResponse:
+def _recipe_get_view(
+    request: AnonymousHttpRequest[None], recipe_id: str
+) -> HttpResponse:
     recipe = get_object_or_404(Recipe, pk=recipe_id)
 
     recipe_title = recipe.name
@@ -65,6 +67,6 @@ def _recipe_get_view(request: AnonymousHttpRequest, recipe_id: str) -> HttpRespo
 
 @endpoint(auth_required=False)
 def recipe_bot_detail_view(
-    request: AnonymousHttpRequest, recipe_id: str
+    request: AnonymousHttpRequest[None], recipe_id: str
 ) -> HttpResponse:
     return _recipe_get_view(request, recipe_id)

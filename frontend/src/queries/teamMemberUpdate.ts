@@ -1,25 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AxiosError, AxiosResponse } from "axios"
 
-import { http } from "@/http"
+import { memberUpdate } from "@/api/memberUpdate"
 import { setQueryDataTeamMemberList } from "@/queries/teamMembersList"
-import { unwrapResult } from "@/query"
 import { toast } from "@/toast"
 
 type Level = "admin" | "contributor" | "read"
-
-const updateTeamMemberLevel = (membershipID: number, level: Level) =>
-  http.patch<{
-    readonly id: number
-    readonly created: string
-    readonly level: "admin" | "contributor" | "read"
-    readonly user: {
-      readonly id: number
-      readonly name: string
-      readonly avatar_url: string
-      readonly email: string
-    }
-  }>(`/api/v1/members/${membershipID}/`, { level })
 
 export function useTeamMemberUpdate() {
   const queryClient = useQueryClient()
@@ -31,7 +17,7 @@ export function useTeamMemberUpdate() {
       teamId: number
       memberId: number
       level: "admin" | "contributor" | "read"
-    }) => updateTeamMemberLevel(memberId, level).then(unwrapResult),
+    }) => memberUpdate({ level, member_id: memberId }),
     onMutate: (vars) => {
       let prevLevel: Level | undefined
       setQueryDataTeamMemberList(queryClient, {

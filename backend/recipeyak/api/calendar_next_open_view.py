@@ -4,6 +4,7 @@ from datetime import date
 from typing import Literal
 
 from django.db import connection
+from typing_extensions import TypedDict
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
@@ -28,8 +29,14 @@ class CalendarNexOpenParams(RequestParams):
     now: date
 
 
+class CalendarResponse(TypedDict):
+    date: date
+
+
 @endpoint()
-def calendar_next_open_view(request: AuthedHttpRequest) -> JsonResponse:
+def calendar_next_open_view(
+    request: AuthedHttpRequest[CalendarNexOpenParams]
+) -> JsonResponse[CalendarResponse]:
     params = CalendarNexOpenParams.parse_obj(request.GET.dict())
     team_id = get_team(request.user).id
     with connection.cursor() as cursor:

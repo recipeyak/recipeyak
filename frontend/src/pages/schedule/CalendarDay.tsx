@@ -90,7 +90,7 @@ export function CalendarDay({
           scheduledRecipeUpdate.mutate({
             scheduledRecipeId: item.scheduledId,
             update: {
-              on: toISODateString(date),
+              on: date,
             },
           })
         }

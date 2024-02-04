@@ -1,22 +1,8 @@
 import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query"
 
+import { userRetrieve } from "@/api/userRetrieve"
 import { login } from "@/auth"
-import { http } from "@/http"
 import { ResponseFromUse } from "@/queries/queryUtilTypes"
-import { unwrapResult } from "@/query"
-import { Theme, ThemeMode } from "@/themeConstants"
-
-const getUser = () =>
-  http.get<{
-    readonly id: number
-    readonly name: string
-    readonly avatar_url: string
-    readonly email: string
-    readonly theme_day: Theme
-    readonly theme_night: Theme
-    readonly theme_mode: ThemeMode
-    readonly schedule_team: number | null
-  }>("/api/v1/user/")
 
 export function useUserFetch() {
   // TODO: this api call could be removed with a preload
@@ -24,7 +10,7 @@ export function useUserFetch() {
   return useQuery({
     queryKey: getQueryKey(),
     queryFn: async () => {
-      const res = await getUser().then(unwrapResult)
+      const res = await userRetrieve()
       login(res, queryClient)
       return res
     },

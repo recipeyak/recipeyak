@@ -21,6 +21,8 @@ class RetrieveTeamResponse(pydantic.BaseModel):
 
 
 @endpoint()
-def team_retrieve_view(request: AuthedHttpRequest, team_id: int) -> JsonResponse:
+def team_retrieve_view(
+    request: AuthedHttpRequest[None], team_id: int
+) -> JsonResponse[RetrieveTeamResponse]:
     team = get_object_or_404(get_teams(request.user), pk=team_id)
     return JsonResponse(RetrieveTeamResponse(id=team.id, name=team.name))

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Annotated
 
+import pydantic
 from django.contrib.auth import login
 from django.contrib.auth.password_validation import validate_password
 from django.db import transaction
@@ -11,7 +12,7 @@ from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AnonymousHttpRequest
 from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
-from recipeyak.api.user_retrieve_view import serialize_user
+from recipeyak.api.user_retrieve_view import UserSerializer, serialize_user
 from recipeyak.models.team import Team
 from recipeyak.models.user import User
 
@@ -40,8 +41,14 @@ class RegisterUserDetailViewParams(RequestParams):
         return self
 
 
+class UserCreateResponse(pydantic.BaseModel):
+    user: UserSerializer
+
+
 @endpoint(auth_required=False)
-def user_create_view(request: AnonymousHttpRequest) -> JsonResponse:
+def user_create_view(
+    request: AnonymousHttpRequest[RegisterUserDetailViewParams]
+) -> JsonResponse[UserCreateResponse]:
     params = RegisterUserDetailViewParams.parse_raw(request.body)
     with transaction.atomic():
         team = Team.objects.create(name="Personal")
@@ -54,4 +61,4 @@ def user_create_view(request: AnonymousHttpRequest) -> JsonResponse:
 
     login(request, user)
 
-    return JsonResponse({"user": serialize_user(user)}, status=201)
+    return JsonResponse(UserCreateResponse(user=serialize_user(user)), status=201)

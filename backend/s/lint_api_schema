@@ -1,0 +1,3 @@
+#!/bin/sh
+
+exec node_modules/.bin/redocly lint api-schema.json --skip-rule no-path-trailing-slash --skip-rule operation-summary --skip-rule security-defined --skip-rule operation-4xx-response --skip-rule info-license

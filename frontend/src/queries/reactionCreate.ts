@@ -1,13 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
 
-import { http } from "@/http"
+import { reactionCreate } from "@/api/reactionCreate"
 import { PickVariant } from "@/queries/queryUtilTypes"
 import {
   RecipeFetchResponse as Recipe,
   setQueryDataRecipe,
 } from "@/queries/recipeFetch"
-import { unwrapResult } from "@/query"
 import { useTeamId } from "@/useTeamId"
 import { useUser } from "@/useUser"
 import { uuid4 } from "@/uuid"
@@ -16,29 +15,6 @@ type Reaction = PickVariant<
   Recipe["timelineItems"][number],
   "note"
 >["reactions"][number]
-
-const createReaction = ({
-  noteId,
-  type,
-}: {
-  noteId: string | number
-  type: "❤️" | "😆" | "🤮"
-}) =>
-  http.post<{
-    id: string
-    type: "❤️" | "😆" | "🤮"
-    // TODO: is this needed?
-    note_id: number
-    user: {
-      id: number
-      name: string
-      email: string
-      avatar_url: string
-    }
-    created: string
-  }>(`/api/v1/notes/${noteId}/reactions/`, {
-    type,
-  })
 
 export function useReactionCreate() {
   const queryClient = useQueryClient()
@@ -51,10 +27,9 @@ export function useReactionCreate() {
     }: {
       // keep recipeId for easier updating state
       recipeId: number
-      noteId: number | string
+      noteId: string
       type: "❤️" | "😆" | "🤮"
-    }) => createReaction({ noteId, type }).then(unwrapResult),
-
+    }) => reactionCreate({ type, note_id: noteId }),
     onMutate: (vars) => {
       // add reaction
       const tempId = uuid4()

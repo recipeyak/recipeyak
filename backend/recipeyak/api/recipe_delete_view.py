@@ -11,9 +11,11 @@ from recipeyak.realtime import publish_recipe
 
 
 @endpoint()
-def recipe_delete_view(request: AuthedHttpRequest, recipe_id: str) -> JsonResponse:
+def recipe_delete_view(
+    request: AuthedHttpRequest[None], recipe_id: int
+) -> JsonResponse[None]:
     team = get_team(request.user)
     recipe = filter_recipe_or_404(team=team, recipe_id=recipe_id)
     recipe.delete()
     publish_recipe(recipe_id=recipe.id, team_id=team.id)
-    return JsonResponse(status=204)
+    return JsonResponse(None, status=204)

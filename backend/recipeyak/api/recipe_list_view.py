@@ -65,7 +65,9 @@ def namedtuplefetchall(cursor: CursorWrapper) -> list[ListQueryResult]:
 
 
 @endpoint()
-def recipe_list_view(request: AuthedHttpRequest) -> JsonResponse:
+def recipe_list_view(
+    request: AuthedHttpRequest[None]
+) -> JsonResponse[list[RecipeListItem]]:
     team = get_team(request.user)
     list_items = list[RecipeListItem]()
     with connection.cursor() as cursor:

@@ -1,28 +1,12 @@
 import { QueryClient, useQuery } from "@tanstack/react-query"
 
-import { http } from "@/http"
+import { memberList } from "@/api/memberList"
 import { ResponseFromUse } from "@/queries/queryUtilTypes"
-import { unwrapResult } from "@/query"
-
-const getTeamMembers = (id: number) =>
-  http.get<
-    Array<{
-      readonly id: number
-      readonly created: string
-      readonly level: "admin" | "contributor" | "read"
-      readonly user: {
-        readonly id: number
-        readonly name: string | null
-        readonly avatar_url: string
-        readonly email: string
-      }
-    }>
-  >(`/api/v1/t/${id}/members/`)
 
 export function useTeamMembersList({ teamId }: { teamId: number }) {
   return useQuery({
     queryKey: getQueryKey({ teamId }),
-    queryFn: () => getTeamMembers(teamId).then(unwrapResult),
+    queryFn: () => memberList({ team_id: teamId }),
   })
 }
 

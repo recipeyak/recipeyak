@@ -1,26 +1,14 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import * as t from "io-ts"
 
-import { http } from "@/http"
+import { calendarGenerateLink } from "@/api/calendarGenerateLink"
 import { CalendarResponse } from "@/queries/scheduledRecipeCreate"
-import { unwrapEither } from "@/query"
 import { useTeamId } from "@/useTeamId"
-
-function generateCalendarLink() {
-  return http.request({
-    method: "POST",
-    url: `/api/v1/calendar/generate_link/`,
-    shape: t.type({
-      calendarLink: t.string,
-    }),
-  })
-}
 
 export function useScheduledRecipeSettingsRegenerateLink() {
   const teamID = useTeamId()
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: () => generateCalendarLink().then(unwrapEither),
+    mutationFn: () => calendarGenerateLink(),
     onSuccess: (response) => {
       // eslint-disable-next-line no-restricted-syntax
       queryClient.setQueryData<CalendarResponse>(

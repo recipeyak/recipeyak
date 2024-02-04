@@ -17,7 +17,9 @@ class CompleteUploadResponse(pydantic.BaseModel):
 
 
 @endpoint()
-def upload_complete_view(request: AuthedHttpRequest, upload_id: int) -> JsonResponse:
+def upload_complete_view(
+    request: AuthedHttpRequest[None], upload_id: int
+) -> JsonResponse[CompleteUploadResponse]:
     with transaction.atomic():
         upload = get_object_or_404(
             Upload.objects.filter(created_by=request.user), pk=upload_id

@@ -12,8 +12,8 @@ from recipeyak.realtime import publish_recipe
 
 @endpoint()
 def ingredient_delete_view(
-    request: AuthedHttpRequest, ingredient_id: int
-) -> JsonResponse:
+    request: AuthedHttpRequest[None], ingredient_id: int
+) -> JsonResponse[None]:
     team = get_team(request.user)
     ingredient = get_object_or_404(filter_ingredients(team=team), pk=ingredient_id)
     RecipeChange.objects.create(
@@ -25,4 +25,4 @@ def ingredient_delete_view(
     )
     filter_ingredients(team=team).filter(pk=ingredient_id).delete()
     publish_recipe(recipe_id=ingredient.recipe_id, team_id=team.id)
-    return JsonResponse(status=204)
+    return JsonResponse(None, status=204)

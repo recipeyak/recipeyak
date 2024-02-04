@@ -1,4 +1,5 @@
 from datetime import date, datetime
+from typing import Literal
 
 import pydantic
 from django.db import connection
@@ -30,7 +31,14 @@ class Activity(pydantic.BaseModel):
     created_date: date
     created: datetime
     note_id: int
-    type: str
+    type: Literal[
+        "recipe_create",
+        "comment_create",
+        "recipe_archived",
+        "recipe_scheduled",
+        "photo_created",
+        "primary_photo_created",
+    ]
 
 
 class UserDetailByIdResponse(pydantic.BaseModel):
@@ -267,7 +275,9 @@ where a.user_id = %(user_a_id)s
 
 
 @endpoint()
-def user_retrieve_by_id_view(request: AuthedHttpRequest, user_id: str) -> JsonResponse:
+def user_retrieve_by_id_view(
+    request: AuthedHttpRequest[None], user_id: str
+) -> JsonResponse[UserDetailByIdResponse]:
     user = get_object_or_404(User, id=user_id)
     if not has_team_connection(user_id, request.user.id):
         raise Http404

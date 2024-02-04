@@ -6,10 +6,11 @@ from typing import Annotated
 from pydantic import StringConstraints
 
 from recipeyak.api.base.decorators import endpoint
+from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
-from recipeyak.api.serializers.recipe import serialize_recipe
+from recipeyak.api.serializers.recipe import RecipeResponse, serialize_recipe
 from recipeyak.models import (
     ChangeType,
     RecipeChange,
@@ -35,7 +36,9 @@ class RecipePatchParams(RequestParams):
 
 
 @endpoint()
-def recipe_update_view(request: AuthedHttpRequest, recipe_id: str) -> JsonResponse:
+def recipe_update_view(
+    request: AuthedHttpRequest[RecipePatchParams], recipe_id: int
+) -> JsonResponse[RecipeResponse]:
     team = get_team(request.user)
     recipe = filter_recipe_or_404(recipe_id=recipe_id, team=team)
 
@@ -98,13 +101,9 @@ def recipe_update_view(request: AuthedHttpRequest, recipe_id: str) -> JsonRespon
                     recipe=recipe, id=params.primaryImageId
                 ).first()
                 if upload is None:
-                    return JsonResponse(
-                        {
-                            "error": {
-                                "message": "Could not find upload with provided Id"
-                            }
-                        },
-                        status=400,
+                    raise APIError(
+                        code="unknown_upload",
+                        message="Could not find upload with provided Id",
                     )
                 recipe.primary_image = upload
                 timeline_action = "set_primary_image"

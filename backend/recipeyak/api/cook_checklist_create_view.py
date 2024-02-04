@@ -26,8 +26,8 @@ class CookChecklistPostParams(RequestParams):
 
 @endpoint()
 def cook_checklist_create_view(
-    request: AuthedHttpRequest, recipe_id: str
-) -> JsonResponse:
+    request: AuthedHttpRequest[CookChecklistPostParams], recipe_id: int
+) -> JsonResponse[CookChecklistPostSerializer]:
     team = get_team(request.user)
     recipe = filter_recipe_or_404(recipe_id=recipe_id, team=team)
 

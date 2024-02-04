@@ -1,15 +1,12 @@
 import { QueryClient, useQuery } from "@tanstack/react-query"
 
-import { http } from "@/http"
+import { teamRetrieve } from "@/api/teamRetrieve"
 import { ResponseFromUse } from "@/queries/queryUtilTypes"
-import { unwrapResult } from "@/query"
-
-const getTeam = (id: number) => http.get<{ name: string }>(`/api/v1/t/${id}/`)
 
 export function useTeam({ teamId }: { teamId: number }) {
   return useQuery({
     queryKey: getQueryKey({ teamId }),
-    queryFn: () => getTeam(teamId).then(unwrapResult),
+    queryFn: () => teamRetrieve({ team_id: teamId }),
   })
 }
 

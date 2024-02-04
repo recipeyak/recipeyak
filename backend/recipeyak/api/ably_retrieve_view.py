@@ -27,7 +27,9 @@ async def get_token(user_id: str, team_ids: list[int]) -> dict[str, object]:
 
 
 @endpoint()
-def ably_retrieve_view(request: AuthedHttpRequest) -> JsonResponse:
+def ably_retrieve_view(
+    request: AuthedHttpRequest[None]
+) -> JsonResponse[dict[str, object]]:
     # NOTE: this isn't really scalable if the user has a lot of teams.
     team_ids = list(get_teams(user=request.user).values_list("id", flat=True))
     return JsonResponse(

@@ -1,13 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 
-import { http } from "@/http"
+import { teamUpdate } from "@/api/teamUpdate"
 import { setQueryDataTeam } from "@/queries/teamFetch"
-import { unwrapResult } from "@/query"
 import { toast } from "@/toast"
-
-const updateTeam = (teamId: number, data: { name: string }) =>
-  http.patch<{ id: number; name: string }>(`/api/v1/t/${teamId}/`, data)
 
 export function useTeamUpdate() {
   const queryClient = useQueryClient()
@@ -18,7 +14,7 @@ export function useTeamUpdate() {
     }: {
       teamId: number
       payload: { name: string }
-    }) => updateTeam(teamId, payload).then(unwrapResult),
+    }) => teamUpdate({ name: payload.name, team_id: teamId }),
     onSuccess: (res, vars) => {
       toast.success("Team updated")
       setQueryDataTeam(queryClient, { teamId: vars.teamId, updater: () => res })

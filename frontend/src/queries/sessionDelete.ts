@@ -1,20 +1,14 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { http } from "@/http"
+import { sessionDelete } from "@/api/sessionDelete"
 import { ISession } from "@/queries/sessionList"
-import { unwrapResult } from "@/query"
-
-const deleteSessionById = (id: string) => http.delete(`/api/v1/sessions/${id}/`)
-
-function deleteByIdV2({ sessionId }: { sessionId: string }): Promise<void> {
-  return deleteSessionById(sessionId).then(unwrapResult)
-}
 
 export function useSessionDelete() {
   // TODO: if we delete the current session that should use the logout mutation
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: deleteByIdV2,
+    mutationFn: ({ sessionId }: { sessionId: string }) =>
+      sessionDelete({ session_id: sessionId }),
     onSuccess: (_response, vars) => {
       // eslint-disable-next-line no-restricted-syntax
       queryClient.setQueryData<readonly ISession[]>(["sessions"], (prev) => {

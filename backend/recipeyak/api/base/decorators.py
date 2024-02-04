@@ -11,20 +11,32 @@ from recipeyak.api.base.response import JsonResponse
 
 class AuthedView(Protocol):
     def __call__(
-        self, request: AuthedHttpRequest, *args: Any, **kwargs: Any
+        self, request: AuthedHttpRequest[Any], *args: Any, **kwargs: Any
     ) -> HttpResponse:
+        ...
+
+    @property
+    def __name__(self) -> str:
         ...
 
 
 class AnonView(Protocol):
     def __call__(
-        self, request: AnonymousHttpRequest, *args: Any, **kwargs: Any
+        self, request: AnonymousHttpRequest[Any], *args: Any, **kwargs: Any
     ) -> HttpResponse:
+        ...
+
+    @property
+    def __name__(self) -> str:
         ...
 
 
 class AnyView(Protocol):
     def __call__(self, request: Any, *args: Any, **kwargs: Any) -> HttpResponse:
+        ...
+
+    @property
+    def __name__(self) -> str:
         ...
 
 

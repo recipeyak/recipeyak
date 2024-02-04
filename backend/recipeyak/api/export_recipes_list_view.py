@@ -121,7 +121,7 @@ def export_recipes(team: Team, pk: str | None) -> list[ExportRecipe] | ExportRec
 
 @endpoint(redirect_to_login=True)
 def export_recipes_list_view(
-    request: AuthedHttpRequest, filetype: str, pk: str | None = None
+    request: AuthedHttpRequest[None], filetype: str, pk: str | None = None
 ) -> HttpResponse:
     team = get_team(request.user)
 

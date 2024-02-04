@@ -1,17 +1,18 @@
 import { useMutation } from "@tanstack/react-query"
 
+import { uploadComplete } from "@/api/uploadComplete"
+import { uploadStart } from "@/api/uploadStart"
 import { http } from "@/http"
-import { unwrapResult } from "@/query"
-import { isOk, Ok } from "@/result"
+import { isOk } from "@/result"
 
 export function useUploadCreate() {
   return useMutation({
-    mutationFn: (params: Parameters<typeof uploadCreate>[0]) =>
-      uploadCreate(params).then(unwrapResult),
+    mutationFn: (params: Parameters<typeof uploadCreateFull>[0]) =>
+      uploadCreateFull(params),
   })
 }
 
-const uploadCreate = async ({
+const uploadCreateFull = async ({
   file,
   onProgress,
   ...params
@@ -24,23 +25,17 @@ const uploadCreate = async ({
       purpose: "profile"
     }
 )) => {
-  const res = await http.post<{
-    id: string
-    upload_url: string
-    upload_headers: Record<string, string>
-  }>(`/api/v1/upload/`, {
+  const res = await uploadStart({
     file_name: file.name,
     content_type: file.type,
     content_length: file.size,
     purpose: params.purpose,
     ...(params.purpose === "profile" ? {} : { recipe_id: params.recipeId }),
   })
-  if (!isOk(res)) {
-    return res
-  }
-  const uploadRes = await http.put(res.data.upload_url, file, {
+  // TODO: use the non-wrapped http method
+  const uploadRes = await http.put(res.upload_url, file, {
     headers: {
-      ...res.data.upload_headers,
+      ...res.upload_headers,
       "Content-Type": file.type,
     },
     onUploadProgress(progressEvent: { loaded: number; total: number }) {
@@ -48,16 +43,10 @@ const uploadCreate = async ({
     },
   })
   if (!isOk(uploadRes)) {
-    return uploadRes
+    throw uploadRes.error
   }
-
-  const uploadFinished = await http.post<{
-    id: string
-    url: string
-    contentType: string
-  }>(`/api/v1/upload/${res.data.id}/complete`)
-  if (!isOk(uploadFinished)) {
-    return uploadFinished
-  }
-  return Ok(uploadFinished.data)
+  const uploadFinished = await uploadComplete({
+    upload_id: res.id,
+  })
+  return uploadFinished
 }

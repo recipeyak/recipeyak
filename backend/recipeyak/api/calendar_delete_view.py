@@ -10,9 +10,9 @@ from recipeyak.realtime import publish_calendar_event_deleted
 
 @endpoint()
 def calendar_delete_view(
-    request: AuthedHttpRequest, scheduled_recipe_id: int
-) -> JsonResponse:
+    request: AuthedHttpRequest[None], scheduled_recipe_id: int
+) -> JsonResponse[None]:
     team_id = get_team(request.user).id
     get_scheduled_recipes(team_id).filter(id=scheduled_recipe_id).delete()
     publish_calendar_event_deleted(recipe_id=scheduled_recipe_id, team_id=team_id)
-    return JsonResponse(status=204)
+    return JsonResponse(None, status=204)

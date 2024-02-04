@@ -1,7 +1,6 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
-import { getCalendarRecipeList } from "@/queries/scheduledRecipeList"
-import { unwrapEither } from "@/query"
+import { calendarList } from "@/api/calendarList"
 import { useTeamId } from "@/useTeamId"
 
 export function useScheduledRecipeSettingsFetch() {
@@ -12,7 +11,7 @@ export function useScheduledRecipeSettingsFetch() {
       // TODO: we could move this to a different endpoint or maybe stuff it in
       // the preload when we get there
       const start = new Date()
-      return getCalendarRecipeList({ start, end: start }).then(unwrapEither)
+      return calendarList({ start, end: start })
     },
     select: (data) => data.settings,
     // Schedule recipes plop in due the way we overlap/prefetch without this

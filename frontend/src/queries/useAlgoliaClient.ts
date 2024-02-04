@@ -11,14 +11,7 @@ import { useQuery } from "@tanstack/react-query"
 import algoliasearch from "algoliasearch"
 import { SearchClient } from "algoliasearch/lite"
 
-import { http } from "@/http"
-import { unwrapResult } from "@/query"
-
-const getAlgoliaApiKey = () =>
-  http.get<{
-    readonly app_id: string
-    readonly api_key: string
-  }>(`/api/v1/auth/algolia/`)
+import { algoliaRetrieve } from "@/api/algoliaRetrieve"
 
 export function useAlgoliaClient(teamId: number) {
   const res = useQuery({
@@ -27,7 +20,7 @@ export function useAlgoliaClient(teamId: number) {
     staleTime: 50 * 60 * 1000,
     refetchInterval: 25 * 60 * 1000,
     queryFn: async () => {
-      const res = await getAlgoliaApiKey().then(unwrapResult)
+      const res = await algoliaRetrieve()
       return res
     },
   })

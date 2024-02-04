@@ -1,29 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
 
-import { http } from "@/http"
+import { ingredientCreate } from "@/api/ingredientCreate"
 import { setQueryDataRecipe } from "@/queries/recipeFetch"
-import { unwrapResult } from "@/query"
 import { useTeamId } from "@/useTeamId"
-
-const addIngredientToRecipe = (
-  recipeID: number,
-  ingredient: {
-    quantity: string
-    name: string
-    description: string
-    position: string
-    optional: boolean
-  },
-) =>
-  http.post<{
-    readonly id: number
-    readonly quantity: string
-    readonly name: string
-    readonly description: string
-    readonly position: string
-    readonly optional: boolean
-  }>(`/api/v1/recipes/${recipeID}/ingredients/`, ingredient)
 
 export function useIngredientCreate() {
   const queryClient = useQueryClient()
@@ -41,7 +21,15 @@ export function useIngredientCreate() {
         position: string
         optional: boolean
       }
-    }) => addIngredientToRecipe(recipeId, payload).then(unwrapResult),
+    }) =>
+      ingredientCreate({
+        quantity: payload.quantity,
+        name: payload.name,
+        description: payload.description,
+        position: payload.position,
+        optional: payload.optional,
+        recipe_id: recipeId,
+      }),
     onSuccess: (res, vars) => {
       setQueryDataRecipe(queryClient, {
         teamId,

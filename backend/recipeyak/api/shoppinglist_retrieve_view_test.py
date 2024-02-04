@@ -7,8 +7,6 @@ from django.test.client import Client
 
 from recipeyak.cumin.combine import Ingredient as IngredientCumin
 from recipeyak.cumin.combine import (
-    IngredientItem,
-    IngredientList,
     Quantity,
     combine_ingredients,
 )
@@ -138,34 +136,22 @@ def test_scheduling_multiple_times_some_ingredient(
     [
         (
             [("1/2", "lemon"), ("1", "lemon"), ("2", "lemons")],
-            {
-                "lemons": IngredientItem(
-                    quantities=[Quantity(quantity=Decimal(3.5), unit=Unit.NONE)]
-                )
-            },
+            {"lemons": [Quantity(quantity=Decimal(3.5), unit=Unit.NONE)]},
         ),
         (
             [("1", "bay leaf"), ("4", "bay leaves")],
-            {
-                "bay leaves": IngredientItem(
-                    quantities=[Quantity(quantity=Decimal(5), unit=Unit.NONE)]
-                )
-            },
+            {"bay leaves": [Quantity(quantity=Decimal(5), unit=Unit.NONE)]},
         ),
         (
             [("1", "large tomato"), ("2", "large tomatoes")],
-            {
-                "large tomatoes": IngredientItem(
-                    quantities=[Quantity(quantity=Decimal(3), unit=Unit.NONE)]
-                )
-            },
+            {"large tomatoes": [Quantity(quantity=Decimal(3), unit=Unit.NONE)]},
         ),
         (
             [("4-5", "medium button mushrooms"), ("4-5", "medium button mushrooms")],
             {
-                "medium button mushrooms": IngredientItem(
-                    quantities=[Quantity(quantity=Decimal(10), unit=Unit.NONE)]
-                )
+                "medium button mushrooms": [
+                    Quantity(quantity=Decimal(10), unit=Unit.NONE)
+                ]
             },
         ),
         (
@@ -176,12 +162,10 @@ def test_scheduling_multiple_times_some_ingredient(
                 ("some", "black pepper"),
             ],
             {
-                "black pepper": IngredientItem(
-                    quantities=[
-                        Quantity(quantity=Decimal(3), unit=Unit.TABLESPOON),
-                        Quantity(quantity=Decimal(2), unit=Unit.SOME),
-                    ]
-                )
+                "black pepper": [
+                    Quantity(quantity=Decimal(3), unit=Unit.TABLESPOON),
+                    Quantity(quantity=Decimal(2), unit=Unit.SOME),
+                ]
             },
         ),
         (
@@ -191,12 +175,10 @@ def test_scheduling_multiple_times_some_ingredient(
                 ("sprinkle", "basil leaves"),
             ],
             {
-                "basil leaves": IngredientItem(
-                    quantities=[
-                        Quantity(quantity=Decimal(16), unit=Unit.NONE),
-                        Quantity(quantity=Decimal(2), unit=Unit.SOME),
-                    ]
-                )
+                "basil leaves": [
+                    Quantity(quantity=Decimal(16), unit=Unit.NONE),
+                    Quantity(quantity=Decimal(2), unit=Unit.SOME),
+                ]
             },
         ),
         (
@@ -205,82 +187,54 @@ def test_scheduling_multiple_times_some_ingredient(
                 ("8 tablespoons", "extra virgin olive oil"),
             ],
             {
-                "extra virgin olive oil": IngredientItem(
-                    quantities=[Quantity(quantity=Decimal(9), unit=Unit.TABLESPOON)]
-                )
+                "extra virgin olive oil": [
+                    Quantity(quantity=Decimal(9), unit=Unit.TABLESPOON)
+                ]
             },
         ),
         (
             [("1", "garlic clove")],
-            {
-                "garlic clove": IngredientItem(
-                    quantities=[Quantity(quantity=Decimal(1), unit=Unit.NONE)]
-                )
-            },
+            {"garlic clove": [Quantity(quantity=Decimal(1), unit=Unit.NONE)]},
         ),
         (
             [("8", "Garlic Cloves"), ("1", "garlic clove")],
-            {
-                "garlic cloves": IngredientItem(
-                    quantities=[Quantity(quantity=Decimal(9), unit=Unit.NONE)]
-                )
-            },
+            {"garlic cloves": [Quantity(quantity=Decimal(9), unit=Unit.NONE)]},
         ),
         (
             [("2 Tablespoons", "scallions"), ("4", "scallions")],
             {
-                "scallions": IngredientItem(
-                    quantities=[
-                        Quantity(quantity=Decimal(2), unit=Unit.TABLESPOON),
-                        Quantity(quantity=Decimal(4), unit=Unit.NONE),
-                    ]
-                )
+                "scallions": [
+                    Quantity(quantity=Decimal(2), unit=Unit.TABLESPOON),
+                    Quantity(quantity=Decimal(4), unit=Unit.NONE),
+                ]
             },
         ),
         (
             [("2 tbs", "soy sauce")],
-            {
-                "soy sauce": IngredientItem(
-                    quantities=[Quantity(quantity=Decimal(2), unit=Unit.TABLESPOON)]
-                )
-            },
+            {"soy sauce": [Quantity(quantity=Decimal(2), unit=Unit.TABLESPOON)]},
         ),
         (
             [("2 lbs", "tomato"), ("1 kg", "tomato")],
             {
-                "tomato": IngredientItem(
-                    quantities=[
-                        Quantity(
-                            quantity=Decimal("4.204622864866847967783965457"),
-                            unit=Unit.POUND,
-                        )
-                    ]
-                )
+                "tomato": [
+                    Quantity(
+                        quantity=Decimal("4.204622864866847967783965457"),
+                        unit=Unit.POUND,
+                    )
+                ]
             },
         ),
         (
             [("1 teaspoon + 1 Tablespoon", "ginger"), ("1 teaspoon", "Ginger")],
-            {
-                "ginger": IngredientItem(
-                    quantities=[Quantity(quantity=Decimal(5), unit=Unit.TEASPOON)]
-                )
-            },
+            {"ginger": [Quantity(quantity=Decimal(5), unit=Unit.TEASPOON)]},
         ),
         (
             [("1/2 cup", "scallions")],
-            {
-                "scallions": IngredientItem(
-                    quantities=[Quantity(quantity=Decimal(0.5), unit=Unit.CUP)]
-                )
-            },
+            {"scallions": [Quantity(quantity=Decimal(0.5), unit=Unit.CUP)]},
         ),
         (
             [("½ cup", "scallions")],
-            {
-                "scallions": IngredientItem(
-                    quantities=[Quantity(quantity=Decimal(0.5), unit=Unit.CUP)]
-                )
-            },
+            {"scallions": [Quantity(quantity=Decimal(0.5), unit=Unit.CUP)]},
         ),
         (
             [
@@ -291,18 +245,16 @@ def test_scheduling_multiple_times_some_ingredient(
                 ("some", "lemon"),
             ],
             {
-                "lemons": IngredientItem(
-                    quantities=[
-                        Quantity(quantity=Decimal(4.5), unit=Unit.NONE),
-                        Quantity(quantity=Decimal(1), unit=Unit.SOME),
-                    ]
-                )
+                "lemons": [
+                    Quantity(quantity=Decimal(4.5), unit=Unit.NONE),
+                    Quantity(quantity=Decimal(1), unit=Unit.SOME),
+                ]
             },
         ),
     ],
 )
 def test_combine_ingredients(
-    ingredients: list[tuple[str, str]], expected: IngredientList
+    ingredients: list[tuple[str, str]], expected: dict[str, list[Quantity]]
 ) -> None:
     ingres = []
     position = 1
