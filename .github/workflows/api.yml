@@ -234,7 +234,7 @@ jobs:
           node-version-file: "backend/package.json"
           cache-dependency-path: "backend/pnpm-lock.yaml"
           cache: "pnpm"
-      - name: Install dependencies
+      - name: Install python dependencies
         working-directory: "./backend"
         run: poetry install
       - name: Check for missing api schema changes
@@ -255,7 +255,7 @@ jobs:
           node-version-file: "backend/package.json"
           cache-dependency-path: "backend/pnpm-lock.yaml"
           cache: "pnpm"
-      - name: Install dependencies
+      - name: Install js dependencies
         working-directory: "backend"
         run: pnpm install
       - name: Lint API Schema
@@ -285,9 +285,12 @@ jobs:
           node-version-file: "backend/package.json"
           cache-dependency-path: "backend/pnpm-lock.yaml"
           cache: "pnpm"
-      - name: Install dependencies
-        working-directory: "./backend"
+      - name: Install python dependencies
+        working-directory: "backend"
         run: poetry install
+      - name: Install js dependencies
+        working-directory: "backend"
+        run: pnpm install
       - name: Check for missing codegen changes
         working-directory: "backend"
         run: ./s/check_missing_codegen_changes
