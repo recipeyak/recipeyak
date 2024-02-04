@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 from datetime import datetime
 
 import pydantic
@@ -9,8 +8,7 @@ from django.db import connection
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.models import filter_recipes, get_team
-from recipeyak.models.user import get_avatar_url
+from recipeyak.models import get_team
 
 
 class PrimaryImageResponse(pydantic.BaseModel):
