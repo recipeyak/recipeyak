@@ -19,7 +19,6 @@ import {
   IGetShoppingListResponse,
   IIngredientItem,
   IQuantity,
-  Unit,
   useShoppingListFetch,
 } from "@/queries/shoppingListFetch"
 import { removeQueryParams, setQueryParams } from "@/querystring"
@@ -55,16 +54,16 @@ function formatMonth(date: number | Date | null) {
 }
 
 function toQuantity(x: IQuantity): string {
-  if (x.unit === Unit.NONE) {
+  if (x.unit === "NONE") {
     return x.quantity
   }
-  if (x.unit === Unit.SOME) {
+  if (x.unit === "SOME") {
     return "some"
   }
-  if (x.unit === Unit.UNKNOWN && x.unknown_unit == null) {
+  if (x.unit === "UNKNOWN" && x.unknown_unit == null) {
     return x.quantity
   }
-  if (x.unit === Unit.UNKNOWN && x.unknown_unit != null) {
+  if (x.unit === "UNKNOWN" && x.unknown_unit != null) {
     return x.quantity + " " + x.unknown_unit
   }
   const unit = x.unit.toLowerCase()

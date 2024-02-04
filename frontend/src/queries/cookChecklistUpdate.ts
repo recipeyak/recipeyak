@@ -2,7 +2,7 @@ import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { cookChecklistCreate } from "@/api/cookChecklistCreate"
 
-export type CookChecklist = Record<string, boolean>
+type CookChecklist = Record<string, boolean>
 
 export const updateChecklistItemCache = (
   params: {

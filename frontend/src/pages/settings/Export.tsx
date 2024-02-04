@@ -3,7 +3,7 @@ import { Download } from "react-feather"
 import { Box } from "@/components/Box"
 import { pathRecipesExportJson, pathRecipesExportYaml } from "@/paths"
 
-export function ExportLink({
+function ExportLink({
   href,
   children,
 }: {

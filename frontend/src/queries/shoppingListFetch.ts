@@ -4,26 +4,6 @@ import { shoppinglistRetrieve } from "@/api/shoppinglistRetrieve"
 import { ResponseFromUse } from "@/queries/queryUtilTypes"
 import { useTeamId } from "@/useTeamId"
 
-// eslint-disable-next-line no-restricted-syntax
-export const enum Unit {
-  POUND = "POUND",
-  OUNCE = "OUNCE",
-  GRAM = "GRAM",
-  KILOGRAM = "KILOGRAM",
-  TEASPOON = "TEASPOON",
-  TABLESPOON = "TABLESPOON",
-  FLUID_OUNCE = "FLUID_OUNCE",
-  CUP = "CUP",
-  PINT = "PINT",
-  QUART = "QUART",
-  GALLON = "GALLON",
-  LITER = "LITER",
-  MILLILITER = "MILLILITER",
-  SOME = "SOME",
-  UNKNOWN = "UNKNOWN",
-  NONE = "NONE",
-}
-
 export type IQuantity = IIngredientItem["quantities"][number]
 
 export type IIngredientItem = IGetShoppingListResponse["ingredients"][number]
