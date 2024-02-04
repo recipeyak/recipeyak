@@ -226,14 +226,14 @@ jobs:
           python-version-file: "./backend/.python-version"
           cache: poetry
           cache-dependency-path: "./backend/poetry.lock"
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
       - uses: actions/setup-node@v3
         with:
           node-version-file: "backend/package.json"
           cache-dependency-path: "backend/pnpm-lock.yaml"
           cache: "pnpm"
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
       - name: Install dependencies
         working-directory: "./backend"
         run: poetry install
@@ -247,14 +247,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
       - uses: actions/setup-node@v3
         with:
           node-version-file: "backend/package.json"
           cache-dependency-path: "backend/pnpm-lock.yaml"
           cache: "pnpm"
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
       - name: Install dependencies
         working-directory: "backend"
         run: pnpm install
@@ -277,14 +277,14 @@ jobs:
           python-version-file: "./backend/.python-version"
           cache: poetry
           cache-dependency-path: "./backend/poetry.lock"
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
       - uses: actions/setup-node@v3
         with:
           node-version-file: "backend/package.json"
           cache-dependency-path: "backend/pnpm-lock.yaml"
           cache: "pnpm"
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
       - name: Install dependencies
         working-directory: "./backend"
         run: poetry install
