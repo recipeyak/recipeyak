@@ -18,7 +18,6 @@ from recipeyak.models.recipe_view import RecipeView  # noqa: F401
 from recipeyak.models.schedule_event import ScheduleEvent  # noqa: F401
 from recipeyak.models.scheduled_recipe import ScheduledRecipe  # noqa: F401
 from recipeyak.models.scrape import Scrape  # noqa: F401
-from recipeyak.models.search_click import SearchClick  # noqa: F401
 from recipeyak.models.section import Section  # noqa: F401
 from recipeyak.models.shopping_list import ShoppingList  # noqa: F401
 from recipeyak.models.step import Step

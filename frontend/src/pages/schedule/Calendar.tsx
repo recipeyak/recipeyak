@@ -32,7 +32,7 @@ function CalTitle({ dayTs }: { readonly dayTs: number }) {
   )
 }
 
-export type IDays = Record<string, ScheduledRecipe[] | undefined>
+type IDays = Record<string, ScheduledRecipe[] | undefined>
 
 function Weekdays() {
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
@@ -283,5 +283,3 @@ export function Calendar() {
     </Box>
   )
 }
-
-export default Calendar

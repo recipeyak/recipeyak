@@ -15,11 +15,7 @@ function assertDev(expr: boolean) {
   }
 }
 
-export function comparePositions(firstPos: string, secondPos: string) {
-  return +(firstPos < secondPos) - +(firstPos > secondPos)
-}
-
-export function isValidPosition(pos: string) {
+function isValidPosition(pos: string) {
   if (pos === "" || pos.charCodeAt(pos.length - 1) === START_CHAR_CODE) {
     return false
   }

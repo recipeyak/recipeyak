@@ -1,6 +1,6 @@
 // See env.js for adding environment variables
 
-export const DEBUG = import.meta.env.DEV
+const DEBUG = import.meta.env.DEV
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 export const GIT_SHA: string = DEBUG

@@ -2,8 +2,7 @@ import { useMutation } from "@tanstack/react-query"
 
 import { uploadComplete } from "@/api/uploadComplete"
 import { uploadStart } from "@/api/uploadStart"
-import { http } from "@/http"
-import { isOk } from "@/result"
+import { baseHttp } from "@/http"
 
 export function useUploadCreate() {
   return useMutation({
@@ -32,8 +31,7 @@ const uploadCreateFull = async ({
     purpose: params.purpose,
     ...(params.purpose === "profile" ? {} : { recipe_id: params.recipeId }),
   })
-  // TODO: use the non-wrapped http method
-  const uploadRes = await http.put(res.upload_url, file, {
+  await baseHttp.put(res.upload_url, file, {
     headers: {
       ...res.upload_headers,
       "Content-Type": file.type,
@@ -42,9 +40,6 @@ const uploadCreateFull = async ({
       onProgress?.((progressEvent.loaded / progressEvent.total) * 100)
     },
   })
-  if (!isOk(uploadRes)) {
-    throw uploadRes.error
-  }
   const uploadFinished = await uploadComplete({
     upload_id: res.id,
   })

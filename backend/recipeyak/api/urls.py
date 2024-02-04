@@ -29,7 +29,6 @@ from recipeyak.api.reaction_delete_view import reaction_delete_view
 from recipeyak.api.recipe_bot_detail_view import recipe_bot_detail_view
 from recipeyak.api.recipe_create_view import recipe_create_view
 from recipeyak.api.recipe_delete_view import recipe_delete_view
-from recipeyak.api.recipe_list_view import recipe_list_view
 from recipeyak.api.recipe_recently_created_view import (
     recipe_recently_created_view,
 )
@@ -38,7 +37,6 @@ from recipeyak.api.recipe_retrieve_view import recipe_retrieve_view
 from recipeyak.api.recipe_timeline_view import recipe_timline_view
 from recipeyak.api.recipe_update_view import recipe_update_view
 from recipeyak.api.scheduled_recipe_create_view import scheduled_recipe_create_view
-from recipeyak.api.search_click_create_view import search_click_create_view
 from recipeyak.api.section_create_view import section_create_view
 from recipeyak.api.section_delete_view import section_delete_view
 from recipeyak.api.section_update_view import section_update_view
@@ -204,11 +202,6 @@ routes = [
     ),
     route(
         "api/v1/recipes/",
-        method="get",
-        view=recipe_list_view,
-    ),
-    route(
-        "api/v1/recipes/",
         method="post",
         view=recipe_create_view,
     ),
@@ -285,11 +278,6 @@ routes = [
         "api/v1/recipes/recently_created",
         method="get",
         view=recipe_recently_created_view,
-    ),
-    route(
-        "api/v1/search-click/",
-        method="post",
-        view=search_click_create_view,
     ),
     route(
         "api/v1/sections/<int:section_id>/",

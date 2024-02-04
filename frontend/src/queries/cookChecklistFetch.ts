@@ -5,8 +5,6 @@ import { cookChecklistRetrieve } from "@/api/cookChecklistRetrieve"
 import { updateChecklistItemCache } from "@/queries/cookChecklistUpdate"
 import { useTeamId } from "@/useTeamId"
 
-export type CookChecklist = Record<string, boolean>
-
 type CheckmarkUpdated = {
   ingredientId: number
   checked: boolean

@@ -1,6 +1,6 @@
 import { Helmet } from "@/components/Helmet"
 import { NavPage } from "@/components/Page"
-import Calendar from "@/pages/schedule/Calendar"
+import { Calendar } from "@/pages/schedule/Calendar"
 
 export function SchedulePage() {
   return (

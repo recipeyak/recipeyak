@@ -429,7 +429,7 @@ function MaybeLink({
   )
 }
 
-export function TimelineEvent({
+function TimelineEvent({
   event,
   enableLinking = true,
   className,

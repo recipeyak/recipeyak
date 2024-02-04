@@ -15,7 +15,5 @@ export const recipeURL = (id: string | number, name?: string): string => {
 export const teamURL = (id: number, name: string): string => {
   return pathTeamDetail({ teamId: id.toString() }) + `-${toURL(name)}`
 }
-export const inviteURL = (teamID: number, name: string): string =>
-  teamURL(teamID, name) + "/invite"
 export const teamSettingsURL = (id: number, name: string): string =>
   teamURL(id, name) + "/settings"
