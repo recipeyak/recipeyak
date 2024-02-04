@@ -24,6 +24,4 @@ COPY . /var/app
 ARG GIT_SHA
 RUN sh -c 'sed -i s/\<%=GIT_SHA=%\>/"$GIT_SHA"/ recipeyak/django/settings.py && grep GIT_SHA recipeyak/django/settings.py'
 
-HEALTHCHECK CMD curl --fail http://localhost:8000/healthz
-
 CMD ["/var/app/entrypoint.sh"]

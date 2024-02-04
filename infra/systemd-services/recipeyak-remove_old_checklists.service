@@ -5,6 +5,7 @@ ExecStart=/usr/bin/docker run \
         --rm \
         --network host \
         --log-driver=journald \
+        --name remove_old_checklists \
         --env-file=/root/.env-production \
         recipeyak/django:{{GIT_SHA}} \
         ./.venv/bin/python -m recipeyak.jobs.remove_old_checklists
