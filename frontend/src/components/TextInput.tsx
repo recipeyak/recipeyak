@@ -11,6 +11,7 @@ export const TextInput = forwardRef(
     ref: ForwardedRef<HTMLInputElement>,
   ) => {
     return (
+      // eslint-disable-next-line react/forbid-elements
       <input
         type="text"
         className={inputStyles(props)}

@@ -11,8 +11,12 @@ export const EmailInput = forwardRef(
     ref: ForwardedRef<HTMLInputElement>,
   ) => {
     return (
+      // eslint-disable-next-line react/forbid-elements
       <input
         type="email"
+        autoComplete="username"
+        spellCheck="false"
+        autoCapitalize="none"
         className={inputStyles(props)}
         {...omit(props, "className")}
         ref={ref}

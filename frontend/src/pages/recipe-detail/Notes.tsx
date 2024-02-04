@@ -897,6 +897,7 @@ function FileUploader({
         </div>
       )}
       <label className="mb-2 cursor-pointer rounded-b-[3px] border-[thin] border-solid border-[--color-border] bg-[--color-background-card] px-[0.25rem] py-[0.1rem] text-sm font-medium text-[--color-text-muted] [border-top-style:none]">
+        {/* eslint-disable-next-line react/forbid-elements */}
         <input
           type="file"
           multiple

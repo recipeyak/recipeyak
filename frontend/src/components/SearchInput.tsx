@@ -7,19 +7,22 @@ export const SearchInput = forwardRef(
   (
     props: Omit<
       React.ComponentProps<"input">,
-      "type" | "autoComplete" | "spellCheck"
+      "type" | "autoComplete" | "spellCheck" | "autoCapitalize" | "autoCorrect"
     > & {
       error?: boolean
     },
     ref: ForwardedRef<HTMLInputElement>,
   ) => {
     return (
+      // eslint-disable-next-line react/forbid-elements
       <input
         {...omit(props, "className")}
         type="search"
         autoComplete="off"
+        autoCapitalize="off"
+        autoCorrect="off"
         spellCheck="false"
-        className={inputStyles(props)}
+        className={props.className ?? inputStyles(props)}
         ref={ref}
       />
     )
