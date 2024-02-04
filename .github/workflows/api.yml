@@ -232,7 +232,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version-file: "backend/package.json"
-          cache-dependency-path: "pnpm-lock.yaml"
+          cache-dependency-path: "backend/pnpm-lock.yaml"
           cache: "pnpm"
       - name: Install dependencies
         working-directory: "./backend"
@@ -255,7 +255,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version-file: "backend/package.json"
-          cache-dependency-path: "pnpm-lock.yaml"
+          cache-dependency-path: "backend/pnpm-lock.yaml"
           cache: "pnpm"
       - name: Install dependencies
         working-directory: "backend"
@@ -285,7 +285,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version-file: "backend/package.json"
-          cache-dependency-path: "pnpm-lock.yaml"
+          cache-dependency-path: "backend/pnpm-lock.yaml"
           cache: "pnpm"
       - name: Install dependencies
         working-directory: "./backend"
