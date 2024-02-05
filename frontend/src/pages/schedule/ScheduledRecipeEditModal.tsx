@@ -204,7 +204,7 @@ function RescheduleSection({
           | "Saturday"
           | "Weekday"
           | "Weekend",
-        now: parseISO(localDate),
+        now: localDate,
       },
       {
         onSuccess: (data) => {

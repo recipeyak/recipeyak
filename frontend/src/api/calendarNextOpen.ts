@@ -12,7 +12,7 @@ export function calendarNextOpen(params: {
     | "Saturday"
     | "Weekday"
     | "Weekend"
-  now: Date
+  now: string
 }) {
   return http<{
     date: string

@@ -91,7 +91,7 @@ export function ScheduleModal({
       {
         recipeID: recipeId,
         recipeName,
-        on: parseISO(isoDate),
+        on: isoDate,
       },
       {
         onSuccess: () => {

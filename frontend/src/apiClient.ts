@@ -2,7 +2,6 @@ import { AxiosRequestConfig } from "axios"
 import { omit } from "lodash-es"
 
 import { assertNever } from "@/assert"
-import { toISODateString } from "@/date"
 import { baseHttp } from "@/http"
 
 function replacePathParams(
@@ -30,7 +29,7 @@ export async function http<T>(args: {
   if (requestData != null) {
     for (const [param, value] of Object.entries(requestData)) {
       if (value instanceof Date) {
-        requestData[param] = toISODateString(value)
+        requestData[param] = value.toISOString()
       }
     }
   }

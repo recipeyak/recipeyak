@@ -1,5 +1,4 @@
 import { Hit } from "@algolia/client-search"
-import { parseISO } from "date-fns"
 import { useState } from "react"
 import { useFocusVisible } from "react-aria"
 import {
@@ -269,7 +268,7 @@ export function ScheduleRecipeModal({
             scheduledRecipeCreate.mutate({
               recipeID: selectedItem.id,
               recipeName: selectedItem.name,
-              on: parseISO(isoDate),
+              on: isoDate,
             })
             close()
             setFormError("")

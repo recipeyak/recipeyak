@@ -1,6 +1,7 @@
 import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { calendarUpdate } from "@/api/calendarUpdate"
+import { toISODateString } from "@/date"
 import {
   CalendarResponse,
   ScheduledRecipe,
@@ -48,7 +49,7 @@ export function useScheduledRecipeUpdate() {
       }
     }) => {
       return calendarUpdate({
-        on: update.on,
+        on: toISODateString(update.on),
         scheduled_recipe_id: scheduledRecipeId,
       })
     },
