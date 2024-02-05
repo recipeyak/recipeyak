@@ -5,8 +5,8 @@ from typing import Any, Literal, Protocol, overload
 from django.contrib.auth.views import redirect_to_login as redirect_to_login_url
 from django.http import HttpResponse
 
+from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.request import AnonymousHttpRequest, AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 
 
 class AuthedView(Protocol):
@@ -67,8 +67,9 @@ def endpoint(
                     )
                 # TODO: figure out how we want to do this when the content type isn't json
                 # Seems like anytime we don't have a json response, we want to redirect to login
-                return JsonResponse(
-                    {"detail": "Authentication credentials were not provided."},
+                raise APIError(
+                    code="not_authenticated",
+                    message="Authentication credentials were not provided.",
                     status=403,
                 )
             return func(request, *args, **kwargs)
