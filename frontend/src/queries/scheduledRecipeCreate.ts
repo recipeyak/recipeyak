@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { addWeeks, startOfWeek, subWeeks } from "date-fns"
+import { addWeeks, parseISO, startOfWeek, subWeeks } from "date-fns"
 
 import { scheduledRecipeCreate } from "@/api/scheduledRecipeCreate"
 import { toISODateString } from "@/date"
@@ -64,7 +64,7 @@ export function useScheduleRecipeCreate() {
     }: {
       recipeID: number
       recipeName: string
-      on: Date
+      on: string
     }) => scheduledRecipeCreate({ recipe: recipeID, on }),
     onMutate: (vars) => {
       const tempId = random32Id()
@@ -77,7 +77,7 @@ export function useScheduleRecipeCreate() {
         vars.on,
         user,
       )
-      const weekId = startOfWeek(vars.on)
+      const weekId = startOfWeek(parseISO(vars.on))
 
       const weekIds = [
         subWeeks(weekId, 2),

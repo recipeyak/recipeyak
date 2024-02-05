@@ -8,6 +8,7 @@ import { addWeeks, endOfWeek, startOfWeek, subWeeks } from "date-fns"
 import parseISO from "date-fns/parseISO"
 
 import { calendarList } from "@/api/calendarList"
+import { toISODateString } from "@/date"
 import { CalendarResponse } from "@/queries/scheduledRecipeCreate"
 import { onRecipeDeletion } from "@/queries/scheduledRecipeDelete"
 import { onScheduledRecipeUpdateSuccess } from "@/queries/scheduledRecipeUpdate"
@@ -73,8 +74,8 @@ export function useScheduledRecipeList({
       // We paginate by week, so we overlap our fetched range
       // We want a fetch to overwrite the cache for the range
       // We want to avoid dupes with our fetches
-      const start = startOfWeek(subWeeks(startOfWeekMs, 3))
-      const end = endOfWeek(addWeeks(startOfWeekMs, 3))
+      const start = toISODateString(startOfWeek(subWeeks(startOfWeekMs, 3)))
+      const end = toISODateString(endOfWeek(addWeeks(startOfWeekMs, 3)))
       const response = await calendarList({
         start,
         end,

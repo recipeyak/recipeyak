@@ -149,10 +149,16 @@ def _json_schema_to_typescript_type(
                     out += f" | {variant!r}"
                 out += ""
             return out
-        if schema.get("format") in ("date-time", "date") and is_input_type:
-            # typescript api client serializes these with .toISOString() before
-            # sending over the wire
-            return "Date"
+        if (format := schema.get("format")) and is_input_type:
+            if format == "date-time":
+                # typescript api client serializes these with .toISOString() before
+                # sending over the wire
+                return "Date"
+            elif format == "date":
+                # ui munges these into string, we could probably be fancier and
+                # have a special type for dates since `Date` in JS is really a
+                # DateTime, but this is good enough for now.
+                return "string"
         return "string"
     if schema["type"] == "boolean":
         return "boolean"

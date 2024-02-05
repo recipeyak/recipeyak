@@ -2,7 +2,7 @@
 import { http } from "@/apiClient"
 
 export function calendarUpdate(params: {
-  on: Date
+  on: string
   scheduled_recipe_id: number
 }) {
   return http<{

@@ -7,8 +7,8 @@ export function useSchedulePreviewList({
   start,
   end,
 }: {
-  start: Date
-  end: Date
+  start: string
+  end: string
 }) {
   const teamId = useTeamId()
   return useQuery({

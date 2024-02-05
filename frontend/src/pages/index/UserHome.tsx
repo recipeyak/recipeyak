@@ -14,6 +14,7 @@ import { Helmet } from "@/components/Helmet"
 import { Image } from "@/components/Image"
 import { Loader } from "@/components/Loader"
 import { NavPage } from "@/components/Page"
+import { toISODateString } from "@/date"
 import { pathSchedule } from "@/paths"
 import { ResponseFromUse } from "@/queries/queryUtilTypes"
 import { useRecentlyCreatedRecipesList } from "@/queries/recentlyCreatedRecipesList"
@@ -107,7 +108,10 @@ function buildSchedule(
 function useSchedulePreview() {
   const start = startOfToday()
   const end = addDays(start, 6)
-  const res = useSchedulePreviewList({ start, end })
+  const res = useSchedulePreviewList({
+    start: toISODateString(start),
+    end: toISODateString(end),
+  })
 
   if (res.data == null) {
     return null

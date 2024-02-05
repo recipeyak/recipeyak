@@ -1,6 +1,7 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
 import { shoppinglistRetrieve } from "@/api/shoppinglistRetrieve"
+import { toISODateString } from "@/date"
 import { ResponseFromUse } from "@/queries/queryUtilTypes"
 import { useTeamId } from "@/useTeamId"
 
@@ -24,8 +25,8 @@ export function useShoppingListFetch({
     queryKey: [teamId, "shopping-list", startDay, endDay],
     queryFn: () =>
       shoppinglistRetrieve({
-        start: startDay,
-        end: endDay,
+        start: toISODateString(startDay),
+        end: toISODateString(endDay),
       }),
     placeholderData: keepPreviousData,
   })

@@ -121,7 +121,7 @@ export function CalendarDay({
         const parsedRecipe: { id: number; name: string } = JSON.parse(recipe)
         scheduledRecipeCreate.mutate({
           recipeID: parsedRecipe.id,
-          on: date,
+          on: toISODateString(date),
           recipeName: parsedRecipe.name,
         })
         return
