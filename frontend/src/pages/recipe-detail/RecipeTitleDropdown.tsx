@@ -214,7 +214,13 @@ export function RecipeTitleDropdown({
         <div className="flex flex-col gap-2">
           <div>Are you sure you want to archive this recipe?</div>
           <div className="flex gap-2">
-            <Button>Cancel</Button>
+            <Button
+              onClick={() => {
+                setIsArchiveModalOpen(false)
+              }}
+            >
+              Cancel
+            </Button>
             <Button
               variant="danger"
               loading={updateRecipe.isPending}

@@ -16,7 +16,8 @@ def test_signup(client: Client) -> None:
     res = client.get(url)
     assert res.status_code == 403
     assert (
-        res.json().get("detail") == "Authentication credentials were not provided."
+        res.json()["error"]["message"]
+        == "Authentication credentials were not provided."
     ), "Required detail for client side logout on session expiration missing"
 
     email = "testing@gmail.com"
@@ -99,7 +100,8 @@ def test_logout(client: Client) -> None:
     ), "logged out user was able to access login required info"
 
     assert (
-        res.json().get("detail") == "Authentication credentials were not provided."
+        res.json()["error"]["message"]
+        == "Authentication credentials were not provided."
     ), "error response message not provided"
 
 

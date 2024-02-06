@@ -46,9 +46,15 @@ def _extract_tips(parsed: AbstractScraper) -> list[str]:
     )
     if nextjs_data_tag is None:
         return []
-    # TODO: make more robust, this is really only intented for nyt cooking
+    # TODO: make more robust, this is really only intended for nyt cooking
     json_next_data = json.loads(nextjs_data_tag.text)
-    tips: list[str] = json_next_data["props"]["pageProps"]["recipe"]["tips"]
+    try:
+        tips: list[str] = json_next_data["props"]["pageProps"]["recipe"]["tips"]
+    except KeyError:
+        # https://www.americastestkitchen.com/recipes/12373-apple-fennel-remoulade
+        # uses nextjs but doesn't have the same structure as nyt cooking for
+        # their props ofc
+        return []
     return tips
 
 
