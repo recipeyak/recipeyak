@@ -46,6 +46,23 @@ if (._SYSTEMD_UNIT == "nginx.service") {
 }
 '''
 
+[sources.pg]
+type = "file"
+read_from = "beginning"
+include = ["/var/log/postgresql/*.json"]
+
+[transforms.pg_json]
+type = "remap"
+inputs = ["pg"]
+source = '''
+data = parse_json!(.message)
+if data == null {
+  abort
+}
+. = merge!(., data)
+.app = "postgres"
+'''
+
 [sources.vector_logs]
 type = "internal_logs"
 
