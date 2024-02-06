@@ -1,12 +1,15 @@
 import { X } from "react-feather"
 
 import { Box } from "@/components/Box"
-import { Button } from "@/components/Buttons"
 
 export function CloseButton({ onClose }: { onClose?: () => void }) {
   return (
-    <Button
-      size="small"
+    // Workaround for https://github.com/adobe/react-spectrum/issues/1513 we use
+    // a normal button instead of the react-aria one, which was causing pressing
+    // close on the modal to also trigger a click on any elements behind it
+    //
+    // eslint-disable-next-line react/forbid-elements
+    <button
       onClick={onClose}
       data-testid="close modal"
       className="!border-none bg-[unset] p-0 !shadow-none"
@@ -26,6 +29,6 @@ export function CloseButton({ onClose }: { onClose?: () => void }) {
       >
         <X size={14} strokeWidth={3} />
       </Box>
-    </Button>
+    </button>
   )
 }
