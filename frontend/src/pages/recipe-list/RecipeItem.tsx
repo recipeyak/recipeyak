@@ -57,7 +57,7 @@ export function RecipeListItem({
         <Image
           // lazy load everything after the first 20ish
           lazyLoad={index > 20}
-          imgixFmt="large"
+          size="large"
           sources={
             hit.primary_image && {
               url: hit.primary_image.url,

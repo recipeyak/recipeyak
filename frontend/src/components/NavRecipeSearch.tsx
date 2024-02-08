@@ -67,7 +67,7 @@ function SearchResultsPopover({
           <Image
             width={40}
             height={40}
-            imgixFmt="small"
+            size="small"
             grayscale={hit.archived_at != null}
             sources={
               hit.primary_image && {

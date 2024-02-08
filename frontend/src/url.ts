@@ -10,7 +10,7 @@ export function pathNamesEqual(a: string, b: string): boolean {
  * 620x470 for header image
  * 1152x864 for gallery
  */
-export function imgixFmt(url: string) {
+export function formatImg(url: string) {
   if (url === "" || !url.startsWith("http")) {
     return url
   }
@@ -21,7 +21,7 @@ export function imgixFmt(url: string) {
   return u.toString()
 }
 
-export function imgixFmtSmall(url: string) {
+export function formatImgSmall(url: string) {
   if (url === "" || !url.startsWith("http")) {
     return url
   }

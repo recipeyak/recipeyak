@@ -37,7 +37,7 @@ function RecipeItem({
       <Image
         width={40}
         height={40}
-        imgixFmt="small"
+        size="small"
         sources={sources}
         grayscale={archived}
         rounded

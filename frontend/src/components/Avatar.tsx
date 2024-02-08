@@ -1,6 +1,6 @@
 import { assertNever } from "@/assert"
 import { clx } from "@/classnames"
-import { imgixFmt } from "@/url"
+import { formatImg } from "@/url"
 
 const avatarCss =
   "max-h-none rounded-full object-cover bg-[--color-background-empty-image] print:!hidden"
@@ -28,7 +28,7 @@ function UserProfileImage({
       width={size}
       height={size}
       alt={alt}
-      src={imgixFmt(src)}
+      src={formatImg(src)}
     />
   )
 }

@@ -30,7 +30,7 @@ import { RecipeFetchResponse as Recipe } from "@/queries/recipeFetch"
 import { useUploadCreate } from "@/queries/uploadCreate"
 import { toast } from "@/toast"
 import { notUndefined } from "@/typeguard"
-import { imgixFmt } from "@/url"
+import { formatImg } from "@/url"
 import { useUserId } from "@/useUserId"
 import { uuid4 } from "@/uuid"
 
@@ -597,7 +597,7 @@ function FilePreview({
           isLoading && "grayscale",
         )}
         loading="lazy"
-        src={contentType.startsWith("image/") ? imgixFmt(src) : src}
+        src={contentType.startsWith("image/") ? formatImg(src) : src}
       />
       {backgroundUrl != null && (
         <div

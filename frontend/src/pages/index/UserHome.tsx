@@ -176,7 +176,7 @@ function RecipeSlide({
         <Image
           width={48}
           height={48}
-          imgixFmt="small"
+          size="small"
           grayscale={!!r.archivedAt}
           sources={r.primaryImage}
           rounded

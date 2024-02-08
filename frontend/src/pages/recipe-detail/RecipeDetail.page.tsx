@@ -708,7 +708,7 @@ function RecipeInfo(props: {
           <div className="relative -mx-3 aspect-[3/2] [grid-area:2/1] print:!hidden sm:mx-0 md:[grid-area:1/2]">
             <Image
               sources={props.recipe.primaryImage}
-              imgixFmt="large"
+              size="large"
               roundDesktop
               onClick={() => {
                 props.openImage()
