@@ -6,6 +6,8 @@ generate .ics files so calendar apps can see the scheduled recipes
 
 trying to be more efficient than icalendar
 """
+from __future__ import annotations
+
 import textwrap
 from collections.abc import Sequence
 from dataclasses import dataclass
@@ -50,7 +52,24 @@ _ICAL_DATETIME_FORMAT = "%Y%m%dT%H%M%SZ"
 _ICAL_DATE_FORMAT = "%Y%m%d"
 
 
-def _event_to_ics(self) -> str:
+@dataclass(frozen=True, slots=True, kw_only=True)
+class Event:
+    """
+    VEVENT
+    """
+
+    id: str
+    start: date
+    end: date
+    summary: str
+    description: str
+    url: str
+    transparent: Literal["TRANSPARENT", "OPAQUE"]
+    created: datetime
+    modified: datetime
+
+
+def _event_to_ics(event: Event) -> str:
     """
     example:
 
@@ -68,36 +87,19 @@ def _event_to_ics(self) -> str:
     END:VEVENT
     """
     out = "BEGIN:VEVENT\r\n"
-    out += _ical_fold(f"UID:{_ical_escape(self.id)}") + "\r\n"
-    out += f"DTSTART;VALUE=DATE:{self.start.strftime(_ICAL_DATE_FORMAT)}\r\n"
-    out += f"DTEND;VALUE=DATE:{self.end.strftime(_ICAL_DATE_FORMAT)}\r\n"
-    out += _ical_fold(f"SUMMARY:{_ical_escape(self.summary)}") + "\r\n"
-    out += _ical_fold(f"DESCRIPTION:{_ical_escape(self.description)}") + "\r\n"
-    out += _ical_fold(f"URL:{_ical_escape(self.url)}") + "\r\n"
-    out += f"TRANSP:{self.transparent}\r\n"
-    out += f"CREATED:{self.created.strftime(_ICAL_DATETIME_FORMAT)}\r\n"
-    modified = self.modified.strftime(_ICAL_DATETIME_FORMAT)
+    out += _ical_fold(f"UID:{_ical_escape(event.id)}") + "\r\n"
+    out += f"DTSTART;VALUE=DATE:{event.start.strftime(_ICAL_DATE_FORMAT)}\r\n"
+    out += f"DTEND;VALUE=DATE:{event.end.strftime(_ICAL_DATE_FORMAT)}\r\n"
+    out += _ical_fold(f"SUMMARY:{_ical_escape(event.summary)}") + "\r\n"
+    out += _ical_fold(f"DESCRIPTION:{_ical_escape(event.description)}") + "\r\n"
+    out += _ical_fold(f"URL:{_ical_escape(event.url)}") + "\r\n"
+    out += f"TRANSP:{event.transparent}\r\n"
+    out += f"CREATED:{event.created.strftime(_ICAL_DATETIME_FORMAT)}\r\n"
+    modified = event.modified.strftime(_ICAL_DATETIME_FORMAT)
     out += f"DTSTAMP:{modified}\r\n"
     out += f"LAST-MODIFIED:{modified}\r\n"
     out += "END:VEVENT\r\n"
     return out
-
-
-@dataclass(frozen=True, slots=True, kw_only=True)
-class Event:
-    """
-    VEVENT
-    """
-
-    id: str
-    start: date
-    end: date
-    summary: str
-    description: str
-    url: str
-    transparent: Literal["TRANSPARENT", "OPAQUE"]
-    created: datetime
-    modified: datetime
 
 
 def calendar(*, id: str, name: str, description: str, events: Sequence[Event]) -> str:
