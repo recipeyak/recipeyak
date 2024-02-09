@@ -17,7 +17,7 @@ template = Template(
 {% if recipe_image_url %}
 <meta property="og:image" content="{{ recipe_image_url | safe }}" />
 {% endif %}
-<link rel="apple-touch-icon" href="https://recipeyak.imgix.net/recipeyak-logo-3x-white.png">
+<link rel="apple-touch-icon" href="https://images-cdn.recipeyak.com/recipeyak-logo-3x-white.png">
 <meta http-equiv="refresh" content="0; url=https://recipeyak.com/recipes/{{ recipe_id }}/">
 </head>
 </html>"""
