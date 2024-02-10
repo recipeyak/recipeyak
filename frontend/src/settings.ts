@@ -15,3 +15,7 @@ export const SENTRY_DSN =
   "https://9168fb38e6d2ec1e1731d68867bb6d94@o64108.ingest.sentry.io/4506287122939904"
 
 export const DOMAIN = DEBUG ? "http://localhost" : "https://recipeyak.com"
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+export const IMAGE_TRANSFORM_FORMAT: string =
+  import.meta.env.FRONTEND_IMAGE_TRANSFORM_FORMAT || "twicpics"
