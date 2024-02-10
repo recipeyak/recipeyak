@@ -109,7 +109,7 @@ function ImageGrid({
             `#note-${upload.note.id}`
           }
         >
-          <Image imgixFmt="small" sources={upload} />
+          <Image size="small" sources={upload} />
         </Link>
       ))}
     </div>

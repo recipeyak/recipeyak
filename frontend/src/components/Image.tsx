@@ -1,7 +1,7 @@
 import { useRef } from "react"
 
 import { clx } from "@/classnames"
-import { imgixFmt, imgixFmtSmall } from "@/url"
+import { formatImg, formatImgSmall } from "@/url"
 import { useIntersectionObserver } from "@/useIntersectionObserver"
 
 export function Image({
@@ -15,7 +15,7 @@ export function Image({
   loading,
   onClick,
   lazyLoad,
-  imgixFmt: imgx,
+  size: imgx,
   ...rest
 }: {
   readonly sources:
@@ -34,7 +34,7 @@ export function Image({
   readonly roundDesktop?: boolean
   readonly onClick?: () => void
   readonly lazyLoad?: boolean
-  readonly imgixFmt: "small" | "large" | "original"
+  readonly size: "small" | "large" | "original"
   ariaLabel?: string
 }) {
   const ref = useRef<HTMLDivElement | null>(null)
@@ -50,10 +50,10 @@ export function Image({
   const formatSource = (source: string) => {
     switch (imgx) {
       case "large": {
-        return imgixFmt(source)
+        return formatImg(source)
       }
       case "small": {
-        return imgixFmtSmall(source)
+        return formatImgSmall(source)
       }
       case "original": {
         return source

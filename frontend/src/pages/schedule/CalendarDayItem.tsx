@@ -129,7 +129,7 @@ export function CalendarItem({
           <Image
             width={25}
             height={25}
-            imgixFmt="small"
+            size="small"
             sources={primaryImage}
             grayscale={archived}
             rounded

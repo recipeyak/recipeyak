@@ -2,7 +2,7 @@ import React from "react"
 import { ChevronLeft, ChevronRight, Share, Star, X } from "react-feather"
 
 import { Button } from "@/components/Buttons"
-import { imgixFmt } from "@/url"
+import { formatImg } from "@/url"
 
 function GalleryButton({
   children,
@@ -31,7 +31,7 @@ function buildSrcSetUrls(u: string): string {
     t.searchParams.set("q", quality)
     srcSet = t.toString() + ` ${width}w, ` + srcSet
   }
-  srcSet = imgixFmt(u) + ` 1200w, ` + srcSet
+  srcSet = formatImg(u) + ` 1200w, ` + srcSet
   return srcSet
 }
 
@@ -87,8 +87,8 @@ export const Gallery = (props: {
               className="m-auto h-full object-contain"
               loading="eager"
               // set key to forcefull replace DOM node.
-              key={imgixFmt(props.imageUrl)}
-              src={imgixFmt(props.imageUrl)}
+              key={formatImg(props.imageUrl)}
+              src={formatImg(props.imageUrl)}
               onLoad={(e) => {
                 if (props.contentType.startsWith("image/"))
                   // The common imigx format `src` will be in browser cache from the
