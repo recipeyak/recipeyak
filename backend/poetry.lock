@@ -1525,21 +1525,6 @@ files = [
 ]
 
 [[package]]
-name = "icalendar"
-version = "4.0.6"
-description = "iCalendar parser/generator"
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-files = [
-    {file = "icalendar-4.0.6-py2.py3-none-any.whl", hash = "sha256:2f400b37353160af259019938e4397bf823f06a67ce9c50a58b95eb563720f00"},
-    {file = "icalendar-4.0.6.tar.gz", hash = "sha256:7e6fe7232622abe32d8f54d0936ffcd5a9087198a4c2f1ec1803a7dd9fdd979f"},
-]
-
-[package.dependencies]
-python-dateutil = "*"
-pytz = "*"
-
-[[package]]
 name = "idna"
 version = "2.8"
 description = "Internationalized Domain Names in Applications (IDNA)"
@@ -3530,4 +3515,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "28f8eb595c677650ba3cf4fde6e8398409080783a69c1e1c50ec74da386dbc05"
+content-hash = "cdf084a6e4aed47a2c83c9ab02cce7b9112012789db03eef7c3d937372912511"

@@ -1,59 +1,14 @@
-from collections.abc import Sequence
-from datetime import date, datetime, timedelta
-from typing import cast
+from datetime import datetime, timedelta
+from typing import Any
 
 import sentry_sdk
+from django.db import connection
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404
-from django.utils import timezone
 from django.utils.http import http_date
 from django.utils.text import slugify
 from django.views.decorators.http import require_http_methods
-from icalendar import Calendar, Event, vDate, vDatetime
 
-from recipeyak.models import Membership, ScheduledRecipe
-
-
-def create_event(
-    *,
-    id: str,
-    name: str,
-    description: str,
-    url: str,
-    start_date: date,
-    end_date: date,
-    created: datetime,
-) -> Event:
-    event = Event(
-        uid=id,
-        dtstart=vDate(start_date),
-        dtend=vDate(end_date),
-        summary=name,
-        description=description,
-        url=url,
-        transp="TRANSPARENT",  # if it is a date, then we use TRANSPARENT, else OPAQUE
-        created=vDatetime(created),
-        dtstamp=vDatetime(created),
-    )
-    event["LAST-MODIFIED"] = vDatetime(created)
-    return event
-
-
-def create_calendar(
-    *, name: str, description: str, events: Sequence[Event]
-) -> Calendar:
-    cal = Calendar(
-        prodid="-//Recipe Yak//Schedule//EN", calscale="GREGORIAN", version=2.0
-    )
-    cal["x-wr-calname"] = name
-    cal["x-wr-caldesc"] = description
-    for event in events:
-        cal.add_component(event)
-    return cal
-
-
-def to_ical_time(date: datetime) -> str:
-    return cast(str, vDatetime(date).to_ical().decode())
+from recipeyak.ical import Event, calendar
 
 
 @require_http_methods(["GET", "HEAD"])
@@ -66,59 +21,89 @@ def ical_retrieve_view(
     We limit the recipes to the last year to avoid having the response size
     gradually increasing & time.
     """
-    membership = get_object_or_404(
-        Membership.objects.filter(
-            calendar_sync_enabled=True,
-            team_id=team_id,
-            calendar_secret_key=ical_id,
-        )
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+select
+  json_object(
+    'team_name': core_team.name,
+    'scheduled_recipes': (
+      select json_agg(scheduled_recipe)
+      from (
+        select json_object(
+          'id': scheduled_recipe.id,
+          'on': scheduled_recipe."on",
+          'created': scheduled_recipe.created,
+          'recipe_id': recipe.id,
+          'recipe_time': recipe.time,
+          'recipe_name': recipe.name
+        ) scheduled_recipe
+        from core_scheduledrecipe scheduled_recipe
+        join core_recipe recipe on scheduled_recipe.recipe_id = recipe.id
+        where scheduled_recipe.created > now() - '2 years'::interval
+        order by "on"
+      ) sub
+    ),
+    'last_modified': (
+      -- TODO: this is buggy because it doesn't take into account deleted
+      -- Scheduled Recipes
+      select extract(epoch from modified)
+      from core_scheduledrecipe
+      where team_id = %(team_id)s and created > now() - '2 years'::interval
+      order by modified desc
+      limit 1
     )
-    team = membership.team
-
-    scheduled_recipes = (
-        ScheduledRecipe.objects.filter(team=team)
-        .filter(created__gte=timezone.now() - timedelta(weeks=52))
-        .select_related("recipe")
-        .order_by("on")
-    )
-
-    events = []
-    for scheduled_recipe in scheduled_recipes:
-        recipe = scheduled_recipe.recipe
-        description = f"Takes about {recipe.time}" if recipe.time else ""
-        slug_name = slugify(recipe.name)
-        events.append(
-            create_event(
-                # prefix with table name to ensure uniqueness of the primary key
-                id=f"core_scheduledrecipe:{scheduled_recipe.id}",
-                name=recipe.name,
-                description=description,
-                url=f"https://recipeyak.com/recipes/{recipe.id}-{slug_name}",
-                start_date=scheduled_recipe.on,
-                end_date=scheduled_recipe.on + timedelta(days=1),
-                created=scheduled_recipe.created,
-            )
+  )
+from
+  core_membership
+  join core_team on core_team.id = core_membership.team_id
+where
+  calendar_sync_enabled
+  and team_id = %(team_id)s
+  and calendar_secret_key = %(calendar_secret_key)s
+""",
+            {"team_id": team_id, "calendar_secret_key": ical_id},
         )
+        row = cursor.fetchone()
+        if row is None:
+            return HttpResponse(status=404)
+        col: dict[str, Any] = row[0]
+        team_name: str = col["team_name"]
+        scheduled_recipes: list[dict[str, Any]] = col["scheduled_recipes"] or []
+        last_modified: float | None = col["last_modified"]
+
     with sentry_sdk.start_span(
         op="recipeyak.ical.render", description="create icalendar"
     ):
-        cal = create_calendar(
+        events = []
+        for s in scheduled_recipes:
+            description = f"Takes about {s['recipe_time']}" if s["recipe_time"] else ""
+            slug_name = slugify(s["recipe_name"])
+            start_date = datetime.fromisoformat(s["on"])
+            created = datetime.fromisoformat(s["created"])
+            events.append(
+                Event(
+                    id=f"core_scheduledrecipe:{s['id']}",
+                    description=description,
+                    url=f"https://recipeyak.com/recipes/{s['recipe_id']}-{slug_name}",
+                    start=start_date,
+                    end=start_date + timedelta(days=1),
+                    created=created,
+                    transparent="TRANSPARENT",
+                    summary=s["recipe_name"],
+                    modified=created,
+                )
+            )
+        cal = calendar(
+            id="-//Recipe Yak//Schedule//EN",
             name="Scheduled Recipes",
-            description=f"Recipe Yak Schedule for Team {team.name}",
+            description=f"Recipe Yak Schedule for Team {team_name}",
             events=events,
         )
+        response = HttpResponse()
+        response["Content-Type"] = "text/calendar"
+        response.content = cal
 
-    last_modified_scheduled = (
-        ScheduledRecipe.objects.filter(team=team).order_by("-modified").first()
-    )
-
-    response = HttpResponse()
-    response["Content-Type"] = "text/calendar"
-    if last_modified_scheduled is not None:
-        # TODO: this is buggy because it doesn't take into account deleted Scheduled Recipes
-        response["Last-Modified"] = http_date(
-            last_modified_scheduled.modified.timestamp()
-        )
-    with sentry_sdk.start_span(op="recipeyak.ical.render", description="render ical"):
-        response.content = cal.to_ical(sorted=False)
+    if last_modified is not None:
+        response["Last-Modified"] = http_date(last_modified)
     return response
