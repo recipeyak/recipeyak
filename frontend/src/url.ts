@@ -6,6 +6,35 @@ export function pathNamesEqual(a: string, b: string): boolean {
   return urlA.pathname === urlB.pathname
 }
 
+function imigx(url: string, transforms: Record<string, string>): string {
+  if (url === "" || !url.startsWith("http")) {
+    return url
+  }
+  const u = new URL(url)
+  for (const [k, v] of Object.entries(transforms)) {
+    u.searchParams.set(k, v)
+  }
+  return u.toString()
+}
+function twicpic(url: string, transforms: Record<string, string>): string {
+  if (url === "" || !url.startsWith("http")) {
+    return url
+  }
+  const u = new URL(url)
+
+  u.searchParams.delete("twic")
+  let query = "twic=v1"
+  for (const [k, v] of Object.entries(transforms)) {
+    query += "/" + k + "=" + v
+  }
+  if (u.search) {
+    u.search += "&" + query
+  } else {
+    u.search = query
+  }
+  return u.toString()
+}
+
 /**
  * Image sizes supported:
  * 100x100 for comment thumbnail images
@@ -13,48 +42,21 @@ export function pathNamesEqual(a: string, b: string): boolean {
  * 1152x864 for gallery
  */
 export function formatImg(url: string) {
-  if (url === "" || !url.startsWith("http")) {
-    return url
-  }
-  const u = new URL(url)
   if (IMAGE_TRANSFORM_FORMAT === "imgix") {
-    u.searchParams.set("w", "1200")
-    u.searchParams.set("q", "30")
-    u.searchParams.set("fit", "clip")
-    return u.toString()
+    return imigx(url, { w: "1200", q: "30", fit: "clip" })
   }
   if (IMAGE_TRANSFORM_FORMAT === "twicpics") {
-    const query = "twic=v1/resize=1200/quality=30"
-    if (u.search) {
-      u.search += "&" + query
-    } else {
-      u.search = query
-    }
-    return u.toString()
+    return twicpic(url, { resize: "1200", quality: "30" })
   }
   throw Error(`Unexpected transform format:${IMAGE_TRANSFORM_FORMAT}`)
 }
 
 export function formatImgSmall(url: string) {
-  if (url === "" || !url.startsWith("http")) {
-    return url
-  }
-  const u = new URL(url)
   if (IMAGE_TRANSFORM_FORMAT === "imgix") {
-    u.searchParams.set("w", "200")
-    u.searchParams.set("q", "100")
-    u.searchParams.set("fit", "clip")
-
-    return u.toString()
+    return imigx(url, { w: "200", q: "100", fit: "clip" })
   }
   if (IMAGE_TRANSFORM_FORMAT === "twicpics") {
-    const query = "twic=v1/resize=200/quality=100"
-    if (u.search) {
-      u.search += "&" + query
-    } else {
-      u.search = query
-    }
-    return u.toString()
+    return twicpic(url, { resize: "200", quality: "100" })
   }
   throw Error(`Unexpected transform format:${IMAGE_TRANSFORM_FORMAT}`)
 }
@@ -62,26 +64,12 @@ export function formatImgSmall(url: string) {
 /**
  *  Open graph images are recommended to be 1200x630, so we use Imgix to crop.
  */
-export function formatImgOpenGraph(x: string): string {
-  if (!x) {
-    return x
-  }
-  const u = new URL(x)
+export function formatImgOpenGraph(url: string): string {
   if (IMAGE_TRANSFORM_FORMAT === "imgix") {
-    u.searchParams.set("w", "1200")
-    u.searchParams.set("h", "910")
-    u.searchParams.set("fit", "crop")
-    return u.toString()
+    return imigx(url, { w: "1200", h: "910", fit: "crop" })
   }
-
   if (IMAGE_TRANSFORM_FORMAT === "twicpics") {
-    const query = "twic=v1/cover=1200x910/quality=30"
-    if (u.search) {
-      u.search += "&" + query
-    } else {
-      u.search = query
-    }
-    return u.toString()
+    return twicpic(url, { cover: "1200x910", quality: "30" })
   }
   throw Error(`Unexpected transform format:${IMAGE_TRANSFORM_FORMAT}`)
 }
