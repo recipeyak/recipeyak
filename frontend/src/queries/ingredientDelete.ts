@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
 
 import { ingredientDelete } from "@/api/ingredientDelete"
-import { setQueryDataRecipe } from "@/queries/recipeFetch"
+import { cacheUpsertRecipe } from "@/queries/recipeFetch"
 import { useTeamId } from "@/useTeamId"
 
 export function useIngredientDelete() {
@@ -16,7 +16,7 @@ export function useIngredientDelete() {
       ingredientId: number
     }) => ingredientDelete({ ingredient_id: ingredientId }),
     onSuccess: (_res, vars) => {
-      setQueryDataRecipe(queryClient, {
+      cacheUpsertRecipe(queryClient, {
         teamId,
         recipeId: vars.recipeId,
         updater: (prev) => {

@@ -9,7 +9,7 @@ import parseISO from "date-fns/parseISO"
 
 import { calendarList } from "@/api/calendarList"
 import { toISODateString } from "@/date"
-import { CalendarResponse } from "@/queries/scheduledRecipeCreate"
+import { cacheUpsertScheduledRecipesWeek } from "@/queries/scheduledRecipeCreate"
 import { onRecipeDeletion } from "@/queries/scheduledRecipeDelete"
 import { onScheduledRecipeUpdateSuccess } from "@/queries/scheduledRecipeUpdate"
 import { useTeamId } from "@/useTeamId"
@@ -82,17 +82,19 @@ export function useScheduledRecipeList({
       })
 
       // Iterate through and populate each based on week
-      const weekIds = new Set<number>()
+      const weekIds = new Set<Date>()
       response.scheduledRecipes.forEach((r) => {
-        const weekId = startOfWeek(parseISO(r.on)).getTime()
+        const weekId = startOfWeek(parseISO(r.on))
         weekIds.add(weekId)
       })
       weekIds.forEach((weekId) => {
-        // eslint-disable-next-line no-restricted-syntax
-        queryClient.setQueryData<CalendarResponse>(
-          [teamID, "calendar", weekId],
-          response,
-        )
+        cacheUpsertScheduledRecipesWeek(queryClient, {
+          teamId: teamID,
+          weekId,
+          updater: () => {
+            return response
+          },
+        })
       })
       return response
     },

@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 
 import { teamUpdate } from "@/api/teamUpdate"
-import { setQueryDataTeam } from "@/queries/teamFetch"
+import { cacheUpsertTeam } from "@/queries/teamFetch"
 import { toast } from "@/toast"
 
 export function useTeamUpdate() {
@@ -17,7 +17,7 @@ export function useTeamUpdate() {
     }) => teamUpdate({ name: payload.name, team_id: teamId }),
     onSuccess: (res, vars) => {
       toast.success("Team updated")
-      setQueryDataTeam(queryClient, { teamId: vars.teamId, updater: () => res })
+      cacheUpsertTeam(queryClient, { teamId: vars.teamId, updater: () => res })
     },
     onError: (res) => {
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions

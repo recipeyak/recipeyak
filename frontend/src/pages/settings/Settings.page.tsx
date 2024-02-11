@@ -17,7 +17,7 @@ import { Export } from "@/pages/settings/Export"
 import Sessions from "@/pages/settings/Sessions"
 import { ThemePicker } from "@/pages/settings/ThemePicker"
 import { useUploadCreate } from "@/queries/uploadCreate"
-import { setQueryDataUser, useUserFetch } from "@/queries/userFetch"
+import { cacheUpsertUser, useUserFetch } from "@/queries/userFetch"
 import { toast } from "@/toast"
 
 export function SettingsPage() {
@@ -73,7 +73,7 @@ export function SettingsPage() {
                       // NOTE: there are other places in the cache that we
                       // should update (since it isn't normalized), but this is
                       // good enough
-                      setQueryDataUser(queryClient, {
+                      cacheUpsertUser(queryClient, {
                         updater: (prev) => {
                           if (prev == null) {
                             return prev

@@ -16,7 +16,7 @@ function getQueryKey({ teamId }: { teamId: number }) {
 
 type TeamFetchResponse = ResponseFromUse<typeof useTeam>
 
-export function setQueryDataTeam(
+export function cacheUpsertTeam(
   client: QueryClient,
   {
     teamId,

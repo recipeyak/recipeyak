@@ -1,7 +1,7 @@
 import * as Sentry from "@sentry/react"
 import { QueryClient } from "@tanstack/react-query"
 
-import { setQueryDataUser } from "@/queries/userFetch"
+import { cacheUpsertUser } from "@/queries/userFetch"
 import { removeItem, setItem } from "@/storage"
 import { themeSet } from "@/theme"
 import { Theme, ThemeMode } from "@/themeConstants"
@@ -43,7 +43,7 @@ export function login(
     night: user.theme_night,
     mode: user.theme_mode,
   })
-  setQueryDataUser(queryClient, {
+  cacheUpsertUser(queryClient, {
     updater: () => {
       return user
     },

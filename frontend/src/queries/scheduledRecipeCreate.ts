@@ -1,5 +1,6 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query"
 import { addWeeks, parseISO, startOfWeek, subWeeks } from "date-fns"
+import produce from "immer"
 
 import { scheduledRecipeCreate } from "@/api/scheduledRecipeCreate"
 import { toISODateString } from "@/date"
@@ -88,20 +89,18 @@ export function useScheduleRecipeCreate() {
       ]
 
       weekIds.forEach((weekId) => {
-        // eslint-disable-next-line no-restricted-syntax
-        queryClient.setQueryData<CalendarResponse>(
-          [teamID, "calendar", weekId.getTime()],
-          (data) => {
-            if (data == null) {
-              return data
-            }
-            const updatedScheduledRecipes: ScheduledRecipe[] = [
-              ...data.scheduledRecipes,
-              tempScheduledRecipe,
-            ]
-            return { ...data, scheduledRecipes: updatedScheduledRecipes }
+        cacheUpsertScheduledRecipesWeek(queryClient, {
+          teamId: teamID,
+          weekId,
+          updater: (prev) => {
+            return produce(prev, (draft) => {
+              if (draft == null) {
+                return
+              }
+              draft.scheduledRecipes.push(tempScheduledRecipe)
+            })
           },
-        )
+        })
       })
 
       return { optimisticScheduledRecipeId: tempScheduledRecipe.id, weekIds }
@@ -111,29 +110,33 @@ export function useScheduleRecipeCreate() {
         return
       }
       context.weekIds.forEach((weekId) => {
-        // TODO: replace with type safe wrapper function
-
-        // eslint-disable-next-line no-restricted-syntax
-        queryClient.setQueryData<CalendarResponse>(
-          [teamID, "calendar", weekId.getTime()],
-          (data) => {
-            if (data == null) {
-              return data
-            }
-            const updatedScheduledRecipes: ScheduledRecipe[] = [
-              ...data.scheduledRecipes.filter(
-                (x) =>
-                  x.id !== context?.optimisticScheduledRecipeId &&
-                  x.id !== response.id,
-              ),
-              response,
-            ]
-            return {
-              ...data,
-              scheduledRecipes: updatedScheduledRecipes,
-            }
+        cacheUpsertScheduledRecipesWeek(queryClient, {
+          teamId: teamID,
+          weekId,
+          updater: (prev) => {
+            return produce(prev, (draft) => {
+              if (draft == null) {
+                return
+              }
+              // 1. find optimistic or pre-existing scheduled recipe indexes
+              let indexesToDelete = new Set<number>()
+              draft.scheduledRecipes.forEach((calRecipe, index) => {
+                if (
+                  calRecipe.id === context.optimisticScheduledRecipeId ||
+                  calRecipe.id === response.id
+                ) {
+                  indexesToDelete.add(index)
+                }
+              })
+              // 2. remove the optimistic or pre-existing scheduled recipes
+              for (const index of indexesToDelete) {
+                draft.scheduledRecipes.splice(index, 1)
+              }
+              // 3. add the server value
+              draft.scheduledRecipes.push(response)
+            })
           },
-        )
+        })
       })
     },
     onError: (__err, __vars, context) => {
@@ -141,26 +144,44 @@ export function useScheduleRecipeCreate() {
         return
       }
       context.weekIds.forEach((weekId) => {
-        // TODO: replace with type safe wrapper function
-
-        // eslint-disable-next-line no-restricted-syntax
-        queryClient.setQueryData<CalendarResponse>(
-          [teamID, "calendar", weekId.getTime()],
-          (data) => {
-            if (data == null) {
-              return data
-            }
-            const updatedScheduledRecipes = data.scheduledRecipes.filter(
-              (x) => x.id !== context?.optimisticScheduledRecipeId,
-            )
-            return {
-              ...data,
-              scheduledRecipes: updatedScheduledRecipes,
-            }
+        cacheUpsertScheduledRecipesWeek(queryClient, {
+          teamId: teamID,
+          weekId,
+          updater: (prev) => {
+            return produce(prev, (draft) => {
+              if (draft == null) {
+                return
+              }
+              const recipeIndex = draft.scheduledRecipes.findIndex(
+                (x) => x.id === context.optimisticScheduledRecipeId,
+              )
+              draft.scheduledRecipes.splice(recipeIndex, 1)
+            })
           },
-        )
+        })
       })
       toast.error("error scheduling recipe")
     },
   })
+}
+
+export function cacheUpsertScheduledRecipesWeek(
+  client: QueryClient,
+  {
+    updater,
+    teamId,
+    weekId,
+  }: {
+    teamId: number
+    weekId: Date
+    updater: (
+      prev: CalendarResponse | undefined,
+    ) => CalendarResponse | undefined
+  },
+) {
+  // eslint-disable-next-line no-restricted-syntax
+  client.setQueryData<CalendarResponse>(
+    [teamId, "calendar", weekId.getTime()],
+    updater,
+  )
 }

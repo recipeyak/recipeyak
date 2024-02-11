@@ -16,7 +16,7 @@ function getQueryKey({ teamId }: { teamId: number }) {
 
 type TeamMemberListResponse = ResponseFromUse<typeof useTeamMembersList>
 
-export function setQueryDataTeamMemberList(
+export function cacheUpsertTeamMemberList(
   client: QueryClient,
   {
     teamId,

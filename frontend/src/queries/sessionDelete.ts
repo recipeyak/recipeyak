@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import produce from "immer"
 
 import { sessionDelete } from "@/api/sessionDelete"
-import { ISession } from "@/queries/sessionList"
+import { cacheUpsertSession } from "@/queries/sessionList"
 
 export function useSessionDelete() {
   // TODO: if we delete the current session that should use the logout mutation
@@ -10,9 +11,16 @@ export function useSessionDelete() {
     mutationFn: ({ sessionId }: { sessionId: string }) =>
       sessionDelete({ session_id: sessionId }),
     onSuccess: (_response, vars) => {
-      // eslint-disable-next-line no-restricted-syntax
-      queryClient.setQueryData<readonly ISession[]>(["sessions"], (prev) => {
-        return prev?.filter((x) => x.id !== vars.sessionId)
+      cacheUpsertSession(queryClient, {
+        updater: (prev) => {
+          return produce(prev, (draft) => {
+            if (draft == null) {
+              return
+            }
+            const sessionIndex = draft.findIndex((x) => x.id === vars.sessionId)
+            draft.splice(sessionIndex, 1)
+          })
+        },
       })
     },
   })

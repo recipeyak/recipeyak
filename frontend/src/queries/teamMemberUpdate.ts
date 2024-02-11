@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AxiosError, AxiosResponse } from "axios"
 
 import { memberUpdate } from "@/api/memberUpdate"
-import { setQueryDataTeamMemberList } from "@/queries/teamMembersList"
+import { cacheUpsertTeamMemberList } from "@/queries/teamMembersList"
 import { toast } from "@/toast"
 
 type Level = "admin" | "contributor" | "read"
@@ -20,7 +20,7 @@ export function useTeamMemberUpdate() {
     }) => memberUpdate({ level, member_id: memberId }),
     onMutate: (vars) => {
       let prevLevel: Level | undefined
-      setQueryDataTeamMemberList(queryClient, {
+      cacheUpsertTeamMemberList(queryClient, {
         teamId: vars.teamId,
         updater: (prev) => {
           return prev?.map((x) => {
@@ -35,7 +35,7 @@ export function useTeamMemberUpdate() {
       return { prevLevel }
     },
     onSuccess: (res, vars) => {
-      setQueryDataTeamMemberList(queryClient, {
+      cacheUpsertTeamMemberList(queryClient, {
         teamId: vars.teamId,
         updater: (prev) => {
           return prev?.map((x) => {
@@ -48,7 +48,7 @@ export function useTeamMemberUpdate() {
       })
     },
     onError: (error, vars, context) => {
-      setQueryDataTeamMemberList(queryClient, {
+      cacheUpsertTeamMemberList(queryClient, {
         teamId: vars.teamId,
         updater: (prev) => {
           return prev?.map((x) => {

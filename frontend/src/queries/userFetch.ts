@@ -23,7 +23,7 @@ function getQueryKey() {
 
 type UserFetchResponse = ResponseFromUse<typeof useUserFetch>
 
-export function setQueryDataUser(
+export function cacheUpsertUser(
   client: QueryClient,
   {
     updater,
