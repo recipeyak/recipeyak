@@ -11,12 +11,12 @@ import { useTeamId } from "@/useTeamId"
 
 export function onScheduledRecipeUpdateSuccess(params: {
   queryClient: QueryClient
-  teamID: number
+  teamId: number
   scheduledRecipeId: number
   updatedCalRecipe: ScheduledRecipe
 }) {
   cacheUpsertScheduledRecipes(params.queryClient, {
-    teamId: params.teamID,
+    teamId: params.teamId,
     updater: (prev) => {
       return produce(prev, (draft) => {
         if (draft == null) {
@@ -78,7 +78,7 @@ export function useScheduledRecipeUpdate() {
     onSuccess: (response, vars) => {
       onScheduledRecipeUpdateSuccess({
         queryClient,
-        teamID: teamId,
+        teamId,
         scheduledRecipeId: vars.scheduledRecipeId,
         updatedCalRecipe: response,
       })

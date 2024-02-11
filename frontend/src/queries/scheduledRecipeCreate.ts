@@ -55,7 +55,7 @@ function toCalRecipe(
 export type ScheduledRecipe = Awaited<ReturnType<typeof scheduledRecipeCreate>>
 
 export function useScheduleRecipeCreate() {
-  const teamID = useTeamId()
+  const teamId = useTeamId()
   const queryClient = useQueryClient()
   const user = useUser()
   return useMutation({
@@ -90,7 +90,7 @@ export function useScheduleRecipeCreate() {
 
       weekIds.forEach((weekId) => {
         cacheUpsertScheduledRecipesWeek(queryClient, {
-          teamId: teamID,
+          teamId,
           weekId,
           updater: (prev) => {
             return produce(prev, (draft) => {
@@ -111,7 +111,7 @@ export function useScheduleRecipeCreate() {
       }
       context.weekIds.forEach((weekId) => {
         cacheUpsertScheduledRecipesWeek(queryClient, {
-          teamId: teamID,
+          teamId,
           weekId,
           updater: (prev) => {
             return produce(prev, (draft) => {
@@ -145,7 +145,7 @@ export function useScheduleRecipeCreate() {
       }
       context.weekIds.forEach((weekId) => {
         cacheUpsertScheduledRecipesWeek(queryClient, {
-          teamId: teamID,
+          teamId,
           weekId,
           updater: (prev) => {
             return produce(prev, (draft) => {
