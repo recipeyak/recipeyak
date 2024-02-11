@@ -41,9 +41,9 @@ export function useScheduledRecipeList({
 }: {
   startOfWeekMs: number
 }) {
-  const teamID = useTeamId()
+  const teamId = useTeamId()
   const queryClient = useQueryClient()
-  useChannel(`team:${teamID}:scheduled_recipe`, (message) => {
+  useChannel(`team:${teamId}:scheduled_recipe`, (message) => {
     switch (message.name) {
       case "scheduled_recipe_updated": {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument
@@ -51,7 +51,7 @@ export function useScheduledRecipeList({
         onScheduledRecipeUpdateSuccess({
           queryClient,
           scheduledRecipeId: apiRes.id,
-          teamID,
+          teamId,
           updatedCalRecipe: apiRes,
         })
         break
@@ -60,7 +60,7 @@ export function useScheduledRecipeList({
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument
         const apiRes: { recipeId: number } = JSON.parse(message.data)
         onRecipeDeletion(queryClient, {
-          teamId: teamID,
+          teamId,
           scheduledRecipeId: apiRes.recipeId,
         })
         break
@@ -68,7 +68,7 @@ export function useScheduledRecipeList({
     }
   })
   return useQuery({
-    queryKey: [teamID, "calendar", startOfWeekMs],
+    queryKey: [teamId, "calendar", startOfWeekMs],
     queryFn: async () => {
       // Fetch for a given week w/ 2 weeks after & 2 weeks before
       // We paginate by week, so we overlap our fetched range
@@ -89,7 +89,7 @@ export function useScheduledRecipeList({
       })
       weekIds.forEach((weekId) => {
         cacheUpsertScheduledRecipesWeek(queryClient, {
-          teamId: teamID,
+          teamId,
           weekId,
           updater: () => {
             return response

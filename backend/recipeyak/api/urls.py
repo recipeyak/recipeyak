@@ -5,6 +5,9 @@ from recipeyak.api.calendar_delete_view import calendar_delete_view
 from recipeyak.api.calendar_generate_link_view import calendar_generate_link_view
 from recipeyak.api.calendar_list_view import calendar_list_view
 from recipeyak.api.calendar_next_open_view import calendar_next_open_view
+from recipeyak.api.calendar_settings_retrieve_view import (
+    calendar_settings_retrieve_view,
+)
 from recipeyak.api.calendar_update_settings_view import calendar_update_settings_view
 from recipeyak.api.calendar_update_view import calendar_update_view
 from recipeyak.api.cook_checklist_create_view import cook_checklist_create_view
@@ -313,6 +316,11 @@ routes = [
         "api/v1/calendar/",
         method="post",
         view=scheduled_recipe_create_view,
+    ),
+    route(
+        "api/v1/calendar/settings/",
+        method="get",
+        view=calendar_settings_retrieve_view,
     ),
     route(
         "api/v1/calendar/settings/",

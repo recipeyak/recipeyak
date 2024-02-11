@@ -11,9 +11,9 @@ type CheckmarkUpdated = {
 }
 
 export function useCookChecklistFetch({ recipeId }: { recipeId: number }) {
-  const teamID = useTeamId()
+  const teamId = useTeamId()
   const queryClient = useQueryClient()
-  useChannel(`team:${teamID}:cook_checklist:${recipeId}`, (message) => {
+  useChannel(`team:${teamId}:cook_checklist:${recipeId}`, (message) => {
     switch (message.name) {
       case "checkmark_updated": {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument

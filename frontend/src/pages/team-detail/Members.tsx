@@ -23,11 +23,11 @@ import { useTeamMemberUpdate } from "@/queries/teamMemberUpdate"
 import { useUserId } from "@/useUserId"
 
 function MembersList({
-  teamID,
+  teamId,
   loading,
   members,
 }: {
-  teamID: number
+  teamId: number
   members: {
     id: number
     created: string
@@ -128,7 +128,7 @@ function MembersList({
                                   loading={deleteTeamMember.isPending}
                                   onClick={() => {
                                     deleteTeamMember.mutate({
-                                      teamId: teamID,
+                                      teamId,
                                       memberId: member.id,
                                     })
                                   }}
@@ -154,7 +154,7 @@ function MembersList({
                           value={member.level}
                           onChange={(e) => {
                             updateTeamMember.mutate({
-                              teamId: teamID,
+                              teamId,
                               memberId: member.id,
                               // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
                               level: e.target.value as
@@ -199,7 +199,7 @@ export function Members({ teamId }: { teamId: number }) {
         </Button>
       </div>
       <MembersList
-        teamID={teamId}
+        teamId={teamId}
         loading={teamMembers.isPending}
         members={teamMembers.data ?? []}
       />

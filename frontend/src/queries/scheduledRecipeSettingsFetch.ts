@@ -1,21 +1,37 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query"
+import { keepPreviousData, QueryClient, useQuery } from "@tanstack/react-query"
 
-import { calendarList } from "@/api/calendarList"
-import { toISODateString } from "@/date"
+import { calendarSettingsRetrieve } from "@/api/calendarSettingsRetrieve"
+import { ResponseFromUse } from "@/queries/queryUtilTypes"
 import { useTeamId } from "@/useTeamId"
 
 export function useScheduledRecipeSettingsFetch() {
-  const teamID = useTeamId()
+  const teamId = useTeamId()
   return useQuery({
-    queryKey: [teamID, "calendar-settings"],
-    queryFn: () => {
-      // TODO: we could move this to a different endpoint or maybe stuff it in
-      // the preload when we get there
-      const start = toISODateString(new Date())
-      return calendarList({ start, end: start })
-    },
-    select: (data) => data.settings,
-    // Schedule recipes plop in due the way we overlap/prefetch without this
+    queryKey: [teamId, "calendar-settings"],
+    queryFn: calendarSettingsRetrieve,
+    // Schedule recipes pop in due the way we overlap/prefetch without this
     placeholderData: keepPreviousData,
   })
+}
+
+type CalendarResponse = ResponseFromUse<typeof useScheduledRecipeSettingsFetch>
+
+function getQueryKey(teamId: number) {
+  return [teamId, "calendar-settings"]
+}
+
+export function cacheUpsertCalendarSettings(
+  client: QueryClient,
+  {
+    updater,
+    teamId,
+  }: {
+    teamId: number
+    updater: (
+      prev: CalendarResponse | undefined,
+    ) => CalendarResponse | undefined
+  },
+) {
+  // eslint-disable-next-line no-restricted-syntax
+  client.setQueryData<CalendarResponse>(getQueryKey(teamId), updater)
 }

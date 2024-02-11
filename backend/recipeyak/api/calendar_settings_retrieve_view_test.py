@@ -51,7 +51,7 @@ def test_fetching_team_cal_v2_content(
     res_cal_link = res.json()["settings"]["calendarLink"]
     assert (
         res_cal_link
-        == f"http://testserver/t/{team.pk}/ical/{membership.calendar_secret_key}/schedule.ics"
+        == f"webcal://testserver/t/{team.pk}/ical/{membership.calendar_secret_key}/schedule.ics"
     )
 
     membership.calendar_sync_enabled = True
@@ -62,4 +62,37 @@ def test_fetching_team_cal_v2_content(
 
     assert res.status_code == 200
     assert res.json()["settings"]["syncEnabled"] == membership.calendar_sync_enabled
+    assert membership.calendar_sync_enabled is True
+
+
+def test_fetching_settings(
+    client: Client, user: User, team: Team, recipe: Recipe
+) -> None:
+    """
+    Ensure changing the rows updates the response.
+    """
+    url = "/api/v1/calendar/settings/"
+    client.force_login(user)
+
+    res = client.get(url)
+    assert res.status_code == 200
+
+    membership = Membership.objects.filter(user=user).get(team=team)
+
+    assert res.json()["syncEnabled"] == membership.calendar_sync_enabled
+    assert membership.calendar_sync_enabled is False
+    res_cal_link = res.json()["calendarLink"]
+    assert (
+        res_cal_link
+        == f"webcal://testserver/t/{team.pk}/ical/{membership.calendar_secret_key}/schedule.ics"
+    )
+
+    membership.calendar_sync_enabled = True
+    membership.calendar_secret_key = "foo"
+    membership.save()
+
+    res = client.get(url)
+
+    assert res.status_code == 200
+    assert res.json()["syncEnabled"] == membership.calendar_sync_enabled
     assert membership.calendar_sync_enabled is True

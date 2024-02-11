@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from datetime import date
-from typing import Any
 
 from django.db.models import QuerySet
 from typing_extensions import TypedDict
@@ -14,32 +13,8 @@ from recipeyak.api.calendar_serialization import (
     ScheduleRecipeSerializer,
     serialize_scheduled_recipe,
 )
-from recipeyak.models import Membership, ScheduledRecipe, get_team
-
-
-class CalSettings(TypedDict):
-    syncEnabled: bool
-    calendarLink: str
-
-
-def get_cal_settings(
-    *,
-    team_id: int,
-    request: AuthedHttpRequest[Any],
-) -> CalSettings:
-    membership = Membership.objects.get(team=team_id, user=request.user)
-
-    method = "https" if request.is_secure() else "http"
-    calendar_link = (
-        method
-        + "://"
-        + request.get_host()
-        + f"/t/{team_id}/ical/{membership.calendar_secret_key}/schedule.ics"
-    )
-    return {
-        "syncEnabled": membership.calendar_sync_enabled,
-        "calendarLink": calendar_link,
-    }
+from recipeyak.api.calendar_settings_retrieve_view import CalSettings, get_cal_settings
+from recipeyak.models import ScheduledRecipe, get_team
 
 
 def get_scheduled_recipes(team_id: int) -> QuerySet[ScheduledRecipe]:
@@ -84,5 +59,5 @@ def calendar_list_view(
 
     settings = get_cal_settings(request=request, team_id=team_id)
 
-    # TODO: split this into two endpoints
+    # TODO(2024-04-10): remove the settings properties
     return JsonResponse({"scheduledRecipes": scheduled_recipes, "settings": settings})

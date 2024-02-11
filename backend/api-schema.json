@@ -4586,6 +4586,30 @@
       }
     },
     "/api/v1/calendar/settings/": {
+      "get": {
+        "operationId": "CalendarSettingsRetrieve",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "syncEnabled": {
+                      "type": "boolean"
+                    },
+                    "calendarLink": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["syncEnabled", "calendarLink"],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful response."
+          }
+        }
+      },
       "patch": {
         "operationId": "CalendarUpdateSettings",
         "requestBody": {
