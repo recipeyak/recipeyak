@@ -71,7 +71,7 @@ def test_fetching_settings(
     """
     Ensure changing the rows updates the response.
     """
-    url = "/api/v1/calendar/settings"
+    url = "/api/v1/calendar/settings/"
     client.force_login(user)
 
     res = client.get(url)
