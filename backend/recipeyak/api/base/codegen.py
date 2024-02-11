@@ -86,23 +86,20 @@ def _parameter_type(method: _MethodDict) -> str | None:
 
 
 def _json_schema_to_typescript_type(
-    schema: dict[str, Any] | None, depth: int = 0, *, op: str, is_input_type: bool
+    schema: dict[str, Any], *, op: str, is_input_type: bool
 ) -> str:
-    if schema is None:
-        # TODO: maybe this should be void
-        return "unknown"
     if anyOf := schema.get("anyOf"):
         out = ""
         for variant in anyOf:
             out += " | " + _json_schema_to_typescript_type(
-                variant, depth, op=op, is_input_type=is_input_type
+                variant, op=op, is_input_type=is_input_type
             )
         return out
     if const := schema.get("const"):
         return f'"{const}"'
     if schema["type"] == "array":
         inner_type = _json_schema_to_typescript_type(
-            schema["items"], depth + 1, op=op, is_input_type=is_input_type
+            schema["items"], op=op, is_input_type=is_input_type
         )
         if is_input_type:
             return f"ReadonlyArray<{inner_type}>"
@@ -128,13 +125,11 @@ def _json_schema_to_typescript_type(
                 # server has defaults it will apply.
                 and is_input_type
             )
-            out += indent(
-                f"""\
-"{prop_name}"{("?" if is_optional_prop else "")}: {_json_schema_to_typescript_type(schema["properties"][prop_name], depth + 1, op=op, is_input_type=is_input_type)},""",
-                " " * (depth * 2),
+            value = _json_schema_to_typescript_type(
+                schema["properties"][prop_name], op=op, is_input_type=is_input_type
             )
-
-            out += "\n"
+            optional = "?" if is_optional_prop else ""
+            out += f"{prop_name!r}{optional}: {value},\n"
         out += "}"
         return out
     if schema["type"] == "integer":
@@ -171,6 +166,8 @@ def _return_type(method: _MethodDict) -> str:
     responses = method["responses"]
     assert len(responses) == 1, "should only have one response to choose from"
     if responses.get("204"):
+        # API returns empty string for 204, but unknown seems better from an
+        # intent point of view
         return "unknown"
     response_schema = next(iter(responses.values()))["content"]["application/json"][
         "schema"
