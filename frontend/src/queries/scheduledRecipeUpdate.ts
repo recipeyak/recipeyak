@@ -1,4 +1,5 @@
 import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query"
+import produce from "immer"
 
 import { calendarUpdate } from "@/api/calendarUpdate"
 import { toISODateString } from "@/date"
@@ -14,25 +15,22 @@ export function onScheduledRecipeUpdateSuccess(params: {
   scheduledRecipeId: number
   updatedCalRecipe: ScheduledRecipe
 }) {
-  params.queryClient.setQueriesData(
-    { queryKey: [params.teamID, "calendar"] },
-    (data: unknown) => {
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      const oldData = data as CalendarResponse | undefined
-      // TODO: we also need to be careful about shape of the data changing due to persistance
-      if (oldData == null) {
-        return oldData
-      }
-      const updatedScheduledRecipes = oldData.scheduledRecipes.filter(
-        (calRecipe) => calRecipe.id !== params.scheduledRecipeId,
-      )
-
-      return {
-        ...oldData,
-        scheduledRecipes: [...updatedScheduledRecipes, params.updatedCalRecipe],
-      }
+  cacheUpsertScheduledRecipes(params.queryClient, {
+    teamId: params.teamID,
+    updater: (prev) => {
+      return produce(prev, (draft) => {
+        if (draft == null) {
+          return
+        }
+        const index = draft.scheduledRecipes.findIndex(
+          (calRecipe) => calRecipe.id === params.scheduledRecipeId,
+        )
+        if (index !== -1) {
+          draft.scheduledRecipes[index] = params.updatedCalRecipe
+        }
+      })
     },
-  )
+  })
 }
 
 export function useScheduledRecipeUpdate() {
@@ -55,32 +53,23 @@ export function useScheduledRecipeUpdate() {
     },
     onMutate: (vars) => {
       let previousOn: string | undefined
-      queryClient.setQueriesData(
-        { queryKey: [teamId, "calendar"] },
-        (data: unknown) => {
-          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-          const oldData = data as CalendarResponse | undefined
-          // TODO: we also need to be careful about shape of the data changing due to persistance
-          if (oldData == null) {
-            return oldData
-          }
-          const updatedScheduledRecipes = oldData.scheduledRecipes.map(
-            (calRecipe) => {
+      cacheUpsertScheduledRecipes(queryClient, {
+        teamId,
+        updater: (prev) => {
+          return produce(prev, (draft) => {
+            if (draft == null) {
+              return
+            }
+            for (const calRecipe of draft.scheduledRecipes) {
               if (calRecipe.id === vars.scheduledRecipeId) {
                 previousOn = calRecipe.on
-                return { ...calRecipe, on: vars.update.on }
-              } else {
-                return calRecipe
+                calRecipe.on = toISODateString(vars.update.on)
+                break
               }
-            },
-          )
-          return {
-            ...oldData,
-            scheduledRecipes: updatedScheduledRecipes,
-          }
+            }
+          })
         },
-      )
-
+      })
       return {
         optimisticScheduledRecipeId: vars.scheduledRecipeId,
         previousOn,
@@ -98,30 +87,44 @@ export function useScheduledRecipeUpdate() {
       if (context == null) {
         return
       }
-      queryClient.setQueriesData(
-        { queryKey: [teamId, "calendar"] },
-        (data: unknown) => {
-          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-          const oldData = data as CalendarResponse | undefined
-          // TODO: we also need to be careful about shape of the data changing due to persistance
-          if (oldData == null) {
-            return oldData
-          }
-          const updatedScheduledRecipes = oldData.scheduledRecipes.map(
-            (calRecipe) => {
+      cacheUpsertScheduledRecipes(queryClient, {
+        teamId,
+        updater: (prev) => {
+          return produce(prev, (draft) => {
+            if (draft == null) {
+              return
+            }
+            if (context.previousOn == null) {
+              return
+            }
+            for (const calRecipe of draft.scheduledRecipes) {
               if (calRecipe.id === vars.scheduledRecipeId) {
-                return { ...calRecipe, on: context.previousOn }
-              } else {
-                return calRecipe
+                calRecipe.on = context.previousOn
+                break
               }
-            },
-          )
-          return {
-            ...oldData,
-            scheduledRecipes: updatedScheduledRecipes,
-          }
+            }
+          })
         },
-      )
+      })
     },
   })
+}
+
+export function cacheUpsertScheduledRecipes(
+  client: QueryClient,
+  {
+    updater,
+    teamId,
+  }: {
+    teamId: number
+    updater: (
+      prev: CalendarResponse | undefined,
+    ) => CalendarResponse | undefined
+  },
+) {
+  // eslint-disable-next-line no-restricted-syntax
+  client.setQueriesData<CalendarResponse>(
+    { queryKey: [teamId, "calendar"] },
+    updater,
+  )
 }

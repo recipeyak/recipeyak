@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
 
 import { sectionCreate } from "@/api/sectionCreate"
-import { setQueryDataRecipe } from "@/queries/recipeFetch"
+import { cacheUpsertRecipe } from "@/queries/recipeFetch"
 import { useTeamId } from "@/useTeamId"
 
 export function useSectionCreate() {
@@ -25,7 +25,7 @@ export function useSectionCreate() {
         title: payload.title,
       }),
     onSuccess: (res, vars) => {
-      setQueryDataRecipe(queryClient, {
+      cacheUpsertRecipe(queryClient, {
         teamId,
         recipeId: vars.recipeId,
         updater: (prev) => {

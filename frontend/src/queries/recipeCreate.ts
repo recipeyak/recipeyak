@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { recipeCreate } from "@/api/recipeCreate"
-import { setQueryDataRecipe } from "@/queries/recipeFetch"
+import { cacheUpsertRecipe } from "@/queries/recipeFetch"
 import { useTeamId } from "@/useTeamId"
 
 export function useRecipeCreate() {
@@ -31,7 +31,7 @@ export function useRecipeCreate() {
       return recipeCreate(data)
     },
     onSuccess: (res) => {
-      setQueryDataRecipe(queryClient, {
+      cacheUpsertRecipe(queryClient, {
         teamId,
         recipeId: res.id,
         updater: () => {

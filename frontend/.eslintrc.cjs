@@ -73,6 +73,10 @@ module.exports = {
         message: "Use a type safe wrapper instead.",
       },
       {
+        selector: "CallExpression[callee.property.name='setQueriesData']",
+        message: "Use a type safe wrapper instead.",
+      },
+      {
         selector:
           "CallExpression[callee.object.name='window'][callee.property.name='confirm']",
         message: "window.confirm is buggy in Safari",

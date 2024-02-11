@@ -3,7 +3,7 @@ import produce from "immer"
 
 import { recipeUpdate } from "@/api/recipeUpdate"
 import { ResponseFromUse } from "@/queries/queryUtilTypes"
-import { setQueryDataRecipe } from "@/queries/recipeFetch"
+import { cacheUpsertRecipe } from "@/queries/recipeFetch"
 import { useTeamId } from "@/useTeamId"
 
 type Recipe = ResponseFromUse<typeof useRecipeUpdate>
@@ -53,7 +53,7 @@ export function useRecipeUpdate() {
     onMutate: (vars) => {
       if (vars.update.primaryImageId !== undefined) {
         const primaryImageId = vars.update.primaryImageId
-        setQueryDataRecipe(queryClient, {
+        cacheUpsertRecipe(queryClient, {
           teamId,
           recipeId: vars.recipeId,
           updater: (prev) => {
@@ -66,7 +66,7 @@ export function useRecipeUpdate() {
       }
     },
     onSuccess: (res, vars) => {
-      setQueryDataRecipe(queryClient, {
+      cacheUpsertRecipe(queryClient, {
         teamId,
         recipeId: vars.recipeId,
         updater: () => {
@@ -78,7 +78,7 @@ export function useRecipeUpdate() {
       // Feel like we'd need transactions ids essentially to make this fool proof, because you could have concurrent requests to update the star
       if (vars.update.primaryImageId !== undefined) {
         const primaryImageId = vars.update.primaryImageId
-        setQueryDataRecipe(queryClient, {
+        cacheUpsertRecipe(queryClient, {
           teamId,
           recipeId: vars.recipeId,
           updater: (prev) => {

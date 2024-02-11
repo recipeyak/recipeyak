@@ -1,11 +1,13 @@
 import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query"
 import { addWeeks, parseISO, startOfWeek, subWeeks } from "date-fns"
+import produce from "immer"
 
 import { calendarDelete } from "@/api/calendarDelete"
 import {
-  CalendarResponse,
+  cacheUpsertScheduledRecipesWeek,
   ScheduledRecipe,
 } from "@/queries/scheduledRecipeCreate"
+import { cacheUpsertScheduledRecipes } from "@/queries/scheduledRecipeUpdate"
 import { useTeamId } from "@/useTeamId"
 
 export function onRecipeDeletion(
@@ -13,29 +15,23 @@ export function onRecipeDeletion(
   vars: { teamId: number; scheduledRecipeId: number },
 ) {
   let deletedCalRecipe: ScheduledRecipe | undefined
-  queryClient.setQueriesData(
-    { queryKey: [vars.teamId, "calendar"] },
-    (data: unknown) => {
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      const oldData = data as CalendarResponse | undefined
-      // TODO: we also need to be careful about shape of the data changing due to persistance
-      if (oldData == null) {
-        return oldData
-      }
-      const updatedScheduledRecipes: ScheduledRecipe[] = []
-      oldData.scheduledRecipes.forEach((calRecipe) => {
-        if (calRecipe.id !== vars.scheduledRecipeId) {
-          updatedScheduledRecipes.push(calRecipe)
-        } else {
-          deletedCalRecipe = calRecipe
+  cacheUpsertScheduledRecipes(queryClient, {
+    teamId: vars.teamId,
+    updater: (prev) => {
+      return produce(prev, (draft) => {
+        if (draft == null) {
+          return
+        }
+        const deletedCalRecipeIndex = draft.scheduledRecipes.findIndex(
+          (x) => x.id === vars.scheduledRecipeId,
+        )
+        if (deletedCalRecipeIndex !== -1) {
+          deletedCalRecipe = draft.scheduledRecipes[deletedCalRecipeIndex]
+          draft.scheduledRecipes.splice(deletedCalRecipeIndex, 1)
         }
       })
-      return {
-        ...oldData,
-        scheduledRecipes: updatedScheduledRecipes,
-      }
     },
-  )
+  })
   return { deletedCalRecipe }
 }
 
@@ -66,20 +62,15 @@ export function useScheduledRecipeDelete() {
         addWeeks(initialWeekId, 2),
       ]
       weekIds.forEach((weekId) => {
-        // eslint-disable-next-line no-restricted-syntax
-        queryClient.setQueryData<CalendarResponse>(
-          [teamId, "calendar", weekId.getTime()],
-          (data) => {
-            if (data == null) {
-              return data
-            }
-            const updatedScheduledRecipes: ScheduledRecipe[] = [
-              ...data.scheduledRecipes,
-              deletedCalRecipe,
-            ]
-            return { ...data, scheduledRecipes: updatedScheduledRecipes }
+        cacheUpsertScheduledRecipesWeek(queryClient, {
+          teamId,
+          weekId,
+          updater: (prev) => {
+            return produce(prev, (draft) => {
+              draft?.scheduledRecipes.push(deletedCalRecipe)
+            })
           },
-        )
+        })
       })
     },
   })

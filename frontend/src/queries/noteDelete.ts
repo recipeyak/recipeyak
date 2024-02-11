@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { noteDelete } from "@/api/noteDelete"
-import { setQueryDataRecipe } from "@/queries/recipeFetch"
+import { cacheUpsertRecipe } from "@/queries/recipeFetch"
 import { useTeamId } from "@/useTeamId"
 
 export function useNoteDelete() {
@@ -12,7 +12,7 @@ export function useNoteDelete() {
     mutationFn: ({ noteId }: { noteId: string; recipeId: number }) =>
       noteDelete({ note_id: noteId }),
     onSuccess: (_res, vars) => {
-      setQueryDataRecipe(queryClient, {
+      cacheUpsertRecipe(queryClient, {
         teamId,
         recipeId: vars.recipeId,
         updater: (prev) => {

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { inviteDecline } from "@/api/inviteDecline"
-import { setQueryDataInviteList } from "@/queries/inviteList"
+import { cacheUpsertInviteList } from "@/queries/inviteList"
 
 export function useInviteDecline() {
   const queryClient = useQueryClient()
@@ -9,7 +9,7 @@ export function useInviteDecline() {
     mutationFn: ({ inviteId }: { inviteId: number }) =>
       inviteDecline({ invite_id: inviteId }),
     onSuccess: (_response, vars) => {
-      setQueryDataInviteList(queryClient, {
+      cacheUpsertInviteList(queryClient, {
         updater: (prev) => {
           return prev?.map((x) => {
             if (x.id === vars.inviteId) {

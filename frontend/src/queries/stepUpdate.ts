@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
 
 import { stepUpdate } from "@/api/stepUpdate"
-import { setQueryDataRecipe } from "@/queries/recipeFetch"
+import { cacheUpsertRecipe } from "@/queries/recipeFetch"
 import { useTeamId } from "@/useTeamId"
 
 export function useStepUpdate() {
@@ -29,7 +29,7 @@ export function useStepUpdate() {
       let oldPosition: string | undefined
       if (vars.update.position !== undefined) {
         const newPosition = vars.update.position
-        setQueryDataRecipe(queryClient, {
+        cacheUpsertRecipe(queryClient, {
           teamId,
           recipeId: vars.recipeId,
           updater: (prev) => {
@@ -50,7 +50,7 @@ export function useStepUpdate() {
       return { oldPosition }
     },
     onSuccess: (res, vars) => {
-      setQueryDataRecipe(queryClient, {
+      cacheUpsertRecipe(queryClient, {
         teamId,
         recipeId: vars.recipeId,
         updater: (prev) => {
@@ -71,7 +71,7 @@ export function useStepUpdate() {
     onError: (_error, vars, context) => {
       if (vars.update.position !== undefined && context?.oldPosition != null) {
         const oldPos = context?.oldPosition
-        setQueryDataRecipe(queryClient, {
+        cacheUpsertRecipe(queryClient, {
           teamId,
           recipeId: vars.recipeId,
           updater: (prev) => {

@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
 
 import { sectionDelete } from "@/api/sectionDelete"
-import { setQueryDataRecipe } from "@/queries/recipeFetch"
+import { cacheUpsertRecipe } from "@/queries/recipeFetch"
 import { useTeamId } from "@/useTeamId"
 
 export function useSectionDelete() {
@@ -13,7 +13,7 @@ export function useSectionDelete() {
     mutationFn: ({ sectionId }: { recipeId: number; sectionId: number }) =>
       sectionDelete({ section_id: sectionId }),
     onSuccess: (_res, vars) => {
-      setQueryDataRecipe(queryClient, {
+      cacheUpsertRecipe(queryClient, {
         teamId,
         recipeId: vars.recipeId,
         updater: (prev) => {

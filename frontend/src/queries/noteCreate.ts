@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { noteCreate } from "@/api/noteCreate"
-import { setQueryDataRecipe } from "@/queries/recipeFetch"
+import { cacheUpsertRecipe } from "@/queries/recipeFetch"
 import { useTeamId } from "@/useTeamId"
 
 export function useNoteCreate() {
@@ -23,7 +23,7 @@ export function useNoteCreate() {
         attachment_upload_ids: uploadIds,
       }),
     onSuccess: (res, vars) => {
-      setQueryDataRecipe(queryClient, {
+      cacheUpsertRecipe(queryClient, {
         teamId,
         recipeId: vars.recipeId,
         updater: (prev) => {

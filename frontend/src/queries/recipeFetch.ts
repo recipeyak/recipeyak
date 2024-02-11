@@ -33,7 +33,7 @@ function getQueryKey({
 
 export type RecipeFetchResponse = ResponseFromUse<typeof useRecipeFetch>
 
-export function setQueryDataRecipe(
+export function cacheUpsertRecipe(
   client: QueryClient,
   {
     updater,

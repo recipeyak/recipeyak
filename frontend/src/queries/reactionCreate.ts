@@ -4,8 +4,8 @@ import produce from "immer"
 import { reactionCreate } from "@/api/reactionCreate"
 import { PickVariant } from "@/queries/queryUtilTypes"
 import {
+  cacheUpsertRecipe,
   RecipeFetchResponse as Recipe,
-  setQueryDataRecipe,
 } from "@/queries/recipeFetch"
 import { useTeamId } from "@/useTeamId"
 import { useUser } from "@/useUser"
@@ -45,7 +45,7 @@ export function useReactionCreate() {
           avatar_url: user.avatarURL,
         },
       }
-      setQueryDataRecipe(queryClient, {
+      cacheUpsertRecipe(queryClient, {
         teamId,
         recipeId: vars.recipeId,
         updater: (prev) => {
@@ -70,7 +70,7 @@ export function useReactionCreate() {
       if (context?.newReactionTempId == null) {
         return
       }
-      setQueryDataRecipe(queryClient, {
+      cacheUpsertRecipe(queryClient, {
         teamId,
         recipeId: vars.recipeId,
         updater: (prev) => {
@@ -97,7 +97,7 @@ export function useReactionCreate() {
       if (context?.newReactionTempId == null) {
         return
       }
-      setQueryDataRecipe(queryClient, {
+      cacheUpsertRecipe(queryClient, {
         teamId,
         recipeId: vars.recipeId,
         updater: (prev) => {

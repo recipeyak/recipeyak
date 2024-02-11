@@ -16,7 +16,7 @@ function getQueryKey() {
 
 type InviteListResponse = ResponseFromUse<typeof useInviteList>
 
-export function setQueryDataInviteList(
+export function cacheUpsertInviteList(
   client: QueryClient,
   {
     updater,

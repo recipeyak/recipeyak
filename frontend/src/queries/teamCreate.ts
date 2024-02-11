@@ -4,7 +4,7 @@ import { useHistory } from "react-router"
 
 import { teamCreate } from "@/api/teamCreate"
 import { pathTeamDetail } from "@/paths"
-import { setQueryDataTeam } from "@/queries/teamFetch"
+import { cacheUpsertTeam } from "@/queries/teamFetch"
 import { toast } from "@/toast"
 
 export function useTeamCreate() {
@@ -21,7 +21,7 @@ export function useTeamCreate() {
       level: "admin" | "contributor" | "read"
     }) => teamCreate({ name, emails, level }),
     onSuccess: (res) => {
-      setQueryDataTeam(queryClient, {
+      cacheUpsertTeam(queryClient, {
         teamId: res.id,
         updater: () => {
           return res

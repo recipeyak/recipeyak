@@ -4,8 +4,8 @@ import produce from "immer"
 import { reactionDelete } from "@/api/reactionDelete"
 import { PickVariant } from "@/queries/queryUtilTypes"
 import {
+  cacheUpsertRecipe,
   RecipeFetchResponse as Recipe,
-  setQueryDataRecipe,
 } from "@/queries/recipeFetch"
 import { useTeamId } from "@/useTeamId"
 
@@ -29,7 +29,7 @@ export function useReactionDelete() {
     }) => reactionDelete({ reaction_id: reactionId }),
     onMutate: (vars) => {
       let previousReaction: Reaction | undefined
-      setQueryDataRecipe(queryClient, {
+      cacheUpsertRecipe(queryClient, {
         teamId,
         recipeId: vars.recipeId,
         updater: (prev) => {
@@ -59,7 +59,7 @@ export function useReactionDelete() {
       return { previousReaction }
     },
     onError: (_err, vars, context) => {
-      setQueryDataRecipe(queryClient, {
+      cacheUpsertRecipe(queryClient, {
         teamId,
         recipeId: vars.recipeId,
         updater: (prev) => {

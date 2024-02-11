@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 
 import { memberDelete } from "@/api/memberDelete"
-import { setQueryDataTeamMemberList } from "@/queries/teamMembersList"
+import { cacheUpsertTeamMemberList } from "@/queries/teamMembersList"
 import { toast } from "@/toast"
 
 export function useTeamMemberDelete() {
@@ -11,7 +11,7 @@ export function useTeamMemberDelete() {
     mutationFn: ({ memberId }: { memberId: number; teamId: number }) =>
       memberDelete({ member_id: memberId }),
     onSuccess: (_res, vars) => {
-      setQueryDataTeamMemberList(queryClient, {
+      cacheUpsertTeamMemberList(queryClient, {
         teamId: vars.teamId,
         updater: (prev) => {
           return prev?.filter((x) => x.id !== vars.memberId)
