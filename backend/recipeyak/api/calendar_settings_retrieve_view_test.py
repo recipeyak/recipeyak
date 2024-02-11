@@ -51,7 +51,7 @@ def test_fetching_team_cal_v2_content(
     res_cal_link = res.json()["settings"]["calendarLink"]
     assert (
         res_cal_link
-        == f"http://testserver/t/{team.pk}/ical/{membership.calendar_secret_key}/schedule.ics"
+        == f"webcal://testserver/t/{team.pk}/ical/{membership.calendar_secret_key}/schedule.ics"
     )
 
     membership.calendar_sync_enabled = True
@@ -84,7 +84,7 @@ def test_fetching_settings(
     res_cal_link = res.json()["calendarLink"]
     assert (
         res_cal_link
-        == f"http://testserver/t/{team.pk}/ical/{membership.calendar_secret_key}/schedule.ics"
+        == f"webcal://testserver/t/{team.pk}/ical/{membership.calendar_secret_key}/schedule.ics"
     )
 
     membership.calendar_sync_enabled = True
