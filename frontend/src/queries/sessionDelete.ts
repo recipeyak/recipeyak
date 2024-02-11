@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import produce from "immer"
 
 import { sessionDelete } from "@/api/sessionDelete"
-import { cacheUpsertSession } from "@/queries/sessionDeleteAll"
+import { cacheUpsertSession } from "@/queries/sessionList"
 
 export function useSessionDelete() {
   // TODO: if we delete the current session that should use the logout mutation

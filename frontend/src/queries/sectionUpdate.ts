@@ -31,16 +31,14 @@ export function useSectionUpdate() {
         teamId,
         recipeId: vars.recipeId,
         updater: (prev) => {
-          if (prev == null) {
-            return prev
-          }
-          return produce(prev, (recipe) => {
-            recipe.sections = recipe.sections.map((s) => {
-              if (s.id === vars.sectionId) {
-                return res
-              }
-              return s
-            })
+          return produce(prev, (draft) => {
+            if (draft == null) {
+              return
+            }
+            const indexToUpdate = draft.sections.findIndex(
+              (x) => x.id === vars.sectionId,
+            )
+            draft.sections[indexToUpdate] = res
           })
         },
       })

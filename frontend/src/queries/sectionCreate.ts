@@ -29,11 +29,11 @@ export function useSectionCreate() {
         teamId,
         recipeId: vars.recipeId,
         updater: (prev) => {
-          if (prev == null) {
-            return prev
-          }
-          return produce(prev, (recipe) => {
-            recipe.sections.push(res)
+          return produce(prev, (draft) => {
+            if (draft == null) {
+              return
+            }
+            draft.sections.push(res)
           })
         },
       })

@@ -17,11 +17,14 @@ export function useSectionDelete() {
         teamId,
         recipeId: vars.recipeId,
         updater: (prev) => {
-          if (prev == null) {
-            return prev
-          }
-          return produce(prev, (r) => {
-            r.sections = r.sections.filter((x) => x.id !== vars.sectionId)
+          return produce(prev, (draft) => {
+            if (draft == null) {
+              return
+            }
+            const indexToUpdate = draft.sections.findIndex(
+              (x) => x.id === vars.sectionId,
+            )
+            draft.sections.splice(indexToUpdate, 1)
           })
         },
       })
