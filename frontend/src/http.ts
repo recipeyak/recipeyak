@@ -1,19 +1,11 @@
 import * as Sentry from "@sentry/react"
-import axios, { AxiosError, AxiosResponse } from "axios"
+import axios, { AxiosError } from "axios"
 
 import { logout } from "@/auth"
 import { queryClient } from "@/components/queryClient"
 import { uuid4 } from "@/uuid"
 
 export const baseHttp = axios.create()
-
-/* We check if detail matches our string because Django will not return 401 when
- * the session expires
- */
-const invalidToken = (res: AxiosResponse) =>
-  res != null &&
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  res.data.detail === "Authentication credentials were not provided."
 
 const handleResponseError = (error: AxiosError) => {
   // 503 means we are in maintenance mode. Reload to show maintenance page.
@@ -23,7 +15,9 @@ const handleResponseError = (error: AxiosError) => {
     !maintenanceMode && error.response && error.response.status >= 500
   // Report request timeouts
   const requestTimeout = error.code === "ECONNABORTED"
-  const unAuthenticated = error.response && invalidToken(error.response)
+  const unAuthenticated =
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    error.response?.data?.error?.code === "not_authenticated"
   if (maintenanceMode) {
     location.reload()
   } else if (serverError || requestTimeout) {
