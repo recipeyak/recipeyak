@@ -17,12 +17,6 @@ export function userCommentsList(params: { user_id: string }) {
           email: string
           avatar_url: string
         }
-        last_modified_by: {
-          id: number
-          name: string
-          email: string
-          avatar_url: string
-        } | null
         created: string
         modified: string
         attachments: Array<{
