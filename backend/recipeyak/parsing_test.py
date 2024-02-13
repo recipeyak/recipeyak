@@ -4,8 +4,8 @@ from decimal import Decimal
 
 import pytest
 
-from recipeyak.cumin.combine import Quantity
-from recipeyak.cumin.parsing import (
+from recipeyak.combine import Quantity
+from recipeyak.parsing import (
     IncompatibleUnitError,
     Unit,
     _fraction_to_decimal,

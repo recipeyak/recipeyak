@@ -4,9 +4,9 @@ from collections import defaultdict
 from functools import cache
 from typing import Any
 
-from recipeyak.cumin.inflect import singularize
+from recipeyak.inflect import singularize
 
-DEPARTMENT_MAPPING = {
+_DEPARTMENT_MAPPING = {
     "alcohol": {
         "wine",
         "beer",
@@ -453,9 +453,9 @@ DEPARTMENT_MAPPING = {
 
 
 @cache
-def create_trie() -> dict[str, Any]:
+def _create_trie() -> dict[str, Any]:
     trie: dict[str, Any] = {}
-    for category, ingredients in DEPARTMENT_MAPPING.items():
+    for category, ingredients in _DEPARTMENT_MAPPING.items():
         for ingredient in ingredients:
             tree = trie
             words = [singularize(x) for x in ingredient.replace("-", " ").split()]
@@ -472,8 +472,8 @@ def create_trie() -> dict[str, Any]:
     return trie
 
 
-def search(item: str) -> dict[str, set[int]]:
-    trie = create_trie()
+def _search(item: str) -> dict[str, set[int]]:
+    trie = _create_trie()
     items = [singularize(x) for x in item.split()]
     counts = defaultdict(set)
     for start in range(len(items)):
@@ -489,7 +489,7 @@ def search(item: str) -> dict[str, set[int]]:
 
 
 def category(ingredient: str) -> str:
-    res = search(
+    res = _search(
         ingredient.lower()
         .replace("-", " ")
         .replace(",", "")

@@ -5,12 +5,12 @@ from decimal import Decimal
 import pytest
 
 from recipeyak.api.base.json import json_dumps
-from recipeyak.cumin.combine import (
+from recipeyak.combine import (
     Ingredient,
     Quantity,
     combine_ingredients,
 )
-from recipeyak.cumin.parsing import Unit
+from recipeyak.parsing import Unit
 
 
 @pytest.mark.parametrize(
