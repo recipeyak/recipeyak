@@ -5,13 +5,13 @@ from decimal import Decimal
 import pytest
 from django.test.client import Client
 
-from recipeyak.cumin.combine import Ingredient as IngredientCumin
-from recipeyak.cumin.combine import (
+from recipeyak.combine import Ingredient as IngredientCumin
+from recipeyak.combine import (
     Quantity,
     combine_ingredients,
 )
-from recipeyak.cumin.parsing import Unit
 from recipeyak.models import Ingredient, Recipe, ShoppingList, Team, User
+from recipeyak.parsing import Unit
 
 pytestmark = pytest.mark.django_db
 

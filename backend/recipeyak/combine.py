@@ -4,8 +4,8 @@ from collections import defaultdict
 from collections.abc import Sequence
 from dataclasses import dataclass
 
-from recipeyak.cumin.inflect import singularize
-from recipeyak.cumin.parsing import BaseUnit, Quantity, parse_quantity
+from recipeyak.inflect import singularize
+from recipeyak.parsing import BaseUnit, Quantity, parse_quantity
 
 
 @dataclass(frozen=True, kw_only=True, slots=True)

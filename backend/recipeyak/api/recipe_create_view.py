@@ -19,7 +19,6 @@ from recipeyak.api.serializers.recipe import (
     RecipeResponse,
     serialize_recipe,
 )
-from recipeyak.cumin.parsing import parse_ingredient
 from recipeyak.models import (
     Ingredient,
     Step,
@@ -29,6 +28,7 @@ from recipeyak.models.recipe import Recipe
 from recipeyak.models.section import Section
 from recipeyak.models.team import Team
 from recipeyak.models.upload import Upload
+from recipeyak.parsing import parse_ingredient
 from recipeyak.scraper.scrape_recipe import ScrapeResult, scrape_recipe
 
 logger = structlog.stdlib.get_logger()
