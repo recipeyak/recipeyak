@@ -7,12 +7,11 @@ from dataclasses import dataclass
 from decimal import Decimal
 from enum import Enum
 
-MALFORMED_UNITS = {"large", "medium", "small", "fresh"}
+_MALFORMED_UNITS = {"large", "medium", "small", "fresh"}
 
+_quantity_chars = set(" /.0123456789")
 
-quantity_chars = set(" /.0123456789")
-
-UNICODE_FRACTION_MAPPING = {
+_UNICODE_FRACTION_MAPPING = {
     "½": "1/2",
     "⅓": "1/3",
     "⅔": "2/3",
@@ -34,7 +33,7 @@ UNICODE_FRACTION_MAPPING = {
 }
 
 
-def unicode_fractions_to_ascii(s: str) -> str:
+def _unicode_fractions_to_ascii(s: str) -> str:
     """
     convert occurances of unicode fractions like `½` to their ascii
     equivalent `1/2`
@@ -42,7 +41,7 @@ def unicode_fractions_to_ascii(s: str) -> str:
 
     output = ""
     for char in s:
-        expanded = UNICODE_FRACTION_MAPPING.get(char, char)
+        expanded = _UNICODE_FRACTION_MAPPING.get(char, char)
         # ensure 1¾ becomes 1 3/4, not 13/4
         if output and output[-1].isdigit() and expanded != char:
             output += " "
@@ -51,7 +50,7 @@ def unicode_fractions_to_ascii(s: str) -> str:
     return output
 
 
-def max_quantity(quantity: str) -> str:
+def _max_quantity(quantity: str) -> str:
     """
     take the '4-5' medium button mushrooms and find the max, 5
 
@@ -94,9 +93,9 @@ class Unit(str, Enum):
     UNKNOWN = "UNKNOWN"
 
     def base_unit(self) -> BaseUnit:
-        if self in VOLUME:
+        if self in _VOLUME:
             return BaseUnit.VOLUME
-        if self in MASS:
+        if self in _MASS:
             return BaseUnit.MASS
         if self == Unit.SOME:
             return BaseUnit.SOME
@@ -107,14 +106,14 @@ class Unit(str, Enum):
         raise UnhandledCaseError(case=self)
 
     def __lt__(self, other: Unit) -> bool:  # type: ignore[override]
-        if self in VOLUME:
-            return VOLUME[self] < VOLUME[other]
-        if self in MASS:
-            return MASS[self] < MASS[other]
+        if self in _VOLUME:
+            return _VOLUME[self] < _VOLUME[other]
+        if self in _MASS:
+            return _MASS[self] < _MASS[other]
         return False
 
 
-def get_unit(val: str) -> Unit:
+def _get_unit(val: str) -> Unit:
     val_cased = val.strip()
     val = val_cased.lower()
     if "cup" in val:
@@ -148,7 +147,7 @@ def get_unit(val: str) -> Unit:
     return Unit.UNKNOWN
 
 
-def fraction_to_decimal(val: str) -> Decimal | None:
+def _fraction_to_decimal(val: str) -> Decimal | None:
     try:
         total = Decimal(0)
         for v in val.strip().split(" "):
@@ -160,6 +159,10 @@ def fraction_to_decimal(val: str) -> Decimal | None:
         return total
     except decimal.InvalidOperation:
         return None
+
+
+def _is_unit(val: str) -> bool:
+    return _get_unit(val) != Unit.UNKNOWN
 
 
 @dataclass
@@ -187,7 +190,7 @@ class Quantity:
         if self.unit.base_unit() == other.unit.base_unit():
             if self.unit == Unit.UNKNOWN:
                 raise IncompatibleUnitError(units=(self.unit, other.unit))
-            unit_lookup = VOLUME if self.unit in VOLUME else MASS
+            unit_lookup = _VOLUME if self.unit in _VOLUME else _MASS
             smallest_unit = self.unit if self.unit < other.unit else other.unit
             quantity = self.to_base_unit().quantity + other.to_base_unit().quantity
             return Quantity(
@@ -206,43 +209,43 @@ class Quantity:
     def to_base_unit(self) -> Quantity:
         if self.unit.base_unit() == BaseUnit.VOLUME:
             return Quantity(
-                unit=Unit.MILLILITER, quantity=VOLUME[self.unit] * self.quantity
+                unit=Unit.MILLILITER, quantity=_VOLUME[self.unit] * self.quantity
             )
         if self.unit.base_unit() == BaseUnit.MASS:
-            return Quantity(unit=Unit.GRAM, quantity=MASS[self.unit] * self.quantity)
+            return Quantity(unit=Unit.GRAM, quantity=_MASS[self.unit] * self.quantity)
         return self
 
 
 def _parse_quantity(val: str) -> Quantity:
-    value = iter(unicode_fractions_to_ascii(max_quantity(val).strip()))
+    value = iter(_unicode_fractions_to_ascii(_max_quantity(val).strip()))
 
     quantity = ""
     unit_str = ""
     for c in value:
-        if c in quantity_chars:
+        if c in _quantity_chars:
             quantity += c
         else:
             unit_str += c
             break
 
     for c in value:
-        if c in quantity_chars:
+        if c in _quantity_chars:
             break
         # handle case of two units and quantities next to each other
         unit_str += c
 
     # strip out misplaced words, e.g., `1 large` `lemon` instead of `1` `large lemon`
-    if unit_str in MALFORMED_UNITS:
+    if unit_str in _MALFORMED_UNITS:
         unit_str = ""
 
-    unit = get_unit(unit_str)
+    unit = _get_unit(unit_str)
 
     unknown_unit = None
     if unit == Unit.UNKNOWN:
         unknown_unit = unit_str
 
     return Quantity(
-        quantity=fraction_to_decimal(quantity) or Decimal(1),
+        quantity=_fraction_to_decimal(quantity) or Decimal(1),
         unit=unit,
         unknown_unit=unknown_unit,
     )
@@ -267,35 +270,35 @@ class BaseUnit(Enum):
     UNKNOWN = "UNKNOWN"
 
 
-TEASPOON_ML = Decimal(4.92892)
-TABLESPOON_ML = 3 * TEASPOON_ML
-FLUID_OUNCE_ML = 2 * TABLESPOON_ML
-CUP_ML = 8 * FLUID_OUNCE_ML
-PINT_ML = 2 * CUP_ML
-QUART_ML = 2 * PINT_ML
-GALLON_ML = 4 * QUART_ML
+_TEASPOON_ML = Decimal(4.92892)
+_TABLESPOON_ML = 3 * _TEASPOON_ML
+_FLUID_OUNCE_ML = 2 * _TABLESPOON_ML
+_CUP_ML = 8 * _FLUID_OUNCE_ML
+_PINT_ML = 2 * _CUP_ML
+_QUART_ML = 2 * _PINT_ML
+_GALLON_ML = 4 * _QUART_ML
 
 
-OUNCE_GRAM = Decimal(28.34952)
+_OUNCE_GRAM = Decimal(28.34952)
 
-MASS: dict[Unit, Decimal] = {
+_MASS: dict[Unit, Decimal] = {
     Unit.GRAM: Decimal(1),
-    Unit.OUNCE: OUNCE_GRAM,
-    Unit.POUND: 16 * OUNCE_GRAM,
+    Unit.OUNCE: _OUNCE_GRAM,
+    Unit.POUND: 16 * _OUNCE_GRAM,
     Unit.KILOGRAM: Decimal(1000),
 }
 
 
-VOLUME: dict[Unit, Decimal] = {
+_VOLUME: dict[Unit, Decimal] = {
     Unit.MILLILITER: Decimal(1),
-    Unit.TEASPOON: TEASPOON_ML,
-    Unit.TABLESPOON: TABLESPOON_ML,
-    Unit.FLUID_OUNCE: FLUID_OUNCE_ML,
-    Unit.CUP: CUP_ML,
-    Unit.PINT: PINT_ML,
-    Unit.QUART: QUART_ML,
+    Unit.TEASPOON: _TEASPOON_ML,
+    Unit.TABLESPOON: _TABLESPOON_ML,
+    Unit.FLUID_OUNCE: _FLUID_OUNCE_ML,
+    Unit.CUP: _CUP_ML,
+    Unit.PINT: _PINT_ML,
+    Unit.QUART: _QUART_ML,
     Unit.LITER: Decimal(1000),
-    Unit.GALLON: GALLON_ML,
+    Unit.GALLON: _GALLON_ML,
 }
 
 
@@ -310,8 +313,8 @@ def parse_quantity(val: str) -> Quantity:
     return a
 
 
-@dataclass(frozen=True)
-class IngredientResult:
+@dataclass(frozen=True, slots=True)
+class _IngredientResult:
     quantity: str
     name: str
     description: str = ""
@@ -319,7 +322,7 @@ class IngredientResult:
 
 
 # TODO(sbdchd): these should be all the units available!!!
-UNIT_TO_ALIASES: dict[Unit, list[str]] = {
+_UNIT_TO_ALIASES: dict[Unit, list[str]] = {
     Unit.CUP: ["cup", "cups"],
     Unit.KILOGRAM: ["kg", "kgs", "kilogram", "kilograms"],
     Unit.GRAM: ["gram", "grams", "g"],
@@ -353,14 +356,14 @@ UNIT_TO_ALIASES: dict[Unit, list[str]] = {
 }
 
 # NOTE(sbdchd): we add some whitespace so when we search the ingredient for the quantity
-units_ws = tuple(
-    x + " " for x in itertools.chain.from_iterable(UNIT_TO_ALIASES.values())
+_units_ws = tuple(
+    x + " " for x in itertools.chain.from_iterable(_UNIT_TO_ALIASES.values())
 )
 
-larger_to_smaller_units_ws = sorted(units_ws, key=lambda x: -len(x))
+_larger_to_smaller_units_ws = sorted(_units_ws, key=lambda x: -len(x))
 
 
-def starts_with(string: str, prefixes: tuple[str, ...] | str) -> bool:
+def _starts_with(string: str, prefixes: tuple[str, ...] | str) -> bool:
     """
     case insensitive str.starts_with
     """
@@ -372,7 +375,7 @@ def starts_with(string: str, prefixes: tuple[str, ...] | str) -> bool:
     return False
 
 
-def parse_quantity_name(text: str) -> tuple[str, str]:
+def _parse_quantity_name(text: str) -> tuple[str, str]:
     """
     examples:
       1 cup flour -> 1 cup, flour
@@ -382,7 +385,7 @@ def parse_quantity_name(text: str) -> tuple[str, str]:
       Chopped fresh parsley, for serving (optional)
     """
 
-    value = unicode_fractions_to_ascii(text.strip())
+    value = _unicode_fractions_to_ascii(text.strip())
     quantity = ""
     name = ""
 
@@ -414,11 +417,11 @@ def parse_quantity_name(text: str) -> tuple[str, str]:
             idx += 1
             continue
         else:
-            if starts_with(value[idx:], units_ws) and in_quantity:
+            if _starts_with(value[idx:], _units_ws) and in_quantity:
                 in_quantity = False
                 eat_count = 0
-                for unit in larger_to_smaller_units_ws:
-                    if starts_with(value[idx:], unit):
+                for unit in _larger_to_smaller_units_ws:
+                    if _starts_with(value[idx:], unit):
                         eat_count = len(unit)
                         break
                 for _ in range(eat_count):
@@ -436,7 +439,7 @@ def parse_quantity_name(text: str) -> tuple[str, str]:
                     if value[idx] == "/":
                         in_quantity = True
                 for conjunction in ("plus", "+"):
-                    if starts_with(value[idx:], conjunction):
+                    if _starts_with(value[idx:], conjunction):
                         quantity += conjunction
                         idx += len(conjunction)
                         in_quantity = True
@@ -450,12 +453,12 @@ def parse_quantity_name(text: str) -> tuple[str, str]:
     return (quantity.strip(), name.strip())
 
 
-NON_INGREDIENT_NAMES = frozenset(
+_NON_INGREDIENT_NAMES = frozenset(
     {"bone-in", "skin-on", "fresh", "cooked", "raw", "frozen", "skinless", "boneless"}
 )
 
 
-def parse_name_description(text: str) -> tuple[str, str]:
+def _parse_name_description(text: str) -> tuple[str, str]:
     """
     Some basic heuristics to partition a string into a name and description pair
     """
@@ -465,8 +468,11 @@ def parse_name_description(text: str) -> tuple[str, str]:
     for word in text.split():
         if word.endswith(",") and not is_all_suffix_now:
             word_stripped = word.removesuffix(",")
-            if word_stripped in NON_INGREDIENT_NAMES:
+            if word_stripped in _NON_INGREDIENT_NAMES:
                 temp.append(word)
+                continue
+            if _is_unit(word_stripped):
+                temp.append(word_stripped)
                 continue
             temp.append(word_stripped)
             prefix = " ".join(temp)
@@ -483,7 +489,7 @@ def parse_name_description(text: str) -> tuple[str, str]:
 # For example:
 #   "Kosher salt" -> "kosher salt"
 #   "Some Other Stuff" -> "Some Other Stuff"
-def normalize_name(text: str) -> str:
+def _normalize_name(text: str) -> str:
     text = text.strip()
     words = iter(text.split())
     first_word = next(words, None)
@@ -497,9 +503,9 @@ def normalize_name(text: str) -> str:
     return text
 
 
-def parse_ingredient(text: str) -> IngredientResult:
-    quantity_name, description = parse_name_description(text)
-    quantity, name = parse_quantity_name(quantity_name)
+def parse_ingredient(text: str) -> _IngredientResult:
+    quantity_name, description = _parse_name_description(text)
+    quantity, name = _parse_quantity_name(quantity_name)
     is_optional = "optional" in text.lower()
 
     if is_optional:
@@ -518,11 +524,11 @@ def parse_ingredient(text: str) -> IngredientResult:
                 name = name[: -len(suffix)]
                 break
 
-    return IngredientResult(
+    return _IngredientResult(
         # Some seems like a good default instead of empty string. Empty string
         # looks a little weird in the UI.
         quantity=quantity.strip() or "some",
-        name=normalize_name(name),
+        name=_normalize_name(name),
         description=description.strip(),
         optional=is_optional,
     )

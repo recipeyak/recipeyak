@@ -14,7 +14,7 @@ from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.cumin.cat import category
 from recipeyak.cumin.combine import Ingredient, combine_ingredients
-from recipeyak.cumin.quantity import Unit
+from recipeyak.cumin.parsing import Unit
 from recipeyak.models import Ingredient as DBIngredient
 from recipeyak.models import ScheduledRecipe, ShoppingList, Team, get_team
 

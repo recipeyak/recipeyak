@@ -5,7 +5,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 
 from recipeyak.cumin.inflect import singularize
-from recipeyak.cumin.quantity import BaseUnit, Quantity, parse_quantity
+from recipeyak.cumin.parsing import BaseUnit, Quantity, parse_quantity
 
 
 @dataclass(frozen=True, kw_only=True, slots=True)

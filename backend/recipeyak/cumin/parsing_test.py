@@ -5,15 +5,15 @@ from decimal import Decimal
 import pytest
 
 from recipeyak.cumin.combine import Quantity
-from recipeyak.cumin.quantity import (
+from recipeyak.cumin.parsing import (
     IncompatibleUnitError,
-    IngredientResult,
     Unit,
-    fraction_to_decimal,
+    _fraction_to_decimal,
+    _IngredientResult,
+    _parse_name_description,
+    _parse_quantity_name,
     parse_ingredient,
-    parse_name_description,
     parse_quantity,
-    parse_quantity_name,
 )
 
 
@@ -66,7 +66,7 @@ def test_parsing_quantities(quantity: str, expected: Quantity | None) -> None:
     [("1/2", Decimal(0.5)), ("11/2", Decimal(5.5)), ("1 1/2", Decimal(1.5))],
 )
 def test_fraction_to_decimal(fraction: str, expected: Decimal | None) -> None:
-    assert fraction_to_decimal(fraction) == expected
+    assert _fraction_to_decimal(fraction) == expected
 
 
 @pytest.mark.parametrize(
@@ -283,7 +283,7 @@ def test_adding_incompatible_units() -> None:
     ],
 )
 def test_parse_quantity_name(ingredient: str, expected: tuple[str, str]) -> None:
-    assert parse_quantity_name(ingredient) == expected
+    assert _parse_quantity_name(ingredient) == expected
 
 
 @pytest.mark.parametrize(
@@ -319,7 +319,7 @@ def test_parse_quantity_name(ingredient: str, expected: tuple[str, str]) -> None
     ],
 )
 def test_parse_name_description(ingredient: str, expected: tuple[str, str]) -> None:
-    assert parse_name_description(ingredient) == expected
+    assert _parse_name_description(ingredient) == expected
 
 
 @pytest.mark.parametrize(
@@ -327,25 +327,25 @@ def test_parse_name_description(ingredient: str, expected: tuple[str, str]) -> N
     [
         (
             "1 cup plain whole-milk yogurt",
-            IngredientResult(
+            _IngredientResult(
                 quantity="1 cup",
                 name="plain whole-milk yogurt",
             ),
         ),
         (
             "fine sea salt",
-            IngredientResult(
+            _IngredientResult(
                 quantity="some",
                 name="fine sea salt",
             ),
         ),
         (
             "2 garlic cloves, grated",
-            IngredientResult(quantity="2", name="garlic cloves", description="grated"),
+            _IngredientResult(quantity="2", name="garlic cloves", description="grated"),
         ),
         (
             "Chopped fresh parsley, for serving (optional)",
-            IngredientResult(
+            _IngredientResult(
                 quantity="some",
                 name="chopped fresh parsley",
                 description="for serving",
@@ -354,7 +354,7 @@ def test_parse_name_description(ingredient: str, expected: tuple[str, str]) -> N
         ),
         (
             "Pinch of ground cardamom (optional)",
-            IngredientResult(
+            _IngredientResult(
                 quantity="Pinch of",
                 name="ground cardamom",
                 description="",
@@ -363,13 +363,13 @@ def test_parse_name_description(ingredient: str, expected: tuple[str, str]) -> N
         ),
         (
             "2 pounds (900g) bone-in, skin-on chicken thighs",
-            IngredientResult(
+            _IngredientResult(
                 quantity="2 pounds (900g)", name="bone-in, skin-on chicken thighs"
             ),
         ),
         (
             "½ jalapeño pepper, seeded, ribs removed",
-            IngredientResult(
+            _IngredientResult(
                 quantity="1/2",
                 name="jalapeño pepper",
                 description="seeded, ribs removed",
@@ -377,7 +377,7 @@ def test_parse_name_description(ingredient: str, expected: tuple[str, str]) -> N
         ),
         (
             "1 large red bell pepper, seeded, ribs removed",
-            IngredientResult(
+            _IngredientResult(
                 quantity="1",
                 name="large red bell pepper",
                 description="seeded, ribs removed",
@@ -385,7 +385,7 @@ def test_parse_name_description(ingredient: str, expected: tuple[str, str]) -> N
         ),
         (
             "2 Tablespoons plus 1/2 teaspoon extra-virgin olive oil",
-            IngredientResult(
+            _IngredientResult(
                 quantity="2 Tablespoons plus 1/2 teaspoon",
                 name="extra-virgin olive oil",
             ),
@@ -393,7 +393,7 @@ def test_parse_name_description(ingredient: str, expected: tuple[str, str]) -> N
         (
             "1 cup instant or kombu dashi (see Tip), vegetable or chicken broth, or water",
             # TODO: this isn't perfect, we can probably do better
-            IngredientResult(
+            _IngredientResult(
                 quantity="1 cup",
                 name="instant or kombu dashi (see Tip)",
                 description="vegetable or chicken broth, or water",
@@ -401,7 +401,7 @@ def test_parse_name_description(ingredient: str, expected: tuple[str, str]) -> N
         ),
         (
             "Fresh corn tortillas and lime wedges, for serving",
-            IngredientResult(
+            _IngredientResult(
                 quantity="some",
                 name="fresh corn tortillas and lime wedges",
                 description="for serving",
@@ -409,19 +409,35 @@ def test_parse_name_description(ingredient: str, expected: tuple[str, str]) -> N
         ),
         (
             "Kosher salt",
-            IngredientResult(
+            _IngredientResult(
                 quantity="some",
                 name="kosher salt",
             ),
         ),
         (
             "Anaheim or Cubanelle peppers",
-            IngredientResult(
+            _IngredientResult(
                 quantity="some",
                 name="Anaheim or Cubanelle peppers",
             ),
         ),
+        (
+            "2 Tablespoons, capers, rinsed, plus 1 Tablespoon brine",
+            _IngredientResult(
+                quantity="2 Tablespoons",
+                name="capers",
+                description="rinsed, plus 1 Tablespoon brine",
+            ),
+        ),
+        pytest.param(
+            "2 Tablespoons, lemon juice",
+            _IngredientResult(
+                quantity="2 Tablespoons",
+                name="lemon juice",
+            ),
+            id="lemon-juice",
+        ),
     ],
 )
-def test_parse_ingredient(ingredient: str, expected: IngredientResult) -> None:
+def test_parse_ingredient(ingredient: str, expected: _IngredientResult) -> None:
     assert parse_ingredient(ingredient) == expected

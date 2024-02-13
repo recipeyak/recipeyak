@@ -19,7 +19,7 @@ from recipeyak.api.serializers.recipe import (
     RecipeResponse,
     serialize_recipe,
 )
-from recipeyak.cumin.quantity import parse_ingredient
+from recipeyak.cumin.parsing import parse_ingredient
 from recipeyak.models import (
     Ingredient,
     Step,
