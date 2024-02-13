@@ -60,7 +60,6 @@ def filter_recipes(*, team: Team) -> QuerySet[Recipe]:
         "notes",
         "notes__created_by",
         "notes__created_by__profile_upload",
-        "notes__last_modified_by",
         "notes__uploads",
         "notes__reactions",
         "notes__reactions__created_by",

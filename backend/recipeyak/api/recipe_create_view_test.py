@@ -321,7 +321,6 @@ def test_modifying_note_of_recipe(
         f"/api/v1/notes/{note.id}/", data, content_type="application/json"
     )
     assert res.status_code == 200
-    assert res.json()["last_modified_by"]["id"] == user.id
     assert res.json()["created_by"]["id"] == user.id
 
 
