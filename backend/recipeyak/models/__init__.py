@@ -7,6 +7,7 @@ from recipeyak.models.ingredient import Ingredient
 from recipeyak.models.invite import Invite  # noqa: F401
 from recipeyak.models.membership import Membership, get_random_ical_id  # noqa: F401
 from recipeyak.models.note import Note
+from recipeyak.models.note_historical import NoteHistorical as NoteHistorical
 from recipeyak.models.reaction import Reaction
 from recipeyak.models.recipe import Recipe
 from recipeyak.models.recipe_change import ChangeType, RecipeChange  # noqa: F401
@@ -59,7 +60,6 @@ def filter_recipes(*, team: Team) -> QuerySet[Recipe]:
         "notes",
         "notes__created_by",
         "notes__created_by__profile_upload",
-        "notes__last_modified_by",
         "notes__uploads",
         "notes__reactions",
         "notes__reactions__created_by",

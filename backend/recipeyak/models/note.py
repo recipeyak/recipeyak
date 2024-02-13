@@ -20,6 +20,7 @@ class Note(CommonInfo):
     created_by = models.ForeignKey["User"](
         "User", related_name="notes_created_by", on_delete=models.CASCADE
     )
+    # deprecated
     last_modified_by = models.ForeignKey["User"](
         "User",
         null=True,

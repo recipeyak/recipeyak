@@ -1175,31 +1175,6 @@
                       "required": ["id", "name", "email", "avatar_url"],
                       "type": "object"
                     },
-                    "last_modified_by": {
-                      "anyOf": [
-                        {
-                          "properties": {
-                            "id": {
-                              "type": "integer"
-                            },
-                            "name": {
-                              "type": "string"
-                            },
-                            "email": {
-                              "type": "string"
-                            },
-                            "avatar_url": {
-                              "type": "string"
-                            }
-                          },
-                          "required": ["id", "name", "email", "avatar_url"],
-                          "type": "object"
-                        },
-                        {
-                          "type": "null"
-                        }
-                      ]
-                    },
                     "created": {
                       "format": "date-time",
                       "type": "string"
@@ -1305,7 +1280,6 @@
                     "id",
                     "text",
                     "created_by",
-                    "last_modified_by",
                     "created",
                     "modified",
                     "attachments",
@@ -1632,36 +1606,6 @@
                                 ],
                                 "type": "object"
                               },
-                              "last_modified_by": {
-                                "anyOf": [
-                                  {
-                                    "properties": {
-                                      "id": {
-                                        "type": "integer"
-                                      },
-                                      "name": {
-                                        "type": "string"
-                                      },
-                                      "email": {
-                                        "type": "string"
-                                      },
-                                      "avatar_url": {
-                                        "type": "string"
-                                      }
-                                    },
-                                    "required": [
-                                      "id",
-                                      "name",
-                                      "email",
-                                      "avatar_url"
-                                    ],
-                                    "type": "object"
-                                  },
-                                  {
-                                    "type": "null"
-                                  }
-                                ]
-                              },
                               "created": {
                                 "format": "date-time",
                                 "type": "string"
@@ -1772,7 +1716,6 @@
                               "id",
                               "text",
                               "created_by",
-                              "last_modified_by",
                               "created",
                               "modified",
                               "attachments",
@@ -2145,36 +2088,6 @@
                                 ],
                                 "type": "object"
                               },
-                              "last_modified_by": {
-                                "anyOf": [
-                                  {
-                                    "properties": {
-                                      "id": {
-                                        "type": "integer"
-                                      },
-                                      "name": {
-                                        "type": "string"
-                                      },
-                                      "email": {
-                                        "type": "string"
-                                      },
-                                      "avatar_url": {
-                                        "type": "string"
-                                      }
-                                    },
-                                    "required": [
-                                      "id",
-                                      "name",
-                                      "email",
-                                      "avatar_url"
-                                    ],
-                                    "type": "object"
-                                  },
-                                  {
-                                    "type": "null"
-                                  }
-                                ]
-                              },
                               "created": {
                                 "format": "date-time",
                                 "type": "string"
@@ -2285,7 +2198,6 @@
                               "id",
                               "text",
                               "created_by",
-                              "last_modified_by",
                               "created",
                               "modified",
                               "attachments",
@@ -2760,36 +2672,6 @@
                                 ],
                                 "type": "object"
                               },
-                              "last_modified_by": {
-                                "anyOf": [
-                                  {
-                                    "properties": {
-                                      "id": {
-                                        "type": "integer"
-                                      },
-                                      "name": {
-                                        "type": "string"
-                                      },
-                                      "email": {
-                                        "type": "string"
-                                      },
-                                      "avatar_url": {
-                                        "type": "string"
-                                      }
-                                    },
-                                    "required": [
-                                      "id",
-                                      "name",
-                                      "email",
-                                      "avatar_url"
-                                    ],
-                                    "type": "object"
-                                  },
-                                  {
-                                    "type": "null"
-                                  }
-                                ]
-                              },
                               "created": {
                                 "format": "date-time",
                                 "type": "string"
@@ -2900,7 +2782,6 @@
                               "id",
                               "text",
                               "created_by",
-                              "last_modified_by",
                               "created",
                               "modified",
                               "attachments",
@@ -3428,31 +3309,6 @@
                       "required": ["id", "name", "email", "avatar_url"],
                       "type": "object"
                     },
-                    "last_modified_by": {
-                      "anyOf": [
-                        {
-                          "properties": {
-                            "id": {
-                              "type": "integer"
-                            },
-                            "name": {
-                              "type": "string"
-                            },
-                            "email": {
-                              "type": "string"
-                            },
-                            "avatar_url": {
-                              "type": "string"
-                            }
-                          },
-                          "required": ["id", "name", "email", "avatar_url"],
-                          "type": "object"
-                        },
-                        {
-                          "type": "null"
-                        }
-                      ]
-                    },
                     "created": {
                       "format": "date-time",
                       "type": "string"
@@ -3558,7 +3414,6 @@
                     "id",
                     "text",
                     "created_by",
-                    "last_modified_by",
                     "created",
                     "modified",
                     "attachments",
@@ -5605,36 +5460,6 @@
                                 ],
                                 "type": "object"
                               },
-                              "last_modified_by": {
-                                "anyOf": [
-                                  {
-                                    "properties": {
-                                      "id": {
-                                        "type": "integer"
-                                      },
-                                      "name": {
-                                        "type": "string"
-                                      },
-                                      "email": {
-                                        "type": "string"
-                                      },
-                                      "avatar_url": {
-                                        "type": "string"
-                                      }
-                                    },
-                                    "required": [
-                                      "id",
-                                      "name",
-                                      "email",
-                                      "avatar_url"
-                                    ],
-                                    "type": "object"
-                                  },
-                                  {
-                                    "type": "null"
-                                  }
-                                ]
-                              },
                               "created": {
                                 "format": "date-time",
                                 "type": "string"
@@ -5745,7 +5570,6 @@
                               "id",
                               "text",
                               "created_by",
-                              "last_modified_by",
                               "created",
                               "modified",
                               "attachments",

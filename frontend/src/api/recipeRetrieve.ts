@@ -36,12 +36,6 @@ export function recipeRetrieve(params: { recipe_id: number }) {
             email: string
             avatar_url: string
           }
-          last_modified_by: {
-            id: number
-            name: string
-            email: string
-            avatar_url: string
-          } | null
           created: string
           modified: string
           attachments: Array<{
