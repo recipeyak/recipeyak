@@ -10,6 +10,7 @@ from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.recipe import NoteResponse, serialize_note
 from recipeyak.models import Upload, filter_notes, get_team
+from recipeyak.models.note_historical import NoteHistorical
 from recipeyak.realtime import publish_recipe
 
 
@@ -32,16 +33,28 @@ def note_update_view(
             message="Only the note's author is allowed to update the note.",
             status=403,
         )
-    note.last_modified_by = request.user
-    if params.text is not None:
-        note.text = params.text
-    if params.attachment_upload_ids is not None:
-        with transaction.atomic():
+    with transaction.atomic():
+        # record the current note state
+        NoteHistorical.objects.create(
+            note=note,
+            actor=request.user,
+            text=note.text,
+            upload_ids=list(
+                Upload.objects.filter(note=note).values_list("id", flat=True)
+            ),
+        )
+
+        # mutate the note
+        if text := params.text:
+            note.text = text
+        if upload_ids := params.attachment_upload_ids:
+            # 1. clear out previous upload ids
             Upload.objects.filter(note=note).update(note=None)
-            Upload.objects.filter(
-                id__in=params.attachment_upload_ids, created_by=request.user
-            ).update(note=note)
-    note.save()
+            # 2. set the new uploads ids
+            Upload.objects.filter(id__in=upload_ids, created_by=request.user).update(
+                note=note
+            )
+        note.save()
     publish_recipe(recipe_id=note.recipe_id, team_id=team.id)
 
     return JsonResponse(

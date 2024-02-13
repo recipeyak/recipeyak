@@ -66,7 +66,6 @@ class NoteResponse(pydantic.BaseModel):
     id: str
     text: str
     created_by: PublicUser
-    last_modified_by: PublicUser | None
     created: datetime
     modified: datetime
     attachments: list[NoteAttachment]
@@ -106,9 +105,6 @@ def serialize_note(note: Note, primary_image_id: int) -> NoteResponse:
         id=str(note.id),
         text=note.text,
         created_by=serialize_public_user(note.created_by),
-        last_modified_by=serialize_public_user(note.last_modified_by)
-        if note.last_modified_by
-        else None,
         created=note.created,
         reactions=serialize_reactions(note.reactions.all()),
         attachments=serialize_attachments(
