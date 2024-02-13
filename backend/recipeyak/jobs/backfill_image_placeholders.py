@@ -81,6 +81,10 @@ async def job(
     log = log.bind(row_count=len(rows))
     log.info("downloading images")
 
+    if not rows:
+        log.info("no rows to update, exiting")
+        return
+
     async with httpx.AsyncClient(timeout=None) as http:
         results = await asyncio.gather(
             *[
