@@ -10,7 +10,7 @@ from recipeyak.cumin.combine import (
     Quantity,
     combine_ingredients,
 )
-from recipeyak.cumin.quantity import Unit
+from recipeyak.cumin.parsing import Unit
 from recipeyak.models import Ingredient, Recipe, ShoppingList, Team, User
 
 pytestmark = pytest.mark.django_db
