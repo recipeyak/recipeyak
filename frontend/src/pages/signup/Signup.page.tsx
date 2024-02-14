@@ -28,13 +28,17 @@ function formatError(error: unknown) {
     return null
   }
   if (err.response?.status === 400) {
+    // TODO: this is sketchy, we should have a helper for dealing with errors
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const data: {
       error?: {
-        message: string
+        message: Array<{
+          msg: string
+        }>
+        code: string
       }
     } = err.response?.data
-    return data.error?.message
+    return data.error?.message.map((m) => m.msg).join("\n")
   } else {
     return "Something went wrong with the server."
   }

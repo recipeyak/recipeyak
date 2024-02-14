@@ -67,15 +67,8 @@ export function AuthPage(props: { children: React.ReactNode }) {
 
   return (
     <div
-      // eslint-disable-next-line no-restricted-syntax
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        marginLeft: "auto",
-        marginRight: "auto",
-        // 2 rem is roughly the padding we want on the side of the panel
-        minWidth: "min(400px, 100% - 2rem)",
-      }}
+      // 2 rem is roughly the padding we want on the side of the panel
+      className="mx-auto flex min-w-[min(400px,100%-2rem)] max-w-[min(400px,100%-2rem)] flex-col"
     >
       <Helmet title="Auth" />
       <Link

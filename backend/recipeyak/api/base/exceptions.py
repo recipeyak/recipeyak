@@ -15,11 +15,22 @@ class Error(TypedDict):
 class RequestValidationError(Exception):
     errors: list[Error]
 
-    def __init__(self, error_details: Sequence[ErrorDetails]) -> None:
-        errors = [
-            Error(type=error["type"], loc=error["loc"], msg=error["msg"])
-            for error in error_details
-        ]
+    def __init__(
+        self,
+        error_details: Sequence[ErrorDetails],
+    ) -> None:
+        # TODO: this can be improved, we want a stricter subset of what pydantic
+        # provides so the UI can more easily consume it
+        errors: list[Error] = []
+        for error in error_details:
+            if isinstance(error["ctx"]["error"], ValueError):
+                assert (
+                    len(error["ctx"]["error"].args) == 1
+                ), "Should only have one error message for a given value error."
+                msg = error["ctx"]["error"].args[0]
+            else:
+                msg = error["msg"]
+            errors.append(Error(type=error["type"], loc=error["loc"], msg=msg))
         self.errors = errors
 
 
