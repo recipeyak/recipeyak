@@ -105,6 +105,31 @@ def test_ical_view_with_correct_id(
     assert omit_entry_ids(res.content.decode()) == snapshot()
 
 
+def test_filter_to_current_team(
+    client: Client, user: User, recipe: Recipe, team: Team
+) -> None:
+    ScheduledRecipe.objects.create(
+        recipe=recipe,
+        team=team,
+        on=date(1976, 7, 6),
+    )
+    team_2 = Team.objects.create(name="Recipe Yak Team")
+    ScheduledRecipe.objects.create(
+        recipe=recipe,
+        team=team_2,
+        on=date(1976, 7, 10),
+    )
+    membership = Membership.objects.filter(user=user).get(team=team)
+    membership.calendar_sync_enabled = True
+    membership.save()
+    ical_id = membership.calendar_secret_key
+    url = f"/t/{team.id}/ical/{ical_id}/schedule.ics"
+    res = client.get(url, HTTP_ACCEPT="text/calendar")
+    assert res.status_code == 200
+    unique_ids = {x for x in res.content.split(b"\r\n") if x.startswith(b"UID")}
+    assert len(unique_ids) == 1, "shouldn't see the other team's stuff"
+
+
 def test_get_ical_view_works_with_accept_encoding(
     client: Client, user: User, recipe: Recipe, team: Team
 ) -> None:
