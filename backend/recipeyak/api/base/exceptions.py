@@ -23,7 +23,7 @@ class RequestValidationError(Exception):
         # provides so the UI can more easily consume it
         errors: list[Error] = []
         for error in error_details:
-            if isinstance(error["ctx"]["error"], ValueError):
+            if "ctx" in error and isinstance(error["ctx"]["error"], ValueError):
                 assert (
                     len(error["ctx"]["error"].args) == 1
                 ), "Should only have one error message for a given value error."
