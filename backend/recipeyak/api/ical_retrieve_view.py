@@ -41,6 +41,7 @@ select
         from core_scheduledrecipe scheduled_recipe
         join core_recipe recipe on scheduled_recipe.recipe_id = recipe.id
         where scheduled_recipe.created > now() - '2 years'::interval
+        and scheduled_recipe.team_id = %(team_id)s
         order by "on"
       ) sub
     ),
