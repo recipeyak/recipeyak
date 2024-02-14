@@ -10,7 +10,7 @@ export const FormErrorHandler = ({ error }: IFormErrorHandlerProps) => {
     <div className="mt-1 block text-xs text-[--color-danger]">
       <ul>
         {error.map((e) => (
-          <li key={e}>{e}</li>
+          <li key={String(e)}>{String(e)}</li>
         ))}
       </ul>
     </div>
