@@ -12,6 +12,7 @@ import { Image } from "@/components/Image"
 import { SearchInput } from "@/components/SearchInput"
 import { pathRecipesList } from "@/paths"
 import { ResponseFromUse } from "@/queries/queryUtilTypes"
+import { useRecentlyViewedRecipesList } from "@/queries/recentlyViewedRecipesList"
 import { useSearchRecipes } from "@/queries/searchRecipes"
 import { recipeURL } from "@/urls"
 import { useGlobalEvent } from "@/useGlobalEvent"
@@ -170,6 +171,22 @@ export function NavRecipeSearch() {
   const [selectedIndex, setSelectedIndex] = useState(0)
 
   const results = useSearchRecipes({ query, limit: 7 })
+  const recentlyViewedRecipes = useRecentlyViewedRecipesList()
+  const recentlyViewedRecipeHits =
+    recentlyViewedRecipes.data?.map((x) => ({
+      archived_at: x.archivedAt,
+      author: x.author,
+      id: x.id,
+      ingredients: [],
+      name: x.name,
+      objectID: x.id.toString(),
+      primary_image: x.primaryImage
+        ? {
+            background_url: x.primaryImage.backgroundUrl,
+            url: x.primaryImage.url,
+          }
+        : null,
+    })) ?? []
 
   // If a user clicks outside of the dropdown, we want to hide the dropdown, but
   // keep their search query.
@@ -286,8 +303,15 @@ export function NavRecipeSearch() {
       />
       {showPopover && (
         <SearchResultsPopover
-          hits={hits}
-          hitCount={results.data?.result.nbHits ?? 0}
+          hits={
+            // Show recently viewed recipes when there's no search query.
+            !query ? recentlyViewedRecipeHits : hits
+          }
+          hitCount={
+            !query
+              ? recentlyViewedRecipeHits.length
+              : results.data?.result.nbHits ?? 0
+          }
           selectedIndex={selectedIndex}
           query={query}
           searchInput={
