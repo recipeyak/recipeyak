@@ -7,7 +7,6 @@ import { Link } from "react-router-dom"
 import { assertNever } from "@/assert"
 import { Avatar } from "@/components/Avatar"
 import { Box } from "@/components/Box"
-import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
 import { NavPage } from "@/components/Page"
 import { pathProfileById } from "@/paths"
@@ -140,12 +139,13 @@ function formatNumber(val: number) {
 export function ProfilePageContainer(props: {
   children?: React.ReactNode
   userId: string
+  title: string
 }) {
   const userInfo = useUserById({ id: props.userId })
 
   if (userInfo.isPending) {
     return (
-      <NavPage>
+      <NavPage title={props.title}>
         <Loader />
       </NavPage>
     )
@@ -153,7 +153,7 @@ export function ProfilePageContainer(props: {
 
   if (userInfo.isError) {
     return (
-      <NavPage>
+      <NavPage title={props.title}>
         <div>error loading profile</div>
       </NavPage>
     )
@@ -166,10 +166,8 @@ export function ProfilePageContainer(props: {
   )
 
   return (
-    <NavPage>
+    <NavPage title={props.title}>
       <Box dir="col" className="mx-auto mt-8 max-w-[700px] gap-2">
-        <Helmet title="Profile" />
-
         <Link
           to={pathProfileById({ userId: props.userId })}
           className="self-center"
@@ -192,7 +190,7 @@ export function ProfilePage(props: RouteComponentProps<{ userId: string }>) {
 
   if (userInfo.isPending) {
     return (
-      <NavPage>
+      <NavPage title="Profile">
         <Loader />
       </NavPage>
     )
@@ -200,7 +198,7 @@ export function ProfilePage(props: RouteComponentProps<{ userId: string }>) {
 
   if (userInfo.isError) {
     return (
-      <NavPage>
+      <NavPage title="Profile">
         <div>error loading profile, 404 maybe?</div>
       </NavPage>
     )
@@ -246,7 +244,7 @@ export function ProfilePage(props: RouteComponentProps<{ userId: string }>) {
   ] as const
 
   return (
-    <ProfilePageContainer userId={props.match.params.userId}>
+    <ProfilePageContainer userId={props.match.params.userId} title="Profile">
       <div>
         <span className="text-2xl">Stats</span>
 

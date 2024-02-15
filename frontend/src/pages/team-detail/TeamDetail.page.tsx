@@ -80,7 +80,7 @@ export function TeamDetailPage(props: RouteComponentProps<{ teamId: string }>) {
   const teamInfo = useTeam({ teamId: id })
   if (is404(teamInfo.error)) {
     return (
-      <NavPage>
+      <NavPage title="Team">
         <div className="text-center">team not found</div>
       </NavPage>
     )
@@ -88,7 +88,7 @@ export function TeamDetailPage(props: RouteComponentProps<{ teamId: string }>) {
 
   if (teamInfo.isError) {
     return (
-      <NavPage>
+      <NavPage title="Team">
         <div className="text-center">error fetching team</div>
       </NavPage>
     )
@@ -96,7 +96,7 @@ export function TeamDetailPage(props: RouteComponentProps<{ teamId: string }>) {
 
   if (teamInfo.isPending) {
     return (
-      <NavPage>
+      <NavPage title="Team">
         <div className="text-center">loading team...</div>
       </NavPage>
     )
@@ -105,7 +105,7 @@ export function TeamDetailPage(props: RouteComponentProps<{ teamId: string }>) {
   const isSettings = props.match.url.endsWith("settings")
 
   return (
-    <NavPage>
+    <NavPage title="Team">
       <div className="mx-auto max-w-[800px]">
         <Helmet title="Team" />
         <div>

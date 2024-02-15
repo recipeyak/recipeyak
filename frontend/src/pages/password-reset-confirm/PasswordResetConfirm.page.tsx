@@ -7,7 +7,6 @@ import { login } from "@/auth"
 import { BorderBox } from "@/components/BorderBox"
 import { Button } from "@/components/Buttons"
 import { FormErrorHandler } from "@/components/FormErrorHandler"
-import { Helmet } from "@/components/Helmet"
 import { Label } from "@/components/Label"
 import { AuthPage } from "@/components/Page"
 import { PasswordInput } from "@/components/PasswordInput"
@@ -86,9 +85,8 @@ export function PasswordResetConfirmPage(props: RouteProps) {
   const errors = formatError(resetPassword.error)
 
   return (
-    <AuthPage>
+    <AuthPage title="Password Reset">
       <BorderBox p={3}>
-        <Helmet title="Password Reset" />
         <form onSubmit={handleReset}>
           <h1 className="text-xl">Password Reset Confirmation</h1>
 

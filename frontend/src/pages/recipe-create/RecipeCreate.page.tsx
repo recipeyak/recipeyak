@@ -3,7 +3,6 @@ import React, { useState } from "react"
 import { useHistory } from "react-router"
 
 import { Button } from "@/components/Buttons"
-import { Helmet } from "@/components/Helmet"
 import { NavPage } from "@/components/Page"
 import { TextInput } from "@/components/TextInput"
 import { useRecipeCreate } from "@/queries/recipeCreate"
@@ -114,10 +113,8 @@ function CreateManuallyForm() {
 
 export function RecipeCreatePage() {
   return (
-    <NavPage>
-      {/* eslint-disable-next-line no-restricted-syntax */}
-      <div style={{ maxWidth: 500 }} className="mx-auto flex-col text-center">
-        <Helmet title="Add Recipe" />
+    <NavPage title="Add Recipe">
+      <div className="mx-auto max-w-[500px] flex-col text-center">
         <h1 className="my-2 text-left text-lg font-medium">Add Recipe</h1>
         <CreateFromURLForm />
         <div className="mt-2 text-center">or</div>

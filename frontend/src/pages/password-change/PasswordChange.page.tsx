@@ -3,7 +3,6 @@ import React, { useState } from "react"
 import { useHistory } from "react-router"
 
 import { Button } from "@/components/Buttons"
-import { Helmet } from "@/components/Helmet"
 import { Label } from "@/components/Label"
 import { NavPage } from "@/components/Page"
 import { PasswordInput } from "@/components/PasswordInput"
@@ -57,8 +56,7 @@ export function PasswordChangePage() {
   const error = formatError(passwordChange.error)
 
   return (
-    <NavPage>
-      <Helmet title="Password Change" />
+    <NavPage title="Password Change">
       <form onSubmit={handleSubmit} className="mx-auto my-0 max-w-[400px] ">
         <h2 className="text-xl">Password Change</h2>
         <div className="flex flex-col gap-4">

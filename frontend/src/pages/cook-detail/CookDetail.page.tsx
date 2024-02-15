@@ -1,6 +1,5 @@
 import { RouteComponentProps } from "react-router"
 
-import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
 import { Meta } from "@/components/Meta"
 import { NavPage } from "@/components/Page"
@@ -50,8 +49,7 @@ export function CookDetailPage(
   }
 
   return (
-    <NavPage>
-      <Helmet title={recipe.name} />
+    <NavPage title={recipe.name}>
       <Meta
         title={recipeTitle}
         image={formatImgOpenGraph(recipe.primaryImage?.url ?? "")}

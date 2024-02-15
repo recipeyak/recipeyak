@@ -8,7 +8,6 @@ import { BorderBox } from "@/components/BorderBox"
 import { Button } from "@/components/Buttons"
 import { EmailInput } from "@/components/EmailInput"
 import { FormErrorHandler } from "@/components/FormErrorHandler"
-import { Helmet } from "@/components/Helmet"
 import { Label } from "@/components/Label"
 import { AuthPage } from "@/components/Page"
 import { PasswordInput } from "@/components/PasswordInput"
@@ -73,9 +72,8 @@ export function SignupPage() {
   const errors = formatError(signup.error)
 
   return (
-    <AuthPage>
+    <AuthPage title="Sign Up">
       <BorderBox p={3}>
-        <Helmet title="Sign Up" />
         <Tabs>
           <Tab>
             <Link to={pathLogin({})} className="no-underline">
