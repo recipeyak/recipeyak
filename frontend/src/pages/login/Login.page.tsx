@@ -8,7 +8,6 @@ import { login } from "@/auth"
 import { BorderBox } from "@/components/BorderBox"
 import { Button } from "@/components/Buttons"
 import { FormErrorHandler } from "@/components/FormErrorHandler"
-import { Helmet } from "@/components/Helmet"
 import { Label } from "@/components/Label"
 import { AuthPage } from "@/components/Page"
 import { PasswordInput } from "@/components/PasswordInput"
@@ -66,9 +65,8 @@ export function LoginPage() {
   const errors = formatError(authLogin.error)
 
   return (
-    <AuthPage>
+    <AuthPage title="Login">
       <BorderBox p={3}>
-        <Helmet title="Login" />
         <Tabs>
           <Tab isActive>
             <Link to={pathLogin({})} className="no-underline">

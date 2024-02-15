@@ -7,7 +7,6 @@ import { BorderBox } from "@/components/BorderBox"
 import { Button } from "@/components/Buttons"
 import { EmailInput } from "@/components/EmailInput"
 import { FormErrorHandler } from "@/components/FormErrorHandler"
-import { Helmet } from "@/components/Helmet"
 import { Label } from "@/components/Label"
 import { AuthPage } from "@/components/Page"
 import { useAuthPasswordReset } from "@/queries/authPasswordReset"
@@ -65,8 +64,7 @@ export function PasswordResetPage() {
     : { name: "Login", route: "/login" }
 
   return (
-    <AuthPage>
-      <Helmet title="Password Reset" />
+    <AuthPage title="Password Reset">
       <BorderBox
         p={3}
         as="form"

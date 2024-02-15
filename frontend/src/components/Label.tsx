@@ -12,7 +12,7 @@ export function Label({
   return (
     <label
       htmlFor={htmlFor}
-      className="block text-base font-bold"
+      className="block text-base font-semibold"
       children={children}
     />
   )

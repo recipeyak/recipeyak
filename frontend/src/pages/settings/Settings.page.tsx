@@ -5,7 +5,6 @@ import { FileTrigger } from "react-aria-components"
 import { Avatar } from "@/components/Avatar"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
-import { Helmet } from "@/components/Helmet"
 import { Loader } from "@/components/Loader"
 import { NavPage } from "@/components/Page"
 import { ChangeEmail } from "@/pages/settings/ChangeEmail"
@@ -27,14 +26,14 @@ export function SettingsPage() {
 
   if (!userInfo.isSuccess) {
     return (
-      <NavPage>
+      <NavPage title="Settings">
         <Loader />
       </NavPage>
     )
   }
 
   return (
-    <NavPage>
+    <NavPage title="Settings">
       <Box
         // eslint-disable-next-line no-restricted-syntax
         style={{
@@ -45,8 +44,6 @@ export function SettingsPage() {
         dir="col"
         gap={4}
       >
-        <Helmet title="Settings" />
-
         <h1 className="text-3xl">User settings</h1>
 
         <Box dir="col" align="start" className="gap-2">

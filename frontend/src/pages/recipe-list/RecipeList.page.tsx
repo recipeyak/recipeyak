@@ -3,7 +3,7 @@ import { RecipeSearchList } from "@/pages/recipe-list/RecipeListSearch"
 
 export function RecipeListPage() {
   return (
-    <NavPage includeSearch={false}>
+    <NavPage includeSearch={false} title="Browse">
       <RecipeSearchList />
     </NavPage>
   )

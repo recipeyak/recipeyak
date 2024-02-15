@@ -15,7 +15,7 @@ export function UserCommentsPage(
 
   if (comments.isPending) {
     return (
-      <NavPage>
+      <NavPage title="Comments">
         <Loader />
       </NavPage>
     )
@@ -23,14 +23,14 @@ export function UserCommentsPage(
 
   if (comments.isError) {
     return (
-      <NavPage>
+      <NavPage title="Comments">
         <div>error loading comments</div>
       </NavPage>
     )
   }
 
   return (
-    <ProfilePageContainer userId={props.match.params.userId}>
+    <ProfilePageContainer userId={props.match.params.userId} title="Comments">
       <span className="text-2xl">Comments</span>
       <div className="flex flex-col gap-2">
         {comments.data?.comments.map((comment) => (

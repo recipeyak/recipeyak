@@ -2,7 +2,6 @@ import { useState } from "react"
 import { Link, RouteComponentProps } from "react-router-dom"
 
 import { Button } from "@/components/Buttons"
-import { Helmet } from "@/components/Helmet"
 import { NavPage } from "@/components/Page"
 import { RadioButton } from "@/components/RadioButton"
 import { TextInput } from "@/components/TextInput"
@@ -30,9 +29,8 @@ export function TeamInvitePage(props: ITeamInviteProps) {
   }
 
   return (
-    <NavPage>
+    <NavPage title="Team Invite">
       <div className="mx-auto max-w-[800px]">
-        <Helmet title="Team Invite" />
         <Link to={teamURL(id, teamInfo.data.name)}>
           <h1 className="p-4 text-center text-4xl font-medium">
             {teamInfo.data.name}
