@@ -8,7 +8,6 @@ import { clx } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
-import { Helmet } from "@/components/Helmet"
 import { Image } from "@/components/Image"
 import { Loader } from "@/components/Loader"
 import { Meta } from "@/components/Meta"
@@ -769,7 +768,7 @@ export function RecipeDetailPage(props: IRecipeProps) {
 
   if (maybeRecipe.isPending) {
     return (
-      <NavPage>
+      <NavPage title="Recipe">
         <Loader />
       </NavPage>
     )
@@ -777,7 +776,7 @@ export function RecipeDetailPage(props: IRecipeProps) {
 
   if (maybeRecipe.isError) {
     return (
-      <NavPage>
+      <NavPage title="Recipe not found">
         <div className="text-center">recipe not found</div>
       </NavPage>
     )
@@ -808,8 +807,7 @@ export function RecipeDetailPage(props: IRecipeProps) {
   const enableLargeImageRow = !!recipe.primaryImage?.url || editingEnabled
 
   return (
-    <NavPage>
-      <Helmet title={recipe.name} />
+    <NavPage title={recipe.name}>
       <Meta
         title={recipeTitle}
         image={formatImgOpenGraph(recipe.primaryImage?.url ?? "")}

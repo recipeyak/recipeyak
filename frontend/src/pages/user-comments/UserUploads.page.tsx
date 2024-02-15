@@ -42,7 +42,7 @@ export function UserUploadsPage(
 
   if (uploads.isPending) {
     return (
-      <NavPage>
+      <NavPage title="Uploads">
         <Loader />
       </NavPage>
     )
@@ -50,14 +50,14 @@ export function UserUploadsPage(
 
   if (uploads.isError) {
     return (
-      <NavPage>
+      <NavPage title="Uploads">
         <div>error loading photos</div>
       </NavPage>
     )
   }
 
   return (
-    <ProfilePageContainer userId={props.match.params.userId}>
+    <ProfilePageContainer userId={props.match.params.userId} title="Uploads">
       <span className="text-2xl" ref={ref}>
         Photos
       </span>

@@ -6,7 +6,7 @@ import { pathTeamCreate } from "@/paths"
 
 export function TeamListPage() {
   return (
-    <NavPage>
+    <NavPage title="Teams">
       <div className="mx-auto flex max-w-[800px] flex-col gap-4">
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">

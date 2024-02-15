@@ -12,7 +12,7 @@ export function CloseButton({ onClose }: { onClose?: () => void }) {
     <button
       onClick={onClose}
       data-testid="close modal"
-      className="!border-none bg-[unset] p-0 !shadow-none"
+      className="cursor-pointer !border-none bg-[unset] p-0 !shadow-none"
     >
       <Box
         // eslint-disable-next-line no-restricted-syntax

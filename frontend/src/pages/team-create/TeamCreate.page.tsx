@@ -1,7 +1,6 @@
 import React, { useState } from "react"
 
 import { Button } from "@/components/Buttons"
-import { Helmet } from "@/components/Helmet"
 import { NavPage } from "@/components/Page"
 import { RadioButton } from "@/components/RadioButton"
 import { TextInput } from "@/components/TextInput"
@@ -22,8 +21,7 @@ export function TeamCreatePage() {
   }
 
   return (
-    <NavPage>
-      <Helmet title="Create a Team" />
+    <NavPage title="Create a Team">
       <div className="mx-auto max-w-[800px]">
         <h1 className="text-4xl">Create Team</h1>
         <form action="" onSubmit={handleSubmit}>

@@ -10,7 +10,6 @@ import { Link } from "react-router-dom"
 
 import { clx } from "@/classnames"
 import { Box } from "@/components/Box"
-import { Helmet } from "@/components/Helmet"
 import { Image } from "@/components/Image"
 import { Loader } from "@/components/Loader"
 import { NavPage } from "@/components/Page"
@@ -250,8 +249,7 @@ function RecentlyCreated() {
 
 export const UserHome = () => {
   return (
-    <NavPage>
-      <Helmet title="Home" />
+    <NavPage title="Home">
       <div className="mt-2 flex flex-wrap items-start justify-center gap-4">
         <SchedulePreview />
         <RecentlyViewed />

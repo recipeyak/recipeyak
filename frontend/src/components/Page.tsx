@@ -33,24 +33,30 @@ export function NavPage({
   children,
   includeSearch = true,
   noContainer,
+  title,
 }: {
   children: React.ReactNode
   includeSearch?: boolean
   noContainer?: boolean
+  title: string
 }) {
   if (noContainer) {
     return (
-      <ContainerBase includeSearch={includeSearch}>{children}</ContainerBase>
+      <ContainerBase includeSearch={includeSearch}>
+        <Helmet title={title} />
+        {children}
+      </ContainerBase>
     )
   }
   return (
     <ContainerBase includeSearch={includeSearch}>
+      <Helmet title={title} />
       <Container>{children}</Container>
     </ContainerBase>
   )
 }
 
-export function AuthPage(props: { children: React.ReactNode }) {
+export function AuthPage(props: { children: React.ReactNode; title: string }) {
   useEffect(() => {
     const el = document.querySelector("html")
     if (el) {
@@ -70,7 +76,7 @@ export function AuthPage(props: { children: React.ReactNode }) {
       // 2 rem is roughly the padding we want on the side of the panel
       className="mx-auto flex min-w-[min(400px,100%-2rem)] max-w-[min(400px,100%-2rem)] flex-col"
     >
-      <Helmet title="Auth" />
+      <Helmet title={props.title} />
       <Link
         to={pathHome({})}
         className="flex items-center justify-center px-0 pb-3 text-[2rem] font-normal text-white no-underline"
