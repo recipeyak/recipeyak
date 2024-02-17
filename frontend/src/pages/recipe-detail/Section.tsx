@@ -118,6 +118,7 @@ export function Section({
             <Button
               size="small"
               type="button"
+              variant="danger"
               onClick={() => {
                 deleteSection.mutate({
                   recipeId,
@@ -139,7 +140,7 @@ export function Section({
                 type="submit"
                 loading={updateSection.isPending}
               >
-                Save
+                Update Section
               </Button>
             </div>
           </div>

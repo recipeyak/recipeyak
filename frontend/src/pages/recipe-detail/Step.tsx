@@ -188,6 +188,7 @@ function StepBody({
           size="small"
           loading={remove.isPending}
           type="button"
+          variant="danger"
         >
           Delete
         </Button>
@@ -201,7 +202,7 @@ function StepBody({
             onClick={updateStep}
             loading={update.isPending}
           >
-            Save
+            Update Step
           </Button>
         </div>
       </Box>

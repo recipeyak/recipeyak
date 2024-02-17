@@ -184,6 +184,7 @@ export function Ingredient(props: {
             })
           }}
           size="small"
+          variant="danger"
           loading={removeIngredient.isPending}
         >
           Delete
@@ -199,7 +200,7 @@ export function Ingredient(props: {
             disabled={emptyField({ quantity, name })}
             loading={updateIngredient.isPending}
           >
-            Update
+            Update Ingredient
           </Button>
         </div>
       </Box>

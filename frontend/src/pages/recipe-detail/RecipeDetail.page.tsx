@@ -228,7 +228,7 @@ function RecipeDetails({
               onClick={handleShowAddIngredient}
               aria-label="open add ingredient"
             >
-              Add
+              Add Ingredient
             </Button>
           )
         )}
@@ -261,7 +261,7 @@ function RecipeDetails({
                 setAddStep(true)
               }}
             >
-              Add
+              Add Step
             </Button>
           )
         )}
@@ -423,7 +423,7 @@ function RecipeEditor(props: { recipe: Recipe; onClose: () => void }) {
           loading={updateRecipe.isPending}
           onClick={onSave}
         >
-          Save
+          Update Details
         </Button>
       </div>
     </div>
@@ -695,7 +695,7 @@ function RecipeInfo(props: {
                     setShowEditor(true)
                   }}
                 >
-                  Edit
+                  Edit Details
                 </Button>
               )}
             </div>

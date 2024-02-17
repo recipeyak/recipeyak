@@ -63,7 +63,7 @@ export function AddSectionForm({
             type="submit"
             loading={createSection.isPending}
           >
-            Save
+            Add Section
           </Button>
         </div>
       </div>

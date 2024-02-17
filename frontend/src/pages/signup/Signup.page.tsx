@@ -128,7 +128,7 @@ export function SignupPage() {
 
           <div className="flex items-center justify-between">
             <Button variant="primary" type="submit" loading={signup.isPending}>
-              Submit
+              Create Account
             </Button>
 
             <Link to={pathPasswordReset({})}>Forgot Password?</Link>
