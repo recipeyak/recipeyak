@@ -60,7 +60,10 @@ def _extract_tips(parsed: AbstractScraper) -> list[str]:
 
 def _extract_total_time(parsed: AbstractScraper) -> str | None:
     try:
-        return human_time_duration(parsed.total_time() * 60)
+        total_time = parsed.total_time()
+        if total_time is None:
+            return None
+        return human_time_duration(total_time * 60)
     except SchemaOrgException:
         return None
 
