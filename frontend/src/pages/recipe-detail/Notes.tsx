@@ -360,7 +360,7 @@ export function Note({
                             })
                           }}
                         >
-                          Delete
+                          Delete Note
                         </Button>
                       </div>
                     </div>
@@ -399,7 +399,7 @@ export function Note({
                     loading={updateNote.isPending}
                     disabled={hasUnsavedImages}
                   >
-                    Save
+                    Update Note
                   </Button>
                 </Box>
               </Box>
@@ -857,7 +857,7 @@ function DeleteFileButton({
                 removeFile(fileId)
               }}
             >
-              Delete
+              Delete File
             </Button>
           </div>
         </div>
@@ -896,7 +896,7 @@ function FileUploader({
           ))}
         </div>
       )}
-      <label className="mb-2 cursor-pointer rounded-b-[3px] border-[thin] border-solid border-[--color-border] bg-[--color-background-card] px-[0.25rem] py-[0.1rem] text-sm font-medium text-[--color-text-muted] [border-top-style:none]">
+      <label className="mb-2 cursor-pointer rounded-b-[3px] border-[thin] border-solid border-[--color-border] bg-[--color-background-card] px-2 py-1 text-sm font-medium text-[--color-text-muted] [border-top-style:none]">
         {/* eslint-disable-next-line react/forbid-elements */}
         <input
           type="file"
@@ -915,7 +915,7 @@ function FileUploader({
             }
           }}
         />
-        Attach images & pdfs by dragging & dropping, selecting or pasting them.
+        Paste, drop, or click to add files
       </label>
     </>
   )
@@ -1010,7 +1010,7 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
               reset()
             }}
           >
-            cancel
+            Cancel
           </Button>
           <Button
             variant="primary"
@@ -1024,7 +1024,7 @@ function NoteCreator({ recipeId, className }: INoteCreatorProps) {
             loading={isLoading}
             disabled={isDisabled || hasUnsavedImages}
           >
-            add
+            Add Note
           </Button>
         </div>
       )}

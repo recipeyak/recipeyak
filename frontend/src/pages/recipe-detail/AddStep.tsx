@@ -78,7 +78,7 @@ function AddStep({ recipeId, onCancel, index, position }: IAddStepProps) {
           aria-label="add step"
           loading={addStep.isPending}
         >
-          Add
+          Add Step
         </Button>
       </div>
     </form>

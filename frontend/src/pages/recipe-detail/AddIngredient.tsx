@@ -128,7 +128,7 @@ function AddIngredientForm({
             aria-label="add ingredient"
             loading={createIngredient.isPending}
           >
-            Add
+            Add Ingredient
           </Button>
         </div>
       </div>

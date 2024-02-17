@@ -119,7 +119,7 @@ export function LoginPage() {
               type="submit"
               loading={authLogin.isPending}
             >
-              Submit
+              Sign In
             </Button>
             <Link to={pathPasswordReset({})}>Forgot Password?</Link>
           </div>

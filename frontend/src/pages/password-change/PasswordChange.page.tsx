@@ -104,7 +104,7 @@ export function PasswordChangePage() {
             className="w-full"
             loading={passwordChange.isPending}
           >
-            Update
+            Update Password
           </Button>
           {error != null && <div>{error.message}</div>}
         </div>

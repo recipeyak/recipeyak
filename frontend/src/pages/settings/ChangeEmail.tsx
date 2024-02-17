@@ -84,7 +84,7 @@ export function ChangeEmail(props: { email: string }) {
                 type="submit"
                 loading={updateEmail.isPending}
               >
-                Save
+                Update Email
               </Button>
             </Box>
           ) : (

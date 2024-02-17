@@ -63,7 +63,7 @@ export function ChangeName(props: { initialValue: string }) {
                 Cancel
               </Button>
               <Button variant="primary" size="small" type="submit">
-                Save
+                Update Name
               </Button>
             </Box>
           ) : (
