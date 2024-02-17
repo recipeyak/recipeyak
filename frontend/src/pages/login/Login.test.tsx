@@ -139,7 +139,7 @@ test("login failure", async () => {
     "password123",
   )
   // 2. submit form
-  await user.click(screen.getByText("Submit"))
+  await user.click(screen.getByText("Sign In"))
 
   // 3. check error message
   await waitFor(() => {
