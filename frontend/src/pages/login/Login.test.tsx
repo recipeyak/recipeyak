@@ -86,7 +86,7 @@ test("login success", async () => {
     "password123",
   )
   // 2. submit form
-  await user.click(screen.getByText("Submit"))
+  await user.click(screen.getByText("Sign In"))
 
   // 3. check updated store with info aka success!
   expect(screen.getByTestId("location-display")).toHaveTextContent("/")
