@@ -41,6 +41,8 @@ export function Textarea({
     // being called when autoFocus is used to focus the element
     const val = props.value ?? props.defaultValue
     if (props.autoFocus && val != null) {
+      // Move cursor to the end of the input when we mount the text area -- it's
+      // a nicer experience than the default of the start of the textarea
       ref.current?.setSelectionRange(val.length, val.length)
     }
   })
