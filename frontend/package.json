@@ -44,7 +44,6 @@
     "@types/lodash-es": "^4.17.6",
     "@types/react-router": "^5.1.7",
     "@types/react-router-dom": "^5.1.5",
-    "@types/react-textarea-autosize": "^4.3.3",
     "ably": "^1.2.48",
     "algoliasearch": "^4.22.0",
     "axios": "^0.18.0",
