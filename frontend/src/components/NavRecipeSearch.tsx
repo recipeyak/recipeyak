@@ -170,7 +170,7 @@ export function NavRecipeSearch() {
   const [query, setQuery] = useState("")
   const [selectedIndex, setSelectedIndex] = useState(0)
 
-  const results = useSearchRecipes({ query, limit: 7 })
+  const results = useSearchRecipes({ query, limit: 6 })
   const recentlyViewedRecipes = useRecentlyViewedRecipesList()
   const recentlyViewedRecipeHits =
     recentlyViewedRecipes.data?.map((x) => ({
@@ -219,7 +219,9 @@ export function NavRecipeSearch() {
     setShowPopover(false)
   }
 
-  const hits = results.data?.hits ?? []
+  const hitCount = !query
+    ? recentlyViewedRecipeHits.length
+    : results.data?.result.nbHits ?? 0
 
   const handleSearchKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     // We need to extract the key from the synthetic event before we lose the
@@ -235,12 +237,12 @@ export function NavRecipeSearch() {
       case "ArrowUp":
         // prevent arrow key from moving cursor to start of input
         e.preventDefault()
-        setSelectedIndex((s) => clamp(s - 1, 0, hits.length - 1))
+        setSelectedIndex((s) => clamp(s - 1, 0, hitCount - 1))
         break
       case "ArrowDown":
         // prevent arrow key from moving cursor to end of input
         e.preventDefault()
-        setSelectedIndex((s) => clamp(s + 1, 0, hits.length - 1))
+        setSelectedIndex((s) => clamp(s + 1, 0, hitCount - 1))
         break
       case "Enter": {
         const suggestion = results.data?.hits?.[selectedIndex]
@@ -277,6 +279,7 @@ export function NavRecipeSearch() {
             e.key === "Meta" ||
             e.key === "Shift" ||
             e.key === "Tab" ||
+            e.key === "Escape" ||
             e.key === "Delete" ||
             e.key === "Backspace" ||
             e.key === "CapsLock"
@@ -305,13 +308,9 @@ export function NavRecipeSearch() {
         <SearchResultsPopover
           hits={
             // Show recently viewed recipes when there's no search query.
-            !query ? recentlyViewedRecipeHits : hits
+            !query ? recentlyViewedRecipeHits : results.data?.hits ?? []
           }
-          hitCount={
-            !query
-              ? recentlyViewedRecipeHits.length
-              : results.data?.result.nbHits ?? 0
-          }
+          hitCount={hitCount}
           selectedIndex={selectedIndex}
           query={query}
           searchInput={
