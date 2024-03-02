@@ -4506,60 +4506,6 @@
         }
       }
     },
-    "/api/v1/calendar/next_open/": {
-      "get": {
-        "operationId": "CalendarNextOpen",
-        "parameters": [
-          {
-            "name": "day",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "enum": [
-                "Sunday",
-                "Monday",
-                "Tuesday",
-                "Wednesday",
-                "Thursday",
-                "Friday",
-                "Saturday",
-                "Weekday",
-                "Weekend"
-              ],
-              "type": "string"
-            }
-          },
-          {
-            "name": "now",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "format": "date",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "date": {
-                      "format": "date",
-                      "type": "string"
-                    }
-                  },
-                  "required": ["date"],
-                  "type": "object"
-                }
-              }
-            },
-            "description": "Successful response."
-          }
-        }
-      }
-    },
     "/api/v1/calendar/generate_link/": {
       "post": {
         "operationId": "CalendarGenerateLink",
