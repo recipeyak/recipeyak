@@ -4,7 +4,6 @@ from recipeyak.api.base.router import create_urlpatterns, route
 from recipeyak.api.calendar_delete_view import calendar_delete_view
 from recipeyak.api.calendar_generate_link_view import calendar_generate_link_view
 from recipeyak.api.calendar_list_view import calendar_list_view
-from recipeyak.api.calendar_next_open_view import calendar_next_open_view
 from recipeyak.api.calendar_settings_retrieve_view import (
     calendar_settings_retrieve_view,
 )
@@ -326,11 +325,6 @@ routes = [
         "api/v1/calendar/settings/",
         method="patch",
         view=calendar_update_settings_view,
-    ),
-    route(
-        "api/v1/calendar/next_open/",
-        method="get",
-        view=calendar_next_open_view,
     ),
     route(
         "api/v1/calendar/generate_link/",
