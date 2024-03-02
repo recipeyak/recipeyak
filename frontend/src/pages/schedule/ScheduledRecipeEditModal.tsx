@@ -1,4 +1,4 @@
-import { addDays, addWeeks, format, parseISO } from "date-fns"
+import { addDays, addWeeks, format, isSameYear, parseISO } from "date-fns"
 import React from "react"
 import { DialogTrigger } from "react-aria-components"
 import { Link } from "react-router-dom"
@@ -9,25 +9,11 @@ import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { Image } from "@/components/Image"
 import { Modal } from "@/components/Modal"
-import { Select } from "@/components/Select"
 import { formatAbsoluteDate, toISODateString } from "@/date"
 import { NoteTimeStamp } from "@/pages/recipe-detail/NoteTimestamp"
 import { useScheduledRecipeDelete } from "@/queries/scheduledRecipeDelete"
-import { useScheduledRecipeFindNextOpen } from "@/queries/scheduledRecipeFindNextOpen"
 import { useScheduledRecipeUpdate } from "@/queries/scheduledRecipeUpdate"
 import { recipeURL } from "@/urls"
-
-const options = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Weekend",
-  "Weekday",
-] as const
 
 function RecipeItem({
   sources,
@@ -170,6 +156,23 @@ export function ScheduledRecipeEditModal({
   )
 }
 
+function getDateOption(
+  label: string,
+  on: Date,
+  handleSave: (args: { on: Date }) => void,
+) {
+  let formatStr = "EEE MMM d"
+  if (!isSameYear(on, new Date())) {
+    formatStr += ", yyyy"
+  }
+  return [
+    label + " · " + format(on, formatStr),
+    () => {
+      handleSave({ on })
+    },
+  ] as const
+}
+
 function RescheduleSection({
   onClose,
   date,
@@ -181,40 +184,12 @@ function RescheduleSection({
   scheduledId: number
   recipeName: string
 }) {
-  const [day, setDay] = React.useState(format(date, "EEEE"))
   const [localDate, setLocalDate] = React.useState(toISODateString(date))
   const [showCustom, setShowCustom] = React.useState(false)
   const scheduledRecipeDelete = useScheduledRecipeDelete()
   const scheduledRecipeUpdate = useScheduledRecipeUpdate()
-  const findNextOpen = useScheduledRecipeFindNextOpen()
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLocalDate(e.target.value)
-  }
-  const handleFindNextOpen = () => {
-    findNextOpen.mutate(
-      {
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        day: day as
-          | "Sunday"
-          | "Monday"
-          | "Tuesday"
-          | "Wednesday"
-          | "Thursday"
-          | "Friday"
-          | "Saturday"
-          | "Weekday"
-          | "Weekend",
-        now: localDate,
-      },
-      {
-        onSuccess: (data) => {
-          setLocalDate(data.date)
-        },
-      },
-    )
-  }
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setDay(e.target.value)
   }
   const handleSave = ({ on }: { on: Date }) => {
     scheduledRecipeUpdate.mutate({
@@ -230,28 +205,13 @@ function RescheduleSection({
     <Box dir="col" gap={2}>
       <Box dir="col" gap={4} mt={2} mb={2}>
         <Box dir="col" gap={2}>
-          <div className="flex flex-wrap justify-between gap-2">
-            <div className="flex items-center gap-2">
+          <div className="flex flex-col flex-wrap justify-between gap-3">
+            <div className="flex flex-col items-center gap-2">
               {(
                 [
-                  [
-                    "Today",
-                    () => {
-                      handleSave({ on: new Date() })
-                    },
-                  ],
-                  [
-                    "Next Day",
-                    () => {
-                      handleSave({ on: addDays(date, 1) })
-                    },
-                  ],
-                  [
-                    "Next Week",
-                    () => {
-                      handleSave({ on: addWeeks(date, 1) })
-                    },
-                  ],
+                  getDateOption("Today", new Date(), handleSave),
+                  getDateOption("Next Day", addDays(date, 1), handleSave),
+                  getDateOption("Next Week", addWeeks(date, 1), handleSave),
                   [
                     "Custom",
                     () => {
@@ -263,8 +223,8 @@ function RescheduleSection({
                 return (
                   <Button
                     key={label}
-                    size="small"
                     onClick={onClick}
+                    className="w-full grow"
                     active={label === "Custom" && showCustom}
                     disabled={scheduledRecipeUpdate.isPending}
                   >
@@ -272,12 +232,33 @@ function RescheduleSection({
                   </Button>
                 )
               })}
+              {showCustom && (
+                <>
+                  {/* eslint-disable-next-line react/forbid-elements */}
+                  <input
+                    value={toISODateString(localDate)}
+                    onChange={handleDateChange}
+                    type="date"
+                    className="w-full rounded-md border border-solid border-[--color-border] p-1 text-base"
+                  />
+                  <Button
+                    variant="primary"
+                    onClick={() => {
+                      handleSave({ on: parseISO(localDate) })
+                    }}
+                    className="w-full grow"
+                    disabled={scheduledRecipeUpdate.isPending}
+                  >
+                    {!scheduledRecipeUpdate.isPending
+                      ? "Update Schedule"
+                      : "Updating Schedule..."}
+                  </Button>
+                </>
+              )}
             </div>
 
             <DialogTrigger>
-              <Button size="small" variant="danger">
-                Delete
-              </Button>
+              <Button>Remove from Schedule</Button>
               <Modal title="Delete Recipe">
                 <div className="flex flex-col gap-2">
                   <div>Are you sure you want to delete '{recipeName}'?</div>
@@ -300,69 +281,15 @@ function RescheduleSection({
                       }}
                     >
                       {!scheduledRecipeDelete.isPending
-                        ? "Delete"
-                        : "Deleting..."}
+                        ? "Remove from Schedule"
+                        : "Removing from Schedule..."}
                     </Button>
                   </div>
                 </div>
               </Modal>
             </DialogTrigger>
           </div>
-
-          {showCustom && (
-            <>
-              {/* eslint-disable-next-line react/forbid-elements */}
-              <input
-                value={toISODateString(localDate)}
-                onChange={handleDateChange}
-                type="date"
-                className="w-full rounded-md border border-solid border-[--color-border] p-1 text-base"
-              />
-              <details>
-                <summary>shortcuts</summary>
-                <Box gap={2} align="center">
-                  <div className="text-[14px]">next open</div>
-                  <Select
-                    value={day}
-                    onChange={handleSelectChange}
-                    disabled={findNextOpen.isPending}
-                  >
-                    {options.map((opt) => {
-                      return (
-                        <option value={opt} key={opt}>
-                          {opt}
-                        </option>
-                      )
-                    })}
-                  </Select>
-                  <div>
-                    <Button
-                      size="small"
-                      onClick={handleFindNextOpen}
-                      disabled={findNextOpen.isPending}
-                    >
-                      {!findNextOpen.isPending ? "Find" : "Finding..."}
-                    </Button>
-                  </div>
-                </Box>
-              </details>
-            </>
-          )}
         </Box>
-      </Box>
-      <Box space="end" align="center">
-        {showCustom && (
-          <Button
-            size="small"
-            variant="primary"
-            onClick={() => {
-              handleSave({ on: parseISO(localDate) })
-            }}
-            disabled={scheduledRecipeUpdate.isPending}
-          >
-            {!scheduledRecipeUpdate.isPending ? "Save" : "Saving..."}
-          </Button>
-        )}
       </Box>
     </Box>
   )
