@@ -1,4 +1,5 @@
 # ruff: noqa: T201
+import contextlib
 import filecmp
 import json
 import shutil
@@ -214,6 +215,12 @@ class DirDiff:
 
 def _compare_directories(src_dir: str, dest_dir: str) -> DirDiff | None:
     # Compare directories
+    if not Path(dest_dir).exists():
+        return DirDiff(
+            missing_files=[s.as_posix() for s in Path(src_dir).iterdir()],
+            files_to_delete=[],
+            diff_files=[],
+        )
     dir_cmp = filecmp.dircmp(src_dir, dest_dir)
     # Check if file lists are the same
     if dir_cmp.left_only or dir_cmp.right_only or dir_cmp.diff_files:
@@ -275,7 +282,8 @@ client is not up to date, regenerate with:
         )
         sys.exit(1)
 
-    shutil.rmtree(client_path)
+    with contextlib.suppress(FileNotFoundError):
+        shutil.rmtree(client_path)
     shutil.move(tmpdir, client_path)
 
     print("generated client")
