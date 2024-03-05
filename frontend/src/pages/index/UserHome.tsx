@@ -4,6 +4,7 @@ import {
   format,
   parseISO,
   startOfToday,
+  startOfWeek,
 } from "date-fns"
 import React from "react"
 import { Link } from "react-router-dom"
@@ -13,12 +14,11 @@ import { Box } from "@/components/Box"
 import { Image } from "@/components/Image"
 import { Loader } from "@/components/Loader"
 import { NavPage } from "@/components/Page"
-import { toISODateString } from "@/date"
 import { pathSchedule } from "@/paths"
 import { ResponseFromUse } from "@/queries/queryUtilTypes"
 import { useRecentlyCreatedRecipesList } from "@/queries/recentlyCreatedRecipesList"
 import { useRecentlyViewedRecipesList } from "@/queries/recentlyViewedRecipesList"
-import { useSchedulePreviewList } from "@/queries/schedulePreviewList"
+import { useScheduledRecipeList } from "@/queries/scheduledRecipeList"
 import { recipeURL } from "@/urls"
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
@@ -89,7 +89,7 @@ function buildSchedule(
     const date = parseISO(x.on)
     const s = newSchedule[date.toISOString()]
     if (s == null) {
-      newSchedule[date.toISOString()] = []
+      return
     }
     newSchedule[date.toISOString()]?.push({
       id: x.recipe.id,
@@ -107,9 +107,9 @@ function buildSchedule(
 function useSchedulePreview() {
   const start = startOfToday()
   const end = addDays(start, 6)
-  const res = useSchedulePreviewList({
-    start: toISODateString(start),
-    end: toISODateString(end),
+  const startOfWeekMs = startOfWeek(start).getTime()
+  const res = useScheduledRecipeList({
+    startOfWeekMs,
   })
 
   if (res.data == null) {
