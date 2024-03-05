@@ -22,12 +22,11 @@ export function onScheduledRecipeUpdateSuccess(params: {
         if (draft == null) {
           return
         }
-        const index = draft.scheduledRecipes.findIndex(
-          (calRecipe) => calRecipe.id === params.scheduledRecipeId,
+        draft.scheduledRecipes = draft.scheduledRecipes.filter(
+          (calRecipe) => calRecipe.id !== params.scheduledRecipeId,
         )
-        if (index !== -1) {
-          draft.scheduledRecipes[index] = params.updatedCalRecipe
-        }
+
+        draft.scheduledRecipes.push(params.updatedCalRecipe)
       })
     },
   })

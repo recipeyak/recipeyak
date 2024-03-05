@@ -118,20 +118,14 @@ export function useScheduleRecipeCreate() {
               if (draft == null) {
                 return
               }
-              // 1. find optimistic or pre-existing scheduled recipe indexes
-              let indexesToDelete = new Set<number>()
-              draft.scheduledRecipes.forEach((calRecipe, index) => {
-                if (
-                  calRecipe.id === context.optimisticScheduledRecipeId ||
-                  calRecipe.id === response.id
-                ) {
-                  indexesToDelete.add(index)
-                }
-              })
-              // 2. remove the optimistic or pre-existing scheduled recipes
-              for (const index of indexesToDelete) {
-                draft.scheduledRecipes.splice(index, 1)
-              }
+              draft.scheduledRecipes = draft.scheduledRecipes.filter(
+                (x) =>
+                  !(
+                    x.id === context.optimisticScheduledRecipeId ||
+                    x.id === response.id
+                  ),
+              )
+
               // 3. add the server value
               draft.scheduledRecipes.push(response)
             })
