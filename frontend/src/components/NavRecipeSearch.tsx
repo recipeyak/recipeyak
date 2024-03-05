@@ -223,6 +223,9 @@ export function NavRecipeSearch() {
     ? recentlyViewedRecipeHits.length
     : results.data?.result.nbHits ?? 0
 
+  // Show recently viewed recipes when there's no search query.
+  const hits = !query ? recentlyViewedRecipeHits : results.data?.hits ?? []
+
   const handleSearchKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     // We need to extract the key from the synthetic event before we lose the
     // event.
@@ -245,7 +248,7 @@ export function NavRecipeSearch() {
         setSelectedIndex((s) => clamp(s + 1, 0, hitCount - 1))
         break
       case "Enter": {
-        const suggestion = results.data?.hits?.[selectedIndex]
+        const suggestion = hits?.[selectedIndex]
         if (suggestion) {
           history.push(recipeURL(suggestion.id, suggestion.name))
         }
@@ -306,10 +309,7 @@ export function NavRecipeSearch() {
       />
       {showPopover && (
         <SearchResultsPopover
-          hits={
-            // Show recently viewed recipes when there's no search query.
-            !query ? recentlyViewedRecipeHits : results.data?.hits ?? []
-          }
+          hits={hits}
           hitCount={hitCount}
           selectedIndex={selectedIndex}
           query={query}
