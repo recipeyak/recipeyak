@@ -544,7 +544,7 @@ function SideBySideDiff({
 }) {
   const [prev, cur, diffMapping] = getVersions(currentVersion, versions)
   return (
-    <div className="flex h-full grow flex-row gap-4 overflow-y-auto">
+    <div className="flex h-full grow flex-col gap-4 md:flex-row md:overflow-y-auto">
       {/* in a side by side diff, we show the deleted changes on the left side (previous version), and the added changes on the right side (current version) */}
       <RecipeView recipeVersion={prev} diffs={diffMapping} type={"before"} />
       <RecipeView recipeVersion={cur} diffs={diffMapping} type={"after"} />
@@ -571,7 +571,7 @@ function VersionList({
   setCurrentVersion: (_: number) => void
 }) {
   return (
-    <div className="h-full min-w-[350px] max-w-[350px] grow ">
+    <div className="grow md:h-full md:min-w-[350px] md:max-w-[350px]">
       {versions.map((change, idx) => (
         <div
           key={change.id}
@@ -617,7 +617,7 @@ function RecipeVersionDiff({ versions }: { versions: Versions }) {
     return <div className="mt-10 text-center">No versions found</div>
   }
   return (
-    <div className="flex h-full w-full gap-2">
+    <div className="flex h-full w-full flex-wrap gap-2 overflow-y-auto md:flex-nowrap md:[overflow-y:unset]">
       <VersionList
         currentVersion={currentVersion}
         versions={versions}
