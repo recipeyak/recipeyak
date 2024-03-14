@@ -5,7 +5,7 @@ export function ingredientCreate(params: {
   quantity: string
   name: string
   description: string
-  position?: string | null
+  position: string
   optional?: boolean | null
   recipe_id: number
 }) {

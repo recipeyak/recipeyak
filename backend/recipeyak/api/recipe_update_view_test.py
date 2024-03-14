@@ -27,7 +27,7 @@ def test_step_create(client: Client, recipe: Recipe, user: User, team: Team) -> 
     assert (
         RecipeChange.objects.count() == 0
     ), "We shouldn't have any changes recorded yet."
-    data = {"text": "Combine ingredients and mix well."}
+    data = {"text": "Combine ingredients and mix well.", "position": "b"}
     client.force_login(user)
     res = client.post(
         f"/api/v1/recipes/{recipe.id}/steps/", data, content_type="application/json"
@@ -216,6 +216,7 @@ def test_ingredient_create(
         "quantity": "1 tablespoon",
         "name": "black pepper",
         "description": "roughly ground",
+        "position": "a",
     }
     client.force_login(user)
     res = client.post(

@@ -35,6 +35,7 @@ module.exports = {
     browser: true,
   },
   rules: {
+    curly: "error",
     "import/first": "error",
     "import/no-duplicates": "error",
     "import/newline-after-import": "error",

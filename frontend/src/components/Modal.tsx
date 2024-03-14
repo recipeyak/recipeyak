@@ -1,6 +1,7 @@
 import React from "react"
 import { Dialog, Modal as AriaModal, ModalOverlay } from "react-aria-components"
 
+import { clx } from "@/classnames"
 import { CloseButton } from "@/components/CloseButton"
 
 export function Modal({
@@ -8,11 +9,13 @@ export function Modal({
   onOpenChange,
   children,
   title,
+  full = false,
 }: {
   title: React.ReactNode
   isOpen?: boolean
   onOpenChange?: ((_: boolean) => void) | undefined
   children: React.ReactNode | ((_: { close: () => void }) => React.ReactNode)
+  full?: boolean
 }) {
   return (
     <ModalOverlay
@@ -21,8 +24,13 @@ export function Modal({
       isOpen={isOpen}
       onOpenChange={onOpenChange}
     >
-      <AriaModal className="h-full w-full overflow-hidden bg-[--color-background-card] p-6 shadow-xl outline-none sm:mt-[8vh] sm:h-[max-content] sm:max-w-md sm:rounded-md">
-        <Dialog className="outline-none">
+      <AriaModal
+        className={clx(
+          "h-full w-full overflow-hidden bg-[--color-background-card] p-6 shadow-xl outline-none sm:rounded-md",
+          !full && "sm:mt-[8vh] sm:h-[max-content] sm:max-w-md",
+        )}
+      >
+        <Dialog className="h-full outline-none">
           {({ close }) => (
             <div
               onClick={(e) => {
@@ -35,6 +43,7 @@ export function Modal({
                 // DOM and ensure we don't click stuff behind it
                 e.stopPropagation()
               }}
+              className="h-full"
             >
               <div className="flex items-center justify-between">
                 <div>{title}</div>

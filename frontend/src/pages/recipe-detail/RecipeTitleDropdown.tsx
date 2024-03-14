@@ -7,6 +7,7 @@ import { Chevron } from "@/components/icons"
 import { MenuItem } from "@/components/MenuItem"
 import { MenuPopover } from "@/components/MenuPopover"
 import { Modal } from "@/components/Modal"
+import { RecipeVersionModal } from "@/pages/recipe-detail/RecipeVersionModal"
 import { ScheduleModal } from "@/pages/recipe-detail/ScheduleModal"
 import { pathCookDetail, pathRecipeDetail } from "@/paths"
 import { useRecipeDelete } from "@/queries/recipeDelete"
@@ -17,6 +18,7 @@ import { recipeURL } from "@/urls"
 
 type RecentSchedule = Recipe["recentSchedules"][number]
 type Ingredient = Recipe["ingredients"][number]
+type Versions = Recipe["versions"]
 
 function ingredientToString(ingre: Ingredient) {
   const s = ingre.quantity.trim() + " " + ingre.name.trim()
@@ -34,11 +36,13 @@ export function RecipeTitleDropdown({
   recipeAuthor,
   recipeImageUrl,
   recipeRecentScheduleHistory,
+  versions,
   toggleEditing,
   editingEnabled,
 }: {
   recipeId: number
   recipeName: string
+  versions: Versions
   recipeImageUrl: {
     id: string
     url: string
@@ -52,6 +56,7 @@ export function RecipeTitleDropdown({
   editingEnabled: boolean
 }) {
   const [showScheduleModal, setShowScheduleModal] = useState(false)
+  const [showVersionModal, setShowVersionModal] = useState(false)
   const updateRecipe = useRecipeUpdate()
   const deleteRecipe = useRecipeDelete()
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
@@ -91,7 +96,14 @@ export function RecipeTitleDropdown({
     },
     {
       type: "menuitem",
-      label: "View Timeline",
+      label: "Version History",
+      onClick: () => {
+        setShowVersionModal(true)
+      },
+    },
+    {
+      type: "menuitem",
+      label: "Schedule History",
       to: recipeURL(recipeId, recipeName) + "?timeline=1",
     },
     {
@@ -243,6 +255,11 @@ export function RecipeTitleDropdown({
           </div>
         </div>
       </Modal>
+      <RecipeVersionModal
+        versions={versions}
+        isOpen={showVersionModal}
+        onOpenChange={setShowVersionModal}
+      />
       <ScheduleModal
         isOpen={showScheduleModal}
         recipeId={recipeId}

@@ -4,6 +4,7 @@ from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 
 from recipeyak.models.ingredient import Ingredient
+from recipeyak.models.ingredient_historical import IngredientHistorical  # noqa: F401
 from recipeyak.models.invite import Invite  # noqa: F401
 from recipeyak.models.membership import Membership, get_random_ical_id  # noqa: F401
 from recipeyak.models.note import Note
@@ -14,14 +15,17 @@ from recipeyak.models.recipe_change import ChangeType, RecipeChange  # noqa: F40
 from recipeyak.models.recipe_cook_checklist_check import (
     RecipeCookChecklistCheck,
 )
+from recipeyak.models.recipe_historical import RecipeHistorical  # noqa: F401
 from recipeyak.models.recipe_index_queue import RecipeIndexQueue  # noqa: F401
 from recipeyak.models.recipe_view import RecipeView  # noqa: F401
 from recipeyak.models.schedule_event import ScheduleEvent  # noqa: F401
 from recipeyak.models.scheduled_recipe import ScheduledRecipe  # noqa: F401
 from recipeyak.models.scrape import Scrape  # noqa: F401
 from recipeyak.models.section import Section  # noqa: F401
+from recipeyak.models.section_historical import SectionHistorical  # noqa: F401
 from recipeyak.models.shopping_list import ShoppingList  # noqa: F401
 from recipeyak.models.step import Step
+from recipeyak.models.step_historical import StepHistorical  # noqa: F401
 from recipeyak.models.team import Team
 from recipeyak.models.timeline_event import TimelineEvent  # noqa: F401
 from recipeyak.models.upload import Upload

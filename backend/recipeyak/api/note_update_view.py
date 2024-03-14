@@ -10,8 +10,8 @@ from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.recipe import NoteResponse, serialize_note
 from recipeyak.models import Upload, filter_notes, get_team
-from recipeyak.models.note_historical import NoteHistorical
 from recipeyak.realtime import publish_recipe
+from recipeyak.versioning import save_note_version
 
 
 class EditNoteParams(RequestParams):
@@ -35,14 +35,7 @@ def note_update_view(
         )
     with transaction.atomic():
         # record the current note state
-        NoteHistorical.objects.create(
-            note=note,
-            actor=request.user,
-            text=note.text,
-            upload_ids=list(
-                Upload.objects.filter(note=note).values_list("id", flat=True)
-            ),
-        )
+        save_note_version(note, actor=request.user)
 
         # mutate the note
         if text := params.text:

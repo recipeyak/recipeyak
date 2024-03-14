@@ -255,8 +255,9 @@ ingredient = {
     "unit": "tablespoon",
     "name": "black pepper",
     "description": "",
+    "position": "a",
 }
-step = {"text": "place fish in salt"}
+step = {"text": "place fish in salt", "position": "b"}
 
 
 @pytest.mark.parametrize(
@@ -354,6 +355,7 @@ def test_adding_ingredient_to_recipe(
         "unit": "tablespoon",
         "name": "black pepper",
         "description": "",
+        "position": "a",
     }
 
     res = client.post(

@@ -90,7 +90,7 @@ export const Gallery = (props: {
               key={formatImg(props.imageUrl)}
               src={formatImg(props.imageUrl)}
               onLoad={(e) => {
-                if (props.contentType.startsWith("image/"))
+                if (props.contentType.startsWith("image/")) {
                   // The common imigx format `src` will be in browser cache from the
                   // initial recipe page load. onLoad should then trigger loading a
                   // larger image by setting the `srcset`.
@@ -100,6 +100,7 @@ export const Gallery = (props: {
                   // and waiting to set `srcset`, we'll see an image immediately in
                   // the gallery, served from cache.
                   e.currentTarget.srcset = buildSrcSetUrls(props.imageUrl)
+                }
               }}
               onClick={onClick}
             />

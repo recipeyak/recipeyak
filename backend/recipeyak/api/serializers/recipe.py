@@ -6,6 +6,7 @@ from typing import Literal, cast
 
 import pydantic
 import tldextract
+from django.db import connection
 
 from recipeyak.models import (
     Ingredient,
@@ -160,6 +161,57 @@ def serialize_step(step: Step) -> StepResponse:
     )
 
 
+class IngredientVersionResponse(pydantic.BaseModel):
+    id: int | None
+    type: Literal["ingredient"]
+    description: str
+    quantity: str
+    name: str
+    position: str
+    optional: bool
+
+
+class SectionVersionResponse(pydantic.BaseModel):
+    id: int | None
+    type: Literal["section"]
+    title: str
+    position: str
+
+
+class StepVersionResponse(pydantic.BaseModel):
+    id: int | None
+    text: str
+    position: str
+
+
+class PrimaryImageResponse(pydantic.BaseModel):
+    id: int
+    url: str
+    backgroundUrl: str | None
+
+
+class RecipeVersionActorResponse(pydantic.BaseModel):
+    id: int
+    name: str
+    avatar_url: str
+
+
+class RecipeVersionResponse(pydantic.BaseModel):
+    id: int
+    created_at: str
+    actor: RecipeVersionActorResponse | None
+    name: str
+    author: str | None
+    source: str | None
+    time: str | None
+    servings: str | None
+    archived_at: str | None
+    tags: list[str] | None
+    primary_image: PrimaryImageResponse | None
+    ingredients: list[IngredientVersionResponse | SectionVersionResponse]
+    steps: list[StepVersionResponse]
+
+
 class TimelineEventResponse(pydantic.BaseModel):
     id: int
     type: Literal["recipe"]
@@ -213,6 +265,7 @@ class RecipeResponse(pydantic.BaseModel):
     archived_at: datetime | None
     tags: list[str] | None
     primaryImage: UploadResponse | None
+    versions: list[RecipeVersionResponse]
 
 
 def serialize_timeline_event(
@@ -299,6 +352,119 @@ def serialize_section(section: Section) -> SectionResponse:
     )
 
 
+def _get_versions(recipe_id: int) -> list[RecipeVersionResponse]:
+    with connection.cursor() as cur:
+        cur.execute(
+            """
+select 
+  json_object(
+    'id': recipe_historical.id,
+    'created_at': recipe_historical.created,
+    'actor': (
+      select json_object(
+        'id': id,
+        'name': coalesce(name, email),
+        'avatar_url': coalesce(
+          (
+            select 'https://images-cdn.recipeyak.com/' || key 
+            from core_upload
+            where core_myuser.profile_upload_id = core_upload.id
+          ),
+          '/avatar/' || md5(core_myuser.email) || '?d=identicon&r=g'
+        )
+      )
+      from core_myuser
+      where core_myuser.id = recipe_historical.actor_id
+    ),
+    'name': recipe_historical.name, 
+    'author': recipe_historical.author,
+    'source': recipe_historical.source,
+    'time': recipe_historical.time,
+    'servings': recipe_historical.servings,
+    'archived_at': recipe_historical.archived_at,
+    'tags': recipe_historical.tags,
+    'primary_image': (
+      select json_object(
+        'id': core_upload.id,
+        'url': 'https://images-cdn.recipeyak.com/' || key,
+        'backgroundUrl': background_url
+      )
+      from core_upload
+      where core_upload.id = recipe_historical.primary_image_id
+    ),
+    'ingredients': (
+      select coalesce(json_agg(ingredient), '[]'::json)
+      from (
+        select ingredient 
+        from (  
+          select
+            json_object(
+              'id': ingredient_id,
+              'type': 'ingredient',
+              'description': description,
+              'quantity': quantity,
+              'name': name,
+              'position': position,
+              'optional': optional
+            ) as ingredient
+          from
+            ingredient_historical
+          where
+            ingredient_historical.recipe_historical_id = recipe_historical.id
+          union all (
+            select
+              json_object(
+               'id': section_id,
+               'type': 'section',
+               'title': title,
+               'position': position
+             ) AS ingredient
+           from
+            section_historical
+           where
+            section_historical.recipe_historical_id = recipe_historical.id
+          )
+       )
+      order by 
+        (ingredient->'position')::text asc
+      ) sub
+    ),
+    'steps': (
+      select coalesce(json_agg(step), '[]'::json)
+      from (
+        select
+          json_object(
+            'id': step_id,
+            'text': text,
+            'position': position
+          ) AS step
+        from
+          step_historical
+        where
+          step_historical.recipe_historical_id = recipe_historical.id
+        order by
+          position asc
+      ) sub
+  )
+)
+from recipe_historical 
+join core_recipe on core_recipe.id = recipe_historical.recipe_id
+where core_recipe.id = %(recipe_id)s
+order by recipe_historical.created desc
+""",
+            {"recipe_id": recipe_id},
+        )
+        out: list[RecipeVersionResponse] = []
+        for row in cur.fetchall():
+            obj = row[0]
+            out.append(
+                RecipeVersionResponse.model_validate(
+                    obj,
+                )
+            )
+        return out
+
+
 def serialize_recipe(recipe: Recipe) -> RecipeResponse:
     ingredients = [serialize_ingredient(x) for x in recipe.ingredient_set.all()]
     steps = [serialize_step(x) for x in recipe.step_set.all()]
@@ -310,6 +476,7 @@ def serialize_recipe(recipe: Recipe) -> RecipeResponse:
         if recipe.primary_image is not None
         else None
     )
+    versions = _get_versions(recipe.id)
     return RecipeResponse(
         id=recipe.id,
         name=recipe.name,
@@ -327,4 +494,5 @@ def serialize_recipe(recipe: Recipe) -> RecipeResponse:
         archived_at=recipe.archived_at,
         tags=recipe.tags,
         primaryImage=primary_image,
+        versions=versions,
     )
