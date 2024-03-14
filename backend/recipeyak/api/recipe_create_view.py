@@ -136,7 +136,7 @@ def recipe_create_view(
         # table, instead we only look at historical, with the assumption that
         # this recipe version is the same as the one we create above in the
         # transaction
-        save_recipe_version(recipe, actor=request.user)
+        save_recipe_version(recipe_id=recipe.id, actor=request.user)
 
     return JsonResponse(
         serialize_recipe(recipe=recipe),

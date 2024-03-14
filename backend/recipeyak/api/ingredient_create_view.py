@@ -43,7 +43,6 @@ def ingredient_create_view(
     recipe = get_object_or_404(filter_recipes(team=team), pk=recipe_id)
 
     with transaction.atomic():
-        save_recipe_version(recipe, actor=request.user)
         ingredient = Ingredient.objects.create(
             quantity=params.quantity,
             name=params.name,
@@ -59,6 +58,7 @@ def ingredient_create_view(
             after=ingredient_to_text(ingredient),
             change_type=ChangeType.INGREDIENT_CREATE,
         )
+        save_recipe_version(recipe_id=recipe_id, actor=request.user)
 
     publish_recipe(recipe_id=recipe.id, team_id=team.id)
     return JsonResponse(serialize_ingredient(ingredient), status=201)

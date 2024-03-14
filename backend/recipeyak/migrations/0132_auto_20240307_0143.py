@@ -20,7 +20,7 @@ def _forwards_func(apps: Any, schema_editor: Any) -> None:
         event = recipe.timelineevent_set.filter(action="created").first()
         created_by = event.created_by if event is not None else None
         actor = User.objects.get(id=created_by.id) if created_by is not None else None
-        save_recipe_version(recipe, actor=actor, created=recipe.created)
+        save_recipe_version(recipe_id=recipe.id, actor=actor, created=recipe.created)
 
 
 class Migration(migrations.Migration):

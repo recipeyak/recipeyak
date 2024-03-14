@@ -30,7 +30,6 @@ def section_update_view(
 
     params = SectionUpdateParams.parse_raw(request.body)
     with transaction.atomic():
-        save_recipe_version(section.recipe, actor=request.user)
         if params.title is not None:
             section.title = params.title
         if params.position is not None:
@@ -43,6 +42,7 @@ def section_update_view(
             change_type=ChangeType.SECTION_UPDATE,
         )
         section.save()
+        save_recipe_version(recipe_id=section.recipe_id, actor=request.user)
     publish_recipe(recipe_id=section.recipe.id, team_id=section.recipe.team_id)
 
     return JsonResponse(serialize_section(section))

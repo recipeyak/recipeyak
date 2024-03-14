@@ -10,7 +10,6 @@ from recipeyak.models import (
     get_team,
 )
 from recipeyak.realtime import publish_recipe
-from recipeyak.versioning import save_recipe_version
 
 
 @endpoint()
@@ -20,7 +19,8 @@ def recipe_delete_view(
     team = get_team(request.user)
     with transaction.atomic():
         recipe = filter_recipe_or_404(team=team, recipe_id=recipe_id)
-        save_recipe_version(recipe, actor=request.user)
         recipe.delete()
+        # no need to save version, since we aren't "updating" the recipe, we
+        # have the previous post-update version saved already
     publish_recipe(recipe_id=recipe.id, team_id=team.id)
     return JsonResponse(None, status=204)

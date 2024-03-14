@@ -19,7 +19,7 @@ def ingredient_delete_view(
     team = get_team(request.user)
     ingredient = get_object_or_404(filter_ingredients(team=team), pk=ingredient_id)
     with transaction.atomic():
-        save_recipe_version(ingredient.recipe, actor=request.user)
+        recipe_id = ingredient.recipe.id
         RecipeChange.objects.create(
             recipe=ingredient.recipe,
             actor=request.user,
@@ -28,5 +28,6 @@ def ingredient_delete_view(
             change_type=ChangeType.INGREDIENT_DELETE,
         )
         filter_ingredients(team=team).filter(pk=ingredient_id).delete()
+        save_recipe_version(recipe_id=recipe_id, actor=request.user)
     publish_recipe(recipe_id=ingredient.recipe_id, team_id=team.id)
     return JsonResponse(None, status=204)

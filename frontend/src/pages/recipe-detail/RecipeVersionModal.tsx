@@ -13,6 +13,7 @@ import { useState } from "react"
 import { assertNever } from "@/assert"
 import { clx } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
+import { Image } from "@/components/Image"
 import { Modal } from "@/components/Modal"
 import { formatAbsoluteDateTime, formatHumanDate } from "@/date"
 import { RecipeFetchResponse } from "@/queries/recipeFetch"
@@ -112,7 +113,7 @@ function DiffToText({
       assertNever(type)
     }
   }
-  return <>{out}</>
+  return <span>{out}</span>
 }
 
 function createDiff(
@@ -396,7 +397,7 @@ function ImageDiff({
   diff,
   type,
 }: {
-  diff: FieldDiff<{ id: number } | null>
+  diff: FieldDiff<Versions[number]["primary_image"] | null>
   type: "before" | "after"
 }) {
   if (type === "before" && diff.fromValue == null) {
@@ -405,19 +406,29 @@ function ImageDiff({
   if (type === "after" && diff.toValue == null) {
     return null
   }
-
+  const image = type === "before" ? diff.fromValue : diff.toValue
   return (
     <div
       className={clx(
         "m-1 h-[100px] w-[100px] min-w-[max-content] shrink-0 rounded-sm bg-[--color-background-empty-image]",
         type === "after" &&
-          diff.fromValue == null &&
-          "outline outline-2 outline-[#5ede7aa9]",
+          diff.toValue?.id !== diff.fromValue?.id &&
+          "outline outline-2 outline-offset-2 outline-[#5ede7aa9]",
         type === "before" &&
-          diff.toValue == null &&
-          "outline outline-2 outline-[#f26f6fad]",
+          diff.toValue?.id !== diff.fromValue?.id &&
+          "outline outline-2 outline-offset-2 outline-[#f26f6fad]",
       )}
-    />
+    >
+      <Image
+        size="large"
+        sources={
+          image && {
+            url: image.url,
+            backgroundUrl: image.backgroundUrl,
+          }
+        }
+      />
+    </div>
   )
 }
 

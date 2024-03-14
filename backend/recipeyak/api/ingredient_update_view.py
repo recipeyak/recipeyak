@@ -36,10 +36,8 @@ def ingredient_update_view(
     params = IngredientsPatchParams.parse_raw(request.body)
     ingredient = get_object_or_404(filter_ingredients(team=team), pk=ingredient_id)
 
-    before = ingredient_to_text(ingredient)
-
     with transaction.atomic():
-        save_recipe_version(ingredient.recipe, actor=request.user)
+        before = ingredient_to_text(ingredient)
         if params.quantity is not None:
             ingredient.quantity = params.quantity
         if params.name is not None:
@@ -50,18 +48,15 @@ def ingredient_update_view(
             ingredient.position = params.position
         if params.optional is not None:
             ingredient.optional = params.optional
-
         ingredient.save()
-
-        after = ingredient_to_text(ingredient)
-
         RecipeChange.objects.create(
             recipe=ingredient.recipe,
             actor=request.user,
             before=before,
-            after=after,
+            after=ingredient_to_text(ingredient),
             change_type=ChangeType.INGREDIENT_UPDATE,
         )
+        save_recipe_version(recipe_id=ingredient.recipe_id, actor=request.user)
 
     publish_recipe(recipe_id=ingredient.recipe_id, team_id=team.id)
 

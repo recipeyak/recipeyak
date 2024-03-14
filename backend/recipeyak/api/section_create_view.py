@@ -32,7 +32,6 @@ def section_create_view(
     params = SectionCreateParams.parse_raw(request.body)
 
     with transaction.atomic():
-        save_recipe_version(recipe, actor=request.user)
         RecipeChange.objects.create(
             recipe=recipe,
             actor=request.user,
@@ -54,6 +53,7 @@ def section_create_view(
                 section.position = ordering.FIRST_POSITION
 
         section.save()
+        save_recipe_version(recipe_id=recipe.id, actor=request.user)
 
     publish_recipe(recipe_id=recipe.id, team_id=recipe.team_id)
 

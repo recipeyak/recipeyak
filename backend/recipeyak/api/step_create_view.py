@@ -30,7 +30,6 @@ def step_create_view(
     recipe = get_object_or_404(filter_recipes(team=team), pk=recipe_id)
 
     with transaction.atomic():
-        save_recipe_version(recipe, actor=request.user)
         step = Step.objects.create(
             text=params.text, recipe=recipe, position=params.position
         )
@@ -41,6 +40,7 @@ def step_create_view(
             after=params.text,
             change_type=ChangeType.STEP_CREATE,
         )
+        save_recipe_version(recipe_id=recipe_id, actor=request.user)
 
     publish_recipe(recipe_id=recipe.id, team_id=recipe.team_id)
     return JsonResponse(serialize_step(step), status=201)

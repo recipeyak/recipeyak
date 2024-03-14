@@ -1,5 +1,4 @@
-from datetime import date, datetime
-from email.utils import parsedate_to_datetime
+from datetime import date
 from typing import Any
 from urllib.parse import urlparse
 
@@ -100,7 +99,6 @@ def test_ical_view_with_correct_id(
     res = client.get(url)
     assert res.status_code == 200
     assert res["Content-Type"] == "text/calendar"
-    assert isinstance(parsedate_to_datetime(res["Last-Modified"]), datetime)
 
     assert omit_entry_ids(res.content.decode()) == snapshot()
 

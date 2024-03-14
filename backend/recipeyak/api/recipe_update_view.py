@@ -47,8 +47,6 @@ def recipe_update_view(
     params = RecipePatchParams.parse_raw(request.body)
 
     with transaction.atomic():
-        save_recipe_version(recipe, actor=request.user)
-
         provided_fields = set(params.dict(exclude_unset=True))
         changes = []
         fields = [
@@ -122,6 +120,7 @@ def recipe_update_view(
                     upload=upload,
                 ).save()
         recipe.save()
+        save_recipe_version(recipe_id=recipe.id, actor=request.user)
     publish_recipe(recipe_id=recipe.id, team_id=team.id)
 
     team = get_team(request.user)

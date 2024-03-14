@@ -363,7 +363,7 @@ select
     'actor': (
       select json_object(
         'id': id,
-        'name': name,
+        'name': coalesce(name, email),
         'avatar_url': coalesce(
           (
             select 'https://images-cdn.recipeyak.com/' || key 

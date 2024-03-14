@@ -25,7 +25,6 @@ def section_delete_view(
         )
 
     with transaction.atomic():
-        save_recipe_version(recipe, actor=request.user)
         RecipeChange.objects.create(
             recipe=recipe,
             actor=request.user,
@@ -33,8 +32,8 @@ def section_delete_view(
             after="",
             change_type=ChangeType.SECTION_DELETE,
         )
-
         section.delete()
+        save_recipe_version(recipe_id=recipe.id, actor=request.user)
 
     publish_recipe(recipe_id=recipe.id, team_id=recipe.team_id)
 

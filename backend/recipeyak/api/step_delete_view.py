@@ -19,7 +19,6 @@ def step_delete_view(
     step = get_object_or_404(filter_steps(team=team), pk=step_id)
     recipe = step.recipe
     with transaction.atomic():
-        save_recipe_version(recipe, actor=request.user)
         RecipeChange.objects.create(
             recipe=step.recipe,
             actor=request.user,
@@ -28,5 +27,6 @@ def step_delete_view(
             change_type=ChangeType.STEP_DELETE,
         )
         step.delete()
+        save_recipe_version(recipe_id=recipe.id, actor=request.user)
     publish_recipe(recipe_id=recipe.id, team_id=recipe.team_id)
     return JsonResponse(None, status=204)

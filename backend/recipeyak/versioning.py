@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime
 
 from recipeyak.models.ingredient_historical import IngredientHistorical
 from recipeyak.models.note import Note
@@ -12,8 +12,12 @@ from recipeyak.models.user import User
 
 
 def save_recipe_version(
-    recipe: Recipe, *, actor: User | None, created: datetime | None = None
+    *, recipe_id: int, actor: User | None, created: datetime | None = None
 ) -> None:
+    """
+    Called after writing recipe changes to the database.
+    """
+    recipe = Recipe.objects.get(id=recipe_id)
     recipe_historical = RecipeHistorical.objects.create(
         team_id=recipe.team_id,
         recipe_id=recipe.id,
@@ -26,7 +30,7 @@ def save_recipe_version(
         archived_at=recipe.archived_at,
         tags=recipe.tags,
         primary_image_id=recipe.primary_image_id,
-        created=created,
+        created=created or datetime.now(UTC),
     )
     ingredients = []
     for ingredient in recipe.ingredient_set.all():

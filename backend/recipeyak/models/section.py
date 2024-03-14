@@ -19,6 +19,7 @@ class Section(CommonInfo):
     recipe = models.ForeignKey["Recipe"](
         "Recipe", on_delete=models.CASCADE, help_text="Recipe the section is part of."
     )
+    recipe_id: int
     title = models.CharField(
         max_length=255, help_text="name of the ingredient section group"
     )

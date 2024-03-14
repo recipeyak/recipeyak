@@ -29,7 +29,6 @@ def step_update_view(
     params = StepPatchParams.parse_raw(request.body)
     step = get_object_or_404(filter_steps(team=team), pk=step_id)
     with transaction.atomic():
-        save_recipe_version(recipe=step.recipe, actor=request.user)
         before_text = step.text
         if params.text is not None:
             step.text = params.text
@@ -44,6 +43,7 @@ def step_update_view(
             after=step.text,
             change_type=ChangeType.STEP_UPDATE,
         )
+        save_recipe_version(recipe_id=step.recipe_id, actor=request.user)
 
     publish_recipe(recipe_id=step.recipe.id, team_id=step.recipe.team_id)
 
