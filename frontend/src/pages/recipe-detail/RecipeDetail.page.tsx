@@ -605,6 +605,7 @@ function RecipeInfo(props: {
             recipeIsArchived={props.recipe.archived_at != null}
             recipeId={props.recipe.id}
             recipeAuthor={props.recipe.author}
+            versions={props.recipe.versions}
             recipeImageUrl={props.recipe.primaryImage}
             recipeName={props.recipe.name}
             recipeIngredients={props.recipe.ingredients}

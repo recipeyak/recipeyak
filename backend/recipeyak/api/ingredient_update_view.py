@@ -17,6 +17,7 @@ from recipeyak.api.serializers.recipe import (
 )
 from recipeyak.models import ChangeType, RecipeChange, filter_ingredients, get_team
 from recipeyak.realtime import publish_recipe
+from recipeyak.versioning import save_recipe_version
 
 
 class IngredientsPatchParams(RequestParams):
@@ -38,6 +39,7 @@ def ingredient_update_view(
     before = ingredient_to_text(ingredient)
 
     with transaction.atomic():
+        save_recipe_version(ingredient.recipe, actor=request.user)
         if params.quantity is not None:
             ingredient.quantity = params.quantity
         if params.name is not None:

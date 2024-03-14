@@ -3,7 +3,7 @@ import { http } from "@/apiClient"
 
 export function stepCreate(params: {
   text: string
-  position?: string | null
+  position: string
   recipe_id: number
 }) {
   return http<{

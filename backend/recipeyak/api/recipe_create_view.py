@@ -30,6 +30,7 @@ from recipeyak.models.team import Team
 from recipeyak.models.upload import Upload
 from recipeyak.parsing import parse_ingredient
 from recipeyak.scraper.scrape_recipe import ScrapeResult, scrape_recipe
+from recipeyak.versioning import save_recipe_version
 
 logger = structlog.stdlib.get_logger()
 
@@ -130,6 +131,12 @@ def recipe_create_view(
             created_by=request.user,
             recipe=recipe,
         ).save()
+        # We save a version now to simplify the diff view -- no need to
+        # construct a versions from both the "historical" tables and the current
+        # table, instead we only look at historical, with the assumption that
+        # this recipe version is the same as the one we create above in the
+        # transaction
+        save_recipe_version(recipe, actor=request.user)
 
     return JsonResponse(
         serialize_recipe(recipe=recipe),

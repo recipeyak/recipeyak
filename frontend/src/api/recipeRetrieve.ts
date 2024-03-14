@@ -97,6 +97,49 @@ export function recipeRetrieve(params: { recipe_id: number }) {
       contentType: string
       author: string | null
     } | null
+    versions: Array<{
+      id: number
+      created_at: string
+      actor: {
+        id: number
+        name: string
+        avatar_url: string
+      } | null
+      name: string
+      author: string | null
+      source: string | null
+      time: string | null
+      servings: string | null
+      archived_at: string | null
+      tags: Array<string> | null
+      primary_image: {
+        id: number
+        url: string
+        backgroundUrl: string | null
+      } | null
+      ingredients: Array<
+        | {
+            id: number | null
+            type: "ingredient"
+            description: string
+            quantity: string
+            name: string
+            position: string
+            optional: boolean
+          }
+        | {
+            id: number | null
+            type: "section"
+            title: string
+            position: string
+          }
+      >
+      steps: Array<{
+        id: number | null
+        text: string
+        position: string
+      }>
+    }>
   }>({
     url: "/api/v1/recipes/{recipe_id}/",
     method: "get",

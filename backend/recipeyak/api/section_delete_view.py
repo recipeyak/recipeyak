@@ -10,6 +10,7 @@ from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
 from recipeyak.models import ChangeType, RecipeChange, Section
 from recipeyak.realtime import publish_recipe
+from recipeyak.versioning import save_recipe_version
 
 
 @endpoint()
@@ -24,6 +25,7 @@ def section_delete_view(
         )
 
     with transaction.atomic():
+        save_recipe_version(recipe, actor=request.user)
         RecipeChange.objects.create(
             recipe=recipe,
             actor=request.user,

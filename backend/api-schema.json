@@ -1892,6 +1892,256 @@
                           "type": "null"
                         }
                       ]
+                    },
+                    "versions": {
+                      "items": {
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "created_at": {
+                            "type": "string"
+                          },
+                          "actor": {
+                            "anyOf": [
+                              {
+                                "properties": {
+                                  "id": {
+                                    "type": "integer"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "avatar_url": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": ["id", "name", "avatar_url"],
+                                "type": "object"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "author": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "source": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "time": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "servings": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "archived_at": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "tags": {
+                            "anyOf": [
+                              {
+                                "items": {
+                                  "type": "string"
+                                },
+                                "type": "array"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "primary_image": {
+                            "anyOf": [
+                              {
+                                "properties": {
+                                  "id": {
+                                    "type": "integer"
+                                  },
+                                  "url": {
+                                    "type": "string"
+                                  },
+                                  "backgroundUrl": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string"
+                                      },
+                                      {
+                                        "type": "null"
+                                      }
+                                    ]
+                                  }
+                                },
+                                "required": ["id", "url", "backgroundUrl"],
+                                "type": "object"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "ingredients": {
+                            "items": {
+                              "anyOf": [
+                                {
+                                  "properties": {
+                                    "id": {
+                                      "anyOf": [
+                                        {
+                                          "type": "integer"
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    },
+                                    "type": {
+                                      "const": "ingredient"
+                                    },
+                                    "description": {
+                                      "type": "string"
+                                    },
+                                    "quantity": {
+                                      "type": "string"
+                                    },
+                                    "name": {
+                                      "type": "string"
+                                    },
+                                    "position": {
+                                      "type": "string"
+                                    },
+                                    "optional": {
+                                      "type": "boolean"
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "type",
+                                    "description",
+                                    "quantity",
+                                    "name",
+                                    "position",
+                                    "optional"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "properties": {
+                                    "id": {
+                                      "anyOf": [
+                                        {
+                                          "type": "integer"
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    },
+                                    "type": {
+                                      "const": "section"
+                                    },
+                                    "title": {
+                                      "type": "string"
+                                    },
+                                    "position": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "type",
+                                    "title",
+                                    "position"
+                                  ],
+                                  "type": "object"
+                                }
+                              ]
+                            },
+                            "type": "array"
+                          },
+                          "steps": {
+                            "items": {
+                              "properties": {
+                                "id": {
+                                  "anyOf": [
+                                    {
+                                      "type": "integer"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "text": {
+                                  "type": "string"
+                                },
+                                "position": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": ["id", "text", "position"],
+                              "type": "object"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "created_at",
+                          "actor",
+                          "name",
+                          "author",
+                          "source",
+                          "time",
+                          "servings",
+                          "archived_at",
+                          "tags",
+                          "primary_image",
+                          "ingredients",
+                          "steps"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
                     }
                   },
                   "required": [
@@ -1910,7 +2160,8 @@
                     "created",
                     "archived_at",
                     "tags",
-                    "primaryImage"
+                    "primaryImage",
+                    "versions"
                   ],
                   "type": "object"
                 }
@@ -2374,6 +2625,256 @@
                           "type": "null"
                         }
                       ]
+                    },
+                    "versions": {
+                      "items": {
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "created_at": {
+                            "type": "string"
+                          },
+                          "actor": {
+                            "anyOf": [
+                              {
+                                "properties": {
+                                  "id": {
+                                    "type": "integer"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "avatar_url": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": ["id", "name", "avatar_url"],
+                                "type": "object"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "author": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "source": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "time": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "servings": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "archived_at": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "tags": {
+                            "anyOf": [
+                              {
+                                "items": {
+                                  "type": "string"
+                                },
+                                "type": "array"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "primary_image": {
+                            "anyOf": [
+                              {
+                                "properties": {
+                                  "id": {
+                                    "type": "integer"
+                                  },
+                                  "url": {
+                                    "type": "string"
+                                  },
+                                  "backgroundUrl": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string"
+                                      },
+                                      {
+                                        "type": "null"
+                                      }
+                                    ]
+                                  }
+                                },
+                                "required": ["id", "url", "backgroundUrl"],
+                                "type": "object"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "ingredients": {
+                            "items": {
+                              "anyOf": [
+                                {
+                                  "properties": {
+                                    "id": {
+                                      "anyOf": [
+                                        {
+                                          "type": "integer"
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    },
+                                    "type": {
+                                      "const": "ingredient"
+                                    },
+                                    "description": {
+                                      "type": "string"
+                                    },
+                                    "quantity": {
+                                      "type": "string"
+                                    },
+                                    "name": {
+                                      "type": "string"
+                                    },
+                                    "position": {
+                                      "type": "string"
+                                    },
+                                    "optional": {
+                                      "type": "boolean"
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "type",
+                                    "description",
+                                    "quantity",
+                                    "name",
+                                    "position",
+                                    "optional"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "properties": {
+                                    "id": {
+                                      "anyOf": [
+                                        {
+                                          "type": "integer"
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    },
+                                    "type": {
+                                      "const": "section"
+                                    },
+                                    "title": {
+                                      "type": "string"
+                                    },
+                                    "position": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "type",
+                                    "title",
+                                    "position"
+                                  ],
+                                  "type": "object"
+                                }
+                              ]
+                            },
+                            "type": "array"
+                          },
+                          "steps": {
+                            "items": {
+                              "properties": {
+                                "id": {
+                                  "anyOf": [
+                                    {
+                                      "type": "integer"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "text": {
+                                  "type": "string"
+                                },
+                                "position": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": ["id", "text", "position"],
+                              "type": "object"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "created_at",
+                          "actor",
+                          "name",
+                          "author",
+                          "source",
+                          "time",
+                          "servings",
+                          "archived_at",
+                          "tags",
+                          "primary_image",
+                          "ingredients",
+                          "steps"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
                     }
                   },
                   "required": [
@@ -2392,7 +2893,8 @@
                     "created",
                     "archived_at",
                     "tags",
-                    "primaryImage"
+                    "primaryImage",
+                    "versions"
                   ],
                   "type": "object"
                 }
@@ -2958,6 +3460,256 @@
                           "type": "null"
                         }
                       ]
+                    },
+                    "versions": {
+                      "items": {
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "created_at": {
+                            "type": "string"
+                          },
+                          "actor": {
+                            "anyOf": [
+                              {
+                                "properties": {
+                                  "id": {
+                                    "type": "integer"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "avatar_url": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": ["id", "name", "avatar_url"],
+                                "type": "object"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "author": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "source": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "time": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "servings": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "archived_at": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "tags": {
+                            "anyOf": [
+                              {
+                                "items": {
+                                  "type": "string"
+                                },
+                                "type": "array"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "primary_image": {
+                            "anyOf": [
+                              {
+                                "properties": {
+                                  "id": {
+                                    "type": "integer"
+                                  },
+                                  "url": {
+                                    "type": "string"
+                                  },
+                                  "backgroundUrl": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string"
+                                      },
+                                      {
+                                        "type": "null"
+                                      }
+                                    ]
+                                  }
+                                },
+                                "required": ["id", "url", "backgroundUrl"],
+                                "type": "object"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "ingredients": {
+                            "items": {
+                              "anyOf": [
+                                {
+                                  "properties": {
+                                    "id": {
+                                      "anyOf": [
+                                        {
+                                          "type": "integer"
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    },
+                                    "type": {
+                                      "const": "ingredient"
+                                    },
+                                    "description": {
+                                      "type": "string"
+                                    },
+                                    "quantity": {
+                                      "type": "string"
+                                    },
+                                    "name": {
+                                      "type": "string"
+                                    },
+                                    "position": {
+                                      "type": "string"
+                                    },
+                                    "optional": {
+                                      "type": "boolean"
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "type",
+                                    "description",
+                                    "quantity",
+                                    "name",
+                                    "position",
+                                    "optional"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "properties": {
+                                    "id": {
+                                      "anyOf": [
+                                        {
+                                          "type": "integer"
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    },
+                                    "type": {
+                                      "const": "section"
+                                    },
+                                    "title": {
+                                      "type": "string"
+                                    },
+                                    "position": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "type",
+                                    "title",
+                                    "position"
+                                  ],
+                                  "type": "object"
+                                }
+                              ]
+                            },
+                            "type": "array"
+                          },
+                          "steps": {
+                            "items": {
+                              "properties": {
+                                "id": {
+                                  "anyOf": [
+                                    {
+                                      "type": "integer"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "text": {
+                                  "type": "string"
+                                },
+                                "position": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": ["id", "text", "position"],
+                              "type": "object"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "created_at",
+                          "actor",
+                          "name",
+                          "author",
+                          "source",
+                          "time",
+                          "servings",
+                          "archived_at",
+                          "tags",
+                          "primary_image",
+                          "ingredients",
+                          "steps"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
                     }
                   },
                   "required": [
@@ -2976,7 +3728,8 @@
                     "created",
                     "archived_at",
                     "tags",
-                    "primaryImage"
+                    "primaryImage",
+                    "versions"
                   ],
                   "type": "object"
                 }
@@ -3034,15 +3787,7 @@
                     "type": "string"
                   },
                   "position": {
-                    "anyOf": [
-                      {
-                        "type": "string"
-                      },
-                      {
-                        "type": "null"
-                      }
-                    ],
-                    "default": null
+                    "type": "string"
                   },
                   "optional": {
                     "anyOf": [
@@ -3056,7 +3801,7 @@
                     "default": null
                   }
                 },
-                "required": ["quantity", "name", "description"],
+                "required": ["quantity", "name", "description", "position"],
                 "type": "object"
               }
             }
@@ -3517,18 +4262,10 @@
                     "type": "string"
                   },
                   "position": {
-                    "anyOf": [
-                      {
-                        "type": "string"
-                      },
-                      {
-                        "type": "null"
-                      }
-                    ],
-                    "default": null
+                    "type": "string"
                   }
                 },
-                "required": ["text"],
+                "required": ["text", "position"],
                 "type": "object"
               }
             }

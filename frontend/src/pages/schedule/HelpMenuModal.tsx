@@ -6,7 +6,7 @@ import { Kbd } from "@/pages/schedule/Kbd"
 const keybinds = [
   {
     key: ["Delete", "#"],
-    description: "Delete scheduled recipe",
+    description: "Remove a scheduled recipe",
   },
   {
     key: "?",
@@ -21,7 +21,7 @@ const hints = [
   },
   {
     title: "Delete a recipe",
-    description: "Click calendar recipe > Reschedule > Delete.",
+    description: "Click calendar recipe > Reschedule > Remove from Schedule.",
   },
 ]
 
@@ -31,7 +31,7 @@ interface IKeyBindProps {
 
 function KeyBind({ bind }: IKeyBindProps) {
   return (
-    <div className="mb-1">
+    <div>
       {typeof bind === "string" ? (
         <Kbd key={bind}>{bind}</Kbd>
       ) : (
@@ -57,24 +57,34 @@ export default function HelpMenuModal({
     <Modal
       isOpen={show}
       onOpenChange={onOpenChange}
-      title="Tips"
+      title="Keybinds & Tips"
       children={
-        <div className="flex flex-col gap-2">
-          {keybinds.map((keybind) => (
-            <div key={keybind.description}>
-              <div className="font-medium">{keybind.description}</div>
-              <div className="flex gap-1">
-                <span>Press</span>
-                <KeyBind bind={keybind.key} key={keybind.description} />
-              </div>
+        <div className="mt-2 flex flex-col gap-1">
+          <div>
+            <div className="font-medium">Keybinds</div>
+            <div className="flex flex-col gap-1">
+              {keybinds.map((keybind) => (
+                <div key={keybind.description}>
+                  <div className="font-medium">{keybind.description}</div>
+                  <div className="flex gap-1">
+                    <span>Press</span>
+                    <KeyBind bind={keybind.key} key={keybind.description} />
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-          {hints.map((hint) => (
-            <div key={hint.title}>
-              <div className="font-medium">{hint.title}</div>
-              <div>{hint.description}</div>
+          </div>
+          <div>
+            <div className="font-medium">Tips</div>
+            <div className="flex flex-col gap-1">
+              {hints.map((hint) => (
+                <div key={hint.title}>
+                  <div className="font-medium">{hint.title}</div>
+                  <div>{hint.description}</div>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       }
     />

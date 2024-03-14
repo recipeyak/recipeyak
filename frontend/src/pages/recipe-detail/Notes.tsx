@@ -435,10 +435,7 @@ function TimelineEvent({
   const action =
     event.action === "created" && event.is_scraped ? "imported" : event.action
   return (
-    <SharedEntry
-      id={eventId}
-      className={clx("flex items-center gap-2", className)}
-    >
+    <SharedEntry id={eventId} className={clx("flex gap-2", className)}>
       <Avatar avatarURL={event.created_by?.avatar_url ?? null} />
       <div className="flex flex-col">
         <div>

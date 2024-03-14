@@ -5,6 +5,7 @@
   "type": "module",
   "devDependencies": {
     "@darkobits/vite-plugin-favicons": "^0.3.0",
+    "@sanity/diff-match-patch": "^3.1.1",
     "@tanstack/eslint-plugin-query": "^5.8.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^14.3.0",

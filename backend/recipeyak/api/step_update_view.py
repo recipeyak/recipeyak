@@ -13,6 +13,7 @@ from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.recipe import StepResponse, serialize_step
 from recipeyak.models import ChangeType, RecipeChange, filter_steps, get_team
 from recipeyak.realtime import publish_recipe
+from recipeyak.versioning import save_recipe_version
 
 
 class StepPatchParams(RequestParams):
@@ -28,13 +29,12 @@ def step_update_view(
     params = StepPatchParams.parse_raw(request.body)
     step = get_object_or_404(filter_steps(team=team), pk=step_id)
     with transaction.atomic():
+        save_recipe_version(recipe=step.recipe, actor=request.user)
         before_text = step.text
-
         if params.text is not None:
             step.text = params.text
         if params.position is not None:
             step.position = params.position
-
         step.save()
 
         RecipeChange.objects.create(

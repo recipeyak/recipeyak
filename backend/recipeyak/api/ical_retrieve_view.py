@@ -4,7 +4,6 @@ from typing import Any
 import sentry_sdk
 from django.db import connection
 from django.http import HttpRequest, HttpResponse
-from django.utils.http import http_date
 from django.utils.text import slugify
 from django.views.decorators.http import require_http_methods
 
@@ -44,15 +43,6 @@ select
         and scheduled_recipe.team_id = %(team_id)s
         order by "on"
       ) sub
-    ),
-    'last_modified': (
-      -- TODO: this is buggy because it doesn't take into account deleted
-      -- Scheduled Recipes
-      select extract(epoch from modified)
-      from core_scheduledrecipe
-      where team_id = %(team_id)s and created > now() - '2 years'::interval
-      order by modified desc
-      limit 1
     )
   )
 from
@@ -71,7 +61,6 @@ where
         col: dict[str, Any] = row[0]
         team_name: str = col["team_name"]
         scheduled_recipes: list[dict[str, Any]] = col["scheduled_recipes"] or []
-        last_modified: float | None = col["last_modified"]
 
     with sentry_sdk.start_span(
         op="recipeyak.ical.render", description="create icalendar"
@@ -104,7 +93,4 @@ where
         response = HttpResponse()
         response["Content-Type"] = "text/calendar"
         response.content = cal
-
-    if last_modified is not None:
-        response["Last-Modified"] = http_date(last_modified)
     return response

@@ -13,6 +13,7 @@ from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.serializers.recipe import SectionResponse, serialize_section
 from recipeyak.models import ChangeType, Recipe, RecipeChange, Section
 from recipeyak.realtime import publish_recipe
+from recipeyak.versioning import save_recipe_version
 
 
 class SectionCreateParams(RequestParams):
@@ -31,6 +32,7 @@ def section_create_view(
     params = SectionCreateParams.parse_raw(request.body)
 
     with transaction.atomic():
+        save_recipe_version(recipe, actor=request.user)
         RecipeChange.objects.create(
             recipe=recipe,
             actor=request.user,

@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 class NoteHistorical(CommonInfo):
     id: int
-    actor = models.ForeignKey["User"]("User", on_delete=models.CASCADE)
+    actor = models.ForeignKey["User"]("User", on_delete=models.CASCADE, null=True)
     note = models.ForeignKey["Note"]("Note", on_delete=models.CASCADE)
     note_id: int
     text = models.TextField()

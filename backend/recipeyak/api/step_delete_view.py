@@ -8,6 +8,7 @@ from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
 from recipeyak.models import ChangeType, RecipeChange, filter_steps, get_team
 from recipeyak.realtime import publish_recipe
+from recipeyak.versioning import save_recipe_version
 
 
 @endpoint()
@@ -18,6 +19,7 @@ def step_delete_view(
     step = get_object_or_404(filter_steps(team=team), pk=step_id)
     recipe = step.recipe
     with transaction.atomic():
+        save_recipe_version(recipe, actor=request.user)
         RecipeChange.objects.create(
             recipe=step.recipe,
             actor=request.user,
