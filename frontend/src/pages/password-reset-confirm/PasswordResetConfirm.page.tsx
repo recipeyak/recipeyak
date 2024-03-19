@@ -11,7 +11,7 @@ import { Label } from "@/components/Label"
 import { AuthPage } from "@/components/Page"
 import { PasswordInput } from "@/components/PasswordInput"
 import { pathHome, pathLogin } from "@/paths"
-import { useAuthPasswordResetConfirm } from "@/queries/authPasswordResetConfirm"
+import { useAuthPasswordResetConfirm } from "@/queries/useAuthPasswordResetConfirm"
 import { toast } from "@/toast"
 
 type RouteProps = RouteComponentProps<{ uid: string; token: string }>

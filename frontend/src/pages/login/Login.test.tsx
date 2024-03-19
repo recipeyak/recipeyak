@@ -7,8 +7,8 @@ import { HelmetProvider } from "react-helmet-async"
 import { BrowserRouter, useLocation } from "react-router-dom"
 
 import { LoginPage as Login } from "@/pages/login/Login.page"
-import { useAuthLogin } from "@/queries/authLogin"
-import { ResponseFromUse } from "@/queries/queryUtilTypes"
+import { useAuthLogin } from "@/queries/useAuthLogin"
+import { ResponseFromUse } from "@/queries/useQueryUtilTypes"
 import { rest, server } from "@/testUtils"
 
 const queryClientPersistent = new QueryClient({

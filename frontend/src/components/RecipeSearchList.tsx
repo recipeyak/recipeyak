@@ -4,8 +4,8 @@ import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { RecipeListItem } from "@/pages/recipe-list/RecipeItem"
 import { pathRecipeAdd } from "@/paths"
-import { ResponseFromUse } from "@/queries/queryUtilTypes"
-import { useSearchRecipes } from "@/queries/searchRecipes"
+import { ResponseFromUse } from "@/queries/useQueryUtilTypes"
+import { useSearchRecipes } from "@/queries/useSearchRecipes"
 
 function Results({
   recipes,

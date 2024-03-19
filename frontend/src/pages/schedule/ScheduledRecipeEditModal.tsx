@@ -11,8 +11,8 @@ import { Image } from "@/components/Image"
 import { Modal } from "@/components/Modal"
 import { formatAbsoluteDate, toISODateString } from "@/date"
 import { NoteTimeStamp } from "@/pages/recipe-detail/NoteTimestamp"
-import { useScheduledRecipeDelete } from "@/queries/scheduledRecipeDelete"
-import { useScheduledRecipeUpdate } from "@/queries/scheduledRecipeUpdate"
+import { useScheduledRecipeDelete } from "@/queries/useScheduledRecipeDelete"
+import { useScheduledRecipeUpdate } from "@/queries/useScheduledRecipeUpdate"
 import { recipeURL } from "@/urls"
 
 function RecipeItem({

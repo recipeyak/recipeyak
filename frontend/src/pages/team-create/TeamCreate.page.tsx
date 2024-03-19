@@ -5,7 +5,7 @@ import { NavPage } from "@/components/Page"
 import { RadioButton } from "@/components/RadioButton"
 import { TextInput } from "@/components/TextInput"
 import { ROLES } from "@/pages/team-invite/teamConstants"
-import { useTeamCreate } from "@/queries/teamCreate"
+import { useTeamCreate } from "@/queries/useTeamCreate"
 
 export function TeamCreatePage() {
   const [name, setName] = useState("")

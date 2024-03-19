@@ -6,8 +6,8 @@ import { Smile } from "react-feather"
 
 import { clx } from "@/classnames"
 import { findReaction } from "@/pages/recipe-detail/reactionUtils"
-import { PickVariant } from "@/queries/queryUtilTypes"
-import { RecipeFetchResponse as Recipe } from "@/queries/recipeFetch"
+import { PickVariant } from "@/queries/useQueryUtilTypes"
+import { RecipeFetchResponse as Recipe } from "@/queries/useRecipeFetch"
 import { useUserId } from "@/useUserId"
 
 type Reaction = PickVariant<

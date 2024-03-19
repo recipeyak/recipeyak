@@ -15,9 +15,9 @@ import {
 } from "@/components/Table"
 import { formatHumanDateTime } from "@/date"
 import { pathProfileById, pathTeamDetail } from "@/paths"
-import { useInviteAccept } from "@/queries/inviteAccept"
-import { useInviteDecline } from "@/queries/inviteDecline"
-import { useInviteList } from "@/queries/inviteList"
+import { useInviteAccept } from "@/queries/useInviteAccept"
+import { useInviteDecline } from "@/queries/useInviteDecline"
+import { useInviteList } from "@/queries/useInviteList"
 
 function InviteButtons({
   invite,

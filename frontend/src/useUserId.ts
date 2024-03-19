@@ -1,4 +1,4 @@
-import { useUserFetch } from "@/queries/userFetch"
+import { useUserFetch } from "@/queries/useUserFetch"
 
 export function useUserId(): number | null {
   const res = useUserFetch()

@@ -7,7 +7,7 @@ import { Label } from "@/components/Label"
 import { NavPage } from "@/components/Page"
 import { PasswordInput } from "@/components/PasswordInput"
 import { pathHome } from "@/paths"
-import { useAuthPasswordChange } from "@/queries/authPasswordChange"
+import { useAuthPasswordChange } from "@/queries/useAuthPasswordChange"
 import { toast } from "@/toast"
 
 function formatError(error: unknown) {

@@ -5,9 +5,9 @@ import { useHistory, useLocation } from "react-router"
 import { Button } from "@/components/Buttons"
 import { Matches, RecipeList } from "@/components/RecipeSearchList"
 import { SearchInput } from "@/components/SearchInput"
-import { useSearchRecipeFacets } from "@/queries/searchRecipeFacets"
-import { useSearchRecipes } from "@/queries/searchRecipes"
-import { useUserById } from "@/queries/userById"
+import { useSearchRecipeFacets } from "@/queries/useSearchRecipeFacets"
+import { useSearchRecipes } from "@/queries/useSearchRecipes"
+import { useUserById } from "@/queries/useUserById"
 import { removeQueryParams, setQueryParams } from "@/querystring"
 
 function CustomRefinement({

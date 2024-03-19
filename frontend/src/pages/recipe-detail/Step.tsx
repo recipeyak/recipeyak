@@ -40,8 +40,8 @@ import { BetterLabel } from "@/components/Label"
 import { Markdown } from "@/components/Markdown"
 import { Textarea } from "@/components/Textarea"
 import { DragDrop, handleDndHover } from "@/dragDrop"
-import { useStepDelete } from "@/queries/stepDelete"
-import { useStepUpdate } from "@/queries/stepUpdate"
+import { useStepDelete } from "@/queries/useStepDelete"
+import { useStepUpdate } from "@/queries/useStepUpdate"
 
 interface IStepProps {
   readonly index: number

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"
 import { formatHumanDate } from "@/date"
 import { SectionTitle } from "@/pages/recipe-detail/RecipeHelpers"
 import { pathSchedule } from "@/paths"
-import { useTimelineList } from "@/queries/timelineList"
+import { useTimelineList } from "@/queries/useTimelineList"
 
 interface ITimeProps {
   readonly dateTime: Date | string

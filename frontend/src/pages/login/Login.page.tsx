@@ -14,7 +14,7 @@ import { PasswordInput } from "@/components/PasswordInput"
 import { Tab, Tabs } from "@/components/Tabs"
 import { TextInput } from "@/components/TextInput"
 import { pathLogin, pathPasswordReset, pathSignup } from "@/paths"
-import { useAuthLogin } from "@/queries/authLogin"
+import { useAuthLogin } from "@/queries/useAuthLogin"
 
 function formatError(error: unknown) {
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions

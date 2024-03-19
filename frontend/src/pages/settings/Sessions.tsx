@@ -15,9 +15,9 @@ import {
   TableHeader,
 } from "@/components/Table"
 import { formatDistanceToNow } from "@/date"
-import { useSessionDelete } from "@/queries/sessionDelete"
-import { useSessionDeleteAll } from "@/queries/sessionDeleteAll"
-import { ISession, useSessionList } from "@/queries/sessionList"
+import { useSessionDelete } from "@/queries/useSessionDelete"
+import { useSessionDeleteAll } from "@/queries/useSessionDeleteAll"
+import { ISession, useSessionList } from "@/queries/useSessionList"
 
 function getDeviceEmoji(kind: ISession["device"]["kind"]): string | null {
   switch (kind) {

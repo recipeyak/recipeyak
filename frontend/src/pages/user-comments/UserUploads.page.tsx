@@ -6,8 +6,8 @@ import { Image } from "@/components/Image"
 import { Loader } from "@/components/Loader"
 import { NavPage } from "@/components/Page"
 import { ProfilePageContainer } from "@/pages/profile/Profile.page"
-import { ResponseFromUse } from "@/queries/queryUtilTypes"
-import { useUserUploadsList } from "@/queries/userUploadsList"
+import { ResponseFromUse } from "@/queries/useQueryUtilTypes"
+import { useUserUploadsList } from "@/queries/useUserUploadsList"
 import { recipeURL } from "@/urls"
 
 // NOTE: need to keep in sync with the ProfilePageContainer

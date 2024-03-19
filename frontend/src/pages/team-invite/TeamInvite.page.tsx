@@ -6,8 +6,8 @@ import { NavPage } from "@/components/Page"
 import { RadioButton } from "@/components/RadioButton"
 import { TextInput } from "@/components/TextInput"
 import { ROLES } from "@/pages/team-invite/teamConstants"
-import { useTeam } from "@/queries/teamFetch"
-import { useTeamInviteCreate } from "@/queries/teamInviteCreate"
+import { useTeam } from "@/queries/useTeamFetch"
+import { useTeamInviteCreate } from "@/queries/useTeamInviteCreate"
 import { teamURL } from "@/urls"
 
 interface ITeamInviteProps extends RouteComponentProps<{ teamId: string }> {}

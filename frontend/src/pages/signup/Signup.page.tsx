@@ -18,7 +18,7 @@ import {
   pathRecipeAdd,
   pathSignup,
 } from "@/paths"
-import { useAuthSignup } from "@/queries/authSignup"
+import { useAuthSignup } from "@/queries/useAuthSignup"
 
 function formatError(error: unknown) {
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions

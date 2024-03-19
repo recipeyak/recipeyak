@@ -15,8 +15,8 @@ import { DangerZone } from "@/pages/settings/DangerZone"
 import { Export } from "@/pages/settings/Export"
 import Sessions from "@/pages/settings/Sessions"
 import { ThemePicker } from "@/pages/settings/ThemePicker"
-import { useUploadCreate } from "@/queries/uploadCreate"
-import { cacheUpsertUser, useUserFetch } from "@/queries/userFetch"
+import { useUploadCreate } from "@/queries/useUploadCreate"
+import { cacheUpsertUser, useUserFetch } from "@/queries/useUserFetch"
 import { toast } from "@/toast"
 
 export function SettingsPage() {

@@ -12,7 +12,7 @@ import {
 } from "@/components/Table"
 import { formatHumanDateTime } from "@/date"
 import { pathTeamDetail } from "@/paths"
-import { useTeamList } from "@/queries/teamList"
+import { useTeamList } from "@/queries/useTeamList"
 
 export function TeamsList() {
   const teams = useTeamList()

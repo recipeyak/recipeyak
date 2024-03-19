@@ -5,11 +5,11 @@ import { Meta } from "@/components/Meta"
 import { NavPage } from "@/components/Page"
 import { CookingFullscreen } from "@/pages/cook-detail/CookingFullscreen"
 import { pathCookDetail } from "@/paths"
-import { PickVariant } from "@/queries/queryUtilTypes"
+import { PickVariant } from "@/queries/useQueryUtilTypes"
 import {
   RecipeFetchResponse as Recipe,
   useRecipeFetch,
-} from "@/queries/recipeFetch"
+} from "@/queries/useRecipeFetch"
 import { formatImgOpenGraph } from "@/url"
 import { useAddSlugToUrl } from "@/useAddSlugToUrl"
 

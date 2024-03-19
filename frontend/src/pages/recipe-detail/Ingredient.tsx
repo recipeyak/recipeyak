@@ -9,8 +9,8 @@ import { CheckBox } from "@/components/Checkbox"
 import { TextInput } from "@/components/TextInput"
 import { DragDrop, handleDndHover } from "@/dragDrop"
 import IngredientView from "@/pages/recipe-detail/IngredientView"
-import { useIngredientDelete } from "@/queries/ingredientDelete"
-import { useIngredientUpdate } from "@/queries/ingredientUpdate"
+import { useIngredientDelete } from "@/queries/useIngredientDelete"
+import { useIngredientUpdate } from "@/queries/useIngredientUpdate"
 
 const emptyField = ({
   quantity,

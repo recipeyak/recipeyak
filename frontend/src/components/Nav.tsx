@@ -15,8 +15,8 @@ import {
   pathSettings,
   pathTeamList,
 } from "@/paths"
-import { useAuthLogout } from "@/queries/authLogout"
-import { useTeam } from "@/queries/teamFetch"
+import { useAuthLogout } from "@/queries/useAuthLogout"
+import { useTeam } from "@/queries/useTeamFetch"
 import { useTeamId } from "@/useTeamId"
 import { useUser } from "@/useUser"
 

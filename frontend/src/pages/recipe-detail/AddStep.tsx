@@ -3,7 +3,7 @@ import { useState } from "react"
 import { Button } from "@/components/Buttons"
 import { BetterLabel } from "@/components/Label"
 import { Textarea } from "@/components/Textarea"
-import { useStepCreate } from "@/queries/stepCreate"
+import { useStepCreate } from "@/queries/useStepCreate"
 
 interface IAddStepProps {
   readonly recipeId: number

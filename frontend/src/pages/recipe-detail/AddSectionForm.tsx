@@ -2,7 +2,7 @@ import React, { useState } from "react"
 
 import { Button } from "@/components/Buttons"
 import { TextInput } from "@/components/TextInput"
-import { useSectionCreate } from "@/queries/sectionCreate"
+import { useSectionCreate } from "@/queries/useSectionCreate"
 
 export function AddSectionForm({
   toggleShowAddSection,

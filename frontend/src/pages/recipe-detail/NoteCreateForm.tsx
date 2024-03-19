@@ -6,7 +6,7 @@ import { FileUploader } from "@/pages/recipe-detail/FileUploader"
 import { UploadSuccess } from "@/pages/recipe-detail/Notes"
 import { UploadContainer } from "@/pages/recipe-detail/UploadContainer"
 import { useFileUpload } from "@/pages/recipe-detail/useFileUpload"
-import { useNoteCreate } from "@/queries/noteCreate"
+import { useNoteCreate } from "@/queries/useNoteCreate"
 import { toast } from "@/toast"
 
 export function NoteCreateForm({
