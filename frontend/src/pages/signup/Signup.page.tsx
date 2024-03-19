@@ -4,7 +4,6 @@ import React, { useState } from "react"
 import { Link, useHistory } from "react-router-dom"
 
 import { login } from "@/auth"
-import { BorderBox } from "@/components/BorderBox"
 import { Button } from "@/components/Buttons"
 import { EmailInput } from "@/components/EmailInput"
 import { FormErrorHandler } from "@/components/FormErrorHandler"
@@ -73,7 +72,7 @@ export function SignupPage() {
 
   return (
     <AuthPage title="Sign Up">
-      <BorderBox p={3}>
+      <div className="rounded-none bg-[--color-background] p-3 text-[--color-text] sm:rounded-md">
         <Tabs>
           <Tab>
             <Link to={pathLogin({})} className="no-underline">
@@ -134,7 +133,7 @@ export function SignupPage() {
             <Link to={pathPasswordReset({})}>Forgot Password?</Link>
           </div>
         </form>
-      </BorderBox>
+      </div>
     </AuthPage>
   )
 }

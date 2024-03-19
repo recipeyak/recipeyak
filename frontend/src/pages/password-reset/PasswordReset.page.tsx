@@ -3,7 +3,6 @@ import React, { useState } from "react"
 import { Link } from "react-router-dom"
 
 import { useIsLoggedIn } from "@/auth"
-import { BorderBox } from "@/components/BorderBox"
 import { Button } from "@/components/Buttons"
 import { EmailInput } from "@/components/EmailInput"
 import { FormErrorHandler } from "@/components/FormErrorHandler"
@@ -65,11 +64,9 @@ export function PasswordResetPage() {
 
   return (
     <AuthPage title="Password Reset">
-      <BorderBox
-        p={3}
-        as="form"
+      <form
         onSubmit={handleReset}
-        className="flex flex-col "
+        className="flex flex-col rounded-none bg-[--color-background] p-3 text-[--color-text] sm:rounded-md"
       >
         <h1 className="text-xl font-medium">Password Reset</h1>
 
@@ -99,7 +96,7 @@ export function PasswordResetPage() {
             <Link to={redirect.route}>{redirect.name} →</Link>
           </div>
         </div>
-      </BorderBox>
+      </form>
     </AuthPage>
   )
 }

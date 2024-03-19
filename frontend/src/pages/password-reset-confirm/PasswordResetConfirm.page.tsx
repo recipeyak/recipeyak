@@ -4,7 +4,6 @@ import React, { useState } from "react"
 import { Link, RouteComponentProps, useHistory } from "react-router-dom"
 
 import { login } from "@/auth"
-import { BorderBox } from "@/components/BorderBox"
 import { Button } from "@/components/Buttons"
 import { FormErrorHandler } from "@/components/FormErrorHandler"
 import { Label } from "@/components/Label"
@@ -86,7 +85,7 @@ export function PasswordResetConfirmPage(props: RouteProps) {
 
   return (
     <AuthPage title="Password Reset">
-      <BorderBox p={3}>
+      <div className="rounded-none bg-[--color-background] p-3 text-[--color-text] sm:rounded-md">
         <form onSubmit={handleReset}>
           <h1 className="text-xl">Password Reset Confirmation</h1>
 
@@ -129,7 +128,7 @@ export function PasswordResetConfirmPage(props: RouteProps) {
             <Link to={pathLogin({})}>To Login</Link>
           </div>
         </form>
-      </BorderBox>
+      </div>
     </AuthPage>
   )
 }
