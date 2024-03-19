@@ -5,7 +5,6 @@ import React from "react"
 import { Link, useHistory, useLocation } from "react-router-dom"
 
 import { login } from "@/auth"
-import { BorderBox } from "@/components/BorderBox"
 import { Button } from "@/components/Buttons"
 import { FormErrorHandler } from "@/components/FormErrorHandler"
 import { Label } from "@/components/Label"
@@ -66,7 +65,7 @@ export function LoginPage() {
 
   return (
     <AuthPage title="Login">
-      <BorderBox p={3}>
+      <div className="rounded-none bg-[--color-background] p-3 text-[--color-text] sm:rounded-md">
         <Tabs>
           <Tab isActive>
             <Link to={pathLogin({})} className="no-underline">
@@ -124,7 +123,7 @@ export function LoginPage() {
             <Link to={pathPasswordReset({})}>Forgot Password?</Link>
           </div>
         </form>
-      </BorderBox>
+      </div>
     </AuthPage>
   )
 }

@@ -10,7 +10,6 @@ import { useHistory } from "react-router"
 import { Link } from "react-router-dom"
 
 import { clx } from "@/classnames"
-import { BorderBox } from "@/components/BorderBox"
 import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { DateInput } from "@/components/DateInput"
@@ -109,11 +108,9 @@ const ShoppingListList = React.forwardRef<
   const groups = Object.entries(groupBy(items, (x) => x[1]?.category))
 
   return (
-    <BorderBox
-      p={2}
-      minHeight="74px"
+    <div
       className={clx(
-        "max-h-[425px] overflow-y-auto border-[1px] border-solid border-[--color-border] !bg-[--color-background-card]",
+        "max-h-[425px] min-h-[74px] overflow-y-auto rounded-none border-[1px] border-solid border-[--color-border] bg-[--color-background-card] p-3 text-[--color-text] sm:rounded-md",
         props.items.isPending || props.items.isRefetching ? "opacity-70" : "",
       )}
     >
@@ -152,7 +149,7 @@ const ShoppingListList = React.forwardRef<
           })}
         </div>
       )}
-    </BorderBox>
+    </div>
   )
 })
 
