@@ -34,8 +34,8 @@ import React, { useEffect } from "react"
 
 import Step from "@/pages/recipe-detail/Step"
 import { getNewPos } from "@/position"
-import { RecipeFetchResponse } from "@/queries/recipeFetch"
-import { useStepUpdate } from "@/queries/stepUpdate"
+import { RecipeFetchResponse } from "@/queries/useRecipeFetch"
+import { useStepUpdate } from "@/queries/useStepUpdate"
 
 interface IStepContainerProps {
   readonly steps: RecipeFetchResponse["steps"]

@@ -5,7 +5,7 @@ import { Loader } from "@/components/Loader"
 import { NavPage } from "@/components/Page"
 import { ProfilePageContainer } from "@/pages/profile/Profile.page"
 import { Note } from "@/pages/recipe-detail/Notes"
-import { useUserCommentsList } from "@/queries/userCommentsList"
+import { useUserCommentsList } from "@/queries/useUserCommentsList"
 import { recipeURL } from "@/urls"
 
 export function UserCommentsPage(

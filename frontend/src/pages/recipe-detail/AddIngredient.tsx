@@ -4,7 +4,7 @@ import { Button } from "@/components/Buttons"
 import { CheckBox } from "@/components/Checkbox"
 import { TextInput } from "@/components/TextInput"
 import { AddSectionForm } from "@/pages/recipe-detail/AddSectionForm"
-import { useIngredientCreate } from "@/queries/ingredientCreate"
+import { useIngredientCreate } from "@/queries/useIngredientCreate"
 
 function AddIngredientForm({
   recipeId,

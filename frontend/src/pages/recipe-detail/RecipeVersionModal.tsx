@@ -16,7 +16,7 @@ import { Avatar } from "@/components/Avatar"
 import { Image } from "@/components/Image"
 import { Modal } from "@/components/Modal"
 import { formatAbsoluteDateTime, formatHumanDate } from "@/date"
-import { RecipeFetchResponse } from "@/queries/recipeFetch"
+import { RecipeFetchResponse } from "@/queries/useRecipeFetch"
 import { urlToDomain } from "@/text"
 import { useGlobalEvent } from "@/useGlobalEvent"
 

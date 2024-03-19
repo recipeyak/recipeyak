@@ -21,9 +21,9 @@ import { ScheduleRecipeModal } from "@/pages/schedule/ScheduleRecipeModal"
 import {
   ScheduledRecipe,
   useScheduleRecipeCreate,
-} from "@/queries/scheduledRecipeCreate"
-import { useScheduledRecipeDelete } from "@/queries/scheduledRecipeDelete"
-import { useScheduledRecipeUpdate } from "@/queries/scheduledRecipeUpdate"
+} from "@/queries/useScheduledRecipeCreate"
+import { useScheduledRecipeDelete } from "@/queries/useScheduledRecipeDelete"
+import { useScheduledRecipeUpdate } from "@/queries/useScheduledRecipeUpdate"
 import { useCurrentDay } from "@/useCurrentDay"
 
 function DayOfWeek({ date }: { date: Date }) {

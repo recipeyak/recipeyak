@@ -4,7 +4,7 @@ import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { BetterLabel } from "@/components/Label"
 import { TextInput } from "@/components/TextInput"
-import { useUserUpdate } from "@/queries/userUpdate"
+import { useUserUpdate } from "@/queries/useUserUpdate"
 import { toast } from "@/toast"
 
 export function ChangeName(props: { initialValue: string }) {

@@ -1,6 +1,6 @@
 import { ReactionType } from "@/pages/recipe-detail/Reactions"
-import { PickVariant } from "@/queries/queryUtilTypes"
-import { RecipeFetchResponse as Recipe } from "@/queries/recipeFetch"
+import { PickVariant } from "@/queries/useQueryUtilTypes"
+import { RecipeFetchResponse as Recipe } from "@/queries/useRecipeFetch"
 
 type Reaction = PickVariant<
   Recipe["timelineItems"][number],

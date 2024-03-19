@@ -12,9 +12,9 @@ import { NavPage } from "@/components/Page"
 import { Tab, Tabs } from "@/components/Tabs"
 import { TextInput } from "@/components/TextInput"
 import { Members } from "@/pages/team-detail/Members"
-import { useTeamDelete } from "@/queries/teamDelete"
-import { useTeam } from "@/queries/teamFetch"
-import { useTeamUpdate } from "@/queries/teamUpdate"
+import { useTeamDelete } from "@/queries/useTeamDelete"
+import { useTeam } from "@/queries/useTeamFetch"
+import { useTeamUpdate } from "@/queries/useTeamUpdate"
 import { teamSettingsURL, teamURL } from "@/urls"
 
 function TeamSettings({ id, name: initialName }: { id: number; name: string }) {

@@ -2,7 +2,7 @@ import { DragElementWrapper, DragSourceOptions } from "react-dnd"
 
 import { clx } from "@/classnames"
 import { Markdown } from "@/components/Markdown"
-import { RecipeFetchResponse as Recipe } from "@/queries/recipeFetch"
+import { RecipeFetchResponse as Recipe } from "@/queries/useRecipeFetch"
 import { normalizeUnitsFracs } from "@/text"
 import {
   THEME_CSS_BAKING_POWDER,

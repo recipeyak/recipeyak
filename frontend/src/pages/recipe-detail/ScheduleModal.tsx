@@ -12,8 +12,8 @@ import { Image } from "@/components/Image"
 import { Modal } from "@/components/Modal"
 import { formatDistanceToNow, formatHumanDate, toISODateString } from "@/date"
 import { pathSchedule } from "@/paths"
-import { RecipeFetchResponse as Recipe } from "@/queries/recipeFetch"
-import { useScheduleRecipeCreate } from "@/queries/scheduledRecipeCreate"
+import { RecipeFetchResponse as Recipe } from "@/queries/useRecipeFetch"
+import { useScheduleRecipeCreate } from "@/queries/useScheduledRecipeCreate"
 import { addQueryParams } from "@/querystring"
 
 type RecentSchedule = Recipe["recentSchedules"][number]

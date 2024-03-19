@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from "react"
 
 import { FileUpload } from "@/pages/recipe-detail/FileUploader"
 import { UploadSuccess } from "@/pages/recipe-detail/Notes"
-import { useUploadCreate } from "@/queries/uploadCreate"
+import { useUploadCreate } from "@/queries/useUploadCreate"
 import { notUndefined } from "@/typeguard"
 import { uuid4 } from "@/uuid"
 

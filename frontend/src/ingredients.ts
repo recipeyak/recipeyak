@@ -1,6 +1,6 @@
 import { sortBy } from "lodash-es"
 
-import { RecipeFetchResponse as Recipe } from "@/queries/recipeFetch"
+import { RecipeFetchResponse as Recipe } from "@/queries/useRecipeFetch"
 
 type Ingredient = Recipe["ingredients"][number]
 

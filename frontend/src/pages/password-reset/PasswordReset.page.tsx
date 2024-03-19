@@ -9,7 +9,7 @@ import { EmailInput } from "@/components/EmailInput"
 import { FormErrorHandler } from "@/components/FormErrorHandler"
 import { Label } from "@/components/Label"
 import { AuthPage } from "@/components/Page"
-import { useAuthPasswordReset } from "@/queries/authPasswordReset"
+import { useAuthPasswordReset } from "@/queries/useAuthPasswordReset"
 import { toast } from "@/toast"
 
 function formatError(error: unknown) {

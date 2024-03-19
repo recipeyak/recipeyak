@@ -5,7 +5,7 @@ import { useHistory } from "react-router"
 import { Button } from "@/components/Buttons"
 import { NavPage } from "@/components/Page"
 import { TextInput } from "@/components/TextInput"
-import { useRecipeCreate } from "@/queries/recipeCreate"
+import { useRecipeCreate } from "@/queries/useRecipeCreate"
 import { recipeURL } from "@/urls"
 
 function CreateFromURLForm() {

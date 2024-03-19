@@ -4,8 +4,8 @@ import { useDrag, useDrop } from "react-dnd"
 import { Button } from "@/components/Buttons"
 import { TextInput } from "@/components/TextInput"
 import { DragDrop, handleDndHover } from "@/dragDrop"
-import { useSectionDelete } from "@/queries/sectionDelete"
-import { useSectionUpdate } from "@/queries/sectionUpdate"
+import { useSectionDelete } from "@/queries/useSectionDelete"
+import { useSectionUpdate } from "@/queries/useSectionUpdate"
 
 export function Section({
   index,

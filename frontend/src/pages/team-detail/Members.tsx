@@ -17,9 +17,9 @@ import {
 } from "@/components/Table"
 import { formatHumanDateTime } from "@/date"
 import { pathProfileById, pathTeamInvite } from "@/paths"
-import { useTeamMemberDelete } from "@/queries/teamMemberDelete"
-import { useTeamMembersList } from "@/queries/teamMembersList"
-import { useTeamMemberUpdate } from "@/queries/teamMemberUpdate"
+import { useTeamMemberDelete } from "@/queries/useTeamMemberDelete"
+import { useTeamMembersList } from "@/queries/useTeamMembersList"
+import { useTeamMemberUpdate } from "@/queries/useTeamMemberUpdate"
 import { useUserId } from "@/useUserId"
 
 function MembersList({

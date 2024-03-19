@@ -19,8 +19,8 @@ import { DateInput } from "@/components/DateInput"
 import { Image } from "@/components/Image"
 import { Modal } from "@/components/Modal"
 import { toISODateString } from "@/date"
-import { useScheduleRecipeCreate } from "@/queries/scheduledRecipeCreate"
-import { useSearchRecipes } from "@/queries/searchRecipes"
+import { useScheduleRecipeCreate } from "@/queries/useScheduledRecipeCreate"
+import { useSearchRecipes } from "@/queries/useSearchRecipes"
 
 const CheckIcon = () => (
   <svg

@@ -7,8 +7,8 @@ import { Link } from "react-router-dom"
 import { clx } from "@/classnames"
 import { CustomHighlight } from "@/components/CustomHighlight"
 import { Image } from "@/components/Image"
-import { ResponseFromUse } from "@/queries/queryUtilTypes"
-import { useSearchRecipes } from "@/queries/searchRecipes"
+import { ResponseFromUse } from "@/queries/useQueryUtilTypes"
+import { useSearchRecipes } from "@/queries/useSearchRecipes"
 import { recipeURL } from "@/urls"
 
 function HighlightIngredients({ hit }: { hit: Hit }) {

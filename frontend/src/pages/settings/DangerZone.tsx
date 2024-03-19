@@ -10,7 +10,7 @@ import { Button } from "@/components/Buttons"
 import { Modal } from "@/components/Modal"
 import { TextInput } from "@/components/TextInput"
 import { pathLogin } from "@/paths"
-import { useUserDelete } from "@/queries/userDelete"
+import { useUserDelete } from "@/queries/useUserDelete"
 import { toast } from "@/toast"
 
 export function DangerZone() {

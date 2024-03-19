@@ -10,7 +10,7 @@ import { Box } from "@/components/Box"
 import { Loader } from "@/components/Loader"
 import { NavPage } from "@/components/Page"
 import { pathProfileById } from "@/paths"
-import { useUserById } from "@/queries/userById"
+import { useUserById } from "@/queries/useUserById"
 import { recipeURL } from "@/urls"
 
 // icons from: https://lucide.dev

@@ -20,7 +20,7 @@ import {
   IIngredientItem,
   IQuantity,
   useShoppingListFetch,
-} from "@/queries/shoppingListFetch"
+} from "@/queries/useShoppingListFetch"
 import { removeQueryParams, setQueryParams } from "@/querystring"
 import { ingredientByNameAlphabetical } from "@/sorters"
 import { normalizeUnitsFracs } from "@/text"

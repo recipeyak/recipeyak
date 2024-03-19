@@ -1,4 +1,4 @@
-import { useUserFetch } from "@/queries/userFetch"
+import { useUserFetch } from "@/queries/useUserFetch"
 import { themeGet, ThemeSerialized } from "@/theme"
 
 export function useUserTheme(): ThemeSerialized {
