@@ -1,7 +1,5 @@
 import { X } from "react-feather"
 
-import { Box } from "@/components/Box"
-
 export function CloseButton({ onClose }: { onClose?: () => void }) {
   return (
     // Workaround for https://github.com/adobe/react-spectrum/issues/1513 we use
@@ -14,21 +12,9 @@ export function CloseButton({ onClose }: { onClose?: () => void }) {
       data-testid="close modal"
       className="cursor-pointer !border-none bg-[unset] p-0 !shadow-none"
     >
-      <Box
-        // eslint-disable-next-line no-restricted-syntax
-        style={{
-          background: "var(--color-background-card)",
-          color: "var(--color-text)",
-          borderStyle: "none !important",
-          boxShadow: "none !important",
-          backdropFilter: "blur(10px)",
-          pointerEvents: "initial",
-          padding: "0.25rem",
-          borderRadius: "100%",
-        }}
-      >
+      <div className="rounded-full bg-[--color-background-card] p-1 text-[--color-text]">
         <X size={14} strokeWidth={3} />
-      </Box>
+      </div>
     </button>
   )
 }

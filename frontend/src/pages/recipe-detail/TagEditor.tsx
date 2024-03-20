@@ -1,6 +1,5 @@
 import React from "react"
 
-import { Box } from "@/components/Box"
 import { CloseButton } from "@/components/CloseButton"
 import { Tag } from "@/components/Tag"
 import { TextInput } from "@/components/TextInput"
@@ -22,7 +21,7 @@ export function TagEditor({
     setNewTag("")
   }
   return (
-    <Box align="center" gap={2}>
+    <div className="flex items-center gap-2">
       {tags?.map((tag) => (
         <Tag fontWeight="normal" key={tag}>
           {tag}{" "}
@@ -42,6 +41,6 @@ export function TagEditor({
         }}
         onKeyDown={handleNewTag}
       />
-    </Box>
+    </div>
   )
 }

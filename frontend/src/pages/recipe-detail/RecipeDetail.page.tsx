@@ -6,7 +6,6 @@ import { Link } from "react-router-dom"
 
 import { clx } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
-import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { Image } from "@/components/Image"
 import { Loader } from "@/components/Loader"
@@ -671,7 +670,7 @@ function RecipeInfo(props: {
               )}
               {(props.recipe.tags?.length ?? 0) > 0 && (
                 <RecipeMetaItem inline={inlineLayout} label={"Tags"}>
-                  <Box gap={2}>
+                  <div className="flex gap-2">
                     {props.recipe.tags?.map((x) => (
                       <Link
                         key={x}
@@ -683,7 +682,7 @@ function RecipeInfo(props: {
                         <Tag selectable>{x}</Tag>
                       </Link>
                     ))}
-                  </Box>
+                  </div>
                 </RecipeMetaItem>
               )}
 

@@ -5,7 +5,6 @@ import { Link, useLocation } from "react-router-dom"
 
 import { clx } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
-import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { Markdown } from "@/components/Markdown"
 import { Modal } from "@/components/Modal"
@@ -76,7 +75,7 @@ function Attachments({
     return null
   }
   return (
-    <Box wrap gap={1}>
+    <div className="flex flex-wrap gap-1">
       {attachments.map((attachment) => (
         <FilePreview
           key={attachment.id}
@@ -88,7 +87,7 @@ function Attachments({
           backgroundUrl={attachment.backgroundUrl}
         />
       ))}
-    </Box>
+    </div>
   )
 }
 
@@ -146,7 +145,7 @@ export function Note({
     >
       <Avatar avatarURL={note.created_by.avatar_url} />
       <div className="w-full">
-        <Box align="center">
+        <div className="flex items-center">
           <Link
             className="font-bold"
             to={pathProfileById({ userId: note.created_by.id.toString() })}
@@ -196,14 +195,14 @@ export function Note({
               ) : null}
             </>
           )}
-        </Box>
+        </div>
         {!isEditing ? (
-          <Box dir="col" className="gap-1">
+          <div className="flex flex-col gap-1">
             <Markdown>{note.text}</Markdown>
             {(note.attachments.length > 0 ||
               note.reactions.length > 0 ||
               !readonly) && (
-              <Box gap={1} dir="col">
+              <div className="flex flex-col gap-1">
                 <Attachments
                   attachments={note.attachments}
                   openImage={openImage}
@@ -255,9 +254,9 @@ export function Note({
                     }
                   }}
                 />
-              </Box>
+              </div>
             )}
-          </Box>
+          </div>
         ) : (
           <>
             <UploadContainer addFiles={addFiles}>
@@ -298,7 +297,7 @@ export function Note({
                   files={files}
                 />
               ) : (
-                <Box wrap gap={1}>
+                <div className="flex flex-wrap gap-1">
                   {note.attachments.map((attachment) => (
                     <a
                       key={attachment.id}
@@ -313,12 +312,12 @@ export function Note({
                       />
                     </a>
                   ))}
-                </Box>
+                </div>
               )}
             </UploadContainer>
 
             {isEditing && (
-              <Box space="between" align="center">
+              <div className="flex items-center justify-between">
                 <DialogTrigger>
                   <Button
                     variant="danger"
@@ -348,7 +347,7 @@ export function Note({
                     </div>
                   </Modal>
                 </DialogTrigger>
-                <Box gap={3} space="between" align="center">
+                <div className="flex items-center justify-between gap-3">
                   <Button
                     size="small"
                     onClick={() => {
@@ -383,8 +382,8 @@ export function Note({
                   >
                     Update Note
                   </Button>
-                </Box>
-              </Box>
+                </div>
+              </div>
             )}
           </>
         )}

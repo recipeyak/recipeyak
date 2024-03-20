@@ -3,7 +3,6 @@ import { useState } from "react"
 import { assertNever } from "@/assert"
 import { clx } from "@/classnames"
 import { Badge } from "@/components/Badge"
-import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { Loader } from "@/components/Loader"
 import {
@@ -180,7 +179,7 @@ function SessionList() {
 export default function Sessions() {
   const sessonsDeleteAll = useSessionDeleteAll()
   return (
-    <Box dir="col">
+    <div className="flex flex-col">
       <div className="flex items-center justify-between">
         <label className="text-xl font-bold">Sessions</label>
         <Button
@@ -195,6 +194,6 @@ export default function Sessions() {
         </Button>
       </div>
       <SessionList />
-    </Box>
+    </div>
   )
 }

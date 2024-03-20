@@ -3,7 +3,6 @@ import { useDrag, useDrop } from "react-dnd"
 
 import { isMobile } from "@/browser"
 import { clx } from "@/classnames"
-import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { CheckBox } from "@/components/Checkbox"
 import { TextInput } from "@/components/TextInput"
@@ -174,7 +173,7 @@ export function Ingredient(props: {
         Optional
       </label>
 
-      <Box space="between" mb={2}>
+      <div className="mb-2 flex justify-between">
         <Button
           type="button"
           onClick={() => {
@@ -203,7 +202,7 @@ export function Ingredient(props: {
             Update Ingredient
           </Button>
         </div>
-      </Box>
+      </div>
     </form>
   ) : (
     <IngredientView

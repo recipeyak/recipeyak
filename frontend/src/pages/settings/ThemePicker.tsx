@@ -1,6 +1,5 @@
 import { useState } from "react"
 
-import { Box } from "@/components/Box"
 import { BetterLabel } from "@/components/Label"
 import { RadioButton } from "@/components/RadioButton"
 import { Select } from "@/components/Select"
@@ -86,7 +85,7 @@ export function ThemePicker() {
   }
 
   return (
-    <Box dir="col" align="start">
+    <div className="flex flex-col items-start">
       <BetterLabel className="text-xl">Theme</BetterLabel>
       <div className="flex flex-col gap-2">
         <div className="flex flex-col">
@@ -154,6 +153,6 @@ export function ThemePicker() {
           </div>
         )}
       </div>
-    </Box>
+    </div>
   )
 }

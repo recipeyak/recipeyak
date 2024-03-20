@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom"
 
-import { Box } from "@/components/Box"
 import { BetterLabel } from "@/components/Label"
 import { pathPassword } from "@/paths"
 
 export function ChangePassword() {
   return (
-    <Box dir="col" className="gap-1">
+    <div className="flex flex-col gap-1">
       <BetterLabel>Password</BetterLabel>
       <Link
         to={pathPassword({})}
@@ -14,6 +13,6 @@ export function ChangePassword() {
       >
         Change password
       </Link>
-    </Box>
+    </div>
   )
 }

@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
 
-import { Box } from "@/components/Box"
 import { getInitialIngredients } from "@/ingredients"
 import { IngredientViewContent } from "@/pages/recipe-detail/IngredientView"
 import { Note } from "@/pages/recipe-detail/Notes"
@@ -243,18 +242,7 @@ export function CookingFullscreen({
           ← Return to Recipe
         </Link>
 
-        <Box
-          className="max-w-[1000px] pb-2"
-          gap={2}
-          dir="col"
-          // eslint-disable-next-line no-restricted-syntax
-          style={{
-            fontSize: "18px",
-            minWidth: "min(600px, 100%)",
-            marginLeft: "auto",
-            marginRight: "auto",
-          }}
-        >
+        <div className="mx-auto flex min-w-[min(600px,100%)] max-w-[1000px] flex-col gap-2 pb-2 text-lg">
           <div
             id="ingredients"
             className="cursor-auto select-text"
@@ -293,7 +281,7 @@ export function CookingFullscreen({
               <TabAnchor href="#notes">notes</TabAnchor>
             </div>
           </div>
-        </Box>
+        </div>
       </div>
     </div>
   )

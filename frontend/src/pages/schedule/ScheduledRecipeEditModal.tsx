@@ -5,7 +5,6 @@ import { Link } from "react-router-dom"
 
 import { clx } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
-import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { Image } from "@/components/Image"
 import { Modal } from "@/components/Modal"
@@ -202,9 +201,9 @@ function RescheduleSection({
     onClose()
   }
   return (
-    <Box dir="col" gap={2}>
-      <Box dir="col" gap={4} mt={2} mb={2}>
-        <Box dir="col" gap={2}>
+    <div className="flex flex-col gap-2">
+      <div className="my-2 flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
           <div className="flex flex-col flex-wrap justify-between gap-3">
             <div className="flex flex-col items-center gap-2">
               {(
@@ -289,8 +288,8 @@ function RescheduleSection({
               </Modal>
             </DialogTrigger>
           </div>
-        </Box>
-      </Box>
-    </Box>
+        </div>
+      </div>
+    </div>
   )
 }

@@ -1,6 +1,5 @@
 import React from "react"
 
-import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { BetterLabel } from "@/components/Label"
 import { TextInput } from "@/components/TextInput"
@@ -36,10 +35,10 @@ export function ChangeName(props: { initialValue: string }) {
         )
       }}
     >
-      <Box dir="col">
+      <div className="flex flex-col">
         <BetterLabel>Name</BetterLabel>
         <div className="flex flex-col items-start gap-1">
-          <Box gap={2}>
+          <div className="flex gap-2">
             {editing ? (
               <TextInput
                 onKeyDown={(e) => {
@@ -56,16 +55,16 @@ export function ChangeName(props: { initialValue: string }) {
             ) : (
               <span>{name}</span>
             )}
-          </Box>
+          </div>
           {editing ? (
-            <Box gap={2}>
+            <div className="flex gap-1">
               <Button type="button" size="small" onClick={cancelEdit}>
                 Cancel
               </Button>
               <Button variant="primary" size="small" type="submit">
                 Update Name
               </Button>
-            </Box>
+            </div>
           ) : (
             <Button
               size="small"
@@ -77,7 +76,7 @@ export function ChangeName(props: { initialValue: string }) {
             </Button>
           )}
         </div>
-      </Box>
+      </div>
     </form>
   )
 }

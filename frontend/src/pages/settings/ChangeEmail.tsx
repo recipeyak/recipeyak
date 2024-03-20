@@ -1,7 +1,6 @@
 import { AxiosError } from "axios"
 import { useState } from "react"
 
-import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { BetterLabel } from "@/components/Label"
 import { TextInput } from "@/components/TextInput"
@@ -45,10 +44,10 @@ export function ChangeEmail(props: { email: string }) {
         )
       }}
     >
-      <Box dir="col" className="items-start">
+      <div className="flex flex-col items-start">
         <BetterLabel>Email</BetterLabel>
         <div className="flex flex-col items-start gap-1">
-          <Box gap={2}>
+          <div className="flex gap-2">
             {isEditing ? (
               <TextInput
                 onKeyDown={(e) => {
@@ -66,9 +65,9 @@ export function ChangeEmail(props: { email: string }) {
             ) : (
               <span>{props.email}</span>
             )}
-          </Box>
+          </div>
           {isEditing ? (
-            <Box gap={2}>
+            <div className="flex gap-2">
               <Button
                 disabled={updateEmail.isPending}
                 size="small"
@@ -86,7 +85,7 @@ export function ChangeEmail(props: { email: string }) {
               >
                 Update Email
               </Button>
-            </Box>
+            </div>
           ) : (
             <Button
               size="small"
@@ -98,7 +97,7 @@ export function ChangeEmail(props: { email: string }) {
             </Button>
           )}
         </div>
-      </Box>
+      </div>
     </form>
   )
 }

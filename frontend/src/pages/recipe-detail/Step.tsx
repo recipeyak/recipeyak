@@ -34,7 +34,6 @@ import { PressEvent } from "react-aria-components"
 import { useDrag, useDrop } from "react-dnd"
 
 import { clx } from "@/classnames"
-import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { BetterLabel } from "@/components/Label"
 import { Markdown } from "@/components/Markdown"
@@ -182,7 +181,7 @@ function StepBody({
         placeholder="Add you text here"
         name="text"
       />
-      <Box space="between">
+      <div className="flex justify-between">
         <Button
           onClick={removeStep}
           size="small"
@@ -205,7 +204,7 @@ function StepBody({
             Update Step
           </Button>
         </div>
-      </Box>
+      </div>
     </form>
   ) : (
     <StepView text={text} />

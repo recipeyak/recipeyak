@@ -10,7 +10,6 @@ import { useHistory } from "react-router"
 import { Link } from "react-router-dom"
 
 import { clx } from "@/classnames"
-import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { DateInput } from "@/components/DateInput"
 import { toISODateString } from "@/date"
@@ -167,8 +166,8 @@ function RecipeAccordian({
 }) {
   const [show, setShow] = useState(false)
   return (
-    <Box dir="col" space="between">
-      <Box space="between" align="center" w={100}>
+    <div className="flex flex-col justify-between">
+      <div className="flex w-full items-center justify-between">
         <div className="font-medium">
           {recipes?.length ?? "-"}{" "}
           {recipes?.length === 1 ? "recipe" : "recipes"}
@@ -181,9 +180,9 @@ function RecipeAccordian({
         >
           {show ? "Hide" : "Show"}
         </Button>
-      </Box>
+      </div>
       {show && (
-        <Box dir="col">
+        <div className="flex flex-col">
           {recipes?.map((r) => {
             return (
               <Link
@@ -195,9 +194,9 @@ function RecipeAccordian({
               </Link>
             )
           })}
-        </Box>
+        </div>
       )}
-    </Box>
+    </div>
   )
 }
 
@@ -255,9 +254,9 @@ function ShoppingList() {
   const recipes = shoppingList.data?.recipes ?? null
 
   return (
-    <Box dir="col" gap={1} w={100}>
-      <Box dir="col" gap={1} w={100}>
-        <Box gap={2} w={100} align="center">
+    <div className="flex w-full flex-col gap-1">
+      <div className="flex w-full flex-col gap-1">
+        <div className="flex w-full items-center gap-2">
           <DateInput
             onChange={handleSetStartDay}
             placeholder="from"
@@ -269,14 +268,14 @@ function ShoppingList() {
             placeholder="to"
             value={formatMonth(endDay)}
           />
-        </Box>
+        </div>
         <RecipeAccordian recipes={recipes} />
         <Button size="small" onClick={handleCopyToClipboard}>
           Copy to Clipboard
         </Button>
-      </Box>
+      </div>
       <ShoppingListList items={shoppingList} ref={ref} />
-    </Box>
+    </div>
   )
 }
 

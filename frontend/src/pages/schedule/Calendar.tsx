@@ -9,7 +9,6 @@ import { DialogTrigger } from "react-aria-components"
 import { useHistory, useLocation } from "react-router-dom"
 
 import { clx } from "@/classnames"
-import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { Modal } from "@/components/Modal"
 import { toISODateString } from "@/date"
@@ -138,8 +137,8 @@ interface INavProps {
 
 function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
   return (
-    <Box space="between" align="center" shrink={0}>
-      <Box gap={1} className="items-center">
+    <div className="flex shrink-0 items-center justify-between">
+      <div className="flex items-center gap-1">
         <CalTitle dayTs={dayTs} />
         <DialogTrigger>
           <Button
@@ -166,8 +165,8 @@ function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
           </Button>
           <ScheduleRecipeModal />
         </DialogTrigger>
-      </Box>
-      <Box gap={1}>
+      </div>
+      <div className="flex gap-1">
         <Button size="small" onClick={onPrev} aria-label="previous week">
           {"←"}
         </Button>
@@ -177,8 +176,8 @@ function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
         <Button size="small" onClick={onNext} aria-label="next week">
           {"→"}
         </Button>
-      </Box>
-    </Box>
+      </div>
+    </div>
   )
 }
 
@@ -265,7 +264,7 @@ export function Calendar() {
   })
 
   return (
-    <Box dir="col" grow={1} className="gap-2 md:gap-0">
+    <div className="flex grow flex-col gap-2 md:gap-0">
       <Nav
         dayTs={startOfWeekMs}
         onNext={nextPage}
@@ -280,6 +279,6 @@ export function Calendar() {
         isError={scheduledRecipesResult.isError}
       />
       <HelpPrompt />
-    </Box>
+    </div>
   )
 }
