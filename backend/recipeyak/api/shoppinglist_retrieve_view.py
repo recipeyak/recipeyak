@@ -1,5 +1,6 @@
 from datetime import date
 from decimal import Decimal
+from fractions import Fraction
 
 import pydantic
 from django.core.exceptions import ValidationError
@@ -45,7 +46,7 @@ class ShoppingListRecipe(pydantic.BaseModel):
 
 
 class QuantityResponse(TypedDict):
-    quantity: Decimal
+    quantity: str
     unit: Unit
     unknown_unit: str | None
 
@@ -58,6 +59,17 @@ class IngredientResponse(TypedDict):
 class ShoppingListResponse(TypedDict):
     ingredients: dict[str, IngredientResponse]
     recipes: list[ShoppingListRecipe]
+
+
+def _fmt_small_decimal(d: Decimal) -> str:
+    """
+    0.5 -> 1/2
+    0.333333 -> 1/3
+    """
+    if d < 1:
+        num, denom = Fraction(d).limit_denominator().as_integer_ratio()
+        return f"{num}/{denom}"
+    return str(d)
 
 
 @endpoint()
@@ -89,7 +101,7 @@ def shoppinglist_retrieve_view(
         ingredient_mapping[ingredient] = {
             "quantities": [
                 {
-                    "quantity": q.quantity,
+                    "quantity": _fmt_small_decimal(q.quantity),
                     "unit": q.unit,
                     "unknown_unit": q.unknown_unit,
                 }
