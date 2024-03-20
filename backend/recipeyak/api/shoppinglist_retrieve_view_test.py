@@ -10,6 +10,12 @@ from recipeyak.combine import (
     Quantity,
     combine_ingredients,
 )
+from recipeyak.fixtures import (
+    create_ingredient,
+    create_recipe,
+    create_team,
+    create_user,
+)
 from recipeyak.models import Ingredient, Recipe, ShoppingList, Team, User
 from recipeyak.parsing import Unit
 
@@ -356,3 +362,22 @@ def test_fetching_team_shopping_list(
     assert len(res.json()["ingredients"]) == (
         recipe.ingredient_set.count()
     ), "only return the schedule recipe ingredients"
+
+
+def test_fetching_shopping_list_with_small_decimals() -> None:
+    client = Client()
+    user = create_user()
+    team = create_team(user=user)
+    recipe = create_recipe(team=team, user=user)
+    create_ingredient(recipe=recipe, quantity="1/3 cup", name="flour", position="c")
+    client.force_login(user)
+
+    start = date(1976, 7, 6)
+    end = start + timedelta(days=1)
+
+    recipe.schedule(on=start, team=team, user=user)
+
+    res = client.get("/api/v1/shoppinglist/", {"start": start, "end": end})
+    assert res.status_code == 200
+    rendered_quantity = res.json()["ingredients"]["flour"]["quantities"][0]["quantity"]
+    assert rendered_quantity == "1/3"

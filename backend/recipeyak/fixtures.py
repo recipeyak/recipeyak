@@ -33,18 +33,21 @@ def create_recipe(*, team: Team, user: User) -> Recipe:
     )
 
     Section.objects.create(recipe=recipe, title="a section title", position="a")
-    Ingredient.objects.create(
+    create_ingredient(
+        recipe=recipe,
         quantity="1 lbs",
         name="egg",
         description="scrambled",
         position="b",
-        recipe=recipe,
     )
 
     Section.objects.create(recipe=recipe, title="a diff section", position="b")
 
-    Ingredient.objects.create(
-        quantity="2 tbs", name="soy sauce", position="c", recipe=recipe
+    create_ingredient(
+        recipe=recipe,
+        quantity="2 tbs",
+        name="soy sauce",
+        position="c",
     )
 
     Step.objects.create(
@@ -71,3 +74,15 @@ def create_recipe(*, team: Team, user: User) -> Recipe:
     save_recipe_version(recipe_id=recipe.id, actor=user)
 
     return recipe
+
+
+def create_ingredient(
+    *, recipe: Recipe, quantity: str, name: str, description: str = "", position: str
+) -> Ingredient:
+    return Ingredient.objects.create(
+        quantity=quantity,
+        name=name,
+        description=description,
+        recipe=recipe,
+        position=position,
+    )
