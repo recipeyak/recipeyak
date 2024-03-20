@@ -6,7 +6,6 @@ import { Link } from "react-router-dom"
 
 import { assertNever } from "@/assert"
 import { Avatar } from "@/components/Avatar"
-import { Box } from "@/components/Box"
 import { Loader } from "@/components/Loader"
 import { NavPage } from "@/components/Page"
 import { pathProfileById } from "@/paths"
@@ -167,20 +166,19 @@ export function ProfilePageContainer(props: {
 
   return (
     <NavPage title={props.title}>
-      <Box dir="col" className="mx-auto mt-8 max-w-[700px] gap-2">
+      <div className="mx-auto mt-8 flex max-w-[700px] flex-col gap-2">
         <Link
           to={pathProfileById({ userId: props.userId })}
           className="self-center"
         >
-          <Box dir="col" align="center">
+          <div className="flex flex-col items-center">
             <Avatar avatarURL={userInfo.data.avatar_url} size={96} />
             <span className="text-2xl">{userInfo.data.name}</span>
             <span>Joined {joinedDateStr}</span>
-          </Box>
+          </div>
         </Link>
-
         {props.children}
-      </Box>
+      </div>
     </NavPage>
   )
 }
@@ -247,21 +245,18 @@ export function ProfilePage(props: RouteComponentProps<{ userId: string }>) {
     <ProfilePageContainer userId={props.match.params.userId} title="Profile">
       <div>
         <span className="text-2xl">Stats</span>
-
-        <Box dir="row" align="start" wrap gap={2}>
+        <div className="flex flex-wrap items-start gap-2">
           {allStats.map(({ value, name, icon: Icon, pathName }) => (
             <Link key={name} to={pathName}>
-              <Box
+              <div
                 key={name}
-                gap={1}
-                align="center"
-                className="rounded-md border border-solid border-[--color-border] bg-[--color-background-calendar-day] px-2 py-1"
+                className="flex items-center gap-1 rounded-md border border-solid border-[--color-border] bg-[--color-background-calendar-day] px-2 py-1"
               >
                 <Icon /> {name} · {formatNumber(value)}
-              </Box>
+              </div>
             </Link>
           ))}
-        </Box>
+        </div>
       </div>
 
       <div>

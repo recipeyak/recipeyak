@@ -4,7 +4,6 @@ import React from "react"
 import { Link } from "react-router-dom"
 
 import { clx } from "@/classnames"
-import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { DateInput } from "@/components/DateInput"
 import Clock from "@/components/icons"
@@ -146,12 +145,15 @@ export function ScheduleModal({
                       search: addQueryParams(location.search, { week }),
                     }
                     return (
-                      <Box space="between" align="center" key={i}>
+                      <div
+                        className="flex items-center justify-between"
+                        key={i}
+                      >
                         <Link to={to} className="grow leading-[1.3]">
                           <div className="font-medium">
                             {format(on, "E")} ∙ {formatHumanDate(on)}
                           </div>
-                          <Box gap={1}>
+                          <div className="flex gap-1">
                             {isFuture(on) && <Clock size={14} />}
                             <div>
                               {isToday(on)
@@ -162,12 +164,12 @@ export function ScheduleModal({
                                     ignoreHours: true,
                                   })}
                             </div>
-                          </Box>
+                          </div>
                         </Link>
                         <Button size="small" to={to}>
                           View
                         </Button>
-                      </Box>
+                      </div>
                     )
                   })}
                 </div>

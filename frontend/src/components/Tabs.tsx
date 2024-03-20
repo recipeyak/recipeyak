@@ -1,13 +1,13 @@
 import React from "react"
 
-import { Box } from "@/components/Box"
+import { clx } from "@/classnames"
 
 interface ITabsProps {
   readonly children: React.ReactElement<ITabProps>[]
 }
 
 export function Tabs({ children }: ITabsProps) {
-  return <Box gap={3}>{children}</Box>
+  return <div className="flex gap-3">{children}</div>
 }
 
 interface ITabProps {
@@ -18,18 +18,14 @@ interface ITabProps {
 
 export function Tab({ isActive, children, onClick }: ITabProps) {
   return (
-    <Box
-      // eslint-disable-next-line no-restricted-syntax
-      style={{
-        textDecoration: isActive ? "underline" : "",
-        textUnderlineOffset: "0.25rem",
-        paddingBottom: "0.25rem",
-        fontWeight: "500",
-        fontSize: "18px",
-      }}
+    <div
+      className={clx(
+        "flex pb-1 text-lg font-medium underline-offset-4",
+        isActive && "underline",
+      )}
       onClick={onClick}
     >
       {children}
-    </Box>
+    </div>
   )
 }

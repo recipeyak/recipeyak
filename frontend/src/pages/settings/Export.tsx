@@ -1,6 +1,5 @@
 import { Download } from "react-feather"
 
-import { Box } from "@/components/Box"
 import { pathRecipesExportJson, pathRecipesExportYaml } from "@/paths"
 
 function ExportLink({
@@ -23,12 +22,12 @@ function ExportLink({
 
 export function Export() {
   return (
-    <Box dir="col" className="gap-1">
+    <div className="flex flex-col gap-1">
       <label className="text-xl font-bold">Export</label>
       <div className="flex gap-2">
         <ExportLink href={pathRecipesExportYaml({})}>recipes.yaml</ExportLink>
         <ExportLink href={pathRecipesExportJson({})}>recipes.json</ExportLink>
       </div>
-    </Box>
+    </div>
   )
 }

@@ -5,7 +5,6 @@ import { DialogTrigger } from "react-aria-components"
 import { useHistory } from "react-router-dom"
 
 import { logout } from "@/auth"
-import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { Modal } from "@/components/Modal"
 import { TextInput } from "@/components/TextInput"
@@ -45,7 +44,7 @@ export function DangerZone() {
   }
   const [value, setValue] = useState("")
   return (
-    <Box dir="col" align="start" gap={1}>
+    <div className="flex flex-col items-start gap-1">
       <label className="text-xl font-bold">Danger Zone</label>
       <DialogTrigger>
         <Button size="small" variant="danger">
@@ -84,6 +83,6 @@ export function DangerZone() {
           </div>
         </Modal>
       </DialogTrigger>
-    </Box>
+    </div>
   )
 }

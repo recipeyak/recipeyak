@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 
-import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { RecipeListItem } from "@/pages/recipe-list/RecipeItem"
 import { pathRecipeAdd } from "@/paths"
@@ -22,12 +21,12 @@ function Results({
 
 function AddRecipeCallToAction() {
   return (
-    <Box dir="col" mx="auto" mt={2} align="center" gap={1}>
+    <div className="mx-auto mt-2 flex flex-col items-center gap-1">
       <div>No recipes here.</div>
       <Button variant="primary" size="small" to={pathRecipeAdd({})}>
         Add a Recipe
       </Button>
-    </Box>
+    </div>
   )
 }
 

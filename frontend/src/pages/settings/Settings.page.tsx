@@ -3,7 +3,6 @@ import produce from "immer"
 import { FileTrigger } from "react-aria-components"
 
 import { Avatar } from "@/components/Avatar"
-import { Box } from "@/components/Box"
 import { Button } from "@/components/Buttons"
 import { Loader } from "@/components/Loader"
 import { NavPage } from "@/components/Page"
@@ -34,19 +33,10 @@ export function SettingsPage() {
 
   return (
     <NavPage title="Settings">
-      <Box
-        // eslint-disable-next-line no-restricted-syntax
-        style={{
-          maxWidth: 800,
-          marginLeft: "auto",
-          marginRight: "auto",
-        }}
-        dir="col"
-        gap={4}
-      >
+      <div className="mx-auto flex max-w-[800px] flex-col gap-4">
         <h1 className="text-3xl">User settings</h1>
 
-        <Box dir="col" align="start" className="gap-2">
+        <div className="flex flex-col items-start gap-2">
           <div className="flex flex-col gap-2">
             <Avatar avatarURL={userInfo.data.avatar_url} size={72} />
             <FileTrigger
@@ -96,20 +86,19 @@ export function SettingsPage() {
             </FileTrigger>
           </div>
 
-          {/* eslint-disable-next-line no-restricted-syntax */}
-          <Box dir="col" style={{ maxWidth: 400 }} gap={2}>
+          <div className="flex max-w-[400px] flex-col gap-2">
             <ChangeEmail email={userInfo.data.email} />
             <ChangeName initialValue={userInfo.data.name} />
             <ChangeTeam />
             <ChangePassword />
-          </Box>
-        </Box>
+          </div>
+        </div>
         <ThemePicker />
 
         <Export />
         <Sessions />
         <DangerZone />
-      </Box>
+      </div>
     </NavPage>
   )
 }

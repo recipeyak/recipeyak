@@ -10,7 +10,6 @@ import React from "react"
 import { Link } from "react-router-dom"
 
 import { clx } from "@/classnames"
-import { Box } from "@/components/Box"
 import { Image } from "@/components/Image"
 import { Loader } from "@/components/Loader"
 import { NavPage } from "@/components/Page"
@@ -30,19 +29,19 @@ function ScheduledRecipe(props: {
   readonly recipes: Recipe[]
 }) {
   return (
-    <Box>
+    <div className="flex">
       <div className="mr-2 min-w-[2.5rem] text-right text-[14px] font-bold">
         {props.day}
       </div>
-      <Box gap={1} dir="col" grow={1}>
+      <div className="flex grow flex-col gap-1">
         {props.recipes.length === 0 ? (
           <div className="text-[--color-text-muted]">—</div>
         ) : null}
         {props.recipes.map((x) => (
           <RecipeSlide key={x.id} recipe={x} />
         ))}
-      </Box>
-    </Box>
+      </div>
+    </div>
   )
 }
 
@@ -138,11 +137,11 @@ function SchedulePreview() {
       <Link to={pathSchedule({})}>
         <SectionTitle>Schedule</SectionTitle>
       </Link>
-      <Box gap={2} dir="col">
+      <div className="flex flex-col gap-2">
         {scheduledRecipes?.map((x) => (
           <ScheduledRecipe key={x.day} day={x.day} recipes={x.recipes} />
         ))}
-      </Box>
+      </div>
     </ScheduleContainer>
   )
 }
@@ -171,7 +170,7 @@ function RecipeSlide({
 }) {
   return (
     <Link key={r.id} to={recipeURL(r.id, r.name)}>
-      <Box key={r.id} gap={2} className="items-center">
+      <div key={r.id} className="flex items-center gap-2">
         <Image
           width={48}
           height={48}
@@ -180,7 +179,7 @@ function RecipeSlide({
           sources={r.primaryImage}
           rounded
         />
-        <Box dir="col" w={100}>
+        <div className="flex w-full flex-col">
           <div
             className={clx(
               "line-clamp-1 text-ellipsis",
@@ -193,8 +192,8 @@ function RecipeSlide({
             {r.author}
           </div>
           {createdBy && <CreatedBy createdBy={createdBy} />}
-        </Box>
-      </Box>
+        </div>
+      </div>
     </Link>
   )
 }
@@ -205,7 +204,7 @@ function RecentlyViewed() {
   return (
     <ScheduleContainer>
       <SectionTitle>Recently Viewed</SectionTitle>
-      <Box dir="col" gap={2}>
+      <div className="flex flex-col gap-2">
         {recipes.isError ? (
           <div>error loading</div>
         ) : recipes.data == null ? (
@@ -215,7 +214,7 @@ function RecentlyViewed() {
         ) : (
           recipes.data.map((r) => <RecipeSlide key={r.id} recipe={r} />)
         )}
-      </Box>
+      </div>
     </ScheduleContainer>
   )
 }
@@ -230,7 +229,7 @@ function RecentlyCreated() {
   return (
     <ScheduleContainer>
       <SectionTitle>Recently Created</SectionTitle>
-      <Box dir="col" gap={2}>
+      <div className="flex flex-col gap-2">
         {recipes.isError ? (
           <div>error loading</div>
         ) : recipes.data == null ? (
@@ -242,7 +241,7 @@ function RecentlyCreated() {
             <RecipeSlide key={r.id} recipe={r} createdBy={r.createdBy} />
           ))
         )}
-      </Box>
+      </div>
     </ScheduleContainer>
   )
 }
