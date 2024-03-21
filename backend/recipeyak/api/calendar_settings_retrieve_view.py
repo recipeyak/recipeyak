@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Any
-
 from django.shortcuts import get_object_or_404
 from typing_extensions import TypedDict
 

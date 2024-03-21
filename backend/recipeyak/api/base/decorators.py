@@ -44,14 +44,14 @@ class AnyView(Protocol):
 @overload
 def endpoint(
     *, auth_required: Literal[False], redirect_to_login: bool = ...
-) -> Callable[[AnonView], AnonView]:
+) -> Callable[[AnonView[_P]], AnonView[_P]]:
     ...
 
 
 @overload
 def endpoint(
     *, auth_required: Literal[True] = ..., redirect_to_login: bool = ...
-) -> Callable[[AuthedView], AuthedView]:
+) -> Callable[[AuthedView[_P]], AuthedView[_P]]:
     ...
 
 
@@ -85,7 +85,7 @@ def endpoint(
 def _parse_param_data(
     request: Any, func: AnyView, kwargs: dict[str, Any]
 ) -> RequestParams | None:
-    param_type = typing.get_type_hints(func)["params"]
+    param_type: type[None] | RequestParams = typing.get_type_hints(func)["params"]
     if param_type is type(None):
         return None
     request_params = {}
