@@ -74,10 +74,9 @@ def _fmt_small_decimal(d: Decimal) -> str:
 
 @endpoint()
 def shoppinglist_retrieve_view(
-    request: AuthedHttpRequest[ShoppingListParams]
+    request: AuthedHttpRequest, params: ShoppingListParams
 ) -> JsonResponse[ShoppingListResponse]:
     team_id = get_team(request.user).id
-    params = ShoppingListParams.parse_obj(request.GET.dict())
     scheduled_recipes = get_scheduled_recipes(params=params, team_id=team_id)
     if scheduled_recipes is None:
         raise APIError(code="invalid_params", message="Couldn't find scheduled recipes")

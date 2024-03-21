@@ -47,9 +47,8 @@ class UserCreateResponse(pydantic.BaseModel):
 
 @endpoint(auth_required=False)
 def user_create_view(
-    request: AnonymousHttpRequest[RegisterUserDetailViewParams]
+    request: AnonymousHttpRequest, params: RegisterUserDetailViewParams
 ) -> JsonResponse[UserCreateResponse]:
-    params = RegisterUserDetailViewParams.parse_raw(request.body)
     with transaction.atomic():
         team = Team.objects.create(name="Personal")
         user = User()

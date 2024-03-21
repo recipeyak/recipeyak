@@ -3,18 +3,23 @@ from __future__ import annotations
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
+from recipeyak.api.base.serialization import RequestParams
 from recipeyak.models import filter_notes, get_team
 from recipeyak.realtime import publish_recipe
 
 
+class NoteDeleteParams(RequestParams):
+    note_id: str
+
+
 @endpoint()
 def note_delete_view(
-    request: AuthedHttpRequest[None], note_id: str
+    request: AuthedHttpRequest, params: NoteDeleteParams
 ) -> JsonResponse[None]:
     team = get_team(request.user)
     if (
         note := filter_notes(team=team)
-        .filter(pk=note_id, created_by=request.user)
+        .filter(pk=params.note_id, created_by=request.user)
         .first()
     ):
         note.delete()

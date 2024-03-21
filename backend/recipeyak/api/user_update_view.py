@@ -23,10 +23,8 @@ class UserUpdateParams(RequestParams):
 
 @endpoint()
 def user_update_view(
-    request: AuthedHttpRequest[UserUpdateParams]
+    request: AuthedHttpRequest, params: UserUpdateParams
 ) -> JsonResponse[UserSerializer]:
-    params = UserUpdateParams.parse_raw(request.body)
-
     with transaction.atomic():
         if params.schedule_team is not None:
             request.user.schedule_team_id = params.schedule_team

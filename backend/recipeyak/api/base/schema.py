@@ -12,6 +12,7 @@ import tempfile
 import typing
 import uuid
 from collections import defaultdict
+from contextlib import suppress
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal, NotRequired, TypedDict
@@ -35,9 +36,8 @@ class _Endpoint:
     url: str
     method: Literal["get", "post", "put", "patch", "delete", "head"]
     name: str
-    request: dict[str, object]
+    request: dict[str, Any]
     response: dict[str, object]
-    param_types: dict[str, Any]
     description: str | None = None
 
 
@@ -126,15 +126,6 @@ def _schema_from_endpoint(endpoint: _Endpoint) -> tuple[str, _MethodDict]:
 
     parameters = []
     for param_name, param_type in path_params.items():
-        if param_type is not endpoint.param_types[param_name]:
-            raise TypeError(
-                f"""\
-mismatched types
-  Expected {param_type} from urls.py, got {endpoint.param_types[param_name]} from function signature.
-  {param_name=} {endpoint.name=}
-"""
-            )
-
         parameters.append(
             {
                 "name": param_name,
@@ -150,10 +141,18 @@ mismatched types
     if endpoint.description is not None:
         method_dict["description"] = endpoint.description
     if endpoint.request is not None:
+        _normalize_params_and_schema(path_params, endpoint)
+        # GET related params have seperate representation vs request bodies in
+        # Open API
         if endpoint.method == "get":
             params = _schema_to_open_api_params(endpoint.request)
             method_dict.setdefault("parameters", []).extend(params)
-        else:
+        elif endpoint.request["properties"]:
+            if (
+                "required" in endpoint.request
+                and len(endpoint.request["required"]) == 0
+            ):
+                del endpoint.request["required"]
             method_dict["requestBody"] = {
                 "required": True,
                 "content": {"application/json": {"schema": endpoint.request}},
@@ -173,33 +172,37 @@ mismatched types
             "requestBody"
         ), f"shouldn't have a request body for get requests, use params instead. {endpoint.url}"
 
-    # TODO: shoppinglistRetrieve
-    # - return type is wrong
-    # - path params is wrong
-
-    # validation
-    # ensure that parameter names and request body names do not overlap since we
-    # combine them into the args in typescript land
-    path_param_names = {x["name"] for x in method_dict.get("parameters", [])}
-    # only care about the top level for overlap
-    if "requestBody" in method_dict:
-        request_body_param_names = set(
-            method_dict["requestBody"]["content"]["application/json"]["schema"][
-                "properties"
-            ]
-        )
-    else:
-        request_body_param_names = set()
-
-    if overlap := request_body_param_names.intersection(path_param_names):
-        raise ValueError(
-            f"""URL Path Param names and Request Body param names can't overlap. Overlapping names: {overlap}"""
-        )
-
     return (
         path,
         method_dict,
     )
+
+
+def _normalize_params_and_schema(
+    path_params: dict[str, type], endpoint: _Endpoint
+) -> None:
+    """
+    Remove the dupes from the overlap between path params and request body params
+    """
+    for param_name, param_type in path_params.items():
+        param_types = endpoint.request["properties"].get(param_name)
+        if param_types is None:
+            raise TypeError(
+                f"missing path param type, {param_name=} in {endpoint.name=} params."
+            )
+        if param_types["type"] != _open_api_param_type(param_type):
+            raise TypeError(
+                f"""\
+mismatched types
+  Expected '{_open_api_param_type(param_type)}' from urls.py, got '{param_types["type"]}' from param type.
+  {param_name=} {endpoint.name=}
+"""
+            )
+        # remove the path param from the request body since we include
+        # it in the schema as parameters
+        endpoint.request["properties"].pop(param_name)
+        with suppress(ValueError):
+            endpoint.request["required"].remove(param_name)
 
 
 _PATH_PARAMETER_TYPE_RE = re.compile(
@@ -322,12 +325,11 @@ def _route_to_endpoint(route: Route) -> _Endpoint:
             mode="serialization"
         )
 
-    request_class = endpoint_types.pop("request")
     try:
-        request_type_wrapper = typing.get_args(request_class)[0]
-    except IndexError as e:
+        request_type_wrapper = endpoint_types.pop("params")
+    except KeyError as e:
         raise ValueError(
-            f"invalid schema, you must specify a request type param. {route.view.__name__}"
+            f"invalid schema, you must specify a parameter named 'param'. {route.view.__name__}"
         ) from e
 
     # issue with this is that it does a bunch of $defs stuff:
@@ -339,8 +341,6 @@ def _route_to_endpoint(route: Route) -> _Endpoint:
             mode="validation"
         )
 
-    param_types = endpoint_types
-
     name = route.view.__name__.removesuffix("_view").replace("_", " ")
 
     return _Endpoint(
@@ -350,7 +350,6 @@ def _route_to_endpoint(route: Route) -> _Endpoint:
         description=route.view.__doc__,
         request=_cleanup_schema(request_type),
         response=_cleanup_schema(return_type),
-        param_types=param_types,
     )
 
 

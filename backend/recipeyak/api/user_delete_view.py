@@ -6,7 +6,7 @@ from recipeyak.api.base.response import JsonResponse
 
 
 @endpoint()
-def user_delete_view(request: AuthedHttpRequest[None]) -> JsonResponse[None]:
+def user_delete_view(request: AuthedHttpRequest, params: None) -> JsonResponse[None]:
     user = request.user
     logout(request)
     user.delete()

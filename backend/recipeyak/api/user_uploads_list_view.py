@@ -4,6 +4,7 @@ from django.http import Http404
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
+from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.user_retrieve_by_id_view import has_team_connection
 from recipeyak.models import filter_uploads, get_team
 from recipeyak.models.upload import Upload
@@ -42,11 +43,15 @@ def serialize_note(upload: Upload) -> NoteResponse:
     )
 
 
+class UserUploadsListParams(RequestParams):
+    user_id: str
+
+
 @endpoint()
 def user_uploads_list_view(
-    request: AuthedHttpRequest[None], user_id: str
+    request: AuthedHttpRequest, params: UserUploadsListParams
 ) -> JsonResponse[UserPhotosListResponse]:
-    if not has_team_connection(user_id, request.user.id):
+    if not has_team_connection(params.user_id, request.user.id):
         raise Http404
     team = get_team(request.user)
 
@@ -58,7 +63,7 @@ def user_uploads_list_view(
             contentType=upload.content_type,
             note=serialize_note(upload),
         )
-        for upload in filter_uploads(team=team, user_id=user_id)
+        for upload in filter_uploads(team=team, user_id=params.user_id)
         .prefetch_related("recipe")
         .exclude(recipe_id=None)
         .exclude(note=None)

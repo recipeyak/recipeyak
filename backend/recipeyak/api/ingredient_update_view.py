@@ -26,15 +26,17 @@ class IngredientsPatchParams(RequestParams):
     description: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
     position: str | None = None
     optional: bool | None = None
+    ingredient_id: int
 
 
 @endpoint()
 def ingredient_update_view(
-    request: AuthedHttpRequest[IngredientsPatchParams], ingredient_id: int
+    request: AuthedHttpRequest, params: IngredientsPatchParams
 ) -> JsonResponse[IngredientResponse]:
     team = get_team(request.user)
-    params = IngredientsPatchParams.parse_raw(request.body)
-    ingredient = get_object_or_404(filter_ingredients(team=team), pk=ingredient_id)
+    ingredient = get_object_or_404(
+        filter_ingredients(team=team), pk=params.ingredient_id
+    )
 
     with transaction.atomic():
         before = ingredient_to_text(ingredient)

@@ -26,7 +26,7 @@ class RecentlyViewRecipeResponse(TypedDict):
 
 @endpoint()
 def recipe_recently_viewed_view(
-    request: AuthedHttpRequest[None]
+    request: AuthedHttpRequest, params: None
 ) -> JsonResponse[list[RecentlyViewRecipeResponse]]:
     team = get_team(request.user)
     recipes: list[RecentlyViewRecipeResponse] = []

@@ -18,17 +18,17 @@ from recipeyak.versioning import save_recipe_version
 class SectionUpdateParams(RequestParams):
     position: str | None = None
     title: str | None = None
+    section_id: int
 
 
 @endpoint()
 def section_update_view(
-    request: AuthedHttpRequest[SectionUpdateParams], section_id: int
+    request: AuthedHttpRequest, params: SectionUpdateParams
 ) -> JsonResponse[SectionResponse]:
-    section = get_object_or_404(Section, pk=section_id)
+    section = get_object_or_404(Section, pk=params.section_id)
     if not has_recipe_access(recipe=section.recipe, user=request.user):
         raise APIError(code="no_access", message="No access to recipe", status=403)
 
-    params = SectionUpdateParams.parse_raw(request.body)
     with transaction.atomic():
         if params.title is not None:
             section.title = params.title

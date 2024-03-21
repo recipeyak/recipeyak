@@ -14,7 +14,7 @@ class UserLogoutResponse(pydantic.BaseModel):
 
 @endpoint()
 def user_logout_view(
-    request: AuthedHttpRequest[None]
+    request: AuthedHttpRequest, params: None
 ) -> JsonResponse[UserLogoutResponse]:
     """
     Calls Django logout method and logs out current User object.

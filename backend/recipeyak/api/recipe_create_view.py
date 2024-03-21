@@ -98,10 +98,9 @@ def create_recipe_from_scrape(*, scrape: ScrapeResult, team: Team) -> Recipe:
 
 @endpoint()
 def recipe_create_view(
-    request: AuthedHttpRequest[RecipePostParams]
+    request: AuthedHttpRequest, params: RecipePostParams
 ) -> JsonResponse[RecipeResponse]:
     log = logger.bind(user_id=request.user.id)
-    params = RecipePostParams.parse_raw(request.body)
 
     # validate params
     team = Team.objects.filter(id=params.team, membership__user=request.user).first()

@@ -36,15 +36,15 @@ class RecipePatchParams(RequestParams):
     # attributes requiring custom handling.
     primaryImageId: str | None = None
 
+    recipe_id: int
+
 
 @endpoint()
 def recipe_update_view(
-    request: AuthedHttpRequest[RecipePatchParams], recipe_id: int
+    request: AuthedHttpRequest, params: RecipePatchParams
 ) -> JsonResponse[RecipeResponse]:
     team = get_team(request.user)
-    recipe = filter_recipe_or_404(recipe_id=recipe_id, team=team)
-
-    params = RecipePatchParams.parse_raw(request.body)
+    recipe = filter_recipe_or_404(recipe_id=params.recipe_id, team=team)
 
     with transaction.atomic():
         provided_fields = set(params.dict(exclude_unset=True))
@@ -124,5 +124,5 @@ def recipe_update_view(
     publish_recipe(recipe_id=recipe.id, team_id=team.id)
 
     team = get_team(request.user)
-    recipe = filter_recipe_or_404(team=team, recipe_id=recipe_id)
+    recipe = filter_recipe_or_404(team=team, recipe_id=params.recipe_id)
     return JsonResponse(serialize_recipe(recipe))

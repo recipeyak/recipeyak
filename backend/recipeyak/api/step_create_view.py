@@ -19,15 +19,15 @@ from recipeyak.versioning import save_recipe_version
 class StepCreateParams(RequestParams):
     text: Annotated[str, StringConstraints(strip_whitespace=True)]
     position: Annotated[str, StringConstraints(strip_whitespace=True)]
+    recipe_id: int
 
 
 @endpoint()
 def step_create_view(
-    request: AuthedHttpRequest[StepCreateParams], recipe_id: int
+    request: AuthedHttpRequest, params: StepCreateParams
 ) -> JsonResponse[StepResponse]:
-    params = StepCreateParams.parse_raw(request.body)
     team = get_team(request.user)
-    recipe = get_object_or_404(filter_recipes(team=team), pk=recipe_id)
+    recipe = get_object_or_404(filter_recipes(team=team), pk=params.recipe_id)
 
     with transaction.atomic():
         step = Step.objects.create(
@@ -40,7 +40,7 @@ def step_create_view(
             after=params.text,
             change_type=ChangeType.STEP_CREATE,
         )
-        save_recipe_version(recipe_id=recipe_id, actor=request.user)
+        save_recipe_version(recipe_id=params.recipe_id, actor=request.user)
 
     publish_recipe(recipe_id=recipe.id, team_id=recipe.team_id)
     return JsonResponse(serialize_step(step), status=201)

@@ -28,7 +28,7 @@ class SessionResponse(pydantic.BaseModel):
 
 @endpoint()
 def session_list_view(
-    request: AuthedHttpRequest[None]
+    request: AuthedHttpRequest, params: None
 ) -> JsonResponse[list[SessionResponse]]:
     query_set = request.user.session_set
 

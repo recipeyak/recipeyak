@@ -32,15 +32,15 @@ class IngredientCreateParams(RequestParams):
     description: Annotated[str, StringConstraints(strip_whitespace=True)]
     position: str
     optional: bool | None = None
+    recipe_id: int
 
 
 @endpoint()
 def ingredient_create_view(
-    request: AuthedHttpRequest[IngredientCreateParams], recipe_id: int
+    request: AuthedHttpRequest, params: IngredientCreateParams
 ) -> JsonResponse[IngredientResponse]:
-    params = IngredientCreateParams.parse_raw(request.body)
     team = get_team(request.user)
-    recipe = get_object_or_404(filter_recipes(team=team), pk=recipe_id)
+    recipe = get_object_or_404(filter_recipes(team=team), pk=params.recipe_id)
 
     with transaction.atomic():
         ingredient = Ingredient.objects.create(
@@ -58,7 +58,7 @@ def ingredient_create_view(
             after=ingredient_to_text(ingredient),
             change_type=ChangeType.INGREDIENT_CREATE,
         )
-        save_recipe_version(recipe_id=recipe_id, actor=request.user)
+        save_recipe_version(recipe_id=params.recipe_id, actor=request.user)
 
     publish_recipe(recipe_id=recipe.id, team_id=team.id)
     return JsonResponse(serialize_ingredient(ingredient), status=201)

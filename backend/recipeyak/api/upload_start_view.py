@@ -44,9 +44,8 @@ class StartUploadResponse(pydantic.BaseModel):
 
 @endpoint()
 def upload_start_view(
-    request: AuthedHttpRequest[StartUploadParams]
+    request: AuthedHttpRequest, params: StartUploadParams
 ) -> JsonResponse[StartUploadResponse]:
-    params = StartUploadParams.parse_raw(request.body)
     key = f"{request.user.id}/{uuid4().hex}/{params.file_name}"
     team = get_team(request.user)
 

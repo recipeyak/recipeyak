@@ -25,7 +25,7 @@ class UserPasswordUpdateResponse(pydantic.BaseModel):
 
 @endpoint()
 def user_password_update_view(
-    request: AuthedHttpRequest[PasswordChangeParams]
+    request: AuthedHttpRequest, params: PasswordChangeParams
 ) -> JsonResponse[UserPasswordUpdateResponse]:
     """
     Calls Django Auth SetPasswordForm save method.
@@ -33,7 +33,6 @@ def user_password_update_view(
     Accepts the following POST parameters: new_password1, new_password2
     Returns the success/fail message.
     """
-    params = PasswordChangeParams.parse_raw(request.body)
     user = request.user
     if not user.check_password(params.old_password):
         raise APIError(

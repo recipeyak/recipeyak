@@ -24,7 +24,7 @@ def get_token(team_id: int) -> str:
 
 @endpoint()
 def algolia_retrieve_view(
-    request: AuthedHttpRequest[None]
+    request: AuthedHttpRequest, params: None
 ) -> JsonResponse[dict[str, str]]:
     team = get_team(request.user)
     return JsonResponse(

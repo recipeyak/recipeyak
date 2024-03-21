@@ -7,6 +7,7 @@ from yarl import URL
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AnonymousHttpRequest
+from recipeyak.api.base.serialization import RequestParams
 from recipeyak.config import IMAGE_TRANSFORM_FORMAT
 from recipeyak.models.recipe import Recipe
 
@@ -47,9 +48,7 @@ def _format_img_open_graph(x: str) -> str:
     raise Exception(f"Unexpected IMAGE_TRANSFORM_FORMAT:{IMAGE_TRANSFORM_FORMAT}")
 
 
-def _recipe_get_view(
-    request: AnonymousHttpRequest[None], recipe_id: str
-) -> HttpResponse:
+def _recipe_get_view(request: AnonymousHttpRequest, recipe_id: str) -> HttpResponse:
     recipe = get_object_or_404(Recipe, pk=recipe_id)
 
     recipe_title = recipe.name
@@ -72,8 +71,12 @@ def _recipe_get_view(
     )
 
 
+class RecipeBotDetailParams(RequestParams):
+    recipe_id: str
+
+
 @endpoint(auth_required=False)
 def recipe_bot_detail_view(
-    request: AnonymousHttpRequest[None], recipe_id: str
+    request: AnonymousHttpRequest, params: RecipeBotDetailParams
 ) -> HttpResponse:
-    return _recipe_get_view(request, recipe_id)
+    return _recipe_get_view(request, params.recipe_id)

@@ -39,10 +39,8 @@ class ResetPasswordViewParams(RequestParams):
 
 @endpoint(auth_required=False)
 def user_password_reset_confirm_view(
-    request: AnonymousHttpRequest[ResetPasswordViewParams]
+    request: AnonymousHttpRequest, params: ResetPasswordViewParams
 ) -> JsonResponse[UserSerializer]:
-    params = ResetPasswordViewParams.parse_raw(request.body)
-
     user_id = urlsafe_base64_decode(params.uid)
     user = User.objects.filter(pk=user_id).first()
     if user is None:

@@ -7,6 +7,7 @@ from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
+from recipeyak.api.base.serialization import RequestParams
 from recipeyak.api.team_update_view import is_team_admin
 from recipeyak.models import Membership, Team
 from recipeyak.models.membership import DemoteLastAdminError
@@ -28,15 +29,19 @@ def is_team_member(*, team_id: int, user_id: int) -> bool:
     ).exists()
 
 
+class MemberDeleteParams(RequestParams):
+    member_id: int
+
+
 @endpoint()
 def member_delete_view(
-    request: AuthedHttpRequest[None], *, member_id: int
+    request: AuthedHttpRequest, params: MemberDeleteParams
 ) -> JsonResponse[None]:
     """
     1. Admins of the team can edit any other member of the team
     2. Non-admins can edit themselves
     """
-    membership = get_object_or_404(Membership, pk=member_id)
+    membership = get_object_or_404(Membership, pk=params.member_id)
     # Must be part of the team
     if not is_team_member(user_id=request.user.id, team_id=membership.team_id):
         raise APIError(
