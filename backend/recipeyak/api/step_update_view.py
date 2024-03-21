@@ -19,15 +19,16 @@ from recipeyak.versioning import save_recipe_version
 class StepPatchParams(RequestParams):
     text: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
     position: str | None = None
+    step_id: int
 
 
 @endpoint()
 def step_update_view(
-    request: AuthedHttpRequest[StepPatchParams], step_id: int
+    request: AuthedHttpRequest,
+    params: StepPatchParams,
 ) -> JsonResponse[StepResponse]:
     team = get_team(request.user)
-    params = StepPatchParams.parse_raw(request.body)
-    step = get_object_or_404(filter_steps(team=team), pk=step_id)
+    step = get_object_or_404(filter_steps(team=team), pk=params.step_id)
     with transaction.atomic():
         before_text = step.text
         if params.text is not None:

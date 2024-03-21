@@ -18,22 +18,21 @@ class UpdateTeamResponse(pydantic.BaseModel):
 
 
 class UpdateTeamParams(RequestParams):
+    team_id: int
     name: str
 
 
 @endpoint()
 def team_update_view(
-    request: AuthedHttpRequest[UpdateTeamParams], team_id: int
+    request: AuthedHttpRequest, params: UpdateTeamParams
 ) -> JsonResponse[UpdateTeamResponse]:
-    team = get_object_or_404(get_teams(request.user), pk=team_id)
+    team = get_object_or_404(get_teams(request.user), pk=params.team_id)
     if not is_team_admin(team_id=team.id, user_id=request.user.id):
         raise APIError(
             code="insufficent_permissions",
             message="Must be a team admin for updates.",
             status=403,
         )
-
-    params = UpdateTeamParams.parse_raw(request.body)
 
     with transaction.atomic():
         team.name = params.name

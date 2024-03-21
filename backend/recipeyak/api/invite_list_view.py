@@ -31,7 +31,7 @@ class InviteResponse(pydantic.BaseModel):
 
 @endpoint()
 def invite_list_view(
-    request: AuthedHttpRequest[None]
+    request: AuthedHttpRequest, params: None
 ) -> JsonResponse[list[InviteResponse]]:
     with connection.cursor() as cursor:
         cursor.execute(

@@ -22,16 +22,15 @@ class CookChecklistPostSerializer(pydantic.BaseModel):
 class CookChecklistPostParams(RequestParams):
     ingredient_id: int
     checked: bool
+    recipe_id: int
 
 
 @endpoint()
 def cook_checklist_create_view(
-    request: AuthedHttpRequest[CookChecklistPostParams], recipe_id: int
+    request: AuthedHttpRequest, params: CookChecklistPostParams
 ) -> JsonResponse[CookChecklistPostSerializer]:
     team = get_team(request.user)
-    recipe = filter_recipe_or_404(recipe_id=recipe_id, team=team)
-
-    params = CookChecklistPostParams.parse_raw(request.body)
+    recipe = filter_recipe_or_404(recipe_id=params.recipe_id, team=team)
     with connection.cursor() as cursor:
         cursor.execute(
             """

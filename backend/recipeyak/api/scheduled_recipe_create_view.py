@@ -24,10 +24,8 @@ class ScheduledRecipeCreateParams(RequestParams):
 
 @endpoint()
 def scheduled_recipe_create_view(
-    request: AuthedHttpRequest[ScheduledRecipeCreateParams]
+    request: AuthedHttpRequest, params: ScheduledRecipeCreateParams
 ) -> JsonResponse[ScheduleRecipeSerializer]:
-    params = ScheduledRecipeCreateParams.parse_raw(request.body)
-
     team = get_team(request.user)
 
     recipe = get_object_or_404(filter_recipes(team=team), id=params.recipe)

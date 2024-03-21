@@ -9,7 +9,7 @@ from recipeyak.models import Membership, get_random_ical_id, get_team
 
 @endpoint()
 def calendar_generate_link_view(
-    request: AuthedHttpRequest[None]
+    request: AuthedHttpRequest, params: None
 ) -> JsonResponse[CalSettings]:
     team_id = get_team(request.user).id
     membership = get_object_or_404(Membership, team=team_id, user=request.user)

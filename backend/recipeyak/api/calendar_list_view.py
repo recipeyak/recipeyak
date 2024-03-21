@@ -41,9 +41,8 @@ class CalendarListResponse(TypedDict):
 
 @endpoint()
 def calendar_list_view(
-    request: AuthedHttpRequest[StartEndDateParams]
+    request: AuthedHttpRequest, params: StartEndDateParams
 ) -> JsonResponse[CalendarListResponse]:
-    params = StartEndDateParams.parse_obj(request.GET.dict())
     start = params.start
     end = params.end
     team_id = get_team(request.user).id

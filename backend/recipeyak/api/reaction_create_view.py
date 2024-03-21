@@ -20,17 +20,16 @@ EMOJIS = Literal["❤️", "😆", "🤮"]
 
 class ReactToNoteViewParams(RequestParams):
     type: EMOJIS
+    note_id: str
 
 
 @endpoint()
 def reaction_create_view(
-    request: AuthedHttpRequest[ReactToNoteViewParams], note_id: str
+    request: AuthedHttpRequest, params: ReactToNoteViewParams
 ) -> JsonResponse[ReactionResponse]:
-    params = ReactToNoteViewParams.parse_raw(request.body)
-
     team = get_team(request.user)
 
-    note = get_object_or_404(filter_notes(team=team), pk=note_id)
+    note = get_object_or_404(filter_notes(team=team), pk=params.note_id)
     reaction = Reaction(emoji=params.type, created_by=request.user, note=note)
     try:
         reaction.save()

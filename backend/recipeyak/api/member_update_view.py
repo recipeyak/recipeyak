@@ -43,14 +43,14 @@ class TeamMemberResponse(pydantic.BaseModel):
 
 class UpdateMembershipParams(RequestParams):
     level: Literal["admin", "contributor", "read"]
+    member_id: int
 
 
 @endpoint()
 def member_update_view(
-    request: AuthedHttpRequest[UpdateMembershipParams], *, member_id: int
+    request: AuthedHttpRequest, params: UpdateMembershipParams
 ) -> JsonResponse[TeamMemberResponse]:
-    params = UpdateMembershipParams.parse_raw(request.body)
-    membership = get_object_or_404(Membership, pk=member_id)
+    membership = get_object_or_404(Membership, pk=params.member_id)
     if not is_team_admin(team_id=membership.team_id, user_id=request.user.id):
         raise APIError(
             code="insufficient_permissions",

@@ -15,6 +15,7 @@ from recipeyak.realtime import publish_recipe
 class CreateNoteParams(RequestParams):
     text: str
     attachment_upload_ids: list[str]
+    recipe_id: int
 
     @model_validator(mode="after")
     def validate_non_empty(self) -> CreateNoteParams:
@@ -25,11 +26,10 @@ class CreateNoteParams(RequestParams):
 
 @endpoint()
 def note_create_view(
-    request: AuthedHttpRequest[CreateNoteParams], recipe_id: int
+    request: AuthedHttpRequest, params: CreateNoteParams
 ) -> JsonResponse[NoteResponse]:
     team = get_team(request.user)
-    recipe = get_object_or_404(filter_recipes(team=team), pk=recipe_id)
-    params = CreateNoteParams.parse_raw(request.body)
+    recipe = get_object_or_404(filter_recipes(team=team), pk=params.recipe_id)
 
     note = Note.objects.create(
         text=params.text,

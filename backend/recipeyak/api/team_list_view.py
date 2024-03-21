@@ -17,12 +17,9 @@ class ListTeamResponse(BaseModel):
     members: int
 
 
-# TODO: rename func and module to team_list_view
-
-
 @endpoint()
 def team_list_view(
-    request: AuthedHttpRequest[None]
+    request: AuthedHttpRequest, params: None
 ) -> JsonResponse[list[ListTeamResponse]]:
     with connection.cursor() as cursor:
         cursor.execute(

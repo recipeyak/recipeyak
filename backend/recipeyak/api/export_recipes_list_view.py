@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import YamlResponse
+from recipeyak.api.base.serialization import RequestParams
 from recipeyak.models import Recipe, filter_recipes, get_team
 from recipeyak.models.team import Team
 
@@ -119,18 +120,23 @@ def export_recipes(team: Team, pk: str | None) -> list[ExportRecipe] | ExportRec
     return recipes_out
 
 
+class ExportRecipesListParams(RequestParams):
+    filetype: str
+    pk: str | None = None
+
+
 @endpoint(redirect_to_login=True)
 def export_recipes_list_view(
-    request: AuthedHttpRequest[None], filetype: str, pk: str | None = None
+    request: AuthedHttpRequest, params: ExportRecipesListParams
 ) -> HttpResponse:
     team = get_team(request.user)
 
-    recipes = pydantic_to_dict(export_recipes(team, pk))
+    recipes = pydantic_to_dict(export_recipes(team, params.pk))
 
-    if filetype in ("yaml", "yml"):
+    if params.filetype in ("yaml", "yml"):
         return YamlResponse(recipes)
 
-    if filetype == "json":
+    if params.filetype == "json":
         # we need safe=False so we can serializer both lists and dicts
         return JsonResponse(recipes, json_dumps_params={"indent": 2}, safe=False)
 

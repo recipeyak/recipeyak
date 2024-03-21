@@ -46,6 +46,6 @@ def serialize_user(user: User) -> UserSerializer:
 
 @endpoint()
 def user_retrieve_view(
-    request: AuthedHttpRequest[None]
+    request: AuthedHttpRequest, params: None
 ) -> JsonResponse[UserSerializer]:
     return JsonResponse(serialize_user(request.user))

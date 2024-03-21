@@ -19,17 +19,16 @@ from recipeyak.versioning import save_recipe_version
 class SectionCreateParams(RequestParams):
     position: str | None = None
     title: str
+    recipe_id: int
 
 
 @endpoint()
 def section_create_view(
-    request: AuthedHttpRequest[SectionCreateParams], recipe_id: int
+    request: AuthedHttpRequest, params: SectionCreateParams
 ) -> JsonResponse[SectionResponse]:
-    recipe = get_object_or_404(Recipe, pk=recipe_id)
+    recipe = get_object_or_404(Recipe, pk=params.recipe_id)
     if not has_recipe_access(recipe=recipe, user=request.user):
         raise APIError(code="no_access", message="No access to recipe", status=403)
-
-    params = SectionCreateParams.parse_raw(request.body)
 
     with transaction.atomic():
         RecipeChange.objects.create(

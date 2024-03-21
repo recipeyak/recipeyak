@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
+from recipeyak.api.base.serialization import RequestParams
 from recipeyak.models import Team
 from recipeyak.models.user import User
 
@@ -20,9 +21,13 @@ class RetrieveTeamResponse(pydantic.BaseModel):
     name: str
 
 
+class TeamRetrieveParams(RequestParams):
+    team_id: int
+
+
 @endpoint()
 def team_retrieve_view(
-    request: AuthedHttpRequest[None], team_id: int
+    request: AuthedHttpRequest, params: TeamRetrieveParams
 ) -> JsonResponse[RetrieveTeamResponse]:
-    team = get_object_or_404(get_teams(request.user), pk=team_id)
+    team = get_object_or_404(get_teams(request.user), pk=params.team_id)
     return JsonResponse(RetrieveTeamResponse(id=team.id, name=team.name))

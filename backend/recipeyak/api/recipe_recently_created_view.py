@@ -34,7 +34,7 @@ class RecipeRecentlyCreatedViewResponse(pydantic.BaseModel):
 
 @endpoint()
 def recipe_recently_created_view(
-    request: AuthedHttpRequest[None]
+    request: AuthedHttpRequest, params: None
 ) -> JsonResponse[list[RecipeRecentlyCreatedViewResponse]]:
     team = get_team(request.user)
     recipes = list[RecipeRecentlyCreatedViewResponse]()

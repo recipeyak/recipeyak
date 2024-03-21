@@ -3,15 +3,24 @@ from __future__ import annotations
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
+from recipeyak.api.base.serialization import RequestParams
 from recipeyak.models import user_reactions
 from recipeyak.realtime import publish_recipe
 
 
+class ReactionDeleteParams(RequestParams):
+    reaction_id: str
+
+
 @endpoint()
 def reaction_delete_view(
-    request: AuthedHttpRequest[None], reaction_id: str
+    request: AuthedHttpRequest, params: ReactionDeleteParams
 ) -> JsonResponse[None]:
-    if reaction := user_reactions(user=request.user).filter(pk=reaction_id).first():
+    if (
+        reaction := user_reactions(user=request.user)
+        .filter(pk=params.reaction_id)
+        .first()
+    ):
         recipe = reaction.note.recipe
         reaction.delete()
         if recipe.team_id:

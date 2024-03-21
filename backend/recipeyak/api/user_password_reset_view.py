@@ -40,10 +40,8 @@ class ResetPasswordViewResponse(pydantic.BaseModel):
 
 @endpoint(auth_required=False)
 def user_password_reset_view(
-    request: AnonymousHttpRequest[ResetPasswordViewParams]
+    request: AnonymousHttpRequest, params: ResetPasswordViewParams
 ) -> JsonResponse[ResetPasswordViewResponse]:
-    params = ResetPasswordViewParams.parse_raw(request.body)
-
     user = User.objects.filter(email=params.email).first()
     if user is None:
         raise APIError(code="email_not_found", message="email not found")

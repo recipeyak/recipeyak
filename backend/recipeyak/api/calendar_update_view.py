@@ -17,20 +17,20 @@ from recipeyak.realtime import publish_calendar_event
 
 class ScheduledRecipeUpdateParams(RequestParams):
     on: date
+    scheduled_recipe_id: int
 
 
 @endpoint()
 def calendar_update_view(
-    request: AuthedHttpRequest[ScheduledRecipeUpdateParams], scheduled_recipe_id: int
+    request: AuthedHttpRequest, params: ScheduledRecipeUpdateParams
 ) -> JsonResponse[ScheduleRecipeSerializer]:
-    params = ScheduledRecipeUpdateParams.parse_raw(request.body)
     team_id = get_team(request.user).id
-    scheduled_recipe = get_scheduled_recipes(team_id).get(id=scheduled_recipe_id)
+    scheduled_recipe = get_scheduled_recipes(team_id).get(id=params.scheduled_recipe_id)
     with transaction.atomic():
         scheduled_recipe.on = params.on
         scheduled_recipe.save()
         ScheduleEvent.objects.create(
-            scheduled_recipe_id=scheduled_recipe_id,
+            scheduled_recipe_id=params.scheduled_recipe_id,
             before_on=scheduled_recipe.on,
             after_on=params.on,
             actor=request.user,

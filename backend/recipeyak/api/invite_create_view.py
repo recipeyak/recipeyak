@@ -14,6 +14,7 @@ from recipeyak.models.invite import Invite
 class CreateInviteParams(RequestParams):
     emails: list[str]
     level: Literal["admin", "contributor", "read"]
+    team_id: int
 
 
 class CreateInviteResponse(pydantic.BaseModel):
@@ -22,7 +23,7 @@ class CreateInviteResponse(pydantic.BaseModel):
 
 @endpoint()
 def invite_create_view(
-    request: AuthedHttpRequest[CreateInviteParams], team_id: int
+    request: AuthedHttpRequest, params: CreateInviteParams
 ) -> JsonResponse[CreateInviteResponse]:
     """
     for creating, we want: level, user_id
@@ -30,8 +31,7 @@ def invite_create_view(
     We want id, user object, and team data response
     need to use to_representation or form_represenation
     """
-    team = Team.objects.get(pk=team_id)
-    params = CreateInviteParams.parse_raw(request.body)
+    team = Team.objects.get(pk=params.team_id)
     with transaction.atomic():
         invite_ids = list[int]()
         for email in params.emails:

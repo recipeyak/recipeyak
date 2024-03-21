@@ -14,9 +14,8 @@ class CalSettingsParams(RequestParams):
 
 @endpoint()
 def calendar_update_settings_view(
-    request: AuthedHttpRequest[CalSettingsParams]
+    request: AuthedHttpRequest, params: CalSettingsParams
 ) -> JsonResponse[CalSettings]:
-    params = CalSettingsParams.parse_raw(request.body)
     sync_enabled = params.syncEnabled
     team_id = get_team(request.user).id
 

@@ -28,7 +28,7 @@ class LoginResponse(pydantic.BaseModel):
 
 @endpoint(auth_required=False)
 def user_login_view(
-    request: AnonymousHttpRequest[LoginUserParams]
+    request: AnonymousHttpRequest, params: LoginUserParams
 ) -> JsonResponse[LoginResponse]:
     """
     Check the credentials and login if credentials are valid and authenticated.
@@ -36,7 +36,6 @@ def user_login_view(
 
     Accept the following POST parameters: username, password
     """
-    params = LoginUserParams.parse_raw(request.body)
     user = authenticate(email=params.email, password=params.password)
     if not user:
         raise APIError(code="invalid_credentials", message="invalid email or password")

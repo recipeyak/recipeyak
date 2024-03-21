@@ -19,7 +19,7 @@ class CalSettings(TypedDict):
 def get_cal_settings(
     *,
     team_id: int,
-    request: AuthedHttpRequest[Any],
+    request: AuthedHttpRequest,
 ) -> CalSettings:
     membership = get_object_or_404(Membership, team=team_id, user=request.user)
     calendar_link = f"webcal://{request.get_host()}/t/{team_id}/ical/{membership.calendar_secret_key}/schedule.ics"
@@ -31,7 +31,7 @@ def get_cal_settings(
 
 @endpoint()
 def calendar_settings_retrieve_view(
-    request: AuthedHttpRequest[None]
+    request: AuthedHttpRequest, params: None
 ) -> JsonResponse[CalSettings]:
     team_id = get_team(request.user).id
     settings = get_cal_settings(request=request, team_id=team_id)

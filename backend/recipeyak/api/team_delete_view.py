@@ -8,6 +8,7 @@ from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
+from recipeyak.api.base.serialization import RequestParams
 from recipeyak.models import Team
 from recipeyak.models.membership import Membership
 from recipeyak.models.user import User
@@ -23,12 +24,16 @@ def is_team_admin(*, team_id: int, user_id: int) -> bool:
     ).exists()
 
 
+class TeamDeleteParams(RequestParams):
+    team_id: int
+
+
 @endpoint()
 def team_delete_view(
-    request: AuthedHttpRequest[None], team_id: int
+    request: AuthedHttpRequest, params: TeamDeleteParams
 ) -> JsonResponse[None]:
     with transaction.atomic():
-        team = get_object_or_404(get_teams(request.user), pk=team_id)
+        team = get_object_or_404(get_teams(request.user), pk=params.team_id)
         if (
             not is_team_admin(team_id=team.id, user_id=request.user.id)
             # don't allow deleting last team

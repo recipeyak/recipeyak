@@ -40,3 +40,7 @@ def json_dumps(data: Any, indent: bool = False) -> bytes:
     if indent:
         options |= orjson.OPT_INDENT_2
     return orjson.dumps(data, default=default, option=options)
+
+
+def json_loads(data: bytes | bytearray | memoryview | str) -> Any:
+    return orjson.loads(data)
