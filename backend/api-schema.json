@@ -4390,7 +4390,7 @@
     },
     "/api/v1/recipes/{recipe_id}/timeline": {
       "get": {
-        "operationId": "RecipeTimline",
+        "operationId": "RecipeTimeline",
         "parameters": [
           {
             "name": "recipe_id",

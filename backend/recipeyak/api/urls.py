@@ -36,7 +36,7 @@ from recipeyak.api.recipe_recently_created_view import (
 )
 from recipeyak.api.recipe_recently_viewed_view import recipe_recently_viewed_view
 from recipeyak.api.recipe_retrieve_view import recipe_retrieve_view
-from recipeyak.api.recipe_timeline_view import recipe_timline_view
+from recipeyak.api.recipe_timeline_view import recipe_timeline_view
 from recipeyak.api.recipe_update_view import recipe_update_view
 from recipeyak.api.scheduled_recipe_create_view import scheduled_recipe_create_view
 from recipeyak.api.section_create_view import section_create_view
@@ -269,7 +269,7 @@ routes = [
     route(
         "api/v1/recipes/<int:recipe_id>/timeline",
         method="get",
-        view=recipe_timline_view,
+        view=recipe_timeline_view,
     ),
     route(
         "api/v1/recipes/recently_viewed",

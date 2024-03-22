@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.base.serialization import Params
 from recipeyak.api.calendar_serialization import (
     ScheduleRecipeSerializer,
     serialize_scheduled_recipe,
@@ -17,7 +17,7 @@ from recipeyak.models import filter_recipes, get_team
 from recipeyak.realtime import publish_calendar_event
 
 
-class ScheduledRecipeCreateParams(RequestParams):
+class ScheduledRecipeCreateParams(Params):
     recipe: int
     on: date
 

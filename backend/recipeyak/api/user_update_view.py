@@ -5,14 +5,14 @@ from django.db import transaction
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.base.serialization import Params
 from recipeyak.api.user_retrieve_view import UserSerializer, serialize_user
 
 THEMES = Literal["light", "autumn", "solarized", "dark", "dark_dimmed"]
 THEME_MODE = Literal["single", "sync_with_system"]
 
 
-class UserUpdateParams(RequestParams):
+class UserUpdateParams(Params):
     email: str | None = None
     name: str | None = None
     schedule_team: int | None = None

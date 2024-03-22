@@ -4,8 +4,8 @@ from django.http import Http404
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams
-from recipeyak.api.serializers.recipe import NoteResponse, serialize_note
+from recipeyak.api.base.serialization import Params
+from recipeyak.api.serializers.recipe import NoteSerializer, serialize_note
 from recipeyak.api.user_retrieve_by_id_view import has_team_connection
 from recipeyak.models import filter_notes, get_team
 
@@ -17,14 +17,14 @@ class Recipe(pydantic.BaseModel):
 
 class Comment(pydantic.BaseModel):
     recipe: Recipe
-    note: NoteResponse
+    note: NoteSerializer
 
 
 class UserCommentsListResponse(pydantic.BaseModel):
     comments: list[Comment]
 
 
-class UserCommentsListParams(RequestParams):
+class UserCommentsListParams(Params):
     user_id: str
 
 

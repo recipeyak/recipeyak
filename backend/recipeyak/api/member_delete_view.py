@@ -7,7 +7,7 @@ from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.base.serialization import Params
 from recipeyak.api.team_update_view import is_team_admin
 from recipeyak.models import Membership, Team
 from recipeyak.models.membership import DemoteLastAdminError
@@ -29,7 +29,7 @@ def is_team_member(*, team_id: int, user_id: int) -> bool:
     ).exists()
 
 
-class MemberDeleteParams(RequestParams):
+class MemberDeleteParams(Params):
     member_id: int
 
 

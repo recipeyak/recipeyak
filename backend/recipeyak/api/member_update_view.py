@@ -11,7 +11,7 @@ from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.base.serialization import Params
 from recipeyak.api.team_delete_view import is_team_admin
 from recipeyak.models import Membership, Team
 from recipeyak.models.membership import DemoteLastAdminError
@@ -34,22 +34,22 @@ class UserResponse(pydantic.BaseModel):
     email: str
 
 
-class TeamMemberResponse(pydantic.BaseModel):
+class MemberUpdateResponse(pydantic.BaseModel):
     id: int
     created: datetime
     level: Literal["admin", "contributor", "read"]
     user: UserResponse
 
 
-class UpdateMembershipParams(RequestParams):
+class MemberUpdateParams(Params):
     level: Literal["admin", "contributor", "read"]
     member_id: int
 
 
 @endpoint()
 def member_update_view(
-    request: AuthedHttpRequest, params: UpdateMembershipParams
-) -> JsonResponse[TeamMemberResponse]:
+    request: AuthedHttpRequest, params: MemberUpdateParams
+) -> JsonResponse[MemberUpdateResponse]:
     membership = get_object_or_404(Membership, pk=params.member_id)
     if not is_team_admin(team_id=membership.team_id, user_id=request.user.id):
         raise APIError(
@@ -68,7 +68,7 @@ def member_update_view(
         ) from e
 
     return JsonResponse(
-        TeamMemberResponse(
+        MemberUpdateResponse(
             id=membership.id,
             level=membership.level,
             created=membership.created,

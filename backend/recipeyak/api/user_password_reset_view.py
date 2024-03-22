@@ -12,7 +12,7 @@ from recipeyak.api.base.request import (
     AnonymousHttpRequest,
 )
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.base.serialization import Params
 from recipeyak.models.user import User
 
 if TYPE_CHECKING:
@@ -30,18 +30,18 @@ else:
     from django.contrib.auth.tokens import default_token_generator
 
 
-class ResetPasswordViewParams(RequestParams):
+class UserPasswordResetParams(Params):
     email: str
 
 
-class ResetPasswordViewResponse(pydantic.BaseModel):
+class UserPasswordResetResponse(pydantic.BaseModel):
     detail: str
 
 
 @endpoint(auth_required=False)
 def user_password_reset_view(
-    request: AnonymousHttpRequest, params: ResetPasswordViewParams
-) -> JsonResponse[ResetPasswordViewResponse]:
+    request: AnonymousHttpRequest, params: UserPasswordResetParams
+) -> JsonResponse[UserPasswordResetResponse]:
     user = User.objects.filter(email=params.email).first()
     if user is None:
         raise APIError(code="email_not_found", message="email not found")
@@ -59,4 +59,4 @@ Please go to the following page and choose a new password:
         recipient_list=[user.email],
     )
 
-    return JsonResponse(ResetPasswordViewResponse(detail="email sent"))
+    return JsonResponse(UserPasswordResetResponse(detail="email sent"))

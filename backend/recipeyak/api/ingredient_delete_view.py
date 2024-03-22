@@ -6,14 +6,14 @@ from django.shortcuts import get_object_or_404
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.base.serialization import Params
 from recipeyak.api.serializers.recipe import ingredient_to_text
 from recipeyak.models import ChangeType, RecipeChange, filter_ingredients, get_team
 from recipeyak.realtime import publish_recipe
 from recipeyak.versioning import save_recipe_version
 
 
-class IngredientDeleteParams(RequestParams):
+class IngredientDeleteParams(Params):
     ingredient_id: int
 
 

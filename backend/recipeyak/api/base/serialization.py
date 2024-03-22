@@ -7,7 +7,7 @@ from typing_extensions import Unpack
 from recipeyak.api.base.exceptions import RequestValidationError
 
 
-class RequestParams(pydantic.BaseModel):
+class Params(pydantic.BaseModel):
     """
     ValidationErrors raised by subclasses of this model will be converted into
     400 errors.
@@ -17,7 +17,7 @@ class RequestParams(pydantic.BaseModel):
         # Can't do quick one-off lints with Ruff, so some runtime jazz to have more consistent params
         if not cls.__name__.endswith("Params"):
             raise ValueError(
-                f"RequestParams subclasses must end with 'Params', but {cls.__name__} does not. Update the class name to {cls.__name__}Params."
+                f"Params subclasses must end with 'Params', but {cls.__name__} does not. Update the class name to {cls.__name__}Params."
             )
         return super().__init_subclass__(**kwargs)
 

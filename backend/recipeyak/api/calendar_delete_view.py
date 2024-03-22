@@ -3,13 +3,13 @@ from __future__ import annotations
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.base.serialization import Params
 from recipeyak.api.calendar_list_view import get_scheduled_recipes
 from recipeyak.models import get_team
 from recipeyak.realtime import publish_calendar_event_deleted
 
 
-class CalendarDeleteParams(RequestParams):
+class CalendarDeleteParams(Params):
     scheduled_recipe_id: int
 
 

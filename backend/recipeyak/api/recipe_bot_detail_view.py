@@ -7,7 +7,7 @@ from yarl import URL
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AnonymousHttpRequest
-from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.base.serialization import Params
 from recipeyak.config import IMAGE_TRANSFORM_FORMAT
 from recipeyak.models.recipe import Recipe
 
@@ -71,7 +71,7 @@ def _recipe_get_view(request: AnonymousHttpRequest, recipe_id: str) -> HttpRespo
     )
 
 
-class RecipeBotDetailParams(RequestParams):
+class RecipeBotDetailParams(Params):
     recipe_id: str
 
 

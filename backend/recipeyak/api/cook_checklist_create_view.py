@@ -6,7 +6,7 @@ from django.db import connection
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.base.serialization import Params
 from recipeyak.models import (
     filter_recipe_or_404,
     get_team,
@@ -14,12 +14,12 @@ from recipeyak.models import (
 from recipeyak.realtime import publish_cook_checklist
 
 
-class CookChecklistPostSerializer(pydantic.BaseModel):
+class CookChecklistCreateResponse(pydantic.BaseModel):
     ingredient_id: int
     checked: bool
 
 
-class CookChecklistPostParams(RequestParams):
+class CookChecklistCreateParams(Params):
     ingredient_id: int
     checked: bool
     recipe_id: int
@@ -27,8 +27,8 @@ class CookChecklistPostParams(RequestParams):
 
 @endpoint()
 def cook_checklist_create_view(
-    request: AuthedHttpRequest, params: CookChecklistPostParams
-) -> JsonResponse[CookChecklistPostSerializer]:
+    request: AuthedHttpRequest, params: CookChecklistCreateParams
+) -> JsonResponse[CookChecklistCreateResponse]:
     team = get_team(request.user)
     recipe = filter_recipe_or_404(recipe_id=params.recipe_id, team=team)
     with connection.cursor() as cursor:
@@ -55,7 +55,7 @@ def cook_checklist_create_view(
     )
 
     return JsonResponse(
-        CookChecklistPostSerializer(
+        CookChecklistCreateResponse(
             ingredient_id=params.ingredient_id, checked=params.checked
         )
     )

@@ -6,25 +6,25 @@ from django.db import transaction
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.base.serialization import Params
 from recipeyak.models import Team
 from recipeyak.models.invite import Invite
 
 
-class CreateInviteParams(RequestParams):
+class InviteCreateParams(Params):
     emails: list[str]
     level: Literal["admin", "contributor", "read"]
     team_id: int
 
 
-class CreateInviteResponse(pydantic.BaseModel):
+class InviteCreateResponse(pydantic.BaseModel):
     invite_ids: list[int]
 
 
 @endpoint()
 def invite_create_view(
-    request: AuthedHttpRequest, params: CreateInviteParams
-) -> JsonResponse[CreateInviteResponse]:
+    request: AuthedHttpRequest, params: InviteCreateParams
+) -> JsonResponse[InviteCreateResponse]:
     """
     for creating, we want: level, user_id
     for response, we want: id, user data, team
@@ -40,4 +40,4 @@ def invite_create_view(
                     email=email, team=team, level=params.level, creator=request.user
                 )
                 invite_ids.append(invite.id)
-    return JsonResponse(CreateInviteResponse(invite_ids=invite_ids), status=201)
+    return JsonResponse(InviteCreateResponse(invite_ids=invite_ids), status=201)

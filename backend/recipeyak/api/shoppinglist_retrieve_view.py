@@ -12,7 +12,7 @@ from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.json import json_dumps
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.base.serialization import Params
 from recipeyak.category import category
 from recipeyak.combine import Ingredient, combine_ingredients
 from recipeyak.models import Ingredient as DBIngredient
@@ -20,13 +20,13 @@ from recipeyak.models import ScheduledRecipe, ShoppingList, Team, get_team
 from recipeyak.parsing import Unit
 
 
-class ShoppingListParams(RequestParams):
+class ShoppinglistRetrieveParams(Params):
     start: date
     end: date
 
 
 def get_scheduled_recipes(
-    *, params: ShoppingListParams, team_id: int
+    *, params: ShoppinglistRetrieveParams, team_id: int
 ) -> QuerySet[ScheduledRecipe] | None:
     team = Team.objects.filter(pk=team_id).first()
     if team is None:
@@ -56,7 +56,7 @@ class IngredientResponse(TypedDict):
     category: str | None
 
 
-class ShoppingListResponse(TypedDict):
+class ShoppinglistRetrieveResponse(TypedDict):
     ingredients: dict[str, IngredientResponse]
     recipes: list[ShoppingListRecipe]
 
@@ -74,8 +74,8 @@ def _fmt_small_decimal(d: Decimal) -> str:
 
 @endpoint()
 def shoppinglist_retrieve_view(
-    request: AuthedHttpRequest, params: ShoppingListParams
-) -> JsonResponse[ShoppingListResponse]:
+    request: AuthedHttpRequest, params: ShoppinglistRetrieveParams
+) -> JsonResponse[ShoppinglistRetrieveResponse]:
     team_id = get_team(request.user).id
     scheduled_recipes = get_scheduled_recipes(params=params, team_id=team_id)
     if scheduled_recipes is None:

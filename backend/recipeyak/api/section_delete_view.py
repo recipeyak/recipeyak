@@ -8,13 +8,13 @@ from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.permissions import has_recipe_access
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.base.serialization import Params
 from recipeyak.models import ChangeType, RecipeChange, Section
 from recipeyak.realtime import publish_recipe
 from recipeyak.versioning import save_recipe_version
 
 
-class SectionDeleteParams(RequestParams):
+class SectionDeleteParams(Params):
     section_id: int
 
 

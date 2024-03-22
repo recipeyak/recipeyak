@@ -8,12 +8,15 @@ from typing_extensions import TypedDict
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.base.serialization import Params
 from recipeyak.api.calendar_serialization import (
     ScheduleRecipeSerializer,
     serialize_scheduled_recipe,
 )
-from recipeyak.api.calendar_settings_retrieve_view import CalSettings, get_cal_settings
+from recipeyak.api.calendar_settings_retrieve_view import (
+    CalendarSettingsSerializer,
+    get_cal_settings,
+)
 from recipeyak.models import ScheduledRecipe, get_team
 
 
@@ -29,19 +32,19 @@ def get_scheduled_recipes(team_id: int) -> QuerySet[ScheduledRecipe]:
     )
 
 
-class StartEndDateParams(RequestParams):
+class CalendarListParams(Params):
     start: date
     end: date
 
 
 class CalendarListResponse(TypedDict):
     scheduledRecipes: list[ScheduleRecipeSerializer]
-    settings: CalSettings
+    settings: CalendarSettingsSerializer
 
 
 @endpoint()
 def calendar_list_view(
-    request: AuthedHttpRequest, params: StartEndDateParams
+    request: AuthedHttpRequest, params: CalendarListParams
 ) -> JsonResponse[CalendarListResponse]:
     start = params.start
     end = params.end

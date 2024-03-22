@@ -9,14 +9,14 @@ from pydantic import StringConstraints
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams
-from recipeyak.api.serializers.recipe import StepResponse, serialize_step
+from recipeyak.api.base.serialization import Params
+from recipeyak.api.serializers.recipe import StepSerializer, serialize_step
 from recipeyak.models import ChangeType, RecipeChange, filter_steps, get_team
 from recipeyak.realtime import publish_recipe
 from recipeyak.versioning import save_recipe_version
 
 
-class StepPatchParams(RequestParams):
+class StepUpdateParams(Params):
     text: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
     position: str | None = None
     step_id: int
@@ -25,8 +25,8 @@ class StepPatchParams(RequestParams):
 @endpoint()
 def step_update_view(
     request: AuthedHttpRequest,
-    params: StepPatchParams,
-) -> JsonResponse[StepResponse]:
+    params: StepUpdateParams,
+) -> JsonResponse[StepSerializer]:
     team = get_team(request.user)
     step = get_object_or_404(filter_steps(team=team), pk=params.step_id)
     with transaction.atomic():

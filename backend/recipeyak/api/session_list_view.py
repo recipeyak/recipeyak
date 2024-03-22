@@ -18,7 +18,7 @@ class DeviceResponse(pydantic.BaseModel):
     browser: str | None
 
 
-class SessionResponse(pydantic.BaseModel):
+class SessionListItem(pydantic.BaseModel):
     id: str
     device: DeviceResponse
     last_activity: datetime
@@ -29,17 +29,17 @@ class SessionResponse(pydantic.BaseModel):
 @endpoint()
 def session_list_view(
     request: AuthedHttpRequest, params: None
-) -> JsonResponse[list[SessionResponse]]:
+) -> JsonResponse[list[SessionListItem]]:
     query_set = request.user.session_set
 
     qs = query_set.filter(expire_date__gt=timezone.now()).order_by("-last_activity")
 
-    sessions = list[SessionResponse]()
+    sessions = list[SessionListItem]()
     for s in qs:
         assert s.user_agent is not None
         ua = user_agent.parse(s.user_agent)
         sessions.append(
-            SessionResponse(
+            SessionListItem(
                 id=s.session_key,
                 device=DeviceResponse(kind=ua.kind, os=ua.os, browser=ua.browser),
                 last_activity=s.last_activity,

@@ -10,7 +10,7 @@ from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
 
 
-class ListTeamResponse(BaseModel):
+class TeamListItem(BaseModel):
     id: int
     name: str
     created: datetime
@@ -20,7 +20,7 @@ class ListTeamResponse(BaseModel):
 @endpoint()
 def team_list_view(
     request: AuthedHttpRequest, params: None
-) -> JsonResponse[list[ListTeamResponse]]:
+) -> JsonResponse[list[TeamListItem]]:
     with connection.cursor() as cursor:
         cursor.execute(
             """
@@ -48,7 +48,7 @@ GROUP BY
         )
         teams_raw = cursor.fetchall()
     teams = [
-        ListTeamResponse(id=id, name=name, created=created, members=members)
+        TeamListItem(id=id, name=name, created=created, members=members)
         for id, name, created, members in teams_raw
     ]
     return JsonResponse(teams)

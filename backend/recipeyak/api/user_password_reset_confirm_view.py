@@ -11,7 +11,7 @@ from recipeyak.api.base.request import (
     AnonymousHttpRequest,
 )
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.base.serialization import Params
 from recipeyak.api.user_retrieve_view import UserSerializer, serialize_user
 from recipeyak.models.user import User
 
@@ -30,7 +30,7 @@ else:
     from django.contrib.auth.tokens import default_token_generator
 
 
-class ResetPasswordViewParams(RequestParams):
+class UserPasswordResetConfirmParams(Params):
     uid: str
     token: str
     new_password1: str
@@ -39,7 +39,7 @@ class ResetPasswordViewParams(RequestParams):
 
 @endpoint(auth_required=False)
 def user_password_reset_confirm_view(
-    request: AnonymousHttpRequest, params: ResetPasswordViewParams
+    request: AnonymousHttpRequest, params: UserPasswordResetConfirmParams
 ) -> JsonResponse[UserSerializer]:
     user_id = urlsafe_base64_decode(params.uid)
     user = User.objects.filter(pk=user_id).first()

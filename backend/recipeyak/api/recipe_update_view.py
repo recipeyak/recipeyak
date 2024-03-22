@@ -10,8 +10,8 @@ from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams
-from recipeyak.api.serializers.recipe import RecipeResponse, serialize_recipe
+from recipeyak.api.base.serialization import Params
+from recipeyak.api.serializers.recipe import RecipeSerializer, serialize_recipe
 from recipeyak.models import (
     ChangeType,
     RecipeChange,
@@ -24,7 +24,7 @@ from recipeyak.realtime import publish_recipe
 from recipeyak.versioning import save_recipe_version
 
 
-class RecipePatchParams(RequestParams):
+class RecipeUpdateParams(Params):
     name: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
     author: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
     time: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
@@ -41,8 +41,8 @@ class RecipePatchParams(RequestParams):
 
 @endpoint()
 def recipe_update_view(
-    request: AuthedHttpRequest, params: RecipePatchParams
-) -> JsonResponse[RecipeResponse]:
+    request: AuthedHttpRequest, params: RecipeUpdateParams
+) -> JsonResponse[RecipeSerializer]:
     team = get_team(request.user)
     recipe = filter_recipe_or_404(recipe_id=params.recipe_id, team=team)
 

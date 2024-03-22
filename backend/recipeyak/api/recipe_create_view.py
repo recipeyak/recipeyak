@@ -14,9 +14,9 @@ from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.base.serialization import Params
 from recipeyak.api.serializers.recipe import (
-    RecipeResponse,
+    RecipeSerializer,
     serialize_recipe,
 )
 from recipeyak.models import (
@@ -35,23 +35,23 @@ from recipeyak.versioning import save_recipe_version
 logger = structlog.stdlib.get_logger()
 
 
-class RecipePostParams(RequestParams):
+class RecipeCreateParams(Params):
     team: int
     from_url: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
     name: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
 
 
-def normalize_title(title: str | None) -> str | None:
+def _normalize_title(title: str | None) -> str | None:
     if title is None:
         return None
     return title.removesuffix("Recipe").removesuffix("recipe")
 
 
-def create_recipe_from_scrape(*, scrape: ScrapeResult, team: Team) -> Recipe:
+def _create_recipe_from_scrape(*, scrape: ScrapeResult, team: Team) -> Recipe:
     recipe = Recipe.objects.create(
         team=team,
         scrape_id=scrape.id,
-        name=normalize_title(scrape.title),
+        name=_normalize_title(scrape.title),
         author=scrape.author,
         servings=scrape.yields,
         time=scrape.total_time,
@@ -98,8 +98,8 @@ def create_recipe_from_scrape(*, scrape: ScrapeResult, team: Team) -> Recipe:
 
 @endpoint()
 def recipe_create_view(
-    request: AuthedHttpRequest, params: RecipePostParams
-) -> JsonResponse[RecipeResponse]:
+    request: AuthedHttpRequest, params: RecipeCreateParams
+) -> JsonResponse[RecipeSerializer]:
     log = logger.bind(user_id=request.user.id)
 
     # validate params
@@ -122,7 +122,7 @@ def recipe_create_view(
 
     with transaction.atomic():
         if scrape_result is not None:
-            recipe = create_recipe_from_scrape(scrape=scrape_result, team=team)
+            recipe = _create_recipe_from_scrape(scrape=scrape_result, team=team)
         else:
             recipe = Recipe.objects.create(team=team, name=params.name)
         TimelineEvent(
