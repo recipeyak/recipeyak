@@ -7,14 +7,14 @@ from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams
-from recipeyak.api.serializers.recipe import NoteResponse, serialize_note
+from recipeyak.api.base.serialization import Params
+from recipeyak.api.serializers.recipe import NoteSerializer, serialize_note
 from recipeyak.models import Upload, filter_notes, get_team
 from recipeyak.realtime import publish_recipe
 from recipeyak.versioning import save_note_version
 
 
-class EditNoteParams(RequestParams):
+class NoteUpdateParams(Params):
     text: str | None = None
     attachment_upload_ids: list[str] | None = None
     note_id: str
@@ -22,8 +22,8 @@ class EditNoteParams(RequestParams):
 
 @endpoint()
 def note_update_view(
-    request: AuthedHttpRequest, params: EditNoteParams
-) -> JsonResponse[NoteResponse]:
+    request: AuthedHttpRequest, params: NoteUpdateParams
+) -> JsonResponse[NoteSerializer]:
     team = get_team(request.user)
     note = get_object_or_404(filter_notes(team=team), pk=params.note_id)
     # only allow the note's author to update the note

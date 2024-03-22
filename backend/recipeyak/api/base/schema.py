@@ -39,6 +39,9 @@ class _Endpoint:
     request: dict[str, Any]
     response: dict[str, object]
     description: str | None = None
+    view_name: str
+    view_param_type_name: str
+    view_return_type: Any
 
 
 class _RequestBodyDict(TypedDict):
@@ -313,20 +316,20 @@ def _route_to_endpoint(route: Route) -> _Endpoint:
     return_class = endpoint_types.pop("return")
     # get the type param: T
     try:
-        return_type_wrapper = typing.get_args(return_class)[0]
+        return_type = typing.get_args(return_class)[0]
     except IndexError as e:
         raise ValueError(
             f"invalid schema, you must specify a return type param: {route.view.__name__}"
         ) from e
-    if return_type_wrapper is type(None):
-        return_type = None
+    if return_type is type(None):
+        return_type_schema = None
     else:
-        return_type = pydantic.TypeAdapter(return_type_wrapper).json_schema(
+        return_type_schema = pydantic.TypeAdapter(return_type).json_schema(
             mode="serialization"
         )
 
     try:
-        request_type_wrapper = endpoint_types.pop("params")
+        request_params_type = endpoint_types.pop("params")
     except KeyError as e:
         raise ValueError(
             f"invalid schema, you must specify a parameter named 'param'. {route.view.__name__}"
@@ -334,10 +337,10 @@ def _route_to_endpoint(route: Route) -> _Endpoint:
 
     # issue with this is that it does a bunch of $defs stuff:
     # https://github.com/pydantic/pydantic/issues/889
-    if request_type_wrapper is type(None):
-        request_type = None
+    if request_params_type is type(None):
+        request_type_schema = None
     else:
-        request_type = pydantic.TypeAdapter(request_type_wrapper).json_schema(
+        request_type_schema = pydantic.TypeAdapter(request_params_type).json_schema(
             mode="validation"
         )
 
@@ -348,17 +351,76 @@ def _route_to_endpoint(route: Route) -> _Endpoint:
         url=route.path,
         name=name,
         description=route.view.__doc__,
-        request=_cleanup_schema(request_type),
-        response=_cleanup_schema(return_type),
+        request=_cleanup_schema(request_type_schema),
+        response=_cleanup_schema(return_type_schema),
+        view_name=route.view.__name__,
+        view_param_type_name=request_params_type.__name__,
+        view_return_type=return_type,
     )
 
 
-def _schema_from_routes(routes: list[Route]) -> dict[str, Any]:
+def _validate_endpoint_type_names(endpoint: _Endpoint) -> bool:
+    # TODO: in the future, when ruff supports plugins, this could be a lint rule
+    # see: https://github.com/astral-sh/ruff/issues/283
+
+    endpoint_base_type_name = (
+        endpoint.view_name.removesuffix("_view").title().replace("_", "")
+    )
+
+    # param types should be PascalCase of the view name with a Param suffix.
+    expected_request_type_name = endpoint_base_type_name + "Params"
+    if (
+        endpoint.view_param_type_name != "NoneType"
+        and expected_request_type_name != endpoint.view_param_type_name
+    ):
+        print(
+            f"Expected request params name to be {expected_request_type_name}, got {endpoint.view_param_type_name}",
+        )
+        return True
+
+    # return types should be PascalCase of the view name with a Response suffix.
+    # we ignore None and dict responses
+    # for list responses, the inner item should be of type PascalCase of view
+    # name + Item
+    expected_return_type_name = endpoint_base_type_name + "Response"
+    if endpoint.view_return_type is not type(None):
+        if typing.get_origin(endpoint.view_return_type) is dict:
+            # we don't check the params of a dict since it's usually a basic
+            # mapping
+            return False
+        elif typing.get_origin(endpoint.view_return_type) is list:
+            list_item_type_name: str = typing.get_args(endpoint.view_return_type)[
+                0
+            ].__name__
+            expected_list_item_name = endpoint_base_type_name + "Item"
+            if (
+                list_item_type_name != expected_list_item_name
+                and not list_item_type_name.endswith("Serializer")
+            ):
+                print(
+                    f"Expected {endpoint.view_name} return type to be list[{expected_list_item_name}], got list[{list_item_type_name}]",
+                )
+                return True
+        elif (
+            expected_return_type_name != endpoint.view_return_type.__name__
+            and not endpoint.view_return_type.__name__.endswith("Serializer")
+        ):
+            print(
+                f"Expected {endpoint.view_name} return type to be {expected_return_type_name}, got {endpoint.view_return_type.__name__}",
+            )
+            return True
+    return False
+
+
+def _schema_from_routes(routes: list[Route]) -> tuple[dict[str, Any], bool]:
     paths = defaultdict[str, dict[str, Any]](dict)
+    has_validation_error = False
     for r in routes:
         # regex endpoints or endpoints with multiple methods aren't part of the UI API
         if not r.regex and isinstance(r.method, str):
             endpoint = _route_to_endpoint(r)
+            if _validate_endpoint_type_names(endpoint):
+                has_validation_error = True
             method = endpoint.method.lower()
             (url, method_data) = _schema_from_endpoint(endpoint)
             paths[url][method] = method_data
@@ -368,7 +430,7 @@ def _schema_from_routes(routes: list[Route]) -> dict[str, Any]:
         "info": {"title": "RecipeYak API", "version": "1.0.0"},
         "servers": [{"url": "https://recipeyak.com"}],
         "paths": paths,
-    }
+    }, has_validation_error
 
 
 def main(check: bool = False) -> None:
@@ -377,7 +439,7 @@ def main(check: bool = False) -> None:
         f"generating schema: path={dest_path}",
     )
 
-    schema = _schema_from_routes(routes)
+    schema, validation_error = _schema_from_routes(routes)
     _fd, temp_file_path = tempfile.mkstemp(suffix=".json")
     Path(temp_file_path).write_bytes(json_dumps(schema, indent=True) + b"\n")
 
@@ -396,6 +458,13 @@ def main(check: bool = False) -> None:
         ),
         check=True,
     )
+
+    if check and validation_error:
+        print(
+            """
+Validation errors found, please fix before committing."""
+        )
+        sys.exit(1)
 
     print("checking for changes...")
     unchanged = filecmp.cmp(temp_file_path, dest_path, shallow=False)

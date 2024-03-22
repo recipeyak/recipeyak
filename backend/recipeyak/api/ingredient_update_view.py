@@ -9,9 +9,9 @@ from pydantic import StringConstraints
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.base.serialization import Params
 from recipeyak.api.serializers.recipe import (
-    IngredientResponse,
+    IngredientSerializer,
     ingredient_to_text,
     serialize_ingredient,
 )
@@ -20,7 +20,7 @@ from recipeyak.realtime import publish_recipe
 from recipeyak.versioning import save_recipe_version
 
 
-class IngredientsPatchParams(RequestParams):
+class IngredientUpdateParams(Params):
     quantity: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
     name: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
     description: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
@@ -31,8 +31,8 @@ class IngredientsPatchParams(RequestParams):
 
 @endpoint()
 def ingredient_update_view(
-    request: AuthedHttpRequest, params: IngredientsPatchParams
-) -> JsonResponse[IngredientResponse]:
+    request: AuthedHttpRequest, params: IngredientUpdateParams
+) -> JsonResponse[IngredientSerializer]:
     team = get_team(request.user)
     ingredient = get_object_or_404(
         filter_ingredients(team=team), pk=params.ingredient_id

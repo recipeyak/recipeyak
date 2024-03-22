@@ -21,7 +21,7 @@ class CreatorResponse(pydantic.BaseModel):
     avatar_url: str
 
 
-class InviteResponse(pydantic.BaseModel):
+class InviteListItem(pydantic.BaseModel):
     id: int
     created: datetime
     status: Literal["accepted", "declined", "open"]
@@ -32,7 +32,7 @@ class InviteResponse(pydantic.BaseModel):
 @endpoint()
 def invite_list_view(
     request: AuthedHttpRequest, params: None
-) -> JsonResponse[list[InviteResponse]]:
+) -> JsonResponse[list[InviteListItem]]:
     with connection.cursor() as cursor:
         cursor.execute(
             """
@@ -58,7 +58,7 @@ where
         )
         invite_rows = cursor.fetchall()
         invites = [
-            InviteResponse(
+            InviteListItem(
                 id=invite_id,
                 created=created,
                 status=status,

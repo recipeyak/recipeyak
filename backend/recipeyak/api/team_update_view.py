@@ -8,24 +8,24 @@ from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.base.serialization import Params
 from recipeyak.api.team_delete_view import get_teams, is_team_admin
 
 
-class UpdateTeamResponse(pydantic.BaseModel):
+class TeamUpdateResponse(pydantic.BaseModel):
     id: int
     name: str
 
 
-class UpdateTeamParams(RequestParams):
+class TeamUpdateParams(Params):
     team_id: int
     name: str
 
 
 @endpoint()
 def team_update_view(
-    request: AuthedHttpRequest, params: UpdateTeamParams
-) -> JsonResponse[UpdateTeamResponse]:
+    request: AuthedHttpRequest, params: TeamUpdateParams
+) -> JsonResponse[TeamUpdateResponse]:
     team = get_object_or_404(get_teams(request.user), pk=params.team_id)
     if not is_team_admin(team_id=team.id, user_id=request.user.id):
         raise APIError(
@@ -39,4 +39,4 @@ def team_update_view(
         team.save()
         team.force_join_admin(request.user)
 
-    return JsonResponse(UpdateTeamResponse(id=team.id, name=team.name))
+    return JsonResponse(TeamUpdateResponse(id=team.id, name=team.name))

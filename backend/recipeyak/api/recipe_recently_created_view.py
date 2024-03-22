@@ -23,7 +23,7 @@ class CreatedByResponse(pydantic.BaseModel):
     avatarUrl: str
 
 
-class RecipeRecentlyCreatedViewResponse(pydantic.BaseModel):
+class RecipeRecentlyCreatedItem(pydantic.BaseModel):
     id: int
     name: str
     author: str | None
@@ -35,9 +35,9 @@ class RecipeRecentlyCreatedViewResponse(pydantic.BaseModel):
 @endpoint()
 def recipe_recently_created_view(
     request: AuthedHttpRequest, params: None
-) -> JsonResponse[list[RecipeRecentlyCreatedViewResponse]]:
+) -> JsonResponse[list[RecipeRecentlyCreatedItem]]:
     team = get_team(request.user)
-    recipes = list[RecipeRecentlyCreatedViewResponse]()
+    recipes = list[RecipeRecentlyCreatedItem]()
     with connection.cursor() as cursor:
         cursor.execute(
             """
@@ -82,5 +82,5 @@ limit 6;
         )
         rows = cursor.fetchall()
         for row in rows:
-            recipes.append(RecipeRecentlyCreatedViewResponse.model_validate(row[0]))
+            recipes.append(RecipeRecentlyCreatedItem.model_validate(row[0]))
     return JsonResponse(recipes)

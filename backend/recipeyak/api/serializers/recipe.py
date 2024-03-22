@@ -55,7 +55,7 @@ def serialize_attachments(
     ]
 
 
-class ReactionResponse(pydantic.BaseModel):
+class ReactionSerializer(pydantic.BaseModel):
     id: str
     type: Literal["❤️", "😆", "🤮"]
     note_id: int
@@ -63,14 +63,14 @@ class ReactionResponse(pydantic.BaseModel):
     created: datetime
 
 
-class NoteResponse(pydantic.BaseModel):
+class NoteSerializer(pydantic.BaseModel):
     id: str
     text: str
     created_by: PublicUser
     created: datetime
     modified: datetime
     attachments: list[NoteAttachment]
-    reactions: list[ReactionResponse]
+    reactions: list[ReactionSerializer]
     type: Literal["note"] = "note"
 
 
@@ -88,9 +88,9 @@ def serialize_public_user(user: User) -> PublicUser:
     )
 
 
-def serialize_reactions(reactions: Iterable[Reaction]) -> list[ReactionResponse]:
+def serialize_reactions(reactions: Iterable[Reaction]) -> list[ReactionSerializer]:
     return [
-        ReactionResponse(
+        ReactionSerializer(
             id=str(reaction.id),
             type=cast(Literal["❤️", "😆", "🤮"], reaction.emoji),
             note_id=reaction.note_id,
@@ -101,8 +101,8 @@ def serialize_reactions(reactions: Iterable[Reaction]) -> list[ReactionResponse]
     ]
 
 
-def serialize_note(note: Note, primary_image_id: int) -> NoteResponse:
-    return NoteResponse(
+def serialize_note(note: Note, primary_image_id: int) -> NoteSerializer:
+    return NoteSerializer(
         id=str(note.id),
         text=note.text,
         created_by=serialize_public_user(note.created_by),
@@ -115,7 +115,7 @@ def serialize_note(note: Note, primary_image_id: int) -> NoteResponse:
     )
 
 
-class IngredientResponse(pydantic.BaseModel):
+class IngredientSerializer(pydantic.BaseModel):
     id: int
     quantity: str
     name: str
@@ -136,8 +136,8 @@ def ingredient_to_text(ingredient: Ingredient) -> str:
     return text
 
 
-def serialize_ingredient(ingredient: Ingredient) -> IngredientResponse:
-    return IngredientResponse(
+def serialize_ingredient(ingredient: Ingredient) -> IngredientSerializer:
+    return IngredientSerializer(
         id=ingredient.pk,
         quantity=ingredient.quantity,
         name=ingredient.name,
@@ -147,14 +147,14 @@ def serialize_ingredient(ingredient: Ingredient) -> IngredientResponse:
     )
 
 
-class StepResponse(pydantic.BaseModel):
+class StepSerializer(pydantic.BaseModel):
     id: int
     text: str
     position: str
 
 
-def serialize_step(step: Step) -> StepResponse:
-    return StepResponse(
+def serialize_step(step: Step) -> StepSerializer:
+    return StepSerializer(
         id=step.pk,
         text=step.text,
         position=step.position,
@@ -242,24 +242,24 @@ class RecentScheduleResponse(pydantic.BaseModel):
     on: date
 
 
-class SectionResponse(pydantic.BaseModel):
+class SectionSerializer(pydantic.BaseModel):
     id: int
     title: str
     position: str
 
 
-class RecipeResponse(pydantic.BaseModel):
+class RecipeSerializer(pydantic.BaseModel):
     id: int
     name: str
     author: str | None
     source: str | None
     time: str | None
     servings: str | None
-    ingredients: list[IngredientResponse]
-    steps: list[StepResponse]
+    ingredients: list[IngredientSerializer]
+    steps: list[StepSerializer]
     recentSchedules: list[RecentScheduleResponse]
-    timelineItems: list[NoteResponse | TimelineEventResponse]
-    sections: list[SectionResponse]
+    timelineItems: list[NoteSerializer | TimelineEventResponse]
+    sections: list[SectionSerializer]
     modified: datetime
     created: datetime
     archived_at: datetime | None
@@ -299,8 +299,8 @@ def serialize_timeline_event(
 
 def serialize_timeline_items(
     recipe: Recipe
-) -> list[NoteResponse | TimelineEventResponse]:
-    items: list[NoteResponse | TimelineEventResponse] = [
+) -> list[NoteSerializer | TimelineEventResponse]:
+    items: list[NoteSerializer | TimelineEventResponse] = [
         serialize_note(x, primary_image_id=recipe.primary_image_id)
         for x in recipe.notes.all()
     ]
@@ -346,8 +346,8 @@ def serialize_upload(upload: Upload) -> UploadResponse:
     )
 
 
-def serialize_section(section: Section) -> SectionResponse:
-    return SectionResponse(
+def serialize_section(section: Section) -> SectionSerializer:
+    return SectionSerializer(
         id=section.id, title=section.title, position=section.position
     )
 
@@ -465,7 +465,7 @@ order by recipe_historical.created desc
         return out
 
 
-def serialize_recipe(recipe: Recipe) -> RecipeResponse:
+def serialize_recipe(recipe: Recipe) -> RecipeSerializer:
     ingredients = [serialize_ingredient(x) for x in recipe.ingredient_set.all()]
     steps = [serialize_step(x) for x in recipe.step_set.all()]
     recent_schedules = serialize_recent_schedules(recipe)
@@ -477,7 +477,7 @@ def serialize_recipe(recipe: Recipe) -> RecipeResponse:
         else None
     )
     versions = _get_versions(recipe.id)
-    return RecipeResponse(
+    return RecipeSerializer(
         id=recipe.id,
         name=recipe.name,
         author=recipe.author,

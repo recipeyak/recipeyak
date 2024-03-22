@@ -9,7 +9,7 @@ from django.db import connection
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.base.serialization import Params
 from recipeyak.models import get_team_by_id
 from recipeyak.models.user import get_avatar_url
 
@@ -21,21 +21,21 @@ class UserResponse(pydantic.BaseModel):
     email: str
 
 
-class TeamMemberResponse(pydantic.BaseModel):
+class MemberListItem(pydantic.BaseModel):
     id: int
     created: datetime
     level: Literal["admin", "contributor", "read"]
     user: UserResponse
 
 
-class MemberListParams(RequestParams):
+class MemberListParams(Params):
     team_id: int
 
 
 @endpoint()
 def member_list_view(
     request: AuthedHttpRequest, params: MemberListParams
-) -> JsonResponse[list[TeamMemberResponse]]:
+) -> JsonResponse[list[MemberListItem]]:
     team = get_team_by_id(user_id=request.user.id, team_id=params.team_id)
     with connection.cursor() as cursor:
         cursor.execute(
@@ -59,7 +59,7 @@ where
             },
         )
         rows = cursor.fetchall()
-    members = list[TeamMemberResponse]()
+    members = list[MemberListItem]()
     for (
         membership_id,
         membership_created,
@@ -79,7 +79,7 @@ where
             email=user_email,
         )
         members.append(
-            TeamMemberResponse(
+            MemberListItem(
                 id=membership_id,
                 created=membership_created,
                 level=membership_level,

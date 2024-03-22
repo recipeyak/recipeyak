@@ -16,7 +16,7 @@ class PrimaryImageDict(TypedDict):
     backgroundUrl: str | None
 
 
-class RecentlyViewRecipeResponse(TypedDict):
+class RecipeRecentlyViewedItem(TypedDict):
     id: int
     name: str
     author: str | None
@@ -27,9 +27,9 @@ class RecentlyViewRecipeResponse(TypedDict):
 @endpoint()
 def recipe_recently_viewed_view(
     request: AuthedHttpRequest, params: None
-) -> JsonResponse[list[RecentlyViewRecipeResponse]]:
+) -> JsonResponse[list[RecipeRecentlyViewedItem]]:
     team = get_team(request.user)
-    recipes: list[RecentlyViewRecipeResponse] = []
+    recipes: list[RecipeRecentlyViewedItem] = []
     for rv in (
         RecipeView.objects.select_related("recipe__primary_image")
         .filter(user=request.user)

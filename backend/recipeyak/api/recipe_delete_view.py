@@ -5,7 +5,7 @@ from django.db import transaction
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.base.serialization import Params
 from recipeyak.models import (
     filter_recipe_or_404,
     get_team,
@@ -13,7 +13,7 @@ from recipeyak.models import (
 from recipeyak.realtime import publish_recipe
 
 
-class RecipeDeleteParams(RequestParams):
+class RecipeDeleteParams(Params):
     recipe_id: int
 
 

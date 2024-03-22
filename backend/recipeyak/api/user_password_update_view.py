@@ -10,10 +10,10 @@ from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.base.serialization import Params
 
 
-class PasswordChangeParams(RequestParams):
+class UserPasswordUpdateParams(Params):
     old_password: Annotated[str, Field(max_length=128)]
     new_password1: Annotated[str, Field(max_length=128)]
     new_password2: Annotated[str, Field(max_length=128)]
@@ -25,7 +25,7 @@ class UserPasswordUpdateResponse(pydantic.BaseModel):
 
 @endpoint()
 def user_password_update_view(
-    request: AuthedHttpRequest, params: PasswordChangeParams
+    request: AuthedHttpRequest, params: UserPasswordUpdateParams
 ) -> JsonResponse[UserPasswordUpdateResponse]:
     """
     Calls Django Auth SetPasswordForm save method.

@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import YamlResponse
-from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.base.serialization import Params
 from recipeyak.models import Recipe, filter_recipes, get_team
 from recipeyak.models.team import Team
 
@@ -120,7 +120,7 @@ def export_recipes(team: Team, pk: str | None) -> list[ExportRecipe] | ExportRec
     return recipes_out
 
 
-class ExportRecipesListParams(RequestParams):
+class ExportRecipesListParams(Params):
     filetype: str
     pk: str | None = None
 

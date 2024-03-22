@@ -6,19 +6,19 @@ from pydantic import model_validator
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams
-from recipeyak.api.serializers.recipe import NoteResponse, serialize_note
+from recipeyak.api.base.serialization import Params
+from recipeyak.api.serializers.recipe import NoteSerializer, serialize_note
 from recipeyak.models import Note, Upload, filter_recipes, get_team
 from recipeyak.realtime import publish_recipe
 
 
-class CreateNoteParams(RequestParams):
+class NoteCreateParams(Params):
     text: str
     attachment_upload_ids: list[str]
     recipe_id: int
 
     @model_validator(mode="after")
-    def validate_non_empty(self) -> CreateNoteParams:
+    def validate_non_empty(self) -> NoteCreateParams:
         if len(self.text) < 0 and len(self.attachment_upload_ids) < 0:
             raise ValueError("non-empty note required")
         return self
@@ -26,8 +26,8 @@ class CreateNoteParams(RequestParams):
 
 @endpoint()
 def note_create_view(
-    request: AuthedHttpRequest, params: CreateNoteParams
-) -> JsonResponse[NoteResponse]:
+    request: AuthedHttpRequest, params: NoteCreateParams
+) -> JsonResponse[NoteSerializer]:
     team = get_team(request.user)
     recipe = get_object_or_404(filter_recipes(team=team), pk=params.recipe_id)
 

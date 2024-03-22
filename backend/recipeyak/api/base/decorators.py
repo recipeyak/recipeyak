@@ -9,9 +9,9 @@ from django.http import HttpResponse
 from recipeyak.api.base.exceptions import APIError, RequestValidationError
 from recipeyak.api.base.json import json_loads
 from recipeyak.api.base.request import AnonymousHttpRequest, AuthedHttpRequest
-from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.base.serialization import Params
 
-_P = TypeVar("_P", bound="RequestParams | None", contravariant=True)
+_P = TypeVar("_P", bound="Params | None", contravariant=True)
 
 
 class AuthedView(Protocol, Generic[_P]):
@@ -84,8 +84,8 @@ def endpoint(
 
 def _parse_param_data(
     request: Any, func: AnyView, kwargs: dict[str, Any]
-) -> RequestParams | None:
-    param_type: type[None] | RequestParams = typing.get_type_hints(func)["params"]
+) -> Params | None:
+    param_type: type[None] | Params = typing.get_type_hints(func)["params"]
     if param_type is type(None):
         return None
     request_params = {}
@@ -115,4 +115,4 @@ def _parse_param_data(
                 ]
             )
     request_params |= kwargs
-    return cast(RequestParams, param_type).parse_obj(request_params)
+    return cast(Params, param_type).parse_obj(request_params)

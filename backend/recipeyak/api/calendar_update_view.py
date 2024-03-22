@@ -5,7 +5,7 @@ from django.db import transaction
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
 from recipeyak.api.base.response import JsonResponse
-from recipeyak.api.base.serialization import RequestParams
+from recipeyak.api.base.serialization import Params
 from recipeyak.api.calendar_list_view import get_scheduled_recipes
 from recipeyak.api.calendar_serialization import (
     ScheduleRecipeSerializer,
@@ -15,14 +15,14 @@ from recipeyak.models import ScheduleEvent, get_team
 from recipeyak.realtime import publish_calendar_event
 
 
-class ScheduledRecipeUpdateParams(RequestParams):
+class CalendarUpdateParams(Params):
     on: date
     scheduled_recipe_id: int
 
 
 @endpoint()
 def calendar_update_view(
-    request: AuthedHttpRequest, params: ScheduledRecipeUpdateParams
+    request: AuthedHttpRequest, params: CalendarUpdateParams
 ) -> JsonResponse[ScheduleRecipeSerializer]:
     team_id = get_team(request.user).id
     scheduled_recipe = get_scheduled_recipes(team_id).get(id=params.scheduled_recipe_id)
