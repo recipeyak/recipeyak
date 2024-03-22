@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 
-import { recipeTimline } from "@/api/recipeTimline"
+import { recipeTimeline } from "@/api/recipeTimeline"
 import { useTeamId } from "@/useTeamId"
 
 type ITimelineEvent = ICommentEvent | IScheduledRecipeEvent
@@ -29,7 +29,7 @@ export function useTimelineList(recipeId: number) {
   return useQuery({
     queryKey: [teamId, "timeline", recipeId],
     queryFn: () =>
-      recipeTimline({ recipe_id: recipeId }).then((res) =>
+      recipeTimeline({ recipe_id: recipeId }).then((res) =>
         res.map(toTimelineEvent),
       ),
   })
