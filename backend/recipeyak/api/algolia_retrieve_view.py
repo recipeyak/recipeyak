@@ -7,7 +7,6 @@ from algoliasearch.search_client import SearchClient
 from recipeyak import config
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.models import get_team
 
 
@@ -23,14 +22,9 @@ def get_token(team_id: int) -> str:
 
 
 @endpoint()
-def algolia_retrieve_view(
-    request: AuthedHttpRequest, params: None
-) -> JsonResponse[dict[str, str]]:
+def algolia_retrieve_view(request: AuthedHttpRequest, params: None) -> dict[str, str]:
     team = get_team(request.user)
-    return JsonResponse(
-        {
-            "app_id": config.ALGOLIA_APPLICATION_ID,
-            "api_key": get_token(team_id=team.pk),
-        },
-        status=200,
-    )
+    return {
+        "app_id": config.ALGOLIA_APPLICATION_ID,
+        "api_key": get_token(team_id=team.pk),
+    }

@@ -25,7 +25,7 @@ def test_recipe_creation(client: Client, user: User, team: Team) -> None:
     }
 
     res = client.post("/api/v1/recipes/", data, content_type="application/json")
-    assert res.status_code == 201
+    assert res.status_code == 200
 
     recipe_id = res.json().get("id")
     res = client.get(f"/api/v1/recipes/{recipe_id}/")
@@ -48,7 +48,7 @@ def test_creating_recipe_with_empty_ingredients_and_steps(
     data = {"name": "some recipe", "team": team.id}
 
     res = client.post("/api/v1/recipes/", data, content_type="application/json")
-    assert res.status_code == 201
+    assert res.status_code == 200
 
 
 def test_cache_headers(client: Client, user: User, recipe: Recipe, team: Team) -> None:
@@ -92,7 +92,7 @@ def test_recipe_creation_for_a_team(client: Client, team: Team, user: User) -> N
     url = "/api/v1/recipes/"
 
     res = client.post(url, data, content_type="application/json")
-    assert res.status_code == 201
+    assert res.status_code == 200
 
     assert (
         TimelineEvent.objects.count()
@@ -287,10 +287,10 @@ def test_position_step_ingredient(
     url = url_template.format(recipe_id=recipe.id)
 
     res = client.post(url, data, content_type="application/json")
-    assert res.status_code == 201
+    assert res.status_code == 200
     model.objects.get(id=res.json()["id"]).delete()
     res = client.post(url, data, content_type="application/json")
-    assert res.status_code == 201
+    assert res.status_code == 200
 
 
 def test_adding_note_to_recipe(
@@ -304,7 +304,7 @@ def test_adding_note_to_recipe(
     res = client.post(
         f"/api/v1/recipes/{recipe.id}/notes/", data, content_type="application/json"
     )
-    assert res.status_code == 201
+    assert res.status_code == 200
     assert res.json()["created_by"]["id"] == user.id
     assert res.json()["text"] == data["text"]
 
@@ -363,7 +363,7 @@ def test_adding_ingredient_to_recipe(
         ingredient,
         content_type="application/json",
     )
-    assert res.status_code == 201
+    assert res.status_code == 200
 
     res = client.get(f"/api/v1/recipes/{recipe.id}/")
     assert res.status_code == 200

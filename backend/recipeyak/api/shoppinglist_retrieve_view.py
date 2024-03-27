@@ -11,7 +11,6 @@ from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.json import json_dumps
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import Params
 from recipeyak.category import category
 from recipeyak.combine import Ingredient, combine_ingredients
@@ -75,7 +74,7 @@ def _fmt_small_decimal(d: Decimal) -> str:
 @endpoint()
 def shoppinglist_retrieve_view(
     request: AuthedHttpRequest, params: ShoppinglistRetrieveParams
-) -> JsonResponse[ShoppinglistRetrieveResponse]:
+) -> ShoppinglistRetrieveResponse:
     team_id = get_team(request.user).id
     scheduled_recipes = get_scheduled_recipes(params=params, team_id=team_id)
     if scheduled_recipes is None:
@@ -111,7 +110,4 @@ def shoppinglist_retrieve_view(
 
     ShoppingList.objects.create(ingredients=json_dumps(ingredient_mapping).decode())
 
-    return JsonResponse(
-        {"ingredients": ingredient_mapping, "recipes": list(recipes.values())},
-        status=200,
-    )
+    return {"ingredients": ingredient_mapping, "recipes": list(recipes.values())}

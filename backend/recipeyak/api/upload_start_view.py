@@ -9,7 +9,6 @@ from recipeyak import config
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import Params
 from recipeyak.models import filter_recipes, get_team
 from recipeyak.models.recipe import Recipe
@@ -45,7 +44,7 @@ class UploadStartResponse(pydantic.BaseModel):
 @endpoint()
 def upload_start_view(
     request: AuthedHttpRequest, params: UploadStartParams
-) -> JsonResponse[UploadStartResponse]:
+) -> UploadStartResponse:
     key = f"{request.user.id}/{uuid4().hex}/{params.file_name}"
     team = get_team(request.user)
 
@@ -84,10 +83,8 @@ def upload_start_view(
         },
     )
 
-    return JsonResponse(
-        UploadStartResponse(
-            id=upload.pk,
-            upload_url=upload_url,
-            upload_headers={"x-amz-meta-db_id": str(upload.pk)},
-        )
+    return UploadStartResponse(
+        id=upload.pk,
+        upload_url=upload_url,
+        upload_headers={"x-amz-meta-db_id": str(upload.pk)},
     )

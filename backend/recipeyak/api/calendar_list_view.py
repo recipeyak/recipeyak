@@ -7,7 +7,6 @@ from typing_extensions import TypedDict
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import Params
 from recipeyak.api.calendar_serialization import (
     ScheduleRecipeSerializer,
@@ -45,7 +44,7 @@ class CalendarListResponse(TypedDict):
 @endpoint()
 def calendar_list_view(
     request: AuthedHttpRequest, params: CalendarListParams
-) -> JsonResponse[CalendarListResponse]:
+) -> CalendarListResponse:
     start = params.start
     end = params.end
     team_id = get_team(request.user).id
@@ -62,4 +61,4 @@ def calendar_list_view(
     settings = get_cal_settings(request=request, team_id=team_id)
 
     # TODO(2024-04-10): remove the settings properties
-    return JsonResponse({"scheduledRecipes": scheduled_recipes, "settings": settings})
+    return {"scheduledRecipes": scheduled_recipes, "settings": settings}

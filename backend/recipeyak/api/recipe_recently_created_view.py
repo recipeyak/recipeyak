@@ -7,7 +7,6 @@ from django.db import connection
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.models import get_team
 
 
@@ -35,7 +34,7 @@ class RecipeRecentlyCreatedItem(pydantic.BaseModel):
 @endpoint()
 def recipe_recently_created_view(
     request: AuthedHttpRequest, params: None
-) -> JsonResponse[list[RecipeRecentlyCreatedItem]]:
+) -> list[RecipeRecentlyCreatedItem]:
     team = get_team(request.user)
     recipes = list[RecipeRecentlyCreatedItem]()
     with connection.cursor() as cursor:
@@ -83,4 +82,4 @@ limit 6;
         rows = cursor.fetchall()
         for row in rows:
             recipes.append(RecipeRecentlyCreatedItem.model_validate(row[0]))
-    return JsonResponse(recipes)
+    return recipes

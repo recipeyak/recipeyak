@@ -6,7 +6,6 @@ from django.db import connection
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.models.user import get_avatar_url
 
 
@@ -30,9 +29,7 @@ class InviteListItem(pydantic.BaseModel):
 
 
 @endpoint()
-def invite_list_view(
-    request: AuthedHttpRequest, params: None
-) -> JsonResponse[list[InviteListItem]]:
+def invite_list_view(request: AuthedHttpRequest, params: None) -> list[InviteListItem]:
     with connection.cursor() as cursor:
         cursor.execute(
             """
@@ -57,7 +54,7 @@ where
             {"user_id": request.user.id},
         )
         invite_rows = cursor.fetchall()
-        invites = [
+        return [
             InviteListItem(
                 id=invite_id,
                 created=created,
@@ -82,4 +79,3 @@ where
                 user_profile_upload_key,
             ) in invite_rows
         ]
-        return JsonResponse(invites)

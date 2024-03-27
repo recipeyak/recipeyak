@@ -3,7 +3,6 @@ from django.shortcuts import get_object_or_404
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import Params
 from recipeyak.models.invite import Invite
 
@@ -19,9 +18,9 @@ class InviteDeclineParams(Params):
 @endpoint()
 def invite_decline_view(
     request: AuthedHttpRequest, params: InviteDeclineParams
-) -> JsonResponse[InviteDeclineResponse]:
+) -> InviteDeclineResponse:
     invite = get_object_or_404(
         Invite.objects.filter(membership__user=request.user), id=params.invite_id
     )
     invite.decline()
-    return JsonResponse(InviteDeclineResponse(detail="declined invite"), status=200)
+    return InviteDeclineResponse(detail="declined invite")

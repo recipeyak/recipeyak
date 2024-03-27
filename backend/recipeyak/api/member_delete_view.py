@@ -6,7 +6,6 @@ from django.shortcuts import get_object_or_404
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import Params
 from recipeyak.api.team_update_view import is_team_admin
 from recipeyak.models import Membership, Team
@@ -34,9 +33,7 @@ class MemberDeleteParams(Params):
 
 
 @endpoint()
-def member_delete_view(
-    request: AuthedHttpRequest, params: MemberDeleteParams
-) -> JsonResponse[None]:
+def member_delete_view(request: AuthedHttpRequest, params: MemberDeleteParams) -> None:
     """
     1. Admins of the team can edit any other member of the team
     2. Non-admins can edit themselves
@@ -62,4 +59,3 @@ def member_delete_view(
         membership.delete()
     except DemoteLastAdminError as e:
         raise APIError(code="demote_last_admin", message=str(e)) from e
-    return JsonResponse(None, status=204)

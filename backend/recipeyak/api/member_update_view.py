@@ -10,7 +10,6 @@ from django.shortcuts import get_object_or_404
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import Params
 from recipeyak.api.team_delete_view import is_team_admin
 from recipeyak.models import Membership, Team
@@ -49,7 +48,7 @@ class MemberUpdateParams(Params):
 @endpoint()
 def member_update_view(
     request: AuthedHttpRequest, params: MemberUpdateParams
-) -> JsonResponse[MemberUpdateResponse]:
+) -> MemberUpdateResponse:
     membership = get_object_or_404(Membership, pk=params.member_id)
     if not is_team_admin(team_id=membership.team_id, user_id=request.user.id):
         raise APIError(
@@ -67,21 +66,19 @@ def member_update_view(
             status=403,
         ) from e
 
-    return JsonResponse(
-        MemberUpdateResponse(
-            id=membership.id,
-            level=membership.level,
-            created=membership.created,
-            user=UserResponse(
-                id=membership.user.id,
-                name=membership.user.name,
-                avatar_url=get_avatar_url(
-                    email=membership.user.email,
-                    profile_upload_key=membership.user.profile_upload.key
-                    if membership.user.profile_upload is not None
-                    else None,
-                ),
+    return MemberUpdateResponse(
+        id=membership.id,
+        level=membership.level,
+        created=membership.created,
+        user=UserResponse(
+            id=membership.user.id,
+            name=membership.user.name,
+            avatar_url=get_avatar_url(
                 email=membership.user.email,
+                profile_upload_key=membership.user.profile_upload.key
+                if membership.user.profile_upload is not None
+                else None,
             ),
-        )
+            email=membership.user.email,
+        ),
     )

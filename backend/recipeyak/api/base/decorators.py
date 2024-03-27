@@ -9,13 +9,14 @@ from django.http import HttpResponse
 from recipeyak.api.base.exceptions import APIError, RequestValidationError
 from recipeyak.api.base.json import json_loads
 from recipeyak.api.base.request import AnonymousHttpRequest, AuthedHttpRequest
+from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import Params
 
 _P = TypeVar("_P", bound="Params | None", contravariant=True)
 
 
 class AuthedView(Protocol, Generic[_P]):
-    def __call__(self, request: AuthedHttpRequest, params: _P) -> HttpResponse:
+    def __call__(self, request: AuthedHttpRequest, params: _P) -> Any:
         ...
 
     @property
@@ -24,7 +25,7 @@ class AuthedView(Protocol, Generic[_P]):
 
 
 class AnonView(Protocol, Generic[_P]):
-    def __call__(self, request: AnonymousHttpRequest, params: _P) -> HttpResponse:
+    def __call__(self, request: AnonymousHttpRequest, params: _P) -> Any:
         ...
 
     @property
@@ -33,7 +34,7 @@ class AnonView(Protocol, Generic[_P]):
 
 
 class AnyView(Protocol):
-    def __call__(self, request: Any, *args: Any, **kwargs: Any) -> HttpResponse:
+    def __call__(self, request: Any, *args: Any, **kwargs: Any) -> Any:
         ...
 
     @property
@@ -60,7 +61,7 @@ def endpoint(
 ) -> Callable[[AnyView], AnyView]:
     def decorator_func(func: AnyView) -> AnyView:
         @wraps(func)
-        def wrapper(request: Any, *args: Any, **kwargs: Any) -> HttpResponse:
+        def wrapper(request: Any, **kwargs: Any) -> HttpResponse:
             if auth_required and not request.user.is_authenticated:
                 if redirect_to_login:
                     return redirect_to_login_url(
@@ -75,7 +76,12 @@ def endpoint(
                 )
 
             params = _parse_param_data(request, func, kwargs)
-            return func(request, params)
+            response_data = func(request, params)
+            if response_data is None:
+                return HttpResponse(status=204)
+            if isinstance(response_data, HttpResponse):
+                return response_data
+            return JsonResponse(response_data)
 
         return wrapper
 

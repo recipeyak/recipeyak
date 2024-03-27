@@ -6,7 +6,6 @@ from typing_extensions import TypedDict
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.models import RecipeView, get_team
 
 
@@ -27,7 +26,7 @@ class RecipeRecentlyViewedItem(TypedDict):
 @endpoint()
 def recipe_recently_viewed_view(
     request: AuthedHttpRequest, params: None
-) -> JsonResponse[list[RecipeRecentlyViewedItem]]:
+) -> list[RecipeRecentlyViewedItem]:
     team = get_team(request.user)
     recipes: list[RecipeRecentlyViewedItem] = []
     for rv in (
@@ -52,4 +51,4 @@ def recipe_recently_viewed_view(
             }
         )
 
-    return JsonResponse(recipes)
+    return recipes

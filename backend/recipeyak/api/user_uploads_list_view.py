@@ -3,7 +3,6 @@ from django.http import Http404
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import Params
 from recipeyak.api.user_retrieve_by_id_view import has_team_connection
 from recipeyak.models import filter_uploads, get_team
@@ -50,7 +49,7 @@ class UserUploadsListParams(Params):
 @endpoint()
 def user_uploads_list_view(
     request: AuthedHttpRequest, params: UserUploadsListParams
-) -> JsonResponse[UserUploadsListResponse]:
+) -> UserUploadsListResponse:
     if not has_team_connection(params.user_id, request.user.id):
         raise Http404
     team = get_team(request.user)
@@ -70,4 +69,4 @@ def user_uploads_list_view(
         .order_by("-created")
     ]
 
-    return JsonResponse(UserUploadsListResponse(uploads=uploads))
+    return UserUploadsListResponse(uploads=uploads)

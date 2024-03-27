@@ -10,7 +10,6 @@ from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.request import (
     AnonymousHttpRequest,
 )
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import Params
 from recipeyak.api.user_retrieve_view import UserSerializer, serialize_user
 from recipeyak.models.user import User
@@ -40,7 +39,7 @@ class UserPasswordResetConfirmParams(Params):
 @endpoint(auth_required=False)
 def user_password_reset_confirm_view(
     request: AnonymousHttpRequest, params: UserPasswordResetConfirmParams
-) -> JsonResponse[UserSerializer]:
+) -> UserSerializer:
     user_id = urlsafe_base64_decode(params.uid)
     user = User.objects.filter(pk=user_id).first()
     if user is None:
@@ -61,4 +60,4 @@ def user_password_reset_confirm_view(
     user.save()
     login(request, user)
 
-    return JsonResponse(serialize_user(user))
+    return serialize_user(user)

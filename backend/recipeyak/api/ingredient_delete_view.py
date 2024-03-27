@@ -5,7 +5,6 @@ from django.shortcuts import get_object_or_404
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import Params
 from recipeyak.api.serializers.recipe import ingredient_to_text
 from recipeyak.models import ChangeType, RecipeChange, filter_ingredients, get_team
@@ -20,7 +19,7 @@ class IngredientDeleteParams(Params):
 @endpoint()
 def ingredient_delete_view(
     request: AuthedHttpRequest, params: IngredientDeleteParams
-) -> JsonResponse[None]:
+) -> None:
     team = get_team(request.user)
     ingredient = get_object_or_404(
         filter_ingredients(team=team), pk=params.ingredient_id
@@ -37,4 +36,3 @@ def ingredient_delete_view(
         filter_ingredients(team=team).filter(pk=params.ingredient_id).delete()
         save_recipe_version(recipe_id=recipe_id, actor=request.user)
     publish_recipe(recipe_id=ingredient.recipe_id, team_id=team.id)
-    return JsonResponse(None, status=204)

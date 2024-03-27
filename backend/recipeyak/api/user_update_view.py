@@ -4,7 +4,6 @@ from django.db import transaction
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import Params
 from recipeyak.api.user_retrieve_view import UserSerializer, serialize_user
 
@@ -24,7 +23,7 @@ class UserUpdateParams(Params):
 @endpoint()
 def user_update_view(
     request: AuthedHttpRequest, params: UserUpdateParams
-) -> JsonResponse[UserSerializer]:
+) -> UserSerializer:
     with transaction.atomic():
         if params.schedule_team is not None:
             request.user.schedule_team_id = params.schedule_team
@@ -40,4 +39,4 @@ def user_update_view(
             request.user.theme_mode = params.theme_mode
         request.user.save()
 
-    return JsonResponse(serialize_user(request.user))
+    return serialize_user(request.user)

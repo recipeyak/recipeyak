@@ -3,7 +3,6 @@ from django.http import Http404
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import Params
 from recipeyak.api.serializers.recipe import NoteSerializer, serialize_note
 from recipeyak.api.user_retrieve_by_id_view import has_team_connection
@@ -31,7 +30,7 @@ class UserCommentsListParams(Params):
 @endpoint()
 def user_comments_list_view(
     request: AuthedHttpRequest, params: UserCommentsListParams
-) -> JsonResponse[UserCommentsListResponse]:
+) -> UserCommentsListResponse:
     user_id = params.user_id
     if not has_team_connection(user_id, request.user.id):
         raise Http404
@@ -55,4 +54,4 @@ def user_comments_list_view(
         .order_by("-created")
     ]
 
-    return JsonResponse(UserCommentsListResponse(comments=notes))
+    return UserCommentsListResponse(comments=notes)

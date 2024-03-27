@@ -7,7 +7,6 @@ from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.permissions import has_recipe_access
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import Params
 from recipeyak.models import ChangeType, RecipeChange, Section
 from recipeyak.realtime import publish_recipe
@@ -21,7 +20,7 @@ class SectionDeleteParams(Params):
 @endpoint()
 def section_delete_view(
     request: AuthedHttpRequest, params: SectionDeleteParams
-) -> JsonResponse[None]:
+) -> None:
     section = get_object_or_404(Section, pk=params.section_id)
     recipe = section.recipe
     if not has_recipe_access(recipe=recipe, user=request.user):
@@ -41,5 +40,3 @@ def section_delete_view(
         save_recipe_version(recipe_id=recipe.id, actor=request.user)
 
     publish_recipe(recipe_id=recipe.id, team_id=recipe.team_id)
-
-    return JsonResponse(None, status=204)

@@ -7,7 +7,6 @@ from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.permissions import has_recipe_access
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import Params
 from recipeyak.api.serializers.recipe import SectionSerializer, serialize_section
 from recipeyak.models import ChangeType, RecipeChange, Section
@@ -24,7 +23,7 @@ class SectionUpdateParams(Params):
 @endpoint()
 def section_update_view(
     request: AuthedHttpRequest, params: SectionUpdateParams
-) -> JsonResponse[SectionSerializer]:
+) -> SectionSerializer:
     section = get_object_or_404(Section, pk=params.section_id)
     if not has_recipe_access(recipe=section.recipe, user=request.user):
         raise APIError(code="no_access", message="No access to recipe", status=403)
@@ -45,4 +44,4 @@ def section_update_view(
         save_recipe_version(recipe_id=section.recipe_id, actor=request.user)
     publish_recipe(recipe_id=section.recipe.id, team_id=section.recipe.team_id)
 
-    return JsonResponse(serialize_section(section))
+    return serialize_section(section)

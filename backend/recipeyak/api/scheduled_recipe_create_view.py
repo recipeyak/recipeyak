@@ -6,7 +6,6 @@ from django.shortcuts import get_object_or_404
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import Params
 from recipeyak.api.calendar_serialization import (
     ScheduleRecipeSerializer,
@@ -25,7 +24,7 @@ class ScheduledRecipeCreateParams(Params):
 @endpoint()
 def scheduled_recipe_create_view(
     request: AuthedHttpRequest, params: ScheduledRecipeCreateParams
-) -> JsonResponse[ScheduleRecipeSerializer]:
+) -> ScheduleRecipeSerializer:
     team = get_team(request.user)
 
     recipe = get_object_or_404(filter_recipes(team=team), id=params.recipe)
@@ -40,7 +39,4 @@ def scheduled_recipe_create_view(
     )
 
     publish_calendar_event(res, team_id=team.id)
-    return JsonResponse(
-        res,
-        status=201,
-    )
+    return res

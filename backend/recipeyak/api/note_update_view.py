@@ -6,7 +6,6 @@ from django.shortcuts import get_object_or_404
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import Params
 from recipeyak.api.serializers.recipe import NoteSerializer, serialize_note
 from recipeyak.models import Upload, filter_notes, get_team
@@ -23,7 +22,7 @@ class NoteUpdateParams(Params):
 @endpoint()
 def note_update_view(
     request: AuthedHttpRequest, params: NoteUpdateParams
-) -> JsonResponse[NoteSerializer]:
+) -> NoteSerializer:
     team = get_team(request.user)
     note = get_object_or_404(filter_notes(team=team), pk=params.note_id)
     # only allow the note's author to update the note
@@ -50,6 +49,4 @@ def note_update_view(
         note.save()
     publish_recipe(recipe_id=note.recipe_id, team_id=team.id)
 
-    return JsonResponse(
-        serialize_note(note, primary_image_id=note.recipe.primary_image_id)
-    )
+    return serialize_note(note, primary_image_id=note.recipe.primary_image_id)

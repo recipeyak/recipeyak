@@ -5,7 +5,6 @@ from django.db import connection
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import Params
 from recipeyak.models import (
     filter_recipe_or_404,
@@ -28,7 +27,7 @@ class CookChecklistCreateParams(Params):
 @endpoint()
 def cook_checklist_create_view(
     request: AuthedHttpRequest, params: CookChecklistCreateParams
-) -> JsonResponse[CookChecklistCreateResponse]:
+) -> CookChecklistCreateResponse:
     team = get_team(request.user)
     recipe = filter_recipe_or_404(recipe_id=params.recipe_id, team=team)
     with connection.cursor() as cursor:
@@ -54,8 +53,6 @@ def cook_checklist_create_view(
         checked=params.checked,
     )
 
-    return JsonResponse(
-        CookChecklistCreateResponse(
-            ingredient_id=params.ingredient_id, checked=params.checked
-        )
+    return CookChecklistCreateResponse(
+        ingredient_id=params.ingredient_id, checked=params.checked
     )

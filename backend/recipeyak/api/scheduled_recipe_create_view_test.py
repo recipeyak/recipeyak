@@ -17,7 +17,7 @@ def test_creating_scheduled_recipe(
     data = {"recipe": recipe.id, "on": date(1976, 7, 6)}
     client.force_login(user)
     res = client.post(url, data, content_type="application/json")
-    assert res.status_code == 201
+    assert res.status_code == 200
     assert ScheduledRecipe.objects.filter(id=res.json()["id"]).exists()
     assert res.json()[
         "created"
@@ -34,6 +34,6 @@ def test_adding_to_team_calendar(
     assert team.is_member(user)
     client.force_login(user)
     res = client.post(url, data, content_type="application/json")
-    assert res.status_code == 201
+    assert res.status_code == 200
     scheduled = ScheduledRecipe.objects.get(id=res.json().get("id"))
     assert scheduled.team is not None and scheduled.team.pk == team.pk

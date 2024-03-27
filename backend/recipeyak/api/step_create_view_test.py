@@ -56,7 +56,7 @@ def test_adding_step_to_recipe(
     res = client.post(
         f"/api/v1/recipes/{recipe.id}/steps/", step, content_type="application/json"
     )
-    assert res.status_code == 201
+    assert res.status_code == 200
 
     res = client.get(f"/api/v1/recipes/{recipe.id}/")
     assert res.status_code == 200

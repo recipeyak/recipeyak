@@ -8,7 +8,6 @@ from django.shortcuts import get_object_or_404
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import Params
 from recipeyak.api.unwrap import unwrap
 from recipeyak.models.note import Note
@@ -282,7 +281,7 @@ class UserRetrieveByIdParams(Params):
 @endpoint()
 def user_retrieve_by_id_view(
     request: AuthedHttpRequest, params: UserRetrieveByIdParams
-) -> JsonResponse[UserRetrieveByIdResponse]:
+) -> UserRetrieveByIdResponse:
     user_id = params.user_id
     user = get_object_or_404(User, id=user_id)
     if not has_team_connection(user_id, request.user.id):
@@ -294,26 +293,24 @@ def user_retrieve_by_id_view(
     photos_count = get_photos_count(user_id=user_id)
     primary_photos_count = get_primary_photos_count(user_id=user_id)
     activity = get_activity(user_id=user_id)
-    return JsonResponse(
-        UserRetrieveByIdResponse(
-            id=user.id,
-            name=user.name or user.email,
+    return UserRetrieveByIdResponse(
+        id=user.id,
+        name=user.name or user.email,
+        email=user.email,
+        avatar_url=get_avatar_url(
             email=user.email,
-            avatar_url=get_avatar_url(
-                email=user.email,
-                profile_upload_key=user.profile_upload.key
-                if user.profile_upload is not None
-                else None,
-            ),
-            created=user.created,
-            stats=UserDetailByIdStats(
-                recipesAdd=recipes_added_count,
-                recipesArchived=recipes_archived_count,
-                comments=comments_count,
-                scheduled=scheduled_count,
-                photos=photos_count,
-                primaryPhotos=primary_photos_count,
-            ),
-            activity=activity,
-        )
+            profile_upload_key=user.profile_upload.key
+            if user.profile_upload is not None
+            else None,
+        ),
+        created=user.created,
+        stats=UserDetailByIdStats(
+            recipesAdd=recipes_added_count,
+            recipesArchived=recipes_archived_count,
+            comments=comments_count,
+            scheduled=scheduled_count,
+            photos=photos_count,
+            primaryPhotos=primary_photos_count,
+        ),
+        activity=activity,
     )

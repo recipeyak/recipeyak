@@ -14,8 +14,7 @@ class JsonResponse(HttpResponse, Generic[_T]):
         data: _T,
         **kwargs: Any,
     ) -> None:
-        if data is None and (kwargs.get("status", 200) != 204):
-            raise ValueError("data must not be None unless status is 204")
+        assert data is not None
         kwargs.setdefault("content_type", "application/json")
         content = json_dumps(data)
         super().__init__(content=content, **kwargs)

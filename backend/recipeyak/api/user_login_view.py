@@ -11,7 +11,6 @@ from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.request import (
     AnonymousHttpRequest,
 )
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import Params
 from recipeyak.api.user_retrieve_view import UserSerializer, serialize_user
 from recipeyak.models.user import User
@@ -29,7 +28,7 @@ class UserLoginResponse(pydantic.BaseModel):
 @endpoint(auth_required=False)
 def user_login_view(
     request: AnonymousHttpRequest, params: UserLoginParams
-) -> JsonResponse[UserLoginResponse]:
+) -> UserLoginResponse:
     """
     Check the credentials and login if credentials are valid and authenticated.
     Calls Django Auth login method to register User ID in Django session framework.
@@ -42,6 +41,4 @@ def user_login_view(
 
     login(request, user)
 
-    return JsonResponse(
-        UserLoginResponse(user=serialize_user(cast(User, user))), status=200
-    )
+    return UserLoginResponse(user=serialize_user(cast(User, user)))

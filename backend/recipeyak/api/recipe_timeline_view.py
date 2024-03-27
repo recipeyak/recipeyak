@@ -9,7 +9,6 @@ from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.permissions import has_recipe_access
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import Params
 from recipeyak.models import Recipe, ScheduledRecipe, User
 
@@ -26,7 +25,7 @@ class RecipeTimelineParams(Params):
 @endpoint()
 def recipe_timeline_view(
     request: AuthedHttpRequest, params: RecipeTimelineParams
-) -> JsonResponse[list[RecipeTimelineItem]]:
+) -> list[RecipeTimelineItem]:
     user: User = request.user
     # TODO: we probably don't want to rely on this so we can support multiple
     # sessions with different teams for a given user.
@@ -41,6 +40,4 @@ def recipe_timeline_view(
         recipe=params.recipe_id
     )
 
-    return JsonResponse(
-        [RecipeTimelineItem(id=s.id, on=s.on) for s in scheduled_recipes]
-    )
+    return [RecipeTimelineItem(id=s.id, on=s.on) for s in scheduled_recipes]
