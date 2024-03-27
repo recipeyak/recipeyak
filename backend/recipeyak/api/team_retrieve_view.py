@@ -6,7 +6,6 @@ from django.shortcuts import get_object_or_404
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import Params
 from recipeyak.models import Team
 from recipeyak.models.user import User
@@ -28,6 +27,6 @@ class TeamRetrieveParams(Params):
 @endpoint()
 def team_retrieve_view(
     request: AuthedHttpRequest, params: TeamRetrieveParams
-) -> JsonResponse[TeamRetrieveResponse]:
+) -> TeamRetrieveResponse:
     team = get_object_or_404(get_teams(request.user), pk=params.team_id)
-    return JsonResponse(TeamRetrieveResponse(id=team.id, name=team.name))
+    return TeamRetrieveResponse(id=team.id, name=team.name)

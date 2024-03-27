@@ -47,7 +47,7 @@ def test_recipe_field_trimming(client: Client, user: User, team: Team) -> None:
         "team": team.pk,
     }
     res = client.post("/api/v1/recipes/", payload, content_type="application/json")
-    assert res.status_code == 201
+    assert res.status_code == 200
     assert res.json()["name"] == "Chocolate Cake"
 
     payload = {
@@ -96,7 +96,7 @@ def test_ingredient_field_trimming(
         payload,
         content_type="application/json",
     )
-    assert res.status_code == 201
+    assert res.status_code == 200
     assert res.json()["name"] == "tomato"
     assert res.json()["description"] == "chopped"
 
@@ -130,7 +130,7 @@ def test_step_field_trimming(
     res = client.post(
         f"/api/v1/recipes/{recipe.pk}/steps/", payload, content_type="application/json"
     )
-    assert res.status_code == 201
+    assert res.status_code == 200
     assert res.json()["text"] == "some test here"
 
     step_id = res.json()["id"]

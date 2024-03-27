@@ -7,7 +7,6 @@ from pydantic import BaseModel
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import Params
 from recipeyak.models.invite import Invite
 from recipeyak.models.team import Team
@@ -27,7 +26,7 @@ class TeamCreateParams(Params):
 @endpoint()
 def team_create_view(
     request: AuthedHttpRequest, params: TeamCreateParams
-) -> JsonResponse[TeamCreateResponse]:
+) -> TeamCreateResponse:
     with transaction.atomic():
         team = Team.objects.create(name=params.name)
         team.force_join_admin(request.user)
@@ -35,7 +34,4 @@ def team_create_view(
             Invite.objects.create_invite(
                 email=email, team=team, level=params.level, creator=request.user
             )
-    return JsonResponse(
-        TeamCreateResponse(id=team.id, name=params.name),
-        status=201,
-    )
+    return TeamCreateResponse(id=team.id, name=params.name)

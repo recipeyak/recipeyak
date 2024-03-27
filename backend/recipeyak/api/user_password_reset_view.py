@@ -11,7 +11,6 @@ from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.request import (
     AnonymousHttpRequest,
 )
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import Params
 from recipeyak.models.user import User
 
@@ -41,7 +40,7 @@ class UserPasswordResetResponse(pydantic.BaseModel):
 @endpoint(auth_required=False)
 def user_password_reset_view(
     request: AnonymousHttpRequest, params: UserPasswordResetParams
-) -> JsonResponse[UserPasswordResetResponse]:
+) -> UserPasswordResetResponse:
     user = User.objects.filter(email=params.email).first()
     if user is None:
         raise APIError(code="email_not_found", message="email not found")
@@ -59,4 +58,4 @@ Please go to the following page and choose a new password:
         recipient_list=[user.email],
     )
 
-    return JsonResponse(UserPasswordResetResponse(detail="email sent"))
+    return UserPasswordResetResponse(detail="email sent")

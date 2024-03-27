@@ -18,7 +18,7 @@ def test_creating_section(client: Client, user: User, recipe: Recipe) -> None:
         f"/api/v1/recipes/{recipe.id}/sections", data, content_type="application/json"
     )
 
-    assert res.status_code == 201
+    assert res.status_code == 200
     assert isinstance(res.json()["id"], int)
     assert isinstance(res.json()["title"], str)
     assert isinstance(res.json()["position"], str)
@@ -48,7 +48,7 @@ def test_creating_section_without_position(
         f"/api/v1/recipes/{recipe.id}/sections", data, content_type="application/json"
     )
 
-    assert res.status_code == 201
+    assert res.status_code == 200
     assert isinstance(res.json()["id"], int)
     assert isinstance(res.json()["title"], str)
     assert isinstance(res.json()["position"], str)

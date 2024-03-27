@@ -25,7 +25,7 @@ def test_signup(client: Client) -> None:
     res = client.post(
         "/api/v1/auth/registration/", data, content_type="application/json"
     )
-    assert res.status_code == 201
+    assert res.status_code == 200
     res = client.get(url)
     assert res.status_code == 200
 
@@ -48,7 +48,7 @@ def test_signup_case_insensitive(client: Client) -> None:
     res = client.post(
         "/api/v1/auth/registration/", data, content_type="application/json"
     )
-    assert res.status_code == 201
+    assert res.status_code == 200
 
     res = client.get(url)
     assert res.status_code == 200

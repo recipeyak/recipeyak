@@ -23,7 +23,7 @@ def test_creating_team(client: Client, user: User, user2: User) -> None:
 
     client.force_login(user)
     res = client.post(url, data, content_type="application/json")
-    assert res.status_code == 201, "Authenticated users should be able to create teams"
+    assert res.status_code == 200, "Authenticated users should be able to create teams"
     assert res.json().get("name") == data.get("name")
     team_id = res.json().get("id")
     team = Team.objects.get(pk=team_id)
@@ -302,7 +302,7 @@ def test_create_team_invite(
         {"emails": [user2.email], "level": Membership.ADMIN},
         content_type="application/json",
     )
-    assert res.status_code == 201
+    assert res.status_code == 200
     assert user2.has_invite(team) and not team.is_member(user2)
 
     for data, description, s in [
@@ -314,7 +314,7 @@ def test_create_team_invite(
         (
             {"emails": [user2.email], "level": Membership.CONTRIBUTOR},
             "just filter out emails for invites that already exist",
-            201,
+            200,
         ),
     ]:
         res = client.post(url, data, content_type="application/json")
@@ -395,7 +395,7 @@ def test_retrieve_user_invite(
         {"emails": [user2.email], "level": Membership.ADMIN},
         content_type="application/json",
     )
-    assert res.status_code == 201
+    assert res.status_code == 200
 
 
 def test_user_invites(
@@ -420,7 +420,7 @@ def test_user_invites(
         {"emails": [user2.email], "level": Membership.ADMIN},
         content_type="application/json",
     )
-    assert res.status_code == 201
+    assert res.status_code == 200
     assert user2.membership_set.filter(
         team=team
     ).exists(), "user should be a member of the team"
@@ -437,7 +437,7 @@ def test_user_invites(
         {"emails": [user3.email], "level": Membership.ADMIN},
         content_type="application/json",
     )
-    assert res.status_code == 201
+    assert res.status_code == 200
 
     # retrieve all invites for user2
     client.force_login(user2)
@@ -464,7 +464,7 @@ def test_accept_team_invite(
         {"emails": [user2.email], "level": Membership.ADMIN},
         content_type="application/json",
     )
-    assert res.status_code == 201
+    assert res.status_code == 200
     invite_id = res.json()["invite_ids"][0]
     assert Invite.objects.get(pk=invite_id).status == Invite.OPEN
 
@@ -500,7 +500,7 @@ def test_decline_team_invite(
         {"emails": [user2.email], "level": Membership.ADMIN},
         content_type="application/json",
     )
-    assert res.status_code == 201
+    assert res.status_code == 200
     invite_id = res.json()["invite_ids"][0]
     assert Invite.objects.get(pk=invite_id).status == Invite.OPEN
 
@@ -530,7 +530,7 @@ def test_creating_team_with_name_and_emails(
         },
         content_type="application/json",
     )
-    assert res.status_code == 201
+    assert res.status_code == 200
     team_id = res.json()["id"]
     team = Team.objects.get(id=team_id)
 

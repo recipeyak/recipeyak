@@ -32,7 +32,7 @@ def test_step_create(client: Client, recipe: Recipe, user: User, team: Team) -> 
     res = client.post(
         f"/api/v1/recipes/{recipe.id}/steps/", data, content_type="application/json"
     )
-    assert res.status_code == 201
+    assert res.status_code == 200
     assert res.json()["text"] == data["text"]
 
     assert RecipeChange.objects.count() == 1, "We should have our step creation change."
@@ -224,7 +224,7 @@ def test_ingredient_create(
         ingredient_data,
         content_type="application/json",
     )
-    assert res.status_code == 201
+    assert res.status_code == 200
 
     assert RecipeChange.objects.count() == 1
     change: RecipeChange = RecipeChange.objects.get()

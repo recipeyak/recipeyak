@@ -7,7 +7,6 @@ from pydantic import BaseModel
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 
 
 class TeamListItem(BaseModel):
@@ -18,9 +17,7 @@ class TeamListItem(BaseModel):
 
 
 @endpoint()
-def team_list_view(
-    request: AuthedHttpRequest, params: None
-) -> JsonResponse[list[TeamListItem]]:
+def team_list_view(request: AuthedHttpRequest, params: None) -> list[TeamListItem]:
     with connection.cursor() as cursor:
         cursor.execute(
             """
@@ -47,8 +44,7 @@ GROUP BY
             {"user_id": request.user.id},
         )
         teams_raw = cursor.fetchall()
-    teams = [
+    return [
         TeamListItem(id=id, name=name, created=created, members=members)
         for id, name, created, members in teams_raw
     ]
-    return JsonResponse(teams)

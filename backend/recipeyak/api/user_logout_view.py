@@ -5,7 +5,6 @@ from django.contrib.auth import logout
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 
 
 class UserLogoutResponse(pydantic.BaseModel):
@@ -13,9 +12,7 @@ class UserLogoutResponse(pydantic.BaseModel):
 
 
 @endpoint()
-def user_logout_view(
-    request: AuthedHttpRequest, params: None
-) -> JsonResponse[UserLogoutResponse]:
+def user_logout_view(request: AuthedHttpRequest, params: None) -> UserLogoutResponse:
     """
     Calls Django logout method and logs out current User object.
 
@@ -23,6 +20,4 @@ def user_logout_view(
     """
     logout(request)
 
-    return JsonResponse(
-        UserLogoutResponse(detail="Successfully logged out."), status=200
-    )
+    return UserLogoutResponse(detail="Successfully logged out.")

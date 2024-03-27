@@ -5,7 +5,6 @@ from typing_extensions import TypedDict
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.models import Membership, get_team
 
 
@@ -30,7 +29,6 @@ def get_cal_settings(
 @endpoint()
 def calendar_settings_retrieve_view(
     request: AuthedHttpRequest, params: None
-) -> JsonResponse[CalendarSettingsSerializer]:
+) -> CalendarSettingsSerializer:
     team_id = get_team(request.user).id
-    settings = get_cal_settings(request=request, team_id=team_id)
-    return JsonResponse(settings)
+    return get_cal_settings(request=request, team_id=team_id)

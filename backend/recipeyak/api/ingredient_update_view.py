@@ -8,7 +8,6 @@ from pydantic import StringConstraints
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import Params
 from recipeyak.api.serializers.recipe import (
     IngredientSerializer,
@@ -32,7 +31,7 @@ class IngredientUpdateParams(Params):
 @endpoint()
 def ingredient_update_view(
     request: AuthedHttpRequest, params: IngredientUpdateParams
-) -> JsonResponse[IngredientSerializer]:
+) -> IngredientSerializer:
     team = get_team(request.user)
     ingredient = get_object_or_404(
         filter_ingredients(team=team), pk=params.ingredient_id
@@ -62,4 +61,4 @@ def ingredient_update_view(
 
     publish_recipe(recipe_id=ingredient.recipe_id, team_id=team.id)
 
-    return JsonResponse(serialize_ingredient(ingredient))
+    return serialize_ingredient(ingredient)

@@ -4,7 +4,6 @@ import pydantic
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.models.user import User, get_avatar_url
 
 
@@ -45,7 +44,5 @@ def serialize_user(user: User) -> UserSerializer:
 
 
 @endpoint()
-def user_retrieve_view(
-    request: AuthedHttpRequest, params: None
-) -> JsonResponse[UserSerializer]:
-    return JsonResponse(serialize_user(request.user))
+def user_retrieve_view(request: AuthedHttpRequest, params: None) -> UserSerializer:
+    return serialize_user(request.user)

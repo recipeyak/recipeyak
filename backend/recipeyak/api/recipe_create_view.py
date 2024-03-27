@@ -13,7 +13,6 @@ from recipeyak import ordering
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import Params
 from recipeyak.api.serializers.recipe import (
     RecipeSerializer,
@@ -99,7 +98,7 @@ def _create_recipe_from_scrape(*, scrape: ScrapeResult, team: Team) -> Recipe:
 @endpoint()
 def recipe_create_view(
     request: AuthedHttpRequest, params: RecipeCreateParams
-) -> JsonResponse[RecipeSerializer]:
+) -> RecipeSerializer:
     log = logger.bind(user_id=request.user.id)
 
     # validate params
@@ -137,7 +136,4 @@ def recipe_create_view(
         # transaction
         save_recipe_version(recipe_id=recipe.id, actor=request.user)
 
-    return JsonResponse(
-        serialize_recipe(recipe=recipe),
-        status=201,
-    )
+    return serialize_recipe(recipe)

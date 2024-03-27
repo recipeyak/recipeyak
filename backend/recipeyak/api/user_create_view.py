@@ -10,7 +10,6 @@ from pydantic import AfterValidator, model_validator
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AnonymousHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import Params
 from recipeyak.api.user_retrieve_view import UserSerializer, serialize_user
 from recipeyak.models.team import Team
@@ -48,7 +47,7 @@ class UserCreateResponse(pydantic.BaseModel):
 @endpoint(auth_required=False)
 def user_create_view(
     request: AnonymousHttpRequest, params: UserCreateParams
-) -> JsonResponse[UserCreateResponse]:
+) -> UserCreateResponse:
     with transaction.atomic():
         team = Team.objects.create(name="Personal")
         user = User()
@@ -60,4 +59,4 @@ def user_create_view(
 
     login(request, user)
 
-    return JsonResponse(UserCreateResponse(user=serialize_user(user)), status=201)
+    return UserCreateResponse(user=serialize_user(user))

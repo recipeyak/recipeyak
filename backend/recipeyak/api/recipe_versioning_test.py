@@ -21,7 +21,7 @@ def test_create_recipe_saves_version() -> None:
         },
         content_type="application/json",
     )
-    assert res.status_code == 201
+    assert res.status_code == 200
     assert RecipeHistorical.objects.filter(recipe=res.json()["id"]).exists()
 
 
@@ -59,7 +59,7 @@ def test_section_create_saves_version() -> None:
         content_type="application/json",
     )
 
-    assert res.status_code == 201
+    assert res.status_code == 200
     assert RecipeHistorical.objects.filter(recipe_id=recipe.id).count() == before + 1
 
 
@@ -114,7 +114,7 @@ def test_step_create_saves_version() -> None:
         content_type="application/json",
     )
 
-    assert res.status_code == 201
+    assert res.status_code == 200
     assert RecipeHistorical.objects.filter(recipe_id=recipe.id).count() == before + 1
 
 
@@ -174,7 +174,7 @@ def test_ingredient_create_saves_version() -> None:
         content_type="application/json",
     )
 
-    assert res.status_code == 201
+    assert res.status_code == 200
     assert RecipeHistorical.objects.filter(recipe_id=recipe.id).count() == before + 1
 
 

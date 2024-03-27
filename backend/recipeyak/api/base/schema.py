@@ -312,15 +312,8 @@ def _remove_titles(
 def _route_to_endpoint(route: Route) -> _Endpoint:
     assert isinstance(route.method, str)
     endpoint_types = typing.get_type_hints(route.view)
-    # grab the return type: JsonResponse[T]
-    return_class = endpoint_types.pop("return")
-    # get the type param: T
-    try:
-        return_type = typing.get_args(return_class)[0]
-    except IndexError as e:
-        raise ValueError(
-            f"invalid schema, you must specify a return type param: {route.view.__name__}"
-        ) from e
+    # grab the return type: -> T
+    return_type = endpoint_types.pop("return")
     if return_type is type(None):
         return_type_schema = None
     else:

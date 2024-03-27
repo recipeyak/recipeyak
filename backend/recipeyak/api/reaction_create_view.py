@@ -8,7 +8,6 @@ from psycopg2.errors import UniqueViolation
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import Params
 from recipeyak.api.serializers.recipe import ReactionSerializer, serialize_reactions
 from recipeyak.models import filter_notes, get_team, user_reactions
@@ -26,7 +25,7 @@ class ReactionCreateParams(Params):
 @endpoint()
 def reaction_create_view(
     request: AuthedHttpRequest, params: ReactionCreateParams
-) -> JsonResponse[ReactionSerializer]:
+) -> ReactionSerializer:
     team = get_team(request.user)
 
     note = get_object_or_404(filter_notes(team=team), pk=params.note_id)
@@ -42,4 +41,4 @@ def reaction_create_view(
         else:
             raise
     publish_recipe(recipe_id=note.recipe_id, team_id=team.id)
-    return JsonResponse(next(iter(serialize_reactions([reaction]))))
+    return next(iter(serialize_reactions([reaction])))

@@ -9,7 +9,6 @@ from django.utils import timezone
 from recipeyak import user_agent
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 
 
 class DeviceResponse(pydantic.BaseModel):
@@ -29,7 +28,7 @@ class SessionListItem(pydantic.BaseModel):
 @endpoint()
 def session_list_view(
     request: AuthedHttpRequest, params: None
-) -> JsonResponse[list[SessionListItem]]:
+) -> list[SessionListItem]:
     query_set = request.user.session_set
 
     qs = query_set.filter(expire_date__gt=timezone.now()).order_by("-last_activity")
@@ -48,4 +47,4 @@ def session_list_view(
             )
         )
 
-    return JsonResponse(sessions)
+    return sessions

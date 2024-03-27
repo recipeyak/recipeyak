@@ -8,7 +8,6 @@ from pydantic import StringConstraints
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import Params
 from recipeyak.api.serializers.recipe import StepSerializer, serialize_step
 from recipeyak.models import ChangeType, RecipeChange, Step, filter_recipes, get_team
@@ -25,7 +24,7 @@ class StepCreateParams(Params):
 @endpoint()
 def step_create_view(
     request: AuthedHttpRequest, params: StepCreateParams
-) -> JsonResponse[StepSerializer]:
+) -> StepSerializer:
     team = get_team(request.user)
     recipe = get_object_or_404(filter_recipes(team=team), pk=params.recipe_id)
 
@@ -43,4 +42,4 @@ def step_create_view(
         save_recipe_version(recipe_id=params.recipe_id, actor=request.user)
 
     publish_recipe(recipe_id=recipe.id, team_id=recipe.team_id)
-    return JsonResponse(serialize_step(step), status=201)
+    return serialize_step(step)

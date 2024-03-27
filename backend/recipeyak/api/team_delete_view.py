@@ -7,7 +7,6 @@ from django.shortcuts import get_object_or_404
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.request import AuthedHttpRequest
-from recipeyak.api.base.response import JsonResponse
 from recipeyak.api.base.serialization import Params
 from recipeyak.models import Team
 from recipeyak.models.membership import Membership
@@ -29,9 +28,7 @@ class TeamDeleteParams(Params):
 
 
 @endpoint()
-def team_delete_view(
-    request: AuthedHttpRequest, params: TeamDeleteParams
-) -> JsonResponse[None]:
+def team_delete_view(request: AuthedHttpRequest, params: TeamDeleteParams) -> None:
     with transaction.atomic():
         team = get_object_or_404(get_teams(request.user), pk=params.team_id)
         if (
@@ -43,4 +40,3 @@ def team_delete_view(
                 code="forbidden", message="You cannot delete this team.", status=403
             )
         team.delete()
-        return JsonResponse(None, status=204)
