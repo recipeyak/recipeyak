@@ -2,7 +2,7 @@ import React from "react"
 import { ChevronLeft, ChevronRight, Share, Star, X } from "react-feather"
 
 import { Button } from "@/components/Buttons"
-import { formatImg } from "@/url"
+import { buildGallerySrcSetUrls, formatImg } from "@/url"
 
 function GalleryButton({
   children,
@@ -18,21 +18,6 @@ function GalleryButton({
       {children}
     </Button>
   )
-}
-
-function buildSrcSetUrls(u: string): string {
-  const t = new URL(u)
-  let srcSet = u
-  for (const [width, quality] of [
-    ["3000", "30"],
-    ["2000", "40"],
-  ]) {
-    t.searchParams.set("w", width)
-    t.searchParams.set("q", quality)
-    srcSet = t.toString() + ` ${width}w, ` + srcSet
-  }
-  srcSet = formatImg(u) + ` 1200w, ` + srcSet
-  return srcSet
 }
 
 export const Gallery = (props: {
@@ -99,7 +84,9 @@ export const Gallery = (props: {
                   // no image until it loads a larger image. By setting the `src`
                   // and waiting to set `srcset`, we'll see an image immediately in
                   // the gallery, served from cache.
-                  e.currentTarget.srcset = buildSrcSetUrls(props.imageUrl)
+                  e.currentTarget.srcset = buildGallerySrcSetUrls(
+                    props.imageUrl,
+                  )
                 }
               }}
               onClick={onClick}
