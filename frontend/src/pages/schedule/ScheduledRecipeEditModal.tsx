@@ -46,7 +46,7 @@ function RecipeItem({
         height={60}
         rounded
         grayscale={archived}
-        size="large"
+        size="small"
       />
       <div>
         <div

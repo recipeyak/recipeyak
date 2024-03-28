@@ -187,7 +187,7 @@ function RecipeItem({
       }}
     >
       <Image
-        size="large"
+        size="small"
         sources={
           sources
             ? { backgroundUrl: sources.background_url, url: sources.url }
