@@ -42,23 +42,11 @@ function twicpic(url: string, transforms: Record<string, string>): string {
  * 1152x864 for gallery
  */
 export function formatImg(url: string) {
-  if (IMAGE_TRANSFORM_FORMAT === "imgix") {
-    return imigx(url, { w: "1200", q: "30", fit: "clip" })
-  }
-  if (IMAGE_TRANSFORM_FORMAT === "twicpics") {
-    return twicpic(url, { resize: "1200", quality: "30" })
-  }
-  throw Error(`Unexpected transform format:${IMAGE_TRANSFORM_FORMAT}`)
+  return formatImgWidth(url, { width: "1200", quality: "30" })
 }
 
 export function formatImgSmall(url: string) {
-  if (IMAGE_TRANSFORM_FORMAT === "imgix") {
-    return imigx(url, { w: "200", q: "100", fit: "clip" })
-  }
-  if (IMAGE_TRANSFORM_FORMAT === "twicpics") {
-    return twicpic(url, { resize: "200", quality: "100" })
-  }
-  throw Error(`Unexpected transform format:${IMAGE_TRANSFORM_FORMAT}`)
+  return formatImgWidth(url, { width: "200", quality: "100" })
 }
 
 /**
@@ -72,4 +60,29 @@ export function formatImgOpenGraph(url: string): string {
     return twicpic(url, { cover: "1200x910", quality: "30" })
   }
   throw Error(`Unexpected transform format:${IMAGE_TRANSFORM_FORMAT}`)
+}
+
+function formatImgWidth(
+  url: string,
+  params: { width: string; quality: string },
+): string {
+  if (IMAGE_TRANSFORM_FORMAT === "imgix") {
+    return imigx(url, { w: params.width, q: params.quality, fit: "clip" })
+  }
+  if (IMAGE_TRANSFORM_FORMAT === "twicpics") {
+    return twicpic(url, { resize: params.width, quality: params.quality })
+  }
+  throw Error(`Unexpected transform format:${IMAGE_TRANSFORM_FORMAT}`)
+}
+
+export function buildGallerySrcSetUrls(u: string): string {
+  let srcSet = u
+  for (const [width, quality] of [
+    ["3000", "30"],
+    ["2000", "40"],
+  ]) {
+    srcSet = formatImgWidth(u, { width, quality }) + ` ${width}w, ` + srcSet
+  }
+  srcSet = formatImg(u) + ` 1200w, ` + srcSet
+  return srcSet
 }
