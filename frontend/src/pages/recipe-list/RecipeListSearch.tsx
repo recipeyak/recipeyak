@@ -1,4 +1,5 @@
 import { snakeCase } from "lodash-es"
+import { Heart } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { useHistory, useLocation } from "react-router"
 
@@ -125,7 +126,6 @@ function RecipesToggle({
   facetFilters: FacetFilters
   onChange: (_: Partial<FacetFilters>) => void
 }) {
-  const user = useUser()
   return (
     <div>
       <div className="font-medium">Recipes</div>
@@ -145,24 +145,6 @@ function RecipesToggle({
           }}
         />
         <label htmlFor="archived_recipes">Archived recipes</label>
-      </div>
-      <div className="flex items-center gap-2">
-        {/* eslint-disable-next-line react/forbid-elements */}
-        <input
-          id="favorite_recipes"
-          type="checkbox"
-          checked={facetFilters.AndFavoriteByUserId != null}
-          onChange={(event) => {
-            const userId = user.id?.toString() ?? null
-            const isRefined = event.target.checked
-            if (isRefined) {
-              onChange({ AndFavoriteByUserId: userId })
-            } else {
-              onChange({ AndFavoriteByUserId: null })
-            }
-          }}
-        />
-        <label htmlFor="favorite_recipes">My favorite recipes</label>
       </div>
       <div className="flex items-center gap-2">
         {/* eslint-disable-next-line react/forbid-elements */}
@@ -402,6 +384,7 @@ function useSearchState() {
 export function RecipeSearchList() {
   const searchTools = useSearchTools()
   const [searchBy, setSearchBy] = useSearchByState()
+  const user = useUser()
   const [query, setQuery] = useSearchState()
   const [facetFilters, setFacetFilters] = useFacetFiltersState()
 
@@ -447,9 +430,32 @@ export function RecipeSearchList() {
             showArchived={showArchived}
           />
 
-          <Button size="small" onClick={searchTools.toggle}>
-            {searchTools.enabled ? "Hide Search Tools" : "Search Tools"}
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              className="h-full !px-2"
+              onClick={() => {
+                const userId = user.id?.toString() ?? null
+                if (facetFilters.AndFavoriteByUserId) {
+                  setFacetFilters({ AndFavoriteByUserId: null })
+                } else {
+                  setFacetFilters({ AndFavoriteByUserId: userId })
+                }
+              }}
+            >
+              {facetFilters.AndFavoriteByUserId ? (
+                <Heart
+                  size={18}
+                  fill="rgb(255, 48, 64"
+                  stroke={"rgb(255, 48, 64"}
+                />
+              ) : (
+                <Heart size={18} />
+              )}
+            </Button>
+            <Button size="small" onClick={searchTools.toggle}>
+              {searchTools.enabled ? "Hide Search Tools" : "Search Tools"}
+            </Button>
+          </div>
         </div>
 
         {searchTools.enabled && (
