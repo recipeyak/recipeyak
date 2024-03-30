@@ -374,6 +374,7 @@ _DEPARTMENT_MAPPING = {
         "cornstarch",
         "noodles",
         "spaghetti",
+        "pastina",
         "split peas",
     },
     "spices": {
@@ -387,6 +388,7 @@ _DEPARTMENT_MAPPING = {
         "bati masala",
         "five-spice powder",
         "mustard powder",
+        "garlic powder",
         "allspice",
         "pepper",
         "bay leaves",
