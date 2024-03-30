@@ -1,12 +1,11 @@
 from datetime import date
-from decimal import Decimal
-from fractions import Fraction
 
 import pydantic
 from django.core.exceptions import ValidationError
 from django.db.models import QuerySet
 from typing_extensions import TypedDict
 
+from recipeyak.api.base.decimal import fmt_decimal
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.exceptions import APIError
 from recipeyak.api.base.json import json_dumps
@@ -60,17 +59,6 @@ class ShoppinglistRetrieveResponse(TypedDict):
     recipes: list[ShoppingListRecipe]
 
 
-def _fmt_small_decimal(d: Decimal) -> str:
-    """
-    0.5 -> 1/2
-    0.333333 -> 1/3
-    """
-    if d < 1:
-        num, denom = Fraction(d).limit_denominator().as_integer_ratio()
-        return f"{num}/{denom}"
-    return str(d)
-
-
 @endpoint()
 def shoppinglist_retrieve_view(
     request: AuthedHttpRequest, params: ShoppinglistRetrieveParams
@@ -99,7 +87,7 @@ def shoppinglist_retrieve_view(
         ingredient_mapping[ingredient] = {
             "quantities": [
                 {
-                    "quantity": _fmt_small_decimal(q.quantity),
+                    "quantity": fmt_decimal(q.quantity),
                     "unit": q.unit,
                     "unknown_unit": q.unknown_unit,
                 }

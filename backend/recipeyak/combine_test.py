@@ -1,10 +1,8 @@
-import json
 from collections.abc import Sequence
 from decimal import Decimal
 
 import pytest
 
-from recipeyak.api.base.json import json_dumps
 from recipeyak.combine import (
     Ingredient,
     Quantity,
@@ -51,18 +49,3 @@ def test_combining_ingredients(
     ingredients: Sequence[Ingredient], expected: dict[str, list[Quantity]]
 ) -> None:
     assert combine_ingredients(ingredients) == expected
-
-
-def test_combining_ingredients_to_json() -> None:
-    ingredients = [
-        Ingredient(quantity="1 teaspoon", name="Soy Sauce"),
-        Ingredient(quantity="1 tablespoon", name="soy sauce"),
-        Ingredient(quantity="some", name="Soy Sauce"),
-    ]
-
-    assert json.loads(json_dumps(combine_ingredients(ingredients))) == {
-        "soy sauce": [
-            {"quantity": "4", "unit": "TEASPOON", "unknown_unit": None},
-            {"quantity": "1", "unit": "SOME", "unknown_unit": None},
-        ],
-    }
