@@ -1,0 +1,53 @@
+# name: test_shoppinglist_rounding_edge_cases
+  dict({
+    'ingredients': dict({
+      'egg': dict({
+        'category': 'dairy',
+        'quantities': list([
+          dict({
+            'quantity': '1',
+            'unit': 'POUND',
+            'unknown_unit': None,
+          }),
+        ]),
+      }),
+      'soy sauce': dict({
+        'category': 'condiments',
+        'quantities': list([
+          dict({
+            'quantity': '2',
+            'unit': 'TABLESPOON',
+            'unknown_unit': None,
+          }),
+        ]),
+      }),
+      'sugar': dict({
+        'category': 'baking',
+        'quantities': list([
+          dict({
+            'quantity': '40',
+            'unit': 'TEASPOON',
+            'unknown_unit': None,
+          }),
+        ]),
+      }),
+      'vegetable oil': dict({
+        'category': 'condiments',
+        'quantities': list([
+          dict({
+            'quantity': '9.333',
+            'unit': 'TABLESPOON',
+            'unknown_unit': None,
+          }),
+        ]),
+      }),
+    }),
+    'recipes': list([
+      dict({
+        'recipeId': 2876,
+        'recipeName': 'Recipe name',
+        'scheduledRecipeId': 802,
+      }),
+    ]),
+  })
+# ---

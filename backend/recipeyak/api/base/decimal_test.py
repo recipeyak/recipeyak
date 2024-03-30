@@ -1,7 +1,6 @@
-import json
 from decimal import Decimal
 
-from recipeyak.api.base.json import json_dumps
+from recipeyak.api.base.decimal import fmt_decimal
 
 
 def test_decimal_encoding() -> None:
@@ -14,12 +13,14 @@ def test_decimal_encoding() -> None:
         "larger_than_float": Decimal("2000000.123456789"),
         # rounding errors
         "rounding_errors": Decimal("6.500000000000000000000000002"),
+        "fractions": Decimal("0.3333333333333333333333333333"),
     }
 
-    assert json.loads(json_dumps(data)) == {
+    assert {k: fmt_decimal(v) for k, v in data.items()} == {
         "whole_number": "750",
         "trailing_zeros": "4",
-        "decimal": "0.125",
-        "larger_than_float": "2000000.12345679",
+        "decimal": "1/8",
+        "fractions": "1/3",
+        "larger_than_float": "2000000.123",
         "rounding_errors": "6.5",
     }

@@ -1,6 +1,7 @@
 import json
 from datetime import date, timedelta
 from decimal import Decimal
+from typing import Any
 
 import pytest
 from django.test.client import Client
@@ -381,3 +382,31 @@ def test_fetching_shopping_list_with_small_decimals() -> None:
     assert res.status_code == 200
     rendered_quantity = res.json()["ingredients"]["flour"]["quantities"][0]["quantity"]
     assert rendered_quantity == "1/3"
+
+
+def test_shoppinglist_rounding_edge_cases(snapshot: Any) -> None:
+    client = Client()
+    user = create_user()
+    team = create_team(user=user)
+    recipe = create_recipe(team=team, user=user)
+    create_ingredient(
+        recipe=recipe, quantity="1/3 cup", name="vegetable oil", position="d"
+    )
+    create_ingredient(
+        recipe=recipe, quantity="4 Tablespoons", name="vegetable oil", position="f"
+    )
+
+    create_ingredient(recipe=recipe, quantity="4 teaspoons", name="sugar", position="g")
+    create_ingredient(recipe=recipe, quantity="3/4 cup", name="sugar", position="h")
+
+    client.force_login(user)
+
+    start = date(1976, 7, 6)
+    end = start + timedelta(days=1)
+
+    recipe.schedule(on=start, team=team, user=user)
+
+    res = client.get("/api/v1/shoppinglist/", {"start": start, "end": end})
+    assert res.status_code == 200
+    rendered_quantity = res.json()
+    assert rendered_quantity == snapshot()
