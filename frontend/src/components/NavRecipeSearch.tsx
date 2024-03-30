@@ -78,7 +78,7 @@ function SearchResultsPopover({
             }
             rounded
           />
-          <div className="flex flex-col">
+          <div className="flex flex-col overflow-x-hidden text-ellipsis whitespace-pre">
             <div
               className={clx(
                 "grow-0 overflow-x-hidden text-ellipsis whitespace-pre",
