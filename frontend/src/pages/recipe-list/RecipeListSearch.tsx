@@ -126,7 +126,6 @@ function RecipesToggle({
   facetFilters: FacetFilters
   onChange: (_: Partial<FacetFilters>) => void
 }) {
-  const user = useUser()
   return (
     <div>
       <div className="font-medium">Recipes</div>
