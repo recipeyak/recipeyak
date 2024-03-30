@@ -1,10 +1,8 @@
-import json
 from collections.abc import Sequence
 from decimal import Decimal
 
 import pytest
 
-from recipeyak.api.base.json import json_dumps
 from recipeyak.combine import (
     Ingredient,
     Quantity,

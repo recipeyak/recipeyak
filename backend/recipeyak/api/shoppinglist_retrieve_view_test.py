@@ -1,7 +1,6 @@
 import json
 from datetime import date, timedelta
 from decimal import Decimal
-from typing import Any
 
 import pytest
 from django.test.client import Client
