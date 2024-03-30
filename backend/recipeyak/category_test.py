@@ -5,7 +5,7 @@ from textwrap import dedent
 
 from syrupy.assertion import SnapshotAssertion
 
-from recipeyak.category import category
+from recipeyak.category import _DEPARTMENT_MAPPING, category
 
 
 def test_categorize_ingredients() -> None:
@@ -89,6 +89,7 @@ def test_categorize_ingredient_test_cases(snapshot: SnapshotAssertion) -> None:
     finely chopped cornichons or small kosher dill pickles
     finely grated ginger
     fish sauce
+    boti masala
     cloves garlic
     garlic cloves
     graham cracker crumbs
@@ -117,3 +118,14 @@ def test_categorize_ingredient_test_cases(snapshot: SnapshotAssertion) -> None:
     ).splitlines()
 
     assert sorted((w, category(w)) for w in cases) == snapshot()
+
+
+def test_no_overlap_between_categories() -> None:
+    mapping = {key: set(value) for key, value in _DEPARTMENT_MAPPING.items()}
+
+    for key, value in mapping.items():
+        for other_key, other_value in mapping.items():
+            if key == other_key:
+                continue
+            overlap = value & other_value
+            assert not overlap, f"{overlap} in {key} and {other_key}"
