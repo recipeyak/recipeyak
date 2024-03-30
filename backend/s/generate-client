@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -ex
+
+./.venv/bin/python3 -m recipeyak.api.base.schema
+./.venv/bin/python3 -m recipeyak.api.base.codegen

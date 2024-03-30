@@ -1832,6 +1832,9 @@
                         }
                       ]
                     },
+                    "user_favorite": {
+                      "type": "boolean"
+                    },
                     "tags": {
                       "anyOf": [
                         {
@@ -2159,6 +2162,7 @@
                     "modified",
                     "created",
                     "archived_at",
+                    "user_favorite",
                     "tags",
                     "primaryImage",
                     "versions"
@@ -2565,6 +2569,9 @@
                         }
                       ]
                     },
+                    "user_favorite": {
+                      "type": "boolean"
+                    },
                     "tags": {
                       "anyOf": [
                         {
@@ -2892,6 +2899,7 @@
                     "modified",
                     "created",
                     "archived_at",
+                    "user_favorite",
                     "tags",
                     "primaryImage",
                     "versions"
@@ -2996,6 +3004,17 @@
                       {
                         "format": "date-time",
                         "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null
+                  },
+                  "user_favorite": {
+                    "anyOf": [
+                      {
+                        "type": "boolean"
                       },
                       {
                         "type": "null"
@@ -3400,6 +3419,9 @@
                         }
                       ]
                     },
+                    "user_favorite": {
+                      "type": "boolean"
+                    },
                     "tags": {
                       "anyOf": [
                         {
@@ -3727,6 +3749,7 @@
                     "modified",
                     "created",
                     "archived_at",
+                    "user_favorite",
                     "tags",
                     "primaryImage",
                     "versions"

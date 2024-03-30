@@ -93,6 +93,7 @@ export function recipeCreate(params: {
     modified: string
     created: string
     archived_at: string | null
+    user_favorite: boolean
     tags: Array<string> | null
     primaryImage: {
       id: string

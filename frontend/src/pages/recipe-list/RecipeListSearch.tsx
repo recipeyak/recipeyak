@@ -9,6 +9,7 @@ import { useSearchRecipeFacets } from "@/queries/useSearchRecipeFacets"
 import { useSearchRecipes } from "@/queries/useSearchRecipes"
 import { useUserById } from "@/queries/useUserById"
 import { removeQueryParams, setQueryParams } from "@/querystring"
+import { useUser } from "@/useUser"
 
 function CustomRefinement({
   indexName,
@@ -124,6 +125,7 @@ function RecipesToggle({
   facetFilters: FacetFilters
   onChange: (_: Partial<FacetFilters>) => void
 }) {
+  const user = useUser()
   return (
     <div>
       <div className="font-medium">Recipes</div>
@@ -143,6 +145,24 @@ function RecipesToggle({
           }}
         />
         <label htmlFor="archived_recipes">Archived recipes</label>
+      </div>
+      <div className="flex items-center gap-2">
+        {/* eslint-disable-next-line react/forbid-elements */}
+        <input
+          id="favorite_recipes"
+          type="checkbox"
+          checked={facetFilters.AndFavoriteByUserId != null}
+          onChange={(event) => {
+            const userId = user.id?.toString() ?? null
+            const isRefined = event.target.checked
+            if (isRefined) {
+              onChange({ AndFavoriteByUserId: userId })
+            } else {
+              onChange({ AndFavoriteByUserId: null })
+            }
+          }}
+        />
+        <label htmlFor="favorite_recipes">My favorite recipes</label>
       </div>
       <div className="flex items-center gap-2">
         {/* eslint-disable-next-line react/forbid-elements */}
@@ -190,6 +210,7 @@ type FacetFilters = {
   AndCreatedById: string | null
   AndArchivedById: string | null
   AndScheduledById: string | null
+  AndFavoriteByUserId: string | null
   AndPrimaryImageCreatedById: string | null
 }
 
@@ -214,6 +235,8 @@ function serializeFacetFilters(
       filters.push(`archived_by_id:${value}`)
     } else if (key === "AndScheduledById" && value != null) {
       filters.push(`scheduled_by_id:${value}`)
+    } else if (key === "AndFavoriteByUserId" && value != null) {
+      filters.push(`favorite_by_user_id:${value}`)
     } else if (key === "AndPrimaryImageCreatedById" && value != null) {
       filters.push(`primary_image.created_by_id:${value}`)
     }
@@ -320,6 +343,7 @@ function useFacetFiltersState() {
       AndCreatedById: params.get("created_by_id"),
       AndArchivedById: params.get("archived_by_id"),
       AndScheduledById: params.get("scheduled_by_id"),
+      AndFavoriteByUserId: params.get("favorite_by_user_id"),
       AndPrimaryImageCreatedById: params.get("primary_image_created_by_id"),
     }
   })
@@ -354,6 +378,11 @@ function useFacetFiltersState() {
     if ("AndPrimaryImageCreatedById" in x) {
       setQueryParams(history, {
         primary_image_created_by_id: x.AndPrimaryImageCreatedById ?? undefined,
+      })
+    }
+    if ("AndFavoriteByUserId" in x) {
+      setQueryParams(history, {
+        favorite_by_user_id: x.AndFavoriteByUserId ?? undefined,
       })
     }
     setFacetFilterState((s) => ({ ...s, ...x }))

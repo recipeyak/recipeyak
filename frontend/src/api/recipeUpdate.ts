@@ -9,6 +9,7 @@ export function recipeUpdate(params: {
   servings?: string | null
   source?: string | null
   archived_at?: Date | null
+  user_favorite?: boolean | null
   primaryImageId?: string | null
   recipe_id: number
 }) {
@@ -99,6 +100,7 @@ export function recipeUpdate(params: {
     modified: string
     created: string
     archived_at: string | null
+    user_favorite: boolean
     tags: Array<string> | null
     primaryImage: {
       id: string

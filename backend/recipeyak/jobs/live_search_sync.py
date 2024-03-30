@@ -92,6 +92,11 @@ from recipe_index_queue
                         and created_by_id is not null
                         and recipe_id = core_recipe.id
                 ),
+                'favorite_by_user_id': (
+                    select json_agg(distinct user_id)
+                    from recipe_favorite
+                    where recipe_id = core_recipe.id
+                ),
                 'created_by_id': (
                     select
                         created_by_id

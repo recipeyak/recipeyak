@@ -136,4 +136,4 @@ def recipe_create_view(
         # transaction
         save_recipe_version(recipe_id=recipe.id, actor=request.user)
 
-    return serialize_recipe(recipe)
+    return serialize_recipe(recipe, user=request.user)
