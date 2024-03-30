@@ -40,6 +40,7 @@ _DEPARTMENT_MAPPING = {
         "apricots",
         "sage",
         "tarragon",
+        "yamaimo",
         "romaine",
         "habanero chile",
         "snow pea",
@@ -74,6 +75,7 @@ _DEPARTMENT_MAPPING = {
         "broccoli",
         "berries",
         "leeks",
+        "guacamole",
         "ancho chiles",
         "chipotle chiles",
         "pequin chile",
@@ -99,6 +101,7 @@ _DEPARTMENT_MAPPING = {
         "thai chile",
         "green chillies",
         "green chiles",
+        "bird eye chillies",
         "carrot",
         "chive",
         "avocado",
@@ -114,6 +117,7 @@ _DEPARTMENT_MAPPING = {
         "shallot",
         "rosemary",
         "apple",
+        "pineapple",
         "banana",
         "kale",
         "cilantro",
@@ -139,6 +143,8 @@ _DEPARTMENT_MAPPING = {
     },
     "meat": {
         "chicken",
+        "shrimp",
+        "mussels",
         "beef",
         "pepperoni",
         "pork",
@@ -213,6 +219,7 @@ _DEPARTMENT_MAPPING = {
         "coca powder",
         "baking soda",
         "baking powder",
+        "vegetable shortening",
         "malted milk powder",
         "corn syrup",
         "coconut sugar",
@@ -226,6 +233,7 @@ _DEPARTMENT_MAPPING = {
         "pie dough",
         "pie crust",
         "pie shell",
+        "frozen gyoza",
     },
     "bread": {
         "bread",
@@ -261,6 +269,8 @@ _DEPARTMENT_MAPPING = {
         "can San Marzano tomatoes",
         "pumpkin purée",
         "marinara sauce",
+        "arrabbiata sauce",
+        "oyster sauce",
         "tomato paste",
         "tuna",
         "anchovies",
@@ -286,8 +296,10 @@ _DEPARTMENT_MAPPING = {
         "fish sauce",
         "gochujang",
         "salsa",
+        "chimichurri",
         "pickle",
         "pizza sauce",
+        "aioli",
         "mayo",
         "mayonnaise",
         "mango chutney",
@@ -334,6 +346,7 @@ _DEPARTMENT_MAPPING = {
         "breadcrumbs",
         "quinoa",
         "raisins",
+        "matcha",
         "masa harina",
         "polenta",
         "cornmeal",
@@ -357,6 +370,8 @@ _DEPARTMENT_MAPPING = {
         "gelatin",
         "bati masala",
         "amaranth",
+        "katsuobushi",
+        "ao nori",
         "barley",
         "farro",
         "ramen",
@@ -378,12 +393,15 @@ _DEPARTMENT_MAPPING = {
         "split peas",
     },
     "spices": {
+        "asafetida",
         "cinnamon",
         "curry powder",
         "sumac",
         "peppercorns",
+        "za'atar",
         "paprika",
         "salt",
+        "furikake",
         "caraway seeds",
         "bati masala",
         "five-spice powder",
@@ -497,6 +515,7 @@ def category(ingredient: str) -> str:
         .replace(",", "")
         .replace(")", "")
         .replace("(", "")
+        .replace("’", "'")
     )
     if not res:
         return "unknown"
