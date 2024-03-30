@@ -113,6 +113,10 @@
       'produce',
     ),
     tuple(
+      'boti masala',
+      'spices',
+    ),
+    tuple(
       'bulk hot or sweet breakfast sausage or Italian sausage',
       'meat',
     ),
