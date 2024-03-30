@@ -44,9 +44,7 @@
     }),
     'recipes': list([
       dict({
-        'recipeId': 2876,
         'recipeName': 'Recipe name',
-        'scheduledRecipeId': 802,
       }),
     ]),
   })

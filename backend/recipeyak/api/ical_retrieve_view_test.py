@@ -1,9 +1,9 @@
 from datetime import date
-from typing import Any
 from urllib.parse import urlparse
 
 import pytest
 from django.test.client import Client
+from syrupy.assertion import SnapshotAssertion
 
 from recipeyak.models import Recipe, ScheduledRecipe, Team, User, get_random_ical_id
 from recipeyak.models.membership import Membership
@@ -67,7 +67,7 @@ def test_ical_ids_consistent(
 
 
 def test_ical_view_with_correct_id(
-    client: Client, user: User, recipe: Recipe, team: Team, snapshot: Any
+    client: Client, user: User, recipe: Recipe, team: Team, snapshot: SnapshotAssertion
 ) -> None:
     """
     When the client passes in the correct id we should return the ical data.

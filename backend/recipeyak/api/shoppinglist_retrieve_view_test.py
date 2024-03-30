@@ -5,6 +5,8 @@ from typing import Any
 
 import pytest
 from django.test.client import Client
+from syrupy.assertion import SnapshotAssertion
+from syrupy.filters import props
 
 from recipeyak.combine import Ingredient as IngredientCumin
 from recipeyak.combine import (
@@ -384,7 +386,7 @@ def test_fetching_shopping_list_with_small_decimals() -> None:
     assert rendered_quantity == "1/3"
 
 
-def test_shoppinglist_rounding_edge_cases(snapshot: Any) -> None:
+def test_shoppinglist_rounding_edge_cases(snapshot: SnapshotAssertion) -> None:
     client = Client()
     user = create_user()
     team = create_team(user=user)
@@ -409,4 +411,4 @@ def test_shoppinglist_rounding_edge_cases(snapshot: Any) -> None:
     res = client.get("/api/v1/shoppinglist/", {"start": start, "end": end})
     assert res.status_code == 200
     rendered_quantity = res.json()
-    assert rendered_quantity == snapshot()
+    assert rendered_quantity == snapshot(exclude=props("recipeId", "scheduledRecipeId"))
