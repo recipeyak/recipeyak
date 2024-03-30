@@ -18,6 +18,7 @@ from recipeyak.models import (
     filter_recipe_or_404,
     get_team,
 )
+from recipeyak.models.recipe_favorite import RecipeFavorite
 from recipeyak.models.upload import Upload
 from recipeyak.realtime import publish_recipe
 from recipeyak.versioning import save_recipe_version
@@ -31,6 +32,7 @@ class RecipeUpdateParams(Params):
     servings: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
     source: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
     archived_at: datetime | None = None
+    user_favorite: bool | None = None
 
     # attributes requiring custom handling.
     primaryImageId: str | None = None
@@ -81,6 +83,12 @@ def recipe_update_view(
                 recipe=recipe,
             ).save()
 
+        if params.user_favorite is not None:
+            if params.user_favorite:
+                RecipeFavorite.objects.get_or_create(recipe=recipe, user=request.user)
+            else:
+                RecipeFavorite.objects.filter(recipe=recipe, user=request.user).delete()
+
         for field in provided_fields & {
             "name",
             "author",
@@ -124,4 +132,4 @@ def recipe_update_view(
 
     team = get_team(request.user)
     recipe = filter_recipe_or_404(team=team, recipe_id=params.recipe_id)
-    return serialize_recipe(recipe)
+    return serialize_recipe(recipe, user=request.user)

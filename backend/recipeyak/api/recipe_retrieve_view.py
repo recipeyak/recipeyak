@@ -46,4 +46,4 @@ def recipe_retrieve_view(
             {"user_id": request.user.id, "recipe_id": recipe.id},
         )
 
-    return serialize_recipe(recipe)
+    return serialize_recipe(recipe, user=request.user)

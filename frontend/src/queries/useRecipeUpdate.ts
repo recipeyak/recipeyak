@@ -29,6 +29,11 @@ function toggleImageStar(
     })
   })
 }
+function toggleUserFavorite(prev: Recipe, user_favorite: boolean): Recipe {
+  return produce(prev, (recipe) => {
+    recipe.user_favorite = user_favorite
+  })
+}
 
 export function useRecipeUpdate() {
   const queryClient = useQueryClient()
@@ -48,9 +53,23 @@ export function useRecipeUpdate() {
         source?: string | null
         primaryImageId?: string | null
         archived_at?: Date | null
+        user_favorite?: boolean | null
       }
     }) => recipeUpdate({ recipe_id: recipeId, ...update }),
     onMutate: (vars) => {
+      if (vars.update.user_favorite != null) {
+        const userFavorite = vars.update.user_favorite
+        cacheUpsertRecipe(queryClient, {
+          teamId,
+          recipeId: vars.recipeId,
+          updater: (prev) => {
+            if (prev == null) {
+              return prev
+            }
+            return toggleUserFavorite(prev, userFavorite)
+          },
+        })
+      }
       if (vars.update.primaryImageId !== undefined) {
         const primaryImageId = vars.update.primaryImageId
         cacheUpsertRecipe(queryClient, {
@@ -86,6 +105,19 @@ export function useRecipeUpdate() {
               return prev
             }
             return toggleImageStar(prev, primaryImageId)
+          },
+        })
+      }
+      if (vars.update.user_favorite != null) {
+        const userFavorite = vars.update.user_favorite
+        cacheUpsertRecipe(queryClient, {
+          teamId,
+          recipeId: vars.recipeId,
+          updater: (prev) => {
+            if (prev == null) {
+              return prev
+            }
+            return toggleUserFavorite(prev, userFavorite)
           },
         })
       }

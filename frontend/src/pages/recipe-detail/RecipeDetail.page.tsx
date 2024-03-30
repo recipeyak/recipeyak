@@ -1,5 +1,6 @@
 import { usePresence } from "ably/react"
 import { flatten, last, sortBy } from "lodash-es"
+import { Heart } from "lucide-react"
 import React, { useEffect, useMemo, useState } from "react"
 import { RouteComponentProps, useHistory } from "react-router"
 import { Link } from "react-router-dom"
@@ -590,6 +591,7 @@ function RecipeInfo(props: {
   const [showEditor, setShowEditor] = useState(false)
   const inlineLayout = !props.recipe.primaryImage && !props.editingEnabled
   const user = useUserFetch()
+  const updateRecipe = useRecipeUpdate()
 
   return (
     <>
@@ -600,18 +602,40 @@ function RecipeInfo(props: {
         )}
       >
         <div className="flex w-full justify-between pr-4">
-          <RecipeTitleDropdown
-            recipeIsArchived={props.recipe.archived_at != null}
-            recipeId={props.recipe.id}
-            recipeAuthor={props.recipe.author}
-            versions={props.recipe.versions}
-            recipeImageUrl={props.recipe.primaryImage}
-            recipeName={props.recipe.name}
-            recipeIngredients={props.recipe.ingredients}
-            recipeRecentScheduleHistory={props.recipe.recentSchedules}
-            editingEnabled={props.editingEnabled}
-            toggleEditing={props.toggleEditMode}
-          />
+          <div className="flex flex-wrap items-center gap-2">
+            <RecipeTitleDropdown
+              recipeIsArchived={props.recipe.archived_at != null}
+              recipeId={props.recipe.id}
+              recipeAuthor={props.recipe.author}
+              versions={props.recipe.versions}
+              recipeImageUrl={props.recipe.primaryImage}
+              recipeName={props.recipe.name}
+              recipeIngredients={props.recipe.ingredients}
+              recipeRecentScheduleHistory={props.recipe.recentSchedules}
+              editingEnabled={props.editingEnabled}
+              toggleEditing={props.toggleEditMode}
+            />
+
+            <Button
+              className="h-full !px-2"
+              onClick={() => {
+                updateRecipe.mutate({
+                  update: { user_favorite: !props.recipe.user_favorite },
+                  recipeId: props.recipe.id,
+                })
+              }}
+            >
+              {props.recipe.user_favorite ? (
+                <Heart
+                  size={18}
+                  fill="rgb(255, 48, 64"
+                  stroke={"rgb(255, 48, 64"}
+                />
+              ) : (
+                <Heart size={18} />
+              )}
+            </Button>
+          </div>
           {user.data && (
             <RecipePresence recipeId={props.recipe.id} user={user.data} />
           )}

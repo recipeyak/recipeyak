@@ -17,6 +17,7 @@ from recipeyak.models import (
     User,
 )
 from recipeyak.models.reaction import Reaction
+from recipeyak.models.recipe_favorite import RecipeFavorite
 from recipeyak.models.timeline_event import TimelineEvent
 from recipeyak.models.upload import Upload
 from recipeyak.models.user import get_avatar_url
@@ -263,6 +264,7 @@ class RecipeSerializer(pydantic.BaseModel):
     modified: datetime
     created: datetime
     archived_at: datetime | None
+    user_favorite: bool
     tags: list[str] | None
     primaryImage: UploadResponse | None
     versions: list[RecipeVersionResponse]
@@ -465,7 +467,7 @@ order by recipe_historical.created desc
         return out
 
 
-def serialize_recipe(recipe: Recipe) -> RecipeSerializer:
+def serialize_recipe(recipe: Recipe, user: User) -> RecipeSerializer:
     ingredients = [serialize_ingredient(x) for x in recipe.ingredient_set.all()]
     steps = [serialize_step(x) for x in recipe.step_set.all()]
     recent_schedules = serialize_recent_schedules(recipe)
@@ -494,5 +496,6 @@ def serialize_recipe(recipe: Recipe) -> RecipeSerializer:
         archived_at=recipe.archived_at,
         tags=recipe.tags,
         primaryImage=primary_image,
+        user_favorite=RecipeFavorite.objects.filter(recipe=recipe, user=user).exists(),
         versions=versions,
     )

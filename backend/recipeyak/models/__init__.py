@@ -15,6 +15,7 @@ from recipeyak.models.recipe_change import ChangeType, RecipeChange  # noqa: F40
 from recipeyak.models.recipe_cook_checklist_check import (
     RecipeCookChecklistCheck,
 )
+from recipeyak.models.recipe_favorite import RecipeFavorite  # noqa: F401
 from recipeyak.models.recipe_historical import RecipeHistorical  # noqa: F401
 from recipeyak.models.recipe_index_queue import RecipeIndexQueue  # noqa: F401
 from recipeyak.models.recipe_view import RecipeView  # noqa: F401
