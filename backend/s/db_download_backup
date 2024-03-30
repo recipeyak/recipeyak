@@ -83,7 +83,7 @@ def main() -> None:
         )
     print(f"Database created: {database_name}")
     print(
-        f"example env var: POSTGRES_URL=postgres://postgres@localhost:5432/{database_name}"
+        f"example env var: DATABASE_URL=postgres://postgres@localhost:5432/{database_name}"
     )
 
 
