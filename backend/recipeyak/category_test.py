@@ -100,14 +100,20 @@ def test_categorize_ingredient_test_cases(snapshot: SnapshotAssertion) -> None:
     hot italian sausage
     large poblano pepper
     lemon extract
+    red bird eye chillies, roughly chopped
     light corn syrup
+    store bought or homemade za’atar
     loaf sweet egg bread like challah or brioche
+    oyster sauce
+    matcha powder
+    sesame aioli
+    chipotle aioli (store bought)
     low sodium chicken stock
     low-sodium chicken broth
     malted milk powder
     medium-coarse yellow cornmeal
     tomato paste
-    """
+    """  # noqa: RUF001
     ).splitlines()
 
     assert sorted((w, category(w)) for w in cases) == snapshot()

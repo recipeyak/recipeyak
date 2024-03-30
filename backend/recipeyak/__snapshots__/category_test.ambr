@@ -133,6 +133,10 @@
       'dry goods',
     ),
     tuple(
+      'chipotle aioli (store bought)',
+      'condiments',
+    ),
+    tuple(
       'cloves garlic',
       'produce',
     ),
@@ -293,8 +297,28 @@
       'baking',
     ),
     tuple(
+      'matcha powder',
+      'dry goods',
+    ),
+    tuple(
       'medium-coarse yellow cornmeal',
       'dry goods',
+    ),
+    tuple(
+      'oyster sauce',
+      'canned & packaged',
+    ),
+    tuple(
+      'red bird eye chillies, roughly chopped',
+      'produce',
+    ),
+    tuple(
+      'sesame aioli',
+      'condiments',
+    ),
+    tuple(
+      'store bought or homemade za’atar',
+      'spices',
     ),
     tuple(
       'tomato paste',
