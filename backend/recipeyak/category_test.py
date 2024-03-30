@@ -113,7 +113,7 @@ def test_categorize_ingredient_test_cases(snapshot: SnapshotAssertion) -> None:
     malted milk powder
     medium-coarse yellow cornmeal
     tomato paste
-    """
+    """  # noqa: RUF001
     ).splitlines()
 
     assert sorted((w, category(w)) for w in cases) == snapshot()

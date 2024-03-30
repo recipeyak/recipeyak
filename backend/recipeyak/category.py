@@ -515,7 +515,7 @@ def category(ingredient: str) -> str:
         .replace(",", "")
         .replace(")", "")
         .replace("(", "")
-        .replace("’", "'")
+        .replace("’", "'")  # noqa: RUF001
     )
     if not res:
         return "unknown"
