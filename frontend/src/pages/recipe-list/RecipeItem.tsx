@@ -2,6 +2,7 @@ import {
   HitAttributeHighlightResult,
   HitHighlightResult,
 } from "instantsearch.js"
+import { Heart } from "lucide-react"
 import { Link } from "react-router-dom"
 
 import { clx } from "@/classnames"
@@ -10,6 +11,7 @@ import { Image } from "@/components/Image"
 import { ResponseFromUse } from "@/queries/useQueryUtilTypes"
 import { useSearchRecipes } from "@/queries/useSearchRecipes"
 import { recipeURL } from "@/urls"
+import { useUser } from "@/useUser"
 
 function HighlightIngredients({ hit }: { hit: Hit }) {
   const ingredientHighlights =
@@ -50,13 +52,15 @@ export function RecipeListItem({
   readonly hit: Hit
 }) {
   const url = recipeURL(hit.id, hit.name)
+  const user = useUser()
 
   return (
     <Link tabIndex={0} to={url} className="flex flex-col">
-      <div className="max-h-[128px] min-h-[128px] sm:max-h-[180px] sm:min-h-[180px]">
+      <div className="relative max-h-[128px] min-h-[128px] sm:max-h-[180px] sm:min-h-[180px]">
         <Image
           // lazy load everything after the first 20ish
           lazyLoad={index > 20}
+          className="absolute  h-full w-full object-cover"
           size="large"
           sources={
             hit.primary_image && {
@@ -73,6 +77,16 @@ export function RecipeListItem({
           blur="none"
           grayscale={hit.archived_at != null}
         />
+        {user.id != null && hit.favorite_by_user_id?.includes(user.id) && (
+          <div className="absolute inset-0 z-[1] bg-cover bg-center p-1">
+            <Heart
+              size={28}
+              fill="rgb(255, 48, 64"
+              stroke={"white"}
+              strokeWidth={"1px"}
+            />
+          </div>
+        )}
       </div>
       <div className="flex h-full flex-col gap-1 pb-2 pt-1 leading-5">
         <div
