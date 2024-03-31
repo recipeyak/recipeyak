@@ -1,5 +1,4 @@
 import { snakeCase } from "lodash-es"
-import { Heart } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { useHistory, useLocation } from "react-router"
 
@@ -432,7 +431,8 @@ export function RecipeSearchList() {
 
           <div className="flex gap-2">
             <Button
-              className="h-full !px-2"
+              className="flex h-full items-center gap-2 !px-2 "
+              size="small"
               onClick={() => {
                 const userId = user.id?.toString() ?? null
                 if (facetFilters.AndFavoriteByUserId) {
@@ -442,15 +442,11 @@ export function RecipeSearchList() {
                 }
               }}
             >
-              {facetFilters.AndFavoriteByUserId ? (
-                <Heart
-                  size={18}
-                  fill="rgb(255, 48, 64"
-                  stroke={"rgb(255, 48, 64"}
-                />
-              ) : (
-                <Heart size={18} />
-              )}
+              <input
+                type="checkbox"
+                checked={!!facetFilters.AndFavoriteByUserId}
+              />
+              <span>Favorites</span>
             </Button>
             <Button size="small" onClick={searchTools.toggle}>
               {searchTools.enabled ? "Hide Search Tools" : "Search Tools"}

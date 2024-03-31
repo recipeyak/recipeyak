@@ -89,8 +89,9 @@ export function Matches({
   showArchived: boolean
 }) {
   return (
-    <div className="text-sm">
-      matches: {nbHits} {showArchived && <>(archived: {archivedCount})</>}
+    <div className="flex flex-wrap gap-x-2 text-sm">
+      <span>matches: {nbHits}</span>{" "}
+      <span>{showArchived && <>(archived: {archivedCount})</>}</span>
     </div>
   )
 }
