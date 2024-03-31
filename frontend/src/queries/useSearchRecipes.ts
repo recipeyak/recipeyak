@@ -34,6 +34,7 @@ export function useSearchRecipes({
           readonly url: string
           readonly background_url: string | null
         } | null
+        readonly favorite_by_user_id: ReadonlyArray<number> | null
       }>([
         {
           indexName,

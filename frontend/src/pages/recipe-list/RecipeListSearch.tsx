@@ -442,6 +442,7 @@ export function RecipeSearchList() {
                 }
               }}
             >
+              {/* eslint-disable-next-line react/forbid-elements */}
               <input
                 type="checkbox"
                 checked={!!facetFilters.AndFavoriteByUserId}
