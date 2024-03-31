@@ -1,4 +1,4 @@
-import { format, isFuture, isToday, parseISO, startOfWeek } from "date-fns"
+import { format, isToday, parseISO, startOfWeek } from "date-fns"
 import { orderBy } from "lodash-es"
 import React from "react"
 import { Link } from "react-router-dom"
@@ -6,7 +6,6 @@ import { Link } from "react-router-dom"
 import { clx } from "@/classnames"
 import { Button } from "@/components/Buttons"
 import { DateInput } from "@/components/DateInput"
-import Clock from "@/components/icons"
 import { Image } from "@/components/Image"
 import { Modal } from "@/components/Modal"
 import { formatDistanceToNow, formatHumanDate, toISODateString } from "@/date"
@@ -149,22 +148,16 @@ export function ScheduleModal({
                         className="flex items-center justify-between"
                         key={i}
                       >
-                        <Link to={to} className="grow leading-[1.3]">
-                          <div className="font-medium">
-                            {format(on, "E")} ∙ {formatHumanDate(on)}
-                          </div>
-                          <div className="flex gap-1">
-                            {isFuture(on) && <Clock size={14} />}
-                            <div>
-                              {isToday(on)
-                                ? // avoid showing "3 hours ago" for today
-                                  ""
-                                : formatDistanceToNow(on, {
-                                    allowFuture: true,
-                                    ignoreHours: true,
-                                  })}
-                            </div>
-                          </div>
+                        <Link to={to} className="grow ">
+                          {format(on, "E")}, {formatHumanDate(on)}
+                          {isToday(on)
+                            ? // avoid showing "3 hours ago" for today
+                              ""
+                            : " · " +
+                              formatDistanceToNow(on, {
+                                allowFuture: true,
+                                ignoreHours: true,
+                              })}
                         </Link>
                         <Button size="small" to={to}>
                           View

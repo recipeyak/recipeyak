@@ -19,7 +19,7 @@ export function Modal({
 }) {
   return (
     <ModalOverlay
-      className="fixed inset-0 z-10 flex min-h-full justify-center overflow-y-auto bg-[--color-modal-background] sm:p-3"
+      className="fixed inset-0 z-[1000] flex min-h-full justify-center overflow-y-auto bg-[--color-modal-background] sm:p-3"
       isDismissable
       isOpen={isOpen}
       onOpenChange={onOpenChange}
@@ -36,11 +36,6 @@ export function Modal({
               onClick={(e) => {
                 // disable clicking so we can put this anywhere in the DOM and
                 // ensure we don't click stuff behind it
-                e.stopPropagation()
-              }}
-              onDoubleClick={(e) => {
-                // disable click propagation so we can put this anywhere in the
-                // DOM and ensure we don't click stuff behind it
                 e.stopPropagation()
               }}
               className="h-full"

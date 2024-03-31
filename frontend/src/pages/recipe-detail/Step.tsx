@@ -29,18 +29,50 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import {
+  Ellipsis,
+  GripVertical,
+  MoveDown,
+  MoveUp,
+  Pencil,
+  Trash,
+} from "lucide-react"
 import { useRef, useState } from "react"
-import { PressEvent } from "react-aria-components"
+import { useFocusVisible } from "react-aria"
+import { Menu, MenuTrigger, PressEvent, Separator } from "react-aria-components"
 import { useDrag, useDrop } from "react-dnd"
+import { CornerRightDown, CornerRightUp } from "react-feather"
 
 import { clx } from "@/classnames"
 import { Button } from "@/components/Buttons"
+import { focusVisibleStyles } from "@/components/ButtonStyles"
 import { BetterLabel } from "@/components/Label"
 import { Markdown } from "@/components/Markdown"
+import { MenuItem } from "@/components/MenuItem"
+import { MenuPopover } from "@/components/MenuPopover"
 import { Textarea } from "@/components/Textarea"
 import { DragDrop, handleDndHover } from "@/dragDrop"
+import { useStepCreate } from "@/queries/useStepCreate"
 import { useStepDelete } from "@/queries/useStepDelete"
 import { useStepUpdate } from "@/queries/useStepUpdate"
+
+export function MoreButton() {
+  // We don't want focus rings to appear on non-keyboard devices like iOS, so
+  // we have to do some JS land stuff
+  const { isFocusVisible } = useFocusVisible()
+  return (
+    <Button
+      size="small"
+      variant="nostyle"
+      className={clx(
+        "cursor-pointer rounded border-none bg-[unset] outline-none",
+        focusVisibleStyles(isFocusVisible),
+      )}
+    >
+      <Ellipsis className="text-[--color-text]" size={20} />
+    </Button>
+  )
+}
 
 interface IStepProps {
   readonly index: number
@@ -53,16 +85,28 @@ interface IStepProps {
   readonly isEditing: boolean
 }
 
-function Step({
+export function Step({
   stepId,
-  recipeID,
+  recipeID: recipeId,
+  position,
   text,
   index,
   move,
   isEditing,
   completeMove,
-}: IStepProps) {
+  getAfterNextPosition,
+  getBeforePreviousPosition,
+  getNextPosition,
+  getPreviousPosition,
+}: IStepProps & {
+  getAfterNextPosition: () => string
+  getBeforePreviousPosition: () => string
+  getNextPosition: () => string
+  getPreviousPosition: () => string
+}) {
+  const [isEditingStep, setIsEditingStep] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
+
   const [, drop] = useDrop({
     accept: DragDrop.STEP,
     hover: handleDndHover({ ref, index, move }),
@@ -84,26 +128,225 @@ function Step({
     }),
   })
 
-  const style = {
-    opacity: isDragging ? 0 : 1,
-  }
-
   preview(drop(ref))
+
   return (
-    <div style={style} ref={isEditing ? ref : undefined} className="mb-2">
-      <BetterLabel
-        ref={isEditing ? drag : undefined}
-        cursor={isEditing ? "move" : undefined}
-      >
-        Step {index + 1}
-      </BetterLabel>
+    <div
+      ref={isEditing ? ref : undefined}
+      className={clx("mb-2", isDragging && "opacity-0")}
+    >
+      <div className="flex justify-between">
+        <div className="flex items-center">
+          {isEditing && (
+            <GripVertical size={18} className="-ml-1 cursor-move pr-1" />
+          )}
+          <BetterLabel
+            ref={isEditing ? drag : undefined}
+            cursor={isEditing ? "move" : undefined}
+          >
+            Step {index + 1}
+          </BetterLabel>
+        </div>
+
+        {isEditing && (
+          <StepEditMenu
+            recipeId={recipeId}
+            stepId={stepId}
+            onEdit={() => {
+              setIsEditingStep(true)
+            }}
+            getAfterNextPosition={getAfterNextPosition}
+            getBeforePreviousPosition={getBeforePreviousPosition}
+            getNextPosition={getNextPosition}
+            getPreviousPosition={getPreviousPosition}
+          />
+        )}
+      </div>
       <StepBody
         stepId={stepId}
-        isEditing={isEditing}
-        recipeID={recipeID}
+        editingEnabled={isEditing}
+        recipeID={recipeId}
         text={text}
+        isEditingStep={isEditingStep}
+        setIsEditingStep={setIsEditingStep}
       />
     </div>
+  )
+}
+
+function StepEditMenu({
+  recipeId,
+  stepId,
+  getAfterNextPosition,
+  getBeforePreviousPosition,
+  getNextPosition,
+  getPreviousPosition,
+  onEdit,
+}: {
+  recipeId: number
+  stepId: number
+  onEdit: () => void
+  getAfterNextPosition: () => string
+  getBeforePreviousPosition: () => string
+  getNextPosition: () => string
+  getPreviousPosition: () => string
+}) {
+  const remove = useStepDelete()
+  const update = useStepUpdate()
+  const addStep = useStepCreate()
+  const actions: Array<
+    | {
+        type: "action"
+        id: string
+        label: React.ReactNode
+        onAction: () => void
+        isDestructive?: boolean
+      }
+    | {
+        type: "seperator"
+      }
+  > = [
+    {
+      type: "action",
+      id: "edit",
+      label: (
+        <>
+          Edit Step… <Pencil size={14} />
+        </>
+      ),
+      onAction: () => {
+        onEdit()
+      },
+    },
+    {
+      type: "seperator",
+    },
+    {
+      type: "action",
+      id: "add above",
+      label: (
+        <>
+          Add Step Above… <CornerRightUp size={16} />
+        </>
+      ),
+      onAction: () => {
+        const position = getPreviousPosition()
+        addStep.mutate({
+          recipeId,
+          step: "new step",
+          position,
+        })
+      },
+    },
+    {
+      type: "action",
+      id: "add below",
+      label: (
+        <>
+          Add Step Below… <CornerRightDown size={16} />
+        </>
+      ),
+      onAction: () => {
+        const position = getNextPosition()
+        addStep.mutate({
+          recipeId,
+          step: "new step",
+          position,
+        })
+      },
+    },
+    {
+      type: "seperator",
+    },
+    {
+      type: "action",
+      id: "move up",
+      label: (
+        <>
+          Move Up <MoveUp size={16} />
+        </>
+      ),
+      onAction: () => {
+        const position = getBeforePreviousPosition()
+        update.mutate({
+          recipeId,
+          stepId,
+          update: { position },
+        })
+      },
+    },
+    {
+      type: "action",
+      id: "move down",
+      label: (
+        <>
+          Move Down <MoveDown size={16} />
+        </>
+      ),
+      onAction: () => {
+        const position = getAfterNextPosition()
+        update.mutate({
+          recipeId,
+          stepId,
+          update: { position },
+        })
+      },
+    },
+    {
+      type: "seperator",
+    },
+    {
+      type: "action",
+      id: "delete",
+      isDestructive: true,
+      label: (
+        <>
+          Delete Step <Trash size={16} />
+        </>
+      ),
+      onAction: () => {
+        remove.mutate({ recipeId, stepId })
+      },
+    },
+  ]
+  return (
+    <MenuTrigger>
+      <MoreButton />
+      <MenuPopover>
+        <Menu
+          className="outline-none"
+          onAction={(actionId) => {
+            const action = actions.find(
+              (x) => x.type === "action" && x.id === actionId,
+            )
+            if (action?.type === "action") {
+              action.onAction()
+            }
+          }}
+        >
+          {actions.map((action, idx) => {
+            if (action.type === "seperator") {
+              return (
+                <Separator
+                  key={"sep" + idx}
+                  className="my-1 h-[1px] bg-[--color-border]"
+                />
+              )
+            } else {
+              return (
+                <MenuItem
+                  id={action.id}
+                  key={action.id}
+                  isDestructive={action.isDestructive}
+                >
+                  {action.label}
+                </MenuItem>
+              )
+            }
+          })}
+        </Menu>
+      </MenuPopover>
+    </MenuTrigger>
   )
 }
 
@@ -115,20 +358,23 @@ function StepBody({
   recipeID,
   text: propText,
   stepId,
-  isEditing: editingEnabled,
+  editingEnabled,
+  setIsEditingStep,
+  isEditingStep,
 }: {
   readonly stepId: number
   readonly text: string
   readonly recipeID: number
-  readonly isEditing: boolean
+  readonly editingEnabled: boolean
+  setIsEditingStep: (_: boolean) => void
+  isEditingStep: boolean
 }) {
   const [text, setText] = useState(propText)
-  const [isEditing, setIsEditing] = useState(false)
   const remove = useStepDelete()
   const update = useStepUpdate()
 
   const handleCancel = () => {
-    setIsEditing(false)
+    setIsEditingStep(false)
     setText(propText)
   }
 
@@ -151,7 +397,7 @@ function StepBody({
         },
         {
           onSuccess: () => {
-            setIsEditing(false)
+            setIsEditingStep(false)
           },
         },
       )
@@ -162,7 +408,7 @@ function StepBody({
     remove.mutate({ recipeId: recipeID, stepId })
   }
 
-  const inner = isEditing ? (
+  const inner = isEditingStep ? (
     <form className="flex flex-col gap-2">
       <Textarea
         autoFocus
@@ -181,16 +427,7 @@ function StepBody({
         placeholder="Add you text here"
         name="text"
       />
-      <div className="flex justify-between">
-        <Button
-          onClick={removeStep}
-          size="small"
-          loading={remove.isPending}
-          type="button"
-          variant="danger"
-        >
-          Delete
-        </Button>
+      <div className="flex justify-end">
         <div className="flex gap-2">
           <Button size="small" onClick={handleCancel}>
             Cancel
@@ -211,20 +448,11 @@ function StepBody({
   )
 
   return (
-    // eslint-disable-next-line react/forbid-elements
-    <section
+    <div
       className={clx(editingEnabled && "cursor-pointer")}
       title={editingEnabled ? "click to edit" : undefined}
-      onClick={() => {
-        if (!editingEnabled) {
-          return
-        }
-        setIsEditing(true)
-      }}
     >
       {inner}
-    </section>
+    </div>
   )
 }
-
-export default Step

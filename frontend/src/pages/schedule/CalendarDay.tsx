@@ -5,7 +5,7 @@ import isFirstDayOfMonth from "date-fns/isFirstDayOfMonth"
 import isWithinInterval from "date-fns/isWithinInterval"
 import startOfDay from "date-fns/startOfDay"
 import { sortBy } from "lodash-es"
-import { useRef, useState } from "react"
+import { useRef } from "react"
 import { mergeProps, useDrop } from "react-aria"
 import { useLocation } from "react-router"
 
@@ -17,7 +17,6 @@ import {
   CalendarItem,
   ICalendarDragItem,
 } from "@/pages/schedule/CalendarDayItem"
-import { ScheduleRecipeModal } from "@/pages/schedule/ScheduleRecipeModal"
 import {
   ScheduledRecipe,
   useScheduleRecipeCreate,
@@ -105,7 +104,6 @@ export function CalendarDay({
   const isDroppable = isOver && isInsideChangeWindow(date)
 
   const isSelectedDay = isSelected || isDroppable
-  const [showScheduleRecipeModal, setShowScheduleRecipeModal] = useState(false)
   const scheduledRecipeCreate = useScheduleRecipeCreate()
 
   const dropCreateProps = {
@@ -133,9 +131,6 @@ export function CalendarDay({
     <div
       {...mergeProps(dropProps, dropCreateProps)}
       ref={ref}
-      onDoubleClick={() => {
-        setShowScheduleRecipeModal(true)
-      }}
       className={clx(
         "flex shrink-0 grow basis-0 flex-col border-2 border-solid border-transparent bg-[--color-background-calendar-day] p-1 transition-[background-color,border] duration-75 [word-break:break-word]",
         isSelectedDay &&
@@ -145,13 +140,6 @@ export function CalendarDay({
       )}
     >
       <Title date={date} />
-      <ScheduleRecipeModal
-        isOpen={showScheduleRecipeModal}
-        onOpenChange={() => {
-          setShowScheduleRecipeModal(false)
-        }}
-        defaultValue={toISODateString(date)}
-      />
       <ul className="flex h-full flex-col gap-3 overflow-y-auto px-1">
         {scheduled.map((x) => (
           <CalendarItem

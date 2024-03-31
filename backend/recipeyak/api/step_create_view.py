@@ -17,7 +17,7 @@ from recipeyak.versioning import save_recipe_version
 
 class StepCreateParams(Params):
     text: Annotated[str, StringConstraints(strip_whitespace=True)]
-    position: Annotated[str, StringConstraints(strip_whitespace=True)]
+    position: str
     recipe_id: int
 
 

@@ -114,7 +114,7 @@ function AddIngredientForm({
       </label>
       <div className="flex justify-between">
         <Button size="small" type="button" onClick={onChangeSection}>
-          Add Section
+          Switch to Section
         </Button>
         <div className="flex gap-2">
           <Button onClick={cancelAddIngredient} size="small" type="button">

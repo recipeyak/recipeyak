@@ -101,12 +101,6 @@ export function CalendarItem({
       <li
         ref={ref}
         {...dragProps}
-        onDoubleClick={(e) => {
-          // double clicking on the list items shouldn't result in the schedule
-          // modal popping open, only clicking on the empty space of a day
-          // should do that
-          e.preventDefault()
-        }}
         className={clx(visibility === "visible" ? "visible" : "invisible")}
       >
         <Link
