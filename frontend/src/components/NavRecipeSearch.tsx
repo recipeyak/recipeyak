@@ -172,7 +172,7 @@ export function NavRecipeSearch() {
 
   const results = useSearchRecipes({ query, limit: 6 })
   const recentlyViewedRecipes = useRecentlyViewedRecipesList()
-  const recentlyViewedRecipeHits =
+  const recentlyViewedRecipeHits: Hits =
     recentlyViewedRecipes.data?.map((x) => ({
       archived_at: x.archivedAt,
       author: x.author,
@@ -186,6 +186,7 @@ export function NavRecipeSearch() {
             url: x.primaryImage.url,
           }
         : null,
+      favorite_by_user_id: [],
     })) ?? []
 
   // If a user clicks outside of the dropdown, we want to hide the dropdown, but

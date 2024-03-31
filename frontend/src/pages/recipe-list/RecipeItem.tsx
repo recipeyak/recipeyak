@@ -77,7 +77,7 @@ export function RecipeListItem({
           blur="none"
           grayscale={hit.archived_at != null}
         />
-        {hit.favorite_by_user_id?.includes(user.id) && (
+        {user.id != null && hit.favorite_by_user_id?.includes(user.id) && (
           <div className="absolute inset-0 z-[1] bg-cover bg-center p-1">
             <Heart
               size={28}
