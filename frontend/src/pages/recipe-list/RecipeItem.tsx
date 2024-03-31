@@ -78,11 +78,11 @@ export function RecipeListItem({
           grayscale={hit.archived_at != null}
         />
         {user.id != null && hit.favorite_by_user_id?.includes(user.id) && (
-          <div className="absolute inset-0 z-[1] bg-cover bg-center p-1">
+          <div className="absolute inset-0 z-[1] flex items-end justify-end bg-cover bg-center p-1">
             <Heart
-              size={28}
-              fill="rgb(255, 48, 64"
-              stroke={"white"}
+              size={24}
+              fill="rgb(255, 48, 64)"
+              stroke={"rgb(255, 48, 64)"}
               strokeWidth={"1px"}
             />
           </div>
