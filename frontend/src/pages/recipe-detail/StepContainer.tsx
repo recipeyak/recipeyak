@@ -105,7 +105,6 @@ function StepContainer(props: IStepContainerProps) {
           text={step.text}
           move={move}
           isEditing={props.isEditing}
-          position={step.position}
           getAfterNextPosition={() => {
             // is last, we can't move next
             if (i === steps.length - 1) {

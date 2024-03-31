@@ -81,14 +81,12 @@ interface IStepProps {
   readonly text: string
   readonly move: (_: { from: number; to: number }) => void
   readonly completeMove: (_: { id: number; to: number }) => void
-  readonly position: string
   readonly isEditing: boolean
 }
 
 export function Step({
   stepId,
   recipeID: recipeId,
-  position,
   text,
   index,
   move,
