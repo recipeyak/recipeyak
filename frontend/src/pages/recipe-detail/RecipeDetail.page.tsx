@@ -175,8 +175,50 @@ function RecipeDetails({
     <>
       <div>
         <SectionTitle>Ingredients</SectionTitle>
-        <ul className={clx(editingEnabled && "mb-2")}>
+        <ul className={clx(editingEnabled && "mb-2 flex flex-col gap-2")}>
           {sectionsAndIngredients.map((item, i) => {
+            const row = item.item
+            const getAfterNextPosition = () => {
+              // is last, we can't move next
+              if (i === sectionsAndIngredients.length - 1) {
+                return row.position
+              }
+              const next = sectionsAndIngredients[i + 1].item.position
+              const nextNext = sectionsAndIngredients[i + 2]?.item?.position
+              // next is the last position
+              if (nextNext == null) {
+                return ordering.positionAfter(next)
+              }
+              return ordering.positionBetween(next, nextNext)
+            }
+            const getBeforePreviousPosition = () => {
+              // is first, we can't move before
+              if (i === 0) {
+                return row.position
+              }
+              const prev = sectionsAndIngredients[i - 1].item.position
+              const prevPrev = sectionsAndIngredients[i - 2]?.item?.position
+              if (prevPrev == null) {
+                return ordering.positionBefore(prev)
+              }
+              return ordering.positionBetween(prevPrev, prev)
+            }
+            const getNextPosition = () => {
+              if (i === sectionsAndIngredients.length - 1) {
+                return ordering.positionAfter(row.position)
+              }
+              const next = sectionsAndIngredients[i].item.position
+              const nextNext = sectionsAndIngredients[i + 1].item.position
+              return ordering.positionBetween(next, nextNext)
+            }
+            const getPreviousPosition = () => {
+              if (i === 0) {
+                return ordering.positionBefore(row.position)
+              }
+              const prev = sectionsAndIngredients[i].item.position
+              const prevPrev = sectionsAndIngredients[i - 1].item.position
+              return ordering.positionBetween(prevPrev, prev)
+            }
             if (item.kind === "ingredient") {
               const ingre = item.item
               return (
@@ -185,6 +227,7 @@ function RecipeDetails({
                   index={i}
                   recipeID={recipe.id}
                   ingredientId={ingre.id}
+                  position={ingre.position}
                   quantity={ingre.quantity}
                   name={ingre.name}
                   isEditing={editingEnabled}
@@ -192,6 +235,10 @@ function RecipeDetails({
                   optional={ingre.optional}
                   completeMove={handleCompleteMove}
                   move={handleMove}
+                  getAfterNextPosition={getAfterNextPosition}
+                  getBeforePreviousPosition={getBeforePreviousPosition}
+                  getNextPosition={getNextPosition}
+                  getPreviousPosition={getPreviousPosition}
                 />
               )
             }
@@ -207,6 +254,10 @@ function RecipeDetails({
                   index={i}
                   move={handleMove}
                   completeMove={handleCompleteMove}
+                  getAfterNextPosition={getAfterNextPosition}
+                  getBeforePreviousPosition={getBeforePreviousPosition}
+                  getNextPosition={getNextPosition}
+                  getPreviousPosition={getPreviousPosition}
                 />
               )
             }
@@ -226,6 +277,7 @@ function RecipeDetails({
             <Button
               size="small"
               onClick={handleShowAddIngredient}
+              className="w-full sm:w-auto"
               aria-label="open add ingredient"
             >
               Add Ingredient
@@ -257,6 +309,7 @@ function RecipeDetails({
             <Button
               size="small"
               aria-label="open add step"
+              className="w-full sm:w-auto"
               onClick={() => {
                 setAddStep(true)
               }}
@@ -306,11 +359,8 @@ function RecipeMetaItem({
   label: string
 }) {
   return (
-    // eslint-disable-next-line no-restricted-syntax
-    <div style={{ display: "flex", gap: inline ? "0.25rem" : undefined }}>
-      <div className="font-bold" style={!inline ? { width: 90 } : undefined}>
-        {label}
-      </div>
+    <div className={clx("flex", inline && "gap-1")}>
+      <div className={clx("font-bold", !inline && "w-[90px]")}>{label}</div>
       <div className="cursor-auto select-text">{children}</div>
     </div>
   )
@@ -433,7 +483,7 @@ function RecipeEditor(props: { recipe: Recipe; onClose: () => void }) {
 function HeaderImgUploader({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="rounded-[3px] bg-[--color-background-card] p-2 font-[14px] !opacity-100"
+      className="rounded bg-[--color-background-card] p-2 text-sm !opacity-100"
       children={children}
     />
   )
@@ -673,8 +723,8 @@ function RecipeInfo(props: {
             </div>
             <div
               className={clx(
-                "flex flex-wrap gap-y-1",
-                inlineLayout ? "gap-x-3" : "flex-col justify-end",
+                "flex w-full flex-wrap gap-y-1",
+                inlineLayout ? "gap-x-3" : "flex-col items-start justify-end",
               )}
             >
               {notEmpty(props.recipe.time) && (
@@ -714,6 +764,7 @@ function RecipeInfo(props: {
                 <Button
                   size="small"
                   type="button"
+                  className="w-full sm:w-auto"
                   aria-label="edit metadata"
                   onClick={() => {
                     setShowEditor(true)

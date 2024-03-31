@@ -32,7 +32,8 @@
 import { sortBy } from "lodash-es"
 import React, { useEffect } from "react"
 
-import Step from "@/pages/recipe-detail/Step"
+import { positionAfter, positionBefore, positionBetween } from "@/ordering"
+import { Step } from "@/pages/recipe-detail/Step"
 import { getNewPos } from "@/position"
 import { RecipeFetchResponse } from "@/queries/useRecipeFetch"
 import { useStepUpdate } from "@/queries/useStepUpdate"
@@ -104,7 +105,47 @@ function StepContainer(props: IStepContainerProps) {
           text={step.text}
           move={move}
           isEditing={props.isEditing}
-          position={step.position}
+          getAfterNextPosition={() => {
+            // is last, we can't move next
+            if (i === steps.length - 1) {
+              return step.position
+            }
+            const next = steps[i + 1].position
+            const nextNext = steps[i + 2].position
+            // next is the last position
+            if (nextNext == null) {
+              return positionAfter(next)
+            }
+            return positionBetween(next, nextNext)
+          }}
+          getBeforePreviousPosition={() => {
+            // is first, we can't move before
+            if (i === 0) {
+              return step.position
+            }
+            const prev = steps[i - 1].position
+            const prevPrev = steps[i - 2]?.position
+            if (prevPrev == null) {
+              return positionBefore(prev)
+            }
+            return positionBetween(prevPrev, prev)
+          }}
+          getNextPosition={() => {
+            if (i === steps.length - 1) {
+              return positionAfter(step.position)
+            }
+            const next = steps[i].position
+            const nextNext = steps[i + 1].position
+            return positionBetween(next, nextNext)
+          }}
+          getPreviousPosition={() => {
+            if (i === 0) {
+              return positionBefore(step.position)
+            }
+            const prev = steps[i].position
+            const prevPrev = steps[i - 1].position
+            return positionBetween(prevPrev, prev)
+          }}
           completeMove={completeMove}
         />
       ))}

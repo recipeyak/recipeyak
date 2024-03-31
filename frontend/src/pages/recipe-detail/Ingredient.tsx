@@ -1,15 +1,23 @@
+import { MoveDown, MoveUp, Pencil, Trash } from "lucide-react"
 import React, { useState } from "react"
+import { Menu, MenuTrigger, Separator } from "react-aria-components"
 import { useDrag, useDrop } from "react-dnd"
+import { CornerRightDown, CornerRightUp } from "react-feather"
 
 import { isMobile } from "@/browser"
 import { clx } from "@/classnames"
 import { Button } from "@/components/Buttons"
 import { CheckBox } from "@/components/Checkbox"
+import { MenuItem } from "@/components/MenuItem"
+import { MenuPopover } from "@/components/MenuPopover"
 import { TextInput } from "@/components/TextInput"
 import { DragDrop, handleDndHover } from "@/dragDrop"
 import IngredientView from "@/pages/recipe-detail/IngredientView"
+import { MoreButton } from "@/pages/recipe-detail/Step"
+import { useIngredientCreate } from "@/queries/useIngredientCreate"
 import { useIngredientDelete } from "@/queries/useIngredientDelete"
 import { useIngredientUpdate } from "@/queries/useIngredientUpdate"
+import { useSectionCreate } from "@/queries/useSectionCreate"
 
 const emptyField = ({
   quantity,
@@ -44,6 +52,11 @@ export function Ingredient(props: {
     readonly id: number
     readonly to: number
   }) => void
+  position: string
+  getAfterNextPosition: () => string
+  getBeforePreviousPosition: () => string
+  getNextPosition: () => string
+  getPreviousPosition: () => string
 }) {
   const [quantity, setQuantity] = useState(props.quantity)
   const [name, setName] = useState(props.name)
@@ -52,7 +65,6 @@ export function Ingredient(props: {
   const [editing, setEditing] = useState(false)
   const ref = React.useRef<HTMLLIElement>(null)
 
-  const removeIngredient = useIngredientDelete()
   const updateIngredient = useIngredientUpdate()
 
   const resetFields = () => {
@@ -129,7 +141,7 @@ export function Ingredient(props: {
   }
 
   const inner = editing ? (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+    <form onSubmit={handleSubmit} className="flex w-full flex-col gap-2">
       <div className="flex flex-col gap-2">
         <div className="flex flex-row gap-2">
           <TextInput
@@ -173,21 +185,7 @@ export function Ingredient(props: {
         Optional
       </label>
 
-      <div className="mb-2 flex justify-between">
-        <Button
-          type="button"
-          onClick={() => {
-            removeIngredient.mutate({
-              recipeId: props.recipeID,
-              ingredientId: props.ingredientId,
-            })
-          }}
-          size="small"
-          variant="danger"
-          loading={removeIngredient.isPending}
-        >
-          Delete
-        </Button>
+      <div className="mb-2 flex justify-end">
         <div className="flex gap-2">
           <Button type="reset" onClick={handleCancelButton} size="small">
             Cancel
@@ -206,6 +204,7 @@ export function Ingredient(props: {
     </form>
   ) : (
     <IngredientView
+      isEditing={props.isEditing}
       dragRef={props.isEditing && dragAndDropEnabled ? drag : undefined}
       quantity={props.quantity}
       name={props.name}
@@ -221,14 +220,250 @@ export function Ingredient(props: {
       className={clx(
         props.isEditing && "cursor-pointer",
         isDragging && "opacity-0",
+        "flex items-start justify-between gap-1",
       )}
-      onClick={() => {
-        if (props.isEditing && !editing) {
-          enableEditing()
-        }
-      }}
     >
       {inner}
+      {props.isEditing && (
+        <IngredientEditMenu
+          recipeId={props.recipeID}
+          ingredientId={props.ingredientId}
+          onEdit={enableEditing}
+          getAfterNextPosition={props.getAfterNextPosition}
+          getBeforePreviousPosition={props.getBeforePreviousPosition}
+          getNextPosition={props.getNextPosition}
+          getPreviousPosition={props.getPreviousPosition}
+        />
+      )}
     </li>
+  )
+}
+
+function IngredientEditMenu({
+  ingredientId,
+  recipeId,
+  onEdit,
+  getAfterNextPosition,
+  getBeforePreviousPosition,
+  getNextPosition,
+  getPreviousPosition,
+}: {
+  recipeId: number
+  ingredientId: number
+  onEdit: () => void
+  getAfterNextPosition: () => string
+  getBeforePreviousPosition: () => string
+  getNextPosition: () => string
+  getPreviousPosition: () => string
+}) {
+  const ingredientRemove = useIngredientDelete()
+  const ingredientUpdate = useIngredientUpdate()
+  const ingredientCreate = useIngredientCreate()
+
+  const sectionCreate = useSectionCreate()
+  const actions: Array<
+    | {
+        type: "action"
+        id: string
+        label: React.ReactNode
+        onAction: () => void
+        isDestructive?: boolean
+      }
+    | {
+        type: "seperator"
+      }
+  > = [
+    {
+      type: "action",
+      id: "edit",
+      label: (
+        <>
+          Edit Ingredient… <Pencil size={14} />
+        </>
+      ),
+      onAction: () => {
+        onEdit()
+      },
+    },
+    {
+      type: "seperator",
+    },
+    {
+      type: "action",
+      id: "add ingredient above",
+      label: (
+        <>
+          Add Ingredient Above… <CornerRightUp size={16} />
+        </>
+      ),
+      onAction: () => {
+        const position = getPreviousPosition()
+        ingredientCreate.mutate({
+          recipeId,
+          payload: {
+            position,
+            quantity: "",
+            name: "new ingredient",
+            description: "",
+            optional: false,
+          },
+        })
+      },
+    },
+    {
+      type: "action",
+      id: "add ingredient below",
+      label: (
+        <>
+          Add Ingredient Below… <CornerRightDown size={16} />
+        </>
+      ),
+      onAction: () => {
+        const position = getNextPosition()
+        ingredientCreate.mutate({
+          recipeId,
+          payload: {
+            position,
+            quantity: "",
+            name: "new ingredient",
+            description: "",
+            optional: false,
+          },
+        })
+      },
+    },
+    {
+      type: "seperator",
+    },
+    {
+      type: "action",
+      id: "add section above",
+      label: (
+        <>
+          Add Section Above… <CornerRightUp size={16} />
+        </>
+      ),
+      onAction: () => {
+        const position = getPreviousPosition()
+        sectionCreate.mutate({
+          recipeId,
+          payload: {
+            position,
+            title: "new section",
+          },
+        })
+      },
+    },
+    {
+      type: "action",
+      id: "add section below",
+      label: (
+        <>
+          Add Section Below… <CornerRightDown size={16} />
+        </>
+      ),
+      onAction: () => {
+        const position = getNextPosition()
+        sectionCreate.mutate({
+          recipeId,
+          payload: {
+            position,
+            title: "new section",
+          },
+        })
+      },
+    },
+    {
+      type: "seperator",
+    },
+    {
+      type: "action",
+      id: "move up",
+      label: (
+        <>
+          Move Up <MoveUp size={16} />
+        </>
+      ),
+      onAction: () => {
+        const position = getBeforePreviousPosition()
+        ingredientUpdate.mutate({
+          recipeId,
+          ingredientId,
+          update: { position },
+        })
+      },
+    },
+    {
+      type: "action",
+      id: "move down",
+      label: (
+        <>
+          Move Down <MoveDown size={16} />
+        </>
+      ),
+      onAction: () => {
+        const position = getAfterNextPosition()
+        ingredientUpdate.mutate({
+          recipeId,
+          ingredientId,
+          update: { position },
+        })
+      },
+    },
+    {
+      type: "seperator",
+    },
+    {
+      type: "action",
+      id: "delete",
+      isDestructive: true,
+      label: (
+        <>
+          Delete Ingredient <Trash size={16} />
+        </>
+      ),
+      onAction: () => {
+        ingredientRemove.mutate({ recipeId, ingredientId })
+      },
+    },
+  ]
+  return (
+    <MenuTrigger>
+      <MoreButton />
+      <MenuPopover>
+        <Menu
+          className="outline-none"
+          onAction={(actionId) => {
+            const action = actions.find(
+              (x) => x.type === "action" && x.id === actionId,
+            )
+            if (action?.type === "action") {
+              action.onAction()
+            }
+          }}
+        >
+          {actions.map((action, idx) => {
+            if (action.type === "seperator") {
+              return (
+                <Separator
+                  key={"sep" + idx}
+                  className="my-1 h-[1px] bg-[--color-border]"
+                />
+              )
+            } else {
+              return (
+                <MenuItem
+                  id={action.id}
+                  key={action.id}
+                  isDestructive={action.isDestructive}
+                >
+                  {action.label}
+                </MenuItem>
+              )
+            }
+          })}
+        </Menu>
+      </MenuPopover>
+    </MenuTrigger>
   )
 }

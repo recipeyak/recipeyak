@@ -8,6 +8,7 @@ import { Link } from "react-router-dom"
 
 import { assertNever } from "@/assert"
 import { clx } from "@/classnames"
+import { focusVisibleStyles } from "@/components/ButtonStyles"
 
 type Variant = "primary" | "danger" | "gradient" | "nostyle" | undefined
 type Size = "normal" | "small" | "large"
@@ -76,15 +77,9 @@ function getSizeStyles(size: Size): string {
 }
 
 function getBaseStyles(size: Size, isFocusVisible: boolean): string {
-  const focusCss = isFocusVisible
-    ? clx(
-        "focus-visible:outline focus-visible:outline-[3px] focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)]",
-      )
-    : "outline-none"
-
   return clx(
     "relative inline-flex cursor-pointer select-none items-center justify-center whitespace-nowrap rounded-md border border-solid p-0 px-3 py-1 text-center align-top text-sm font-medium leading-[1.5] no-underline transition-[border-color,background-color] duration-75 disabled:cursor-default print:!hidden",
-    focusCss,
+    focusVisibleStyles(isFocusVisible),
     getSizeStyles(size),
   )
 }

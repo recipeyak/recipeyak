@@ -75,7 +75,7 @@ export function RecipeTitleDropdown({
   > = [
     {
       type: "menuitem",
-      label: "Schedule",
+      label: "Schedule…",
       onClick: () => {
         setShowScheduleModal(true)
       },
@@ -108,7 +108,7 @@ export function RecipeTitleDropdown({
     },
     {
       type: "menuitem",
-      label: editingEnabled ? "Disable Editing" : "Enable Editing",
+      label: editingEnabled ? "Disable Editing" : "Enable Editing…",
       onClick: toggleEditing,
     },
     {
@@ -146,7 +146,7 @@ export function RecipeTitleDropdown({
     },
     {
       type: "menuitem",
-      label: "Delete",
+      label: "Delete…",
       onClick: () => {
         setIsDeleteModalOpen(true)
       },

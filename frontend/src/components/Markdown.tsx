@@ -188,7 +188,7 @@ function remarkHighlightBakingSodaAndPowder() {
   }
 }
 
-export function Markdown({
+function MarkdownInner({
   children: text,
   inline,
   className,
@@ -242,3 +242,8 @@ export function Markdown({
     />
   )
 }
+
+// Parsing markdown is expensive with the library we're using, it shows up on
+// the profile with each ingredient (a very small string), taking a couple ms to
+// render
+export const Markdown = React.memo(MarkdownInner)

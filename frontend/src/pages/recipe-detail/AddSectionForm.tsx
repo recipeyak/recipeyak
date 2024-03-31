@@ -50,7 +50,7 @@ export function AddSectionForm({
       </div>
       <div className="flex justify-between">
         <Button size="small" type="button" onClick={toggleShowAddSection}>
-          Add Ingredient
+          Switch to Ingredient
         </Button>
         <div className="flex gap-2">
           <Button onClick={onCancel} size="small" type="button">

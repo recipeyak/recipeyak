@@ -1,3 +1,4 @@
+import { GripVertical } from "lucide-react"
 import { DragElementWrapper, DragSourceOptions } from "react-dnd"
 
 import { clx } from "@/classnames"
@@ -63,18 +64,22 @@ export default function IngredientView({
   description,
   optional,
   dragRef,
-}: IIngredientVIewProps) {
+  isEditing,
+}: IIngredientVIewProps & { isEditing: boolean }) {
   return (
     <div
-      className="cursor-auto select-text justify-between whitespace-pre-wrap pb-2 leading-5"
+      className="flex cursor-auto select-text items-center justify-between gap-1 whitespace-pre-wrap pb-2 leading-5"
       ref={dragRef}
     >
-      <IngredientViewContent
-        quantity={quantity}
-        description={description}
-        name={name}
-        optional={optional}
-      />
+      {isEditing && <GripVertical size={18} className="cursor-move" />}
+      <span>
+        <IngredientViewContent
+          quantity={quantity}
+          description={description}
+          name={name}
+          optional={optional}
+        />
+      </span>
     </div>
   )
 }
