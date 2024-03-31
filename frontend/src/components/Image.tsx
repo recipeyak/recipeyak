@@ -35,7 +35,6 @@ export function Image({
   readonly onClick?: () => void
   readonly lazyLoad?: boolean
   readonly size: "small" | "large" | "original"
-  readonly className?: string
   ariaLabel?: string
 }) {
   const ref = useRef<HTMLDivElement | null>(null)
@@ -87,7 +86,6 @@ export function Image({
         "relative bg-[--color-background-empty-image]",
         rounded && "rounded-md",
         roundDesktop && "sm:rounded-md",
-        rest.className,
       )}
       aria-label={rest.ariaLabel}
     >
