@@ -1,6 +1,7 @@
 """
 IO-free recipe-scraping
 """
+
 from __future__ import annotations
 
 import json

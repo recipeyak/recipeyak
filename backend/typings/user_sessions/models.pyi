@@ -22,6 +22,7 @@ class Session(models.Model):
     class Meta:
         verbose_name = "session"
         verbose_name_plural = "sessions"
+
     def get_decoded(self) -> SessionStore: ...
     user: models.ForeignKey[Any]
     user_agent: models.CharField[str | None]

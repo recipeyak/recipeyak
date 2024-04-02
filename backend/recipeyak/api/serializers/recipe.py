@@ -300,7 +300,7 @@ def serialize_timeline_event(
 
 
 def serialize_timeline_items(
-    recipe: Recipe
+    recipe: Recipe,
 ) -> list[NoteSerializer | TimelineEventResponse]:
     items: list[NoteSerializer | TimelineEventResponse] = [
         serialize_note(x, primary_image_id=recipe.primary_image_id)
