@@ -75,6 +75,13 @@ select = [
     "ARG",
     "DTZ",
     "ERA",
+    "PTH",
+    "TCH",
+    "PYI",
+    "PT",
+    "INP001",
+    "T100",
+    "PGH003",
     "RUF",
 ]
 ignore = [
@@ -90,6 +97,10 @@ ignore = [
     "RET505", # if, elif, else are fine with returns
     "RET507", # if, elif, else with continue is also fine
     "RET508", # if, elif, else with break is also fine
+    "TCH003", # not until autofixable
+    "TCH002", # not until autofixable
+    "TCH001", # not until autofixable
+    "PT004", # makes the function appear unused to pyright
 ]
 unfixable = ["ERA001"] # we want to check ourselves before we delete commented out code. Also this doesn't cleanup all of it.
 
@@ -98,6 +109,9 @@ unfixable = ["ERA001"] # we want to check ourselves before we delete commented o
     # it's very common to use class vars in Django migrations.
     "RUF012",
 ]
+
+[tool.ruff.lint.flake8-pytest-style]
+fixture-parentheses = false
 
 [tool.ruff.lint.isort]
 known-third-party = ["django"]

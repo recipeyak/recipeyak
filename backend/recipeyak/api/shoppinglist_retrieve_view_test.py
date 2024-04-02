@@ -140,7 +140,7 @@ def test_scheduling_multiple_times_some_ingredient(
 
 
 @pytest.mark.parametrize(
-    "ingredients,expected",
+    ("ingredients", "expected"),
     [
         (
             [("1/2", "lemon"), ("1", "lemon"), ("2", "lemons")],

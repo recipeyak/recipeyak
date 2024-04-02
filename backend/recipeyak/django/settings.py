@@ -13,9 +13,6 @@ patch_django()
 logger = logging.getLogger(__name__)
 
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 DEBUG = os.getenv("DEBUG") == "1"
 CI = os.getenv("CI", False)
 PRODUCTION = not DEBUG and not CI
@@ -139,9 +136,7 @@ else:
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-DATABASES = {}
-
-DATABASES["default"] = dj_database_url.config(conn_max_age=600)
+DATABASES = {"default": dj_database_url.config(conn_max_age=600)}
 
 
 # Password validation
