@@ -5012,21 +5012,9 @@
                         "type": "object"
                       },
                       "type": "array"
-                    },
-                    "settings": {
-                      "properties": {
-                        "syncEnabled": {
-                          "type": "boolean"
-                        },
-                        "calendarLink": {
-                          "type": "string"
-                        }
-                      },
-                      "required": ["syncEnabled", "calendarLink"],
-                      "type": "object"
                     }
                   },
-                  "required": ["scheduledRecipes", "settings"],
+                  "required": ["scheduledRecipes"],
                   "type": "object"
                 }
               }
