@@ -180,12 +180,11 @@ def test_get_ical_view_with_schedule_endpoint(
     """
     Ensure the url from the schedule endpoint is valid.
     """
-    url = "/api/v1/calendar/"
     client.force_login(user)
 
-    res = client.get(url, {"start": date(1976, 1, 1), "end": date(1977, 1, 1), "v2": 1})
+    res = client.get("/api/v1/calendar/settings/")
     assert res.status_code == 200
-    calendar_link = res.json()["settings"]["calendarLink"]
+    calendar_link = res.json()["calendarLink"]
 
     client.logout()
     relative_url = urlparse(calendar_link).path

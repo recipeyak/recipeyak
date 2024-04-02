@@ -16,11 +16,11 @@ def test_cal_generate_link_view(
     """
     client.force_login(user)
     res = client.get(
-        "/api/v1/calendar/",
+        "/api/v1/calendar/settings/",
         {"start": date(1976, 1, 1), "end": date(1977, 1, 1), "v2": 1},
     )
     assert res.status_code == 200
-    initial_link = res.json()["settings"]["calendarLink"]
+    initial_link = res.json()["calendarLink"]
 
     res = client.post(
         "/api/v1/calendar/generate_link/", content_type="application/json"
