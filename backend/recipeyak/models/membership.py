@@ -15,8 +15,7 @@ def get_random_ical_id() -> str:
     return get_random_string(length=48)
 
 
-class DemoteLastAdminError(Exception):
-    ...
+class DemoteLastAdminError(Exception): ...
 
 
 class Membership(CommonInfo):

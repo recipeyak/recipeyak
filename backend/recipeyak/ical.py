@@ -6,6 +6,7 @@ generate .ics files so calendar apps can see the scheduled recipes
 
 trying to be more efficient than icalendar
 """
+
 from __future__ import annotations
 
 import textwrap

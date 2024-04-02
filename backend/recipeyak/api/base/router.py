@@ -10,12 +10,10 @@ Method = Literal["get", "post", "patch", "delete", "head"]
 
 
 class View(Protocol):
-    def __call__(self, request: Any, *args: Any, **kwargs: Any) -> HttpResponse:
-        ...
+    def __call__(self, request: Any, *args: Any, **kwargs: Any) -> HttpResponse: ...
 
     @property
-    def __name__(self) -> str:
-        ...
+    def __name__(self) -> str: ...
 
 
 @dataclass(frozen=True, slots=True)

@@ -18,12 +18,10 @@ if TYPE_CHECKING:
 
     class default_token_generator:  # noqa: N801
         @staticmethod
-        def make_token(user: User) -> str:
-            ...
+        def make_token(user: User) -> str: ...
 
         @staticmethod
-        def check_token(user: User, token: str) -> str:
-            ...
+        def check_token(user: User, token: str) -> str: ...
 
 else:
     from django.contrib.auth.tokens import default_token_generator

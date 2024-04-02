@@ -1,6 +1,7 @@
 """
 Create test data
 """
+
 from recipeyak.models.ingredient import Ingredient
 from recipeyak.models.note import Note
 from recipeyak.models.recipe import Recipe

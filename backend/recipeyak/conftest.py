@@ -202,8 +202,9 @@ def scheduled_recipe(recipe: Recipe, team: Team) -> ScheduledRecipe:
 
 @pytest.fixture(scope="session", autouse=True)
 def patch_publish_calendar_event() -> Iterator[None]:
-    with patch("recipeyak.realtime.publish_calendar_event", return_value=None), patch(
-        "recipeyak.realtime.publish_calendar_event_deleted", return_value=None
+    with (
+        patch("recipeyak.realtime.publish_calendar_event", return_value=None),
+        patch("recipeyak.realtime.publish_calendar_event_deleted", return_value=None),
     ):
         yield
 

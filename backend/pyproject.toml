@@ -49,12 +49,16 @@ boto3-stubs = {extras = ["s3"], version = "^1.24.44"}
 types-urllib3 = "^1.26.23"
 types-dj-database-url = "^1.0.0"
 mypy = "^1.7.0"
-ruff = "^0.1.6"
 
 [tool.poetry.group.dev.dependencies]
 bpython = "^0.24"
+ruff = "^0.3.5"
 
 [tool.ruff]
+src = ["recipeyak"]
+target-version = "py311"
+
+[tool.ruff.lint]
 select = [
     "E",
     "F",
@@ -73,7 +77,6 @@ select = [
     "ERA",
     "RUF",
 ]
-src = ["recipeyak"]
 ignore = [
     "E501", # line length is handled by black
     "ARG001", # pytest fixtures mess with this
@@ -89,7 +92,6 @@ ignore = [
     "RET508", # if, elif, else with break is also fine
 ]
 unfixable = ["ERA001"] # we want to check ourselves before we delete commented out code. Also this doesn't cleanup all of it.
-target-version = "py311"
 
 [tool.ruff.lint.per-file-ignores]
 "recipeyak/migrations/*" = [
@@ -97,11 +99,11 @@ target-version = "py311"
     "RUF012",
 ]
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 known-third-party = ["django"]
 known-first-party = ["recipeyak"]
 
-[tool.ruff.flake8-tidy-imports]
+[tool.ruff.lint.flake8-tidy-imports]
 # Disallow all relative imports.
 ban-relative-imports = "all"
 

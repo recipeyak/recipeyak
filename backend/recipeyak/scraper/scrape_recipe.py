@@ -4,6 +4,7 @@ Fetch recipe data from a url and try and avoid SSRF
 rel: https://github.com/getsentry/sentry/blob/66b93770e95290a3ab257311e4a2598304fb4e6f/src/sentry/http.py#L57
 rel: https://forum.sentry.io/t/source-code-scrapping/4167/7
 """
+
 from __future__ import annotations
 
 import time

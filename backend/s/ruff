@@ -3,9 +3,9 @@ set -ex
 
 main() {
   if [ "$CI" ]; then
-    ./.venv/bin/ruff .
+    ./.venv/bin/ruff check .
   else
-    ./.venv/bin/ruff . --fix
+    ./.venv/bin/ruff check . --fix
   fi
   
 }

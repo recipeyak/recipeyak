@@ -17,6 +17,7 @@ Accuracy (measured on CELEX English morphology word forms):
 96% for Verbs.find_lexeme() (for regular verbs)
 https://github.com/clips/pattern/blob/ec95f97b2e34c2232e7c43ef1e34e3f0dea6654b/pattern/text/en/inflect.py
 """
+
 import re
 
 VERB, NOUN, ADJECTIVE, ADVERB = "VB", "NN", "JJ", "RB"
