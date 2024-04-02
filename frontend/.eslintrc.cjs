@@ -22,7 +22,6 @@ module.exports = {
     "react-refresh",
   ],
   extends: [
-    "prettier",
     "plugin:@tanstack/eslint-plugin-query/recommended",
     "plugin:tailwindcss/recommended",
   ],
