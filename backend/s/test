@@ -11,7 +11,7 @@ main() {
   ARGS="${@}"
 
   # shellcheck disable=SC2086
-  ./.venv/bin/pytest $ARGS
+  ./.venv/bin/pytest -n auto $ARGS
 }
 
 main "$@"
