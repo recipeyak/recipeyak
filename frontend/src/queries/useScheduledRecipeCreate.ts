@@ -11,10 +11,6 @@ import { random32Id } from "@/uuid"
 
 export type CalendarResponse = {
   scheduledRecipes: ScheduledRecipe[]
-  settings: {
-    syncEnabled: boolean
-    calendarLink: string
-  }
 }
 
 function toCalRecipe(
