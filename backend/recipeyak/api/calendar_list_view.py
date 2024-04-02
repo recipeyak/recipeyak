@@ -12,10 +12,6 @@ from recipeyak.api.calendar_serialization import (
     ScheduleRecipeSerializer,
     serialize_scheduled_recipe,
 )
-from recipeyak.api.calendar_settings_retrieve_view import (
-    CalendarSettingsSerializer,
-    get_cal_settings,
-)
 from recipeyak.models import ScheduledRecipe, get_team
 
 
@@ -38,7 +34,6 @@ class CalendarListParams(Params):
 
 class CalendarListResponse(TypedDict):
     scheduledRecipes: list[ScheduleRecipeSerializer]
-    settings: CalendarSettingsSerializer
 
 
 @endpoint()
@@ -58,7 +53,4 @@ def calendar_list_view(
         for scheduled_recipe in queryset
     ]
 
-    settings = get_cal_settings(request=request, team_id=team_id)
-
-    # TODO(2024-04-10): remove the settings properties
-    return {"scheduledRecipes": scheduled_recipes, "settings": settings}
+    return {"scheduledRecipes": scheduled_recipes}

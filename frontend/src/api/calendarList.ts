@@ -26,10 +26,6 @@ export function calendarList(params: { start: string; end: string }) {
       }
       on: string
     }>
-    settings: {
-      syncEnabled: boolean
-      calendarLink: string
-    }
   }>({
     url: "/api/v1/calendar/",
     method: "get",
