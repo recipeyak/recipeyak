@@ -12,7 +12,7 @@ from recipeyak.parsing import Unit
 
 
 @pytest.mark.parametrize(
-    "ingredients,expected",
+    ("ingredients", "expected"),
     [
         (
             [

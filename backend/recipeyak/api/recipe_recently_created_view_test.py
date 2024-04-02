@@ -5,7 +5,7 @@ from recipeyak.models import Recipe, User
 from recipeyak.models.team import Team
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db()
 def test_recently_viewed(
     client: Client, user: User, recipe: Recipe, team: Team
 ) -> None:

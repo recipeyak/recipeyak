@@ -261,7 +261,7 @@ step = {"text": "place fish in salt", "position": "b"}
 
 
 @pytest.mark.parametrize(
-    "data,url_template,model",
+    ("data", "url_template", "model"),
     [
         (ingredient, "/api/v1/recipes/{recipe_id}/ingredients/", Ingredient),
         (step, "/api/v1/recipes/{recipe_id}/steps/", Step),

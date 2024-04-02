@@ -13,7 +13,7 @@ def test_categorize_ingredients() -> None:
     Ensure we have a category set for each ingredient
     """
     out = defaultdict(set)
-    with (Path(".") / "ingredients.csv").open() as f:
+    with (Path() / "ingredients.csv").open() as f:
         reader = csv.DictReader(f)
         for row in reader:
             item = row["name"]

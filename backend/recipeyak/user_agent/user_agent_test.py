@@ -5,7 +5,7 @@ from recipeyak.user_agent import OS, Browser, Device
 
 
 @pytest.mark.parametrize(
-    "agent, expected",
+    ("agent", "expected"),
     [
         (
             "Mozilla/4.0 (Windows; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727)",
@@ -74,10 +74,6 @@ from recipeyak.user_agent import OS, Browser, Device
         (
             "iPad not a real browser/10.3",
             Device(kind="mobile", os=OS.IPad, browser=None),
-        ),
-        (
-            "Not a legit OS Safari/5.2",
-            Device(kind=None, os=None, browser=Browser.safari),
         ),
         (
             "iPhone not a real browser/10.3",

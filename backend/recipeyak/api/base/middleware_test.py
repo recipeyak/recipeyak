@@ -13,7 +13,7 @@ def test_server_timing_middleware() -> None:
 
     server_timing_middleware = ServerTimingMiddleware(get_response)
 
-    assert server_timing_middleware("test")["Server-Timing"] is not None  # type: ignore
+    assert server_timing_middleware("test")["Server-Timing"] is not None  # type: ignore[arg-type]
 
 
 def test_health_check_middleware(client: Client) -> None:

@@ -18,7 +18,7 @@ from recipeyak.parsing import (
 
 
 @pytest.mark.parametrize(
-    "quantity,expected",
+    ("quantity", "expected"),
     [
         ("1/2 Tablespoon", Quantity(quantity=Decimal(0.5), unit=Unit.TABLESPOON)),
         ("3 1/2 Tablespoon", Quantity(quantity=Decimal(3.5), unit=Unit.TABLESPOON)),
@@ -62,7 +62,7 @@ def test_parsing_quantities(quantity: str, expected: Quantity | None) -> None:
 
 
 @pytest.mark.parametrize(
-    "fraction,expected",
+    ("fraction", "expected"),
     [("1/2", Decimal(0.5)), ("11/2", Decimal(5.5)), ("1 1/2", Decimal(1.5))],
 )
 def test_fraction_to_decimal(fraction: str, expected: Decimal | None) -> None:
@@ -70,7 +70,7 @@ def test_fraction_to_decimal(fraction: str, expected: Decimal | None) -> None:
 
 
 @pytest.mark.parametrize(
-    "quantities,expected",
+    ("quantities", "expected"),
     [
         (
             (
@@ -170,7 +170,7 @@ def test_adding_incompatible_units() -> None:
 
 
 @pytest.mark.parametrize(
-    "ingredient,expected",
+    ("ingredient", "expected"),
     [
         (
             "1 cup plain whole-milk yogurt",
@@ -287,7 +287,7 @@ def test_parse_quantity_name(ingredient: str, expected: tuple[str, str]) -> None
 
 
 @pytest.mark.parametrize(
-    "ingredient,expected",
+    ("ingredient", "expected"),
     [
         (
             "½ jalapeño pepper, seeded, ribs removed",
@@ -296,10 +296,6 @@ def test_parse_quantity_name(ingredient: str, expected: tuple[str, str]) -> None
         (
             "2 pounds (900g) bone-in, skin-on chicken thighs",
             ("2 pounds (900g) bone-in, skin-on chicken thighs", ""),
-        ),
-        (
-            "½ jalapeño pepper, seeded, ribs removed",
-            ("½ jalapeño pepper", "seeded, ribs removed"),
         ),
         (
             "1 1/2 pounds boneless, skinless chicken breast, cut into 3/4-inch cubes",
@@ -323,7 +319,7 @@ def test_parse_name_description(ingredient: str, expected: tuple[str, str]) -> N
 
 
 @pytest.mark.parametrize(
-    "ingredient,expected",
+    ("ingredient", "expected"),
     [
         (
             "1 cup plain whole-milk yogurt",

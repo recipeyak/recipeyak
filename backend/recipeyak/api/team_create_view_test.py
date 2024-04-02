@@ -224,7 +224,8 @@ def test_destory_team_member(
 
     # members can remove their own membership
     empty_team.force_join(user2)
-    assert empty_team.is_member(user2) and not empty_team.is_admin(user2)
+    assert empty_team.is_member(user2)
+    assert not empty_team.is_admin(user2)
     client.force_login(user2)
     assert (
         client.delete(
@@ -256,11 +257,13 @@ def test_update_team_member(
 
     # members cannot edit member
     team.force_join(user2)
-    assert team.is_member(user2) and not team.is_admin(user2)
+    assert team.is_member(user2)
+    assert not team.is_admin(user2)
     assert client.patch(url, data, content_type="application/json").status_code == 403
 
     # members cannot edit their membership
-    assert team.is_member(user2) and not team.is_admin(user2)
+    assert team.is_member(user2)
+    assert not team.is_admin(user2)
     user2_membership = user2.membership_set.get(team=team)
     url = f"/api/v1/members/{user2_membership.id}/"
     assert client.patch(url, data, content_type="application/json").status_code == 403
@@ -274,7 +277,8 @@ def test_update_team_member(
 
     # admins cannot edit memberships on other teams
     empty_team.force_join(user2)
-    assert not empty_team.is_member(user) and team.is_admin(user)
+    assert not empty_team.is_member(user)
+    assert team.is_admin(user)
     assert empty_team.is_member(user2)
     empty_team_membership = user2.membership_set.get(team=empty_team)
     url = f"/api/v1/members/{empty_team_membership.id}/"
@@ -303,7 +307,8 @@ def test_create_team_invite(
         content_type="application/json",
     )
     assert res.status_code == 200
-    assert user2.has_invite(team) and not team.is_member(user2)
+    assert user2.has_invite(team)
+    assert not team.is_member(user2)
 
     for data, description, s in [
         (
@@ -326,7 +331,8 @@ def test_creating_invites_by_non_members(
 ) -> None:
     # non-admins cannot create invite
     team.force_join(user2, Membership.CONTRIBUTOR)
-    assert team.is_member(user2) and not team.is_admin(user2)
+    assert team.is_member(user2)
+    assert not team.is_admin(user2)
     url = f"/api/v1/t/{team.id}/invites/"
     client.force_login(user2)
     res = client.post(url, {"emails": [user3.email]}, content_type="application/json")
