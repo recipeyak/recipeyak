@@ -1,4 +1,11 @@
-import { addDays, addWeeks, format, isSameYear, parseISO } from "date-fns"
+import {
+  addDays,
+  addWeeks,
+  format,
+  isSameDay,
+  isSameYear,
+  parseISO,
+} from "date-fns"
 import React from "react"
 import { DialogTrigger } from "react-aria-components"
 import { Link } from "react-router-dom"
@@ -172,6 +179,16 @@ function getDateOption(
   ] as const
 }
 
+function getNextDayOption(
+  date: Date,
+  handleSave: (args: { on: Date }) => void,
+) {
+  const nextDay = addDays(date, 1)
+  const tomorrow = addDays(new Date(), 1)
+  const label = isSameDay(nextDay, tomorrow) ? "Tomorrow" : "Next Day"
+  return getDateOption(label, nextDay, handleSave)
+}
+
 function RescheduleSection({
   onClose,
   date,
@@ -209,7 +226,7 @@ function RescheduleSection({
               {(
                 [
                   getDateOption("Today", new Date(), handleSave),
-                  getDateOption("Next Day", addDays(date, 1), handleSave),
+                  getNextDayOption(date, handleSave),
                   getDateOption("Next Week", addWeeks(date, 1), handleSave),
                   [
                     "Custom",
