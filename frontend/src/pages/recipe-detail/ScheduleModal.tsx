@@ -117,7 +117,7 @@ export function ScheduleModal({
             value={toISODateString(isoDate)}
             onChange={handleDateChange}
           />
-          <div className="mt-auto flex flex-col gap-2">
+          <div className="flex flex-col gap-2">
             <Button
               size="normal"
               variant="primary"

@@ -38,7 +38,7 @@ export function Modal({
                 // ensure we don't click stuff behind it
                 e.stopPropagation()
               }}
-              className="h-full"
+              className="flex h-full flex-col"
             >
               <div className="flex items-center justify-between">
                 <div>{title}</div>
