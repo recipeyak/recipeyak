@@ -7,6 +7,8 @@ from dataclasses import dataclass
 from decimal import Decimal
 from enum import Enum
 
+from recipeyak.string import starts_with
+
 _MALFORMED_UNITS = {"large", "medium", "small", "fresh"}
 
 _quantity_chars = set(" /.0123456789")
@@ -363,18 +365,6 @@ _units_ws = tuple(
 _larger_to_smaller_units_ws = sorted(_units_ws, key=lambda x: -len(x))
 
 
-def _starts_with(string: str, prefixes: tuple[str, ...] | str) -> bool:
-    """
-    case insensitive str.starts_with
-    """
-    if isinstance(prefixes, str):
-        prefixes = (prefixes,)
-    for prefix in prefixes:
-        if string[: len(prefix)].casefold() == prefix.casefold():
-            return True
-    return False
-
-
 def _parse_quantity_name(text: str) -> tuple[str, str]:
     """
     examples:
@@ -417,11 +407,11 @@ def _parse_quantity_name(text: str) -> tuple[str, str]:
             idx += 1
             continue
         else:
-            if _starts_with(value[idx:], _units_ws) and in_quantity:
+            if starts_with(value[idx:], _units_ws) and in_quantity:
                 in_quantity = False
                 eat_count = 0
                 for unit in _larger_to_smaller_units_ws:
-                    if _starts_with(value[idx:], unit):
+                    if starts_with(value[idx:], unit):
                         eat_count = len(unit)
                         break
                 for _ in range(eat_count):
@@ -439,7 +429,7 @@ def _parse_quantity_name(text: str) -> tuple[str, str]:
                     if value[idx] == "/":
                         in_quantity = True
                 for conjunction in ("plus", "+"):
-                    if _starts_with(value[idx:], conjunction):
+                    if starts_with(value[idx:], conjunction):
                         quantity += conjunction
                         idx += len(conjunction)
                         in_quantity = True

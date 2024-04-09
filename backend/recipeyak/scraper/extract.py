@@ -13,6 +13,7 @@ from recipe_scrapers import AbstractScraper
 from recipe_scrapers._exceptions import SchemaOrgException
 
 from recipeyak.scraper.format_time import human_time_duration
+from recipeyak.string import starts_with
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
@@ -69,6 +70,9 @@ def _extract_total_time(parsed: AbstractScraper) -> str | None:
         return None
 
 
+_YIELD_PREFIXES = {"Serves", "Servings", "Makes", "Creates"}
+
+
 def _extract_yields(parsed: AbstractScraper) -> str | None:
     # We don't want to use the library's yields method as it's buggy
     # see: https://github.com/hhursev/recipe-scrapers/issues/960
@@ -77,7 +81,11 @@ def _extract_yields(parsed: AbstractScraper) -> str | None:
     ):
         if isinstance(yield_data, list):
             yield_data = yield_data[0]
-        return str(yield_data)
+        yield_str = str(yield_data)
+        for prefix in _YIELD_PREFIXES:
+            if starts_with(yield_str, prefix):
+                return yield_str.removeprefix(prefix)
+            return yield_str
     return None
 
 

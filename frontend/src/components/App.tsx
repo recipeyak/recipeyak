@@ -4,7 +4,6 @@ import { ExtraErrorData } from "@sentry/integrations"
 import * as Sentry from "@sentry/react"
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister"
 import { useIsRestoring } from "@tanstack/react-query"
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client"
 import * as Ably from "ably"
 import { AblyProvider } from "ably/react"
@@ -363,7 +362,6 @@ function App() {
           }}
         >
           <AlgoliaProvider>
-            <ReactQueryDevtools initialIsOpen={false} />
             <HelmetProvider>
               <DndProvider backend={HTML5Backend}>
                 <ErrorBoundary>
