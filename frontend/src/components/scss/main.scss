@@ -252,7 +252,7 @@ table {
 }
 
 @mixin theme-dark {
-  --color-background: #0d1116;
+  --color-background: #000000;
   --color-primary: #d97706;
   --color-danger: #dc2626;
 
@@ -313,11 +313,11 @@ table {
 
   --color-input-placeholder: rgb(151, 151, 154);
 
-  --color-border: #2f353c;
+  --color-border: rgb(38, 38, 38);
   --color-border-selected-day: var(--color-border);
   --color-accent: var(--color-text);
 
-  --color-background-card: #161b22;
+  --color-background-card: #0f1011;
   --color-background-calendar-day: var(--color-background-card);
   --color-background-calendar-item: var(--color-background-card);
   --color-background-empty-image: #382e27;
