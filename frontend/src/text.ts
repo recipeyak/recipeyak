@@ -35,18 +35,28 @@ export function normalizeUnitsFracs(str: string): string {
   )
 }
 
+const PREFIXES_TO_OMIT = ["www."]
+
 /**
  * Extract a hostname from a URL
  *
  * Example:
  *  https://cooking.nytimes.com/recipes/112390-some-example => cooking.nytimes.com
+ *  https://www.americastestkitchen.com/recipes/14698-cilbir-turkish-poached-eggs-with-yogurt-and-spiced-butter => americastestkitchen.com
  */
 export function urlToDomain(url: string) {
   if (!url.startsWith("http")) {
     url = "http://" + url
   }
   try {
-    return new URL(url).hostname
+    const hostname = new URL(url).hostname
+    // www. doesn't look nice
+    for (const prefix of PREFIXES_TO_OMIT) {
+      if (hostname.startsWith(prefix)) {
+        return hostname.slice(prefix.length)
+      }
+    }
+    return hostname
   } catch (e) {
     if (e instanceof TypeError) {
       return url
