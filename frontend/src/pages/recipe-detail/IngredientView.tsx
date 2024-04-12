@@ -68,7 +68,7 @@ export default function IngredientView({
 }: IIngredientVIewProps & { isEditing: boolean }) {
   return (
     <div
-      className="flex cursor-auto select-text items-center justify-between gap-1 whitespace-pre-wrap pb-2 leading-5"
+      className="flex shrink-0 cursor-auto select-text items-center justify-between gap-1 whitespace-pre-wrap pb-2 leading-5"
       ref={dragRef}
     >
       {isEditing && <GripVertical size={18} className="cursor-move" />}
