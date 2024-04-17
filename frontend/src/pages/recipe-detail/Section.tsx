@@ -162,7 +162,6 @@ export function Section({
         "mt-1 flex cursor-auto select-text items-start justify-between text-sm font-bold",
         isDragging && "opacity-0",
       )}
-      title={editingEnabled ? "click to edit" : undefined}
     >
       {inner}
       {editingEnabled && (

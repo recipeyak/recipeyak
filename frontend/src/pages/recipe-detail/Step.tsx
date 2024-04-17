@@ -445,12 +445,5 @@ function StepBody({
     <StepView text={text} />
   )
 
-  return (
-    <div
-      className={clx(editingEnabled && "cursor-pointer")}
-      title={editingEnabled ? "click to edit" : undefined}
-    >
-      {inner}
-    </div>
-  )
+  return <div className={clx(editingEnabled && "cursor-pointer")}>{inner}</div>
 }
