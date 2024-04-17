@@ -216,7 +216,6 @@ export function Ingredient(props: {
   return (
     <li
       ref={props.isEditing && dragAndDropEnabled ? ref : undefined}
-      title={props.isEditing ? "click to edit" : undefined}
       className={clx(
         props.isEditing && "cursor-pointer",
         isDragging && "opacity-0",
