@@ -36,6 +36,7 @@ ruamel-yaml = "^0.18.5"
 pydantic = {extras = ["email"], version = "^2.5.3"}
 pydantic-settings = "^2.1.0"
 jsonref = "^1.1.0"
+pywatchman = "^2.0.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "7.2.0"
