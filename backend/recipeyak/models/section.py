@@ -28,6 +28,12 @@ class Section(CommonInfo):
     class Meta:
         db_table = "core_section"
         ordering = ["position"]  # noqa: RUF012
+        constraints = [  # noqa: RUF012
+            models.UniqueConstraint(
+                fields=("recipe", "position"),
+                name="section_recipe_position_uniq",
+            )
+        ]
 
     def __repr__(self) -> str:
         return f"<Section id={self.id} title='{self.title}' position='{self.position}'>"

@@ -371,7 +371,9 @@ def test_fetching_shopping_list_with_small_decimals() -> None:
     user = create_user()
     team = create_team(user=user)
     recipe = create_recipe(team=team, user=user)
-    create_ingredient(recipe=recipe, quantity="1/3 cup", name="flour", position="c")
+    create_ingredient(
+        recipe=recipe, quantity="1/3 cup", name="flour", position="cccccc"
+    )
     client.force_login(user)
 
     start = date(1976, 7, 6)
