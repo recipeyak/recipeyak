@@ -110,7 +110,7 @@ def test_step_create_saves_version() -> None:
 
     res = client.post(
         f"/api/v1/recipes/{recipe.id}/steps/",
-        {"text": "Step text", "position": "a"},
+        {"text": "Step text", "position": "abcd"},
         content_type="application/json",
     )
 
