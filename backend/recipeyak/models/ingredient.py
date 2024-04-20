@@ -34,6 +34,12 @@ class Ingredient(CommonInfo):
     class Meta:
         ordering = ["position"]  # noqa: RUF012
         db_table = "core_ingredient"
+        constraints = [  # noqa: RUF012
+            models.UniqueConstraint(
+                fields=("recipe", "position"),
+                name="ingredient_recipe_position_uniq",
+            )
+        ]
 
     def __repr__(self) -> str:
         optional = "[optional]" if self.optional else ""

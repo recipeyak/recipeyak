@@ -21,3 +21,9 @@ class Step(CommonInfo):
     class Meta:
         db_table = "core_step"
         ordering = ["position"]  # noqa: RUF012
+        constraints = [  # noqa: RUF012
+            models.UniqueConstraint(
+                fields=("recipe", "position"),
+                name="step_recipe_position_uniq",
+            )
+        ]
