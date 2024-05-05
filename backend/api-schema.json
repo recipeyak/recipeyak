@@ -116,6 +116,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": false,
                 "properties": {
                   "level": {
                     "enum": ["admin", "contributor", "read"],
@@ -190,6 +191,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": false,
                 "properties": {
                   "email": {
                     "format": "email",
@@ -353,6 +355,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": false,
                 "properties": {
                   "old_password": {
                     "maxLength": 128,
@@ -401,6 +404,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": false,
                 "properties": {
                   "email": {
                     "type": "string"
@@ -440,6 +444,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": false,
                 "properties": {
                   "uid": {
                     "type": "string"
@@ -540,6 +545,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": false,
                 "properties": {
                   "email": {
                     "type": "string"
@@ -681,6 +687,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": false,
                 "properties": {
                   "ingredient_id": {
                     "type": "integer"
@@ -864,6 +871,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": false,
                 "properties": {
                   "emails": {
                     "items": {
@@ -923,6 +931,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": false,
                 "properties": {
                   "name": {
                     "type": "string"
@@ -1051,6 +1060,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": false,
                 "properties": {
                   "name": {
                     "type": "string"
@@ -1113,6 +1123,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": false,
                 "properties": {
                   "text": {
                     "anyOf": [
@@ -1330,6 +1341,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": false,
                 "properties": {
                   "type": {
                     "enum": ["❤️", "😆", "🤮"],
@@ -1419,6 +1431,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": false,
                 "properties": {
                   "team": {
                     "type": "integer"
@@ -2987,6 +3000,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": false,
                 "properties": {
                   "name": {
                     "anyOf": [
@@ -3886,6 +3900,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": false,
                 "properties": {
                   "quantity": {
                     "type": "string"
@@ -3983,6 +3998,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": false,
                 "properties": {
                   "quantity": {
                     "anyOf": [
@@ -4134,6 +4150,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": false,
                 "properties": {
                   "text": {
                     "type": "string"
@@ -4318,6 +4335,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": false,
                 "properties": {
                   "position": {
                     "anyOf": [
@@ -4384,6 +4402,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": false,
                 "properties": {
                   "text": {
                     "type": "string"
@@ -4442,6 +4461,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": false,
                 "properties": {
                   "text": {
                     "anyOf": [
@@ -4784,6 +4804,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": false,
                 "properties": {
                   "position": {
                     "anyOf": [
@@ -5134,6 +5155,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": false,
                 "properties": {
                   "recipe": {
                     "type": "integer"
@@ -5324,6 +5346,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": false,
                 "properties": {
                   "syncEnabled": {
                     "type": "boolean"
@@ -5402,6 +5425,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": false,
                 "properties": {
                   "on": {
                     "format": "date",
@@ -5707,6 +5731,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": false,
                 "properties": {
                   "file_name": {
                     "type": "string"
@@ -5889,6 +5914,7 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": false,
                 "properties": {
                   "email": {
                     "anyOf": [
