@@ -129,6 +129,9 @@ def _json_schema_to_typescript_type(
             value = _json_schema_to_typescript_type(
                 schema["properties"][prop_name], op=op, is_input_type=is_input_type
             )
+            description = schema["properties"][prop_name].get("description", "")
+            if description:
+                out += f"/** {description} */\n"
             optional = "?" if is_optional_prop else ""
             out += f"{prop_name!r}{optional}: {value},\n"
         out += "}"

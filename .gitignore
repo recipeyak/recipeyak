@@ -4,6 +4,7 @@ venv/
 .cache/
 .mypy_cache
 .coverage
+.watchman-*
 .coverage.*
 dist/
 .asset-cache
