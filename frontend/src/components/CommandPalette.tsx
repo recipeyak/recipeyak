@@ -269,7 +269,6 @@ export function CommandPalette() {
       if (e.key === "k" && e.metaKey) {
         e.preventDefault()
         if (showSearchPopover) {
-          debugger
           setShowSearchPopover(false)
           setQuery("")
           setSelectedIndex(0)
