@@ -34,6 +34,7 @@ module.exports = {
     browser: true,
   },
   rules: {
+    "no-debugger": "error",
     curly: "error",
     "import/first": "error",
     "import/no-duplicates": "error",
