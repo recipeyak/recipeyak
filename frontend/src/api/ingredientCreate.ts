@@ -10,11 +10,17 @@ export function ingredientCreate(params: {
   recipe_id: number
 }) {
   return http<{
+    /** Unique ID of the Ingredient. */
     id: number
+    /** The quantity of the Ingredient. */
     quantity: string
+    /** The name of the Ingredient. */
     name: string
+    /** The description of the Ingredient. */
     description: string
+    /** The position of the Ingredient in the Recipe. */
     position: string
+    /** Whether the Ingredient is optional for the Recipe. */
     optional: boolean
   }>({
     url: "/api/v1/recipes/{recipe_id}/ingredients/",

@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 from datetime import UTC, date, datetime, timedelta
-from typing import Literal, cast
+from typing import Annotated, Literal, cast
 
 import pydantic
 import tldextract
 from django.db import connection
+from pydantic import Field
 
 from recipeyak.models import (
     Ingredient,
@@ -117,12 +118,16 @@ def serialize_note(note: Note, primary_image_id: int) -> NoteSerializer:
 
 
 class IngredientSerializer(pydantic.BaseModel):
-    id: int
-    quantity: str
-    name: str
-    description: str
-    position: str
-    optional: bool
+    id: Annotated[int, Field(description="Unique ID of the Ingredient.")]
+    quantity: Annotated[str, Field(description="The quantity of the Ingredient.")]
+    name: Annotated[str, Field(description="The name of the Ingredient.")]
+    description: Annotated[str, Field(description="The description of the Ingredient.")]
+    position: Annotated[
+        str, Field(description="The position of the Ingredient in the Recipe.")
+    ]
+    optional: Annotated[
+        bool, Field(description="Whether the Ingredient is optional for the Recipe.")
+    ]
 
 
 def ingredient_to_text(ingredient: Ingredient) -> str:
@@ -231,11 +236,16 @@ class TimelineEventResponse(pydantic.BaseModel):
 
 
 class UploadResponse(pydantic.BaseModel):
-    id: str
-    url: str
-    backgroundUrl: str | None
-    contentType: str
-    author: str | None
+    id: Annotated[str, Field(description="Unique ID of the Upload.")]
+    url: Annotated[str, Field(description="The URL of the Upload.")]
+    backgroundUrl: Annotated[
+        str | None,
+        Field(description="The background URL of the Upload for progressive loading."),
+    ]
+    contentType: Annotated[str, Field(description="The content type of the Upload.")]
+    author: Annotated[
+        str | None, Field(description="Name of User who created the Upload.")
+    ]
 
 
 class RecentScheduleResponse(pydantic.BaseModel):
@@ -250,24 +260,53 @@ class SectionSerializer(pydantic.BaseModel):
 
 
 class RecipeSerializer(pydantic.BaseModel):
-    id: int
-    name: str
-    author: str | None
-    source: str | None
-    time: str | None
-    servings: str | None
-    ingredients: list[IngredientSerializer]
-    steps: list[StepSerializer]
-    recentSchedules: list[RecentScheduleResponse]
-    timelineItems: list[NoteSerializer | TimelineEventResponse]
-    sections: list[SectionSerializer]
-    modified: datetime
-    created: datetime
-    archived_at: datetime | None
-    user_favorite: bool
-    tags: list[str] | None
-    primaryImage: UploadResponse | None
-    versions: list[RecipeVersionResponse]
+    id: Annotated[int, Field(description="Unique ID of the Recipe.")]
+    name: Annotated[str, Field(description="The name of the Recipe.")]
+    author: Annotated[str | None, Field(description="The author of the Recipe.")]
+    source: Annotated[str | None, Field(description="The source of the Recipe.")]
+    time: Annotated[
+        str | None, Field(description="The time duration to make the Recipe.")
+    ]
+    servings: Annotated[
+        str | None, Field(description="The number of servings the Recipe yields.")
+    ]
+    ingredients: Annotated[
+        list[IngredientSerializer], Field(description="The Ingredients of the Recipe.")
+    ]
+    steps: Annotated[
+        list[StepSerializer], Field(description="The Steps of the Recipe.")
+    ]
+    recentSchedules: Annotated[
+        list[RecentScheduleResponse],
+        Field(
+            description="The ScheduledRecipes of the Recipe in the past 3 weeks, and the next 3 weeks."
+        ),
+    ]
+    timelineItems: Annotated[
+        list[NoteSerializer | TimelineEventResponse],
+        Field(description="The Notes and TimelineEvents of the Recipe."),
+    ]
+    sections: Annotated[
+        list[SectionSerializer], Field(description="The Sections of the Recipe.")
+    ]
+    modified: Annotated[
+        datetime, Field(description="The last modified time of the Recipe fields.")
+    ]
+    created: Annotated[datetime, Field(description="The creation time of the Recipe.")]
+    archived_at: Annotated[
+        datetime | None, Field(description="When the Recipe was archived.")
+    ]
+    user_favorite: Annotated[
+        bool, Field(description="Whether the User has favorited the Recipe.")
+    ]
+    tags: Annotated[list[str] | None, Field(description="The tags of the Recipe.")]
+    primaryImage: Annotated[
+        UploadResponse | None, Field(description="The primary image of the Recipe.")
+    ]
+    versions: Annotated[
+        list[RecipeVersionResponse],
+        Field(description="The previous versions of the Recipe."),
+    ]
 
 
 def serialize_timeline_event(

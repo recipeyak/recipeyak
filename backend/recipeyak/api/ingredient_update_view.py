@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from typing import Annotated
+from typing import Annotated, TypeAlias
 
 from django.db import transaction
 from django.shortcuts import get_object_or_404
-from pydantic import StringConstraints
+from pydantic import Field, StringConstraints
 
 from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AuthedHttpRequest
@@ -18,14 +18,27 @@ from recipeyak.models import ChangeType, RecipeChange, filter_ingredients, get_t
 from recipeyak.realtime import publish_recipe
 from recipeyak.versioning import save_recipe_version
 
+StrStripped: TypeAlias = Annotated[str, StringConstraints(strip_whitespace=True)]
+
 
 class IngredientUpdateParams(Params):
-    quantity: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
-    name: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
-    description: Annotated[str, StringConstraints(strip_whitespace=True)] | None = None
-    position: str | None = None
-    optional: bool | None = None
-    ingredient_id: int
+    quantity: Annotated[
+        StrStripped | None, Field(description="The new quantity of the Ingredient.")
+    ] = None
+    name: Annotated[
+        StrStripped | None, Field(description="The new name of the Ingredient.")
+    ] = None
+    description: Annotated[
+        StrStripped | None, Field(description="The new description of the Ingredient.")
+    ] = None
+    position: Annotated[
+        str | None, Field(description="The new position of the Ingredient.")
+    ] = None
+    optional: Annotated[
+        bool | None,
+        Field(description="Whether the Ingredient is required for the Recipe."),
+    ] = None
+    ingredient_id: Annotated[int, Field(description="Unique ID of the ingredient.")]
 
 
 @endpoint()

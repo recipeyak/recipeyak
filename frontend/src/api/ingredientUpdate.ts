@@ -2,19 +2,30 @@
 import { http } from "@/apiClient"
 
 export function ingredientUpdate(params: {
+  /** The new quantity of the Ingredient. */
   quantity?: string | null
+  /** The new name of the Ingredient. */
   name?: string | null
+  /** The new description of the Ingredient. */
   description?: string | null
+  /** The new position of the Ingredient. */
   position?: string | null
+  /** Whether the Ingredient is required for the Recipe. */
   optional?: boolean | null
   ingredient_id: number
 }) {
   return http<{
+    /** Unique ID of the Ingredient. */
     id: number
+    /** The quantity of the Ingredient. */
     quantity: string
+    /** The name of the Ingredient. */
     name: string
+    /** The description of the Ingredient. */
     description: string
+    /** The position of the Ingredient in the Recipe. */
     position: string
+    /** Whether the Ingredient is optional for the Recipe. */
     optional: boolean
   }>({
     url: "/api/v1/ingredients/{ingredient_id}/",

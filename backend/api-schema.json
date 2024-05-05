@@ -1459,9 +1459,11 @@
                 "schema": {
                   "properties": {
                     "id": {
+                      "description": "Unique ID of the Recipe.",
                       "type": "integer"
                     },
                     "name": {
+                      "description": "The name of the Recipe.",
                       "type": "string"
                     },
                     "author": {
@@ -1472,7 +1474,8 @@
                         {
                           "type": "null"
                         }
-                      ]
+                      ],
+                      "description": "The author of the Recipe."
                     },
                     "source": {
                       "anyOf": [
@@ -1482,7 +1485,8 @@
                         {
                           "type": "null"
                         }
-                      ]
+                      ],
+                      "description": "The source of the Recipe."
                     },
                     "time": {
                       "anyOf": [
@@ -1492,7 +1496,8 @@
                         {
                           "type": "null"
                         }
-                      ]
+                      ],
+                      "description": "The time duration to make the Recipe."
                     },
                     "servings": {
                       "anyOf": [
@@ -1502,27 +1507,35 @@
                         {
                           "type": "null"
                         }
-                      ]
+                      ],
+                      "description": "The number of servings the Recipe yields."
                     },
                     "ingredients": {
+                      "description": "The Ingredients of the Recipe.",
                       "items": {
                         "properties": {
                           "id": {
+                            "description": "Unique ID of the Ingredient.",
                             "type": "integer"
                           },
                           "quantity": {
+                            "description": "The quantity of the Ingredient.",
                             "type": "string"
                           },
                           "name": {
+                            "description": "The name of the Ingredient.",
                             "type": "string"
                           },
                           "description": {
+                            "description": "The description of the Ingredient.",
                             "type": "string"
                           },
                           "position": {
+                            "description": "The position of the Ingredient in the Recipe.",
                             "type": "string"
                           },
                           "optional": {
+                            "description": "Whether the Ingredient is optional for the Recipe.",
                             "type": "boolean"
                           }
                         },
@@ -1539,6 +1552,7 @@
                       "type": "array"
                     },
                     "steps": {
+                      "description": "The Steps of the Recipe.",
                       "items": {
                         "properties": {
                           "id": {
@@ -1557,6 +1571,7 @@
                       "type": "array"
                     },
                     "recentSchedules": {
+                      "description": "The ScheduledRecipes of the Recipe in the past 3 weeks, and the next 3 weeks.",
                       "items": {
                         "properties": {
                           "id": {
@@ -1573,6 +1588,7 @@
                       "type": "array"
                     },
                     "timelineItems": {
+                      "description": "The Notes and TimelineEvents of the Recipe.",
                       "items": {
                         "anyOf": [
                           {
@@ -1796,6 +1812,7 @@
                       "type": "array"
                     },
                     "sections": {
+                      "description": "The Sections of the Recipe.",
                       "items": {
                         "properties": {
                           "id": {
@@ -1814,10 +1831,12 @@
                       "type": "array"
                     },
                     "modified": {
+                      "description": "The last modified time of the Recipe fields.",
                       "format": "date-time",
                       "type": "string"
                     },
                     "created": {
+                      "description": "The creation time of the Recipe.",
                       "format": "date-time",
                       "type": "string"
                     },
@@ -1830,9 +1849,11 @@
                         {
                           "type": "null"
                         }
-                      ]
+                      ],
+                      "description": "When the Recipe was archived."
                     },
                     "user_favorite": {
+                      "description": "Whether the User has favorited the Recipe.",
                       "type": "boolean"
                     },
                     "tags": {
@@ -1846,16 +1867,19 @@
                         {
                           "type": "null"
                         }
-                      ]
+                      ],
+                      "description": "The tags of the Recipe."
                     },
                     "primaryImage": {
                       "anyOf": [
                         {
                           "properties": {
                             "id": {
+                              "description": "Unique ID of the Upload.",
                               "type": "string"
                             },
                             "url": {
+                              "description": "The URL of the Upload.",
                               "type": "string"
                             },
                             "backgroundUrl": {
@@ -1866,9 +1890,11 @@
                                 {
                                   "type": "null"
                                 }
-                              ]
+                              ],
+                              "description": "The background URL of the Upload for progressive loading."
                             },
                             "contentType": {
+                              "description": "The content type of the Upload.",
                               "type": "string"
                             },
                             "author": {
@@ -1879,7 +1905,8 @@
                                 {
                                   "type": "null"
                                 }
-                              ]
+                              ],
+                              "description": "Name of User who created the Upload."
                             }
                           },
                           "required": [
@@ -1894,9 +1921,11 @@
                         {
                           "type": "null"
                         }
-                      ]
+                      ],
+                      "description": "The primary image of the Recipe."
                     },
                     "versions": {
+                      "description": "The previous versions of the Recipe.",
                       "items": {
                         "properties": {
                           "id": {
@@ -2196,9 +2225,11 @@
                 "schema": {
                   "properties": {
                     "id": {
+                      "description": "Unique ID of the Recipe.",
                       "type": "integer"
                     },
                     "name": {
+                      "description": "The name of the Recipe.",
                       "type": "string"
                     },
                     "author": {
@@ -2209,7 +2240,8 @@
                         {
                           "type": "null"
                         }
-                      ]
+                      ],
+                      "description": "The author of the Recipe."
                     },
                     "source": {
                       "anyOf": [
@@ -2219,7 +2251,8 @@
                         {
                           "type": "null"
                         }
-                      ]
+                      ],
+                      "description": "The source of the Recipe."
                     },
                     "time": {
                       "anyOf": [
@@ -2229,7 +2262,8 @@
                         {
                           "type": "null"
                         }
-                      ]
+                      ],
+                      "description": "The time duration to make the Recipe."
                     },
                     "servings": {
                       "anyOf": [
@@ -2239,27 +2273,35 @@
                         {
                           "type": "null"
                         }
-                      ]
+                      ],
+                      "description": "The number of servings the Recipe yields."
                     },
                     "ingredients": {
+                      "description": "The Ingredients of the Recipe.",
                       "items": {
                         "properties": {
                           "id": {
+                            "description": "Unique ID of the Ingredient.",
                             "type": "integer"
                           },
                           "quantity": {
+                            "description": "The quantity of the Ingredient.",
                             "type": "string"
                           },
                           "name": {
+                            "description": "The name of the Ingredient.",
                             "type": "string"
                           },
                           "description": {
+                            "description": "The description of the Ingredient.",
                             "type": "string"
                           },
                           "position": {
+                            "description": "The position of the Ingredient in the Recipe.",
                             "type": "string"
                           },
                           "optional": {
+                            "description": "Whether the Ingredient is optional for the Recipe.",
                             "type": "boolean"
                           }
                         },
@@ -2276,6 +2318,7 @@
                       "type": "array"
                     },
                     "steps": {
+                      "description": "The Steps of the Recipe.",
                       "items": {
                         "properties": {
                           "id": {
@@ -2294,6 +2337,7 @@
                       "type": "array"
                     },
                     "recentSchedules": {
+                      "description": "The ScheduledRecipes of the Recipe in the past 3 weeks, and the next 3 weeks.",
                       "items": {
                         "properties": {
                           "id": {
@@ -2310,6 +2354,7 @@
                       "type": "array"
                     },
                     "timelineItems": {
+                      "description": "The Notes and TimelineEvents of the Recipe.",
                       "items": {
                         "anyOf": [
                           {
@@ -2533,6 +2578,7 @@
                       "type": "array"
                     },
                     "sections": {
+                      "description": "The Sections of the Recipe.",
                       "items": {
                         "properties": {
                           "id": {
@@ -2551,10 +2597,12 @@
                       "type": "array"
                     },
                     "modified": {
+                      "description": "The last modified time of the Recipe fields.",
                       "format": "date-time",
                       "type": "string"
                     },
                     "created": {
+                      "description": "The creation time of the Recipe.",
                       "format": "date-time",
                       "type": "string"
                     },
@@ -2567,9 +2615,11 @@
                         {
                           "type": "null"
                         }
-                      ]
+                      ],
+                      "description": "When the Recipe was archived."
                     },
                     "user_favorite": {
+                      "description": "Whether the User has favorited the Recipe.",
                       "type": "boolean"
                     },
                     "tags": {
@@ -2583,16 +2633,19 @@
                         {
                           "type": "null"
                         }
-                      ]
+                      ],
+                      "description": "The tags of the Recipe."
                     },
                     "primaryImage": {
                       "anyOf": [
                         {
                           "properties": {
                             "id": {
+                              "description": "Unique ID of the Upload.",
                               "type": "string"
                             },
                             "url": {
+                              "description": "The URL of the Upload.",
                               "type": "string"
                             },
                             "backgroundUrl": {
@@ -2603,9 +2656,11 @@
                                 {
                                   "type": "null"
                                 }
-                              ]
+                              ],
+                              "description": "The background URL of the Upload for progressive loading."
                             },
                             "contentType": {
+                              "description": "The content type of the Upload.",
                               "type": "string"
                             },
                             "author": {
@@ -2616,7 +2671,8 @@
                                 {
                                   "type": "null"
                                 }
-                              ]
+                              ],
+                              "description": "Name of User who created the Upload."
                             }
                           },
                           "required": [
@@ -2631,9 +2687,11 @@
                         {
                           "type": "null"
                         }
-                      ]
+                      ],
+                      "description": "The primary image of the Recipe."
                     },
                     "versions": {
+                      "description": "The previous versions of the Recipe.",
                       "items": {
                         "properties": {
                           "id": {
@@ -3046,9 +3104,11 @@
                 "schema": {
                   "properties": {
                     "id": {
+                      "description": "Unique ID of the Recipe.",
                       "type": "integer"
                     },
                     "name": {
+                      "description": "The name of the Recipe.",
                       "type": "string"
                     },
                     "author": {
@@ -3059,7 +3119,8 @@
                         {
                           "type": "null"
                         }
-                      ]
+                      ],
+                      "description": "The author of the Recipe."
                     },
                     "source": {
                       "anyOf": [
@@ -3069,7 +3130,8 @@
                         {
                           "type": "null"
                         }
-                      ]
+                      ],
+                      "description": "The source of the Recipe."
                     },
                     "time": {
                       "anyOf": [
@@ -3079,7 +3141,8 @@
                         {
                           "type": "null"
                         }
-                      ]
+                      ],
+                      "description": "The time duration to make the Recipe."
                     },
                     "servings": {
                       "anyOf": [
@@ -3089,27 +3152,35 @@
                         {
                           "type": "null"
                         }
-                      ]
+                      ],
+                      "description": "The number of servings the Recipe yields."
                     },
                     "ingredients": {
+                      "description": "The Ingredients of the Recipe.",
                       "items": {
                         "properties": {
                           "id": {
+                            "description": "Unique ID of the Ingredient.",
                             "type": "integer"
                           },
                           "quantity": {
+                            "description": "The quantity of the Ingredient.",
                             "type": "string"
                           },
                           "name": {
+                            "description": "The name of the Ingredient.",
                             "type": "string"
                           },
                           "description": {
+                            "description": "The description of the Ingredient.",
                             "type": "string"
                           },
                           "position": {
+                            "description": "The position of the Ingredient in the Recipe.",
                             "type": "string"
                           },
                           "optional": {
+                            "description": "Whether the Ingredient is optional for the Recipe.",
                             "type": "boolean"
                           }
                         },
@@ -3126,6 +3197,7 @@
                       "type": "array"
                     },
                     "steps": {
+                      "description": "The Steps of the Recipe.",
                       "items": {
                         "properties": {
                           "id": {
@@ -3144,6 +3216,7 @@
                       "type": "array"
                     },
                     "recentSchedules": {
+                      "description": "The ScheduledRecipes of the Recipe in the past 3 weeks, and the next 3 weeks.",
                       "items": {
                         "properties": {
                           "id": {
@@ -3160,6 +3233,7 @@
                       "type": "array"
                     },
                     "timelineItems": {
+                      "description": "The Notes and TimelineEvents of the Recipe.",
                       "items": {
                         "anyOf": [
                           {
@@ -3383,6 +3457,7 @@
                       "type": "array"
                     },
                     "sections": {
+                      "description": "The Sections of the Recipe.",
                       "items": {
                         "properties": {
                           "id": {
@@ -3401,10 +3476,12 @@
                       "type": "array"
                     },
                     "modified": {
+                      "description": "The last modified time of the Recipe fields.",
                       "format": "date-time",
                       "type": "string"
                     },
                     "created": {
+                      "description": "The creation time of the Recipe.",
                       "format": "date-time",
                       "type": "string"
                     },
@@ -3417,9 +3494,11 @@
                         {
                           "type": "null"
                         }
-                      ]
+                      ],
+                      "description": "When the Recipe was archived."
                     },
                     "user_favorite": {
+                      "description": "Whether the User has favorited the Recipe.",
                       "type": "boolean"
                     },
                     "tags": {
@@ -3433,16 +3512,19 @@
                         {
                           "type": "null"
                         }
-                      ]
+                      ],
+                      "description": "The tags of the Recipe."
                     },
                     "primaryImage": {
                       "anyOf": [
                         {
                           "properties": {
                             "id": {
+                              "description": "Unique ID of the Upload.",
                               "type": "string"
                             },
                             "url": {
+                              "description": "The URL of the Upload.",
                               "type": "string"
                             },
                             "backgroundUrl": {
@@ -3453,9 +3535,11 @@
                                 {
                                   "type": "null"
                                 }
-                              ]
+                              ],
+                              "description": "The background URL of the Upload for progressive loading."
                             },
                             "contentType": {
+                              "description": "The content type of the Upload.",
                               "type": "string"
                             },
                             "author": {
@@ -3466,7 +3550,8 @@
                                 {
                                   "type": "null"
                                 }
-                              ]
+                              ],
+                              "description": "Name of User who created the Upload."
                             }
                           },
                           "required": [
@@ -3481,9 +3566,11 @@
                         {
                           "type": "null"
                         }
-                      ]
+                      ],
+                      "description": "The primary image of the Recipe."
                     },
                     "versions": {
+                      "description": "The previous versions of the Recipe.",
                       "items": {
                         "properties": {
                           "id": {
@@ -3837,21 +3924,27 @@
                 "schema": {
                   "properties": {
                     "id": {
+                      "description": "Unique ID of the Ingredient.",
                       "type": "integer"
                     },
                     "quantity": {
+                      "description": "The quantity of the Ingredient.",
                       "type": "string"
                     },
                     "name": {
+                      "description": "The name of the Ingredient.",
                       "type": "string"
                     },
                     "description": {
+                      "description": "The description of the Ingredient.",
                       "type": "string"
                     },
                     "position": {
+                      "description": "The position of the Ingredient in the Recipe.",
                       "type": "string"
                     },
                     "optional": {
+                      "description": "Whether the Ingredient is optional for the Recipe.",
                       "type": "boolean"
                     }
                   },
@@ -3900,7 +3993,8 @@
                         "type": "null"
                       }
                     ],
-                    "default": null
+                    "default": null,
+                    "description": "The new quantity of the Ingredient."
                   },
                   "name": {
                     "anyOf": [
@@ -3911,7 +4005,8 @@
                         "type": "null"
                       }
                     ],
-                    "default": null
+                    "default": null,
+                    "description": "The new name of the Ingredient."
                   },
                   "description": {
                     "anyOf": [
@@ -3922,7 +4017,8 @@
                         "type": "null"
                       }
                     ],
-                    "default": null
+                    "default": null,
+                    "description": "The new description of the Ingredient."
                   },
                   "position": {
                     "anyOf": [
@@ -3933,7 +4029,8 @@
                         "type": "null"
                       }
                     ],
-                    "default": null
+                    "default": null,
+                    "description": "The new position of the Ingredient."
                   },
                   "optional": {
                     "anyOf": [
@@ -3944,7 +4041,8 @@
                         "type": "null"
                       }
                     ],
-                    "default": null
+                    "default": null,
+                    "description": "Whether the Ingredient is required for the Recipe."
                   }
                 },
                 "type": "object"
@@ -3959,21 +4057,27 @@
                 "schema": {
                   "properties": {
                     "id": {
+                      "description": "Unique ID of the Ingredient.",
                       "type": "integer"
                     },
                     "quantity": {
+                      "description": "The quantity of the Ingredient.",
                       "type": "string"
                     },
                     "name": {
+                      "description": "The name of the Ingredient.",
                       "type": "string"
                     },
                     "description": {
+                      "description": "The description of the Ingredient.",
                       "type": "string"
                     },
                     "position": {
+                      "description": "The position of the Ingredient in the Recipe.",
                       "type": "string"
                     },
                     "optional": {
+                      "description": "Whether the Ingredient is optional for the Recipe.",
                       "type": "boolean"
                     }
                   },
