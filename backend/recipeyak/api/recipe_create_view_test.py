@@ -77,15 +77,6 @@ def test_recipe_creation_for_a_team(client: Client, team: Team, user: User) -> N
 
     data = {
         "name": "Recipe name",
-        "ingredients": [
-            {
-                "quantity": "1",
-                "unit": "tablespoon",
-                "name": "black pepper",
-                "description": "",
-            }
-        ],
-        "steps": [{"text": "place fish in salt"}],
         "team": team.id,
     }
 
@@ -252,7 +243,6 @@ def test_deleting_step_from_recipe(
 
 ingredient = {
     "quantity": "1",
-    "unit": "tablespoon",
     "name": "black pepper",
     "description": "",
     "position": "a",
@@ -352,7 +342,6 @@ def test_adding_ingredient_to_recipe(
 
     ingredient = {
         "quantity": "1",
-        "unit": "tablespoon",
         "name": "black pepper",
         "description": "",
         "position": "a",

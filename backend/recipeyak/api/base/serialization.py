@@ -13,6 +13,11 @@ class Params(pydantic.BaseModel):
     400 errors.
     """
 
+    # We shouldn't run into this since we codegen the client, but it should be
+    # an error if you pass params to the API that aren't expected to help with
+    # debugging.
+    model_config = ConfigDict(extra="forbid")
+
     def __init_subclass__(cls, **kwargs: Unpack[ConfigDict]):
         # Can't do quick one-off lints with Ruff, so some runtime jazz to have more consistent params
         if not cls.__name__.endswith("Params"):

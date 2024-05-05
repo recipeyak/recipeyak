@@ -29,11 +29,6 @@ def test_detail(client: Client, user: User) -> None:
 
     assert original_data["name"] == original_data["email"]
 
-    res = client.patch(
-        "/api/v1/user/", {"avatar_url": "example.com"}, content_type="application/json"
-    )
-    assert res.json() == original_data, "user shouldn't be able to update avatar url"
-
     data = {
         "email": "testing123@example.com",
         "name": "John",
