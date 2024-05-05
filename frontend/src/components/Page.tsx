@@ -1,6 +1,7 @@
 import React, { useEffect } from "react"
 import { Link } from "react-router-dom"
 
+import { CommandPalette } from "@/components/CommandPalette"
 import { ErrorBoundary } from "@/components/ErrorBoundary"
 import { Footer } from "@/components/Footer"
 import { Helmet } from "@/components/Helmet"
@@ -13,12 +14,15 @@ const ContainerBase = ({
 }: {
   children: React.ReactNode
   includeSearch?: boolean
-}) => (
-  <>
-    <Navbar includeSearch={includeSearch} />
-    <ErrorBoundary>{children}</ErrorBoundary>
-  </>
-)
+}) => {
+  return (
+    <>
+      <CommandPalette />
+      <Navbar includeSearch={includeSearch} />
+      <ErrorBoundary>{children}</ErrorBoundary>
+    </>
+  )
+}
 
 const Container = ({ children }: { children: React.ReactNode }) => (
   <>

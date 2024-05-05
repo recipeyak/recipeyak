@@ -17,7 +17,7 @@ const keybinds = [
 const hints = [
   {
     title: "Schedule a recipe",
-    description: "Double-click on a day, or press the 'schedule' button.",
+    description: "Press the 'schedule' button.",
   },
   {
     title: "Delete a recipe",

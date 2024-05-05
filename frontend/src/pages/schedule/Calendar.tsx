@@ -4,7 +4,7 @@ import format from "date-fns/format"
 import isValid from "date-fns/isValid"
 import parseISO from "date-fns/parseISO"
 import { chunk, first } from "lodash-es"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { DialogTrigger } from "react-aria-components"
 import { useHistory, useLocation } from "react-router-dom"
 
@@ -135,36 +135,77 @@ interface INavProps {
   readonly onCurrent: () => void
 }
 
+function ShoppingListButton() {
+  const [isOpen, setIsOpen] = useState(false)
+  const location = useLocation()
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const hasShoppingListQueryParam =
+      params.has("shoppingStartDay") && params.has("shoppingEndDay")
+    if (hasShoppingListQueryParam) {
+      setIsOpen(true)
+    }
+  }, [location.search])
+  return (
+    <DialogTrigger isOpen={isOpen} onOpenChange={setIsOpen}>
+      <Button
+        size="small"
+        data-testid="open shopping list modal"
+        className="gap-2"
+      >
+        <span className="hidden sm:block">Shop</span>
+        <ShopIcon />
+      </Button>
+      <Modal
+        title="Shopping List"
+        children={
+          <div className="flex">
+            <ShoppingList />
+          </div>
+        }
+      />
+    </DialogTrigger>
+  )
+}
+
+function ScheduleButton() {
+  const [isOpen, setIsOpen] = useState(false)
+  const location = useLocation()
+  const history = useHistory()
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const hasScheduleParam = params.has("schedule")
+    if (hasScheduleParam) {
+      setIsOpen(true)
+    }
+  }, [location.search])
+  return (
+    <DialogTrigger
+      isOpen={isOpen}
+      onOpenChange={(val) => {
+        setIsOpen(val)
+        if (!val) {
+          removeQueryParams(history, ["schedule"])
+        }
+      }}
+    >
+      <Button size="small" className="gap-2">
+        <span className="hidden sm:block">Schedule</span>
+        <Plus />
+      </Button>
+      <ScheduleRecipeModal />
+    </DialogTrigger>
+  )
+}
+
 function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
   return (
     <div className="flex shrink-0 items-center justify-between">
       <div className="flex items-center gap-1">
         <CalTitle dayTs={dayTs} />
-        <DialogTrigger>
-          <Button
-            size="small"
-            data-testid="open shopping list modal"
-            className="gap-2"
-          >
-            <span className="hidden sm:block">Shop</span>
-            <ShopIcon />
-          </Button>
-          <Modal
-            title="Shopping List"
-            children={
-              <div className="flex">
-                <ShoppingList />
-              </div>
-            }
-          />
-        </DialogTrigger>
-        <DialogTrigger>
-          <Button size="small" className="gap-2">
-            <span className="hidden sm:block">Schedule</span>
-            <Plus />
-          </Button>
-          <ScheduleRecipeModal />
-        </DialogTrigger>
+        <ShoppingListButton />
+
+        <ScheduleButton />
       </div>
       <div className="flex gap-1">
         <Button size="small" onClick={onPrev} aria-label="previous week">
