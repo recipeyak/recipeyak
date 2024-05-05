@@ -2,7 +2,7 @@ import { addWeeks, startOfToday } from "date-fns"
 import { Location } from "history"
 import { clamp } from "lodash-es"
 import { ArrowRight, ChevronRight, PlusIcon, Search } from "lucide-react"
-import { useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useHistory, useLocation } from "react-router"
 import useOnClickOutside from "use-onclickoutside"
 
@@ -12,6 +12,7 @@ import { Palette } from "@/components/Palette"
 import { SearchPalette } from "@/components/SearchPalette"
 import { toISODateString } from "@/date"
 import { isInputFocused } from "@/input"
+import { Kbd } from "@/pages/schedule/Kbd"
 import { pathHome, pathRecipeAdd, pathRecipesList, pathSchedule } from "@/paths"
 import { addQueryParams } from "@/querystring"
 import { useGlobalEvent } from "@/useGlobalEvent"
@@ -35,6 +36,7 @@ const options = [
   {
     id: id(),
     name: "Go to Browse Recipes",
+    keys: ["g", "b"],
     icon: <ArrowRight size={iconWidth} />,
     href: pathRecipesList({}),
     visible: () => {
@@ -44,6 +46,7 @@ const options = [
   {
     id: id(),
     name: "Go to Calendar",
+    keys: ["g", "c"],
     icon: <ArrowRight size={iconWidth} />,
     href: pathSchedule({}),
     visible: () => {
@@ -53,6 +56,7 @@ const options = [
   {
     id: id(),
     name: "Go to Home",
+    keys: ["g", "h"],
     icon: <ArrowRight size={iconWidth} />,
     href: pathHome({}),
     visible: () => {
@@ -62,6 +66,7 @@ const options = [
   {
     id: id(),
     name: "Create Recipe",
+    keys: ["g", "a"],
     icon: <PlusIcon size={iconWidth} />,
     href: pathRecipeAdd({}),
     visible: () => {
@@ -107,6 +112,7 @@ export function CommandPalette() {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [query, setQuery] = useState("")
   const location = useLocation()
+  const history = useHistory()
   const hits = options.filter((x) => {
     if (typeof x.visible === "function") {
       const result = x.visible()
@@ -121,22 +127,62 @@ export function CommandPalette() {
 
     return x.name.toLocaleLowerCase().includes(query.toLocaleLowerCase())
   })
-
-  function handleSelect(suggestion: (typeof hits)[number]) {
-    if (suggestion?.href) {
-      if (typeof suggestion.href === "function") {
-        history.push(suggestion.href({ location }))
-      } else {
-        history.push(suggestion.href)
+  const handleSelect = useCallback(
+    (suggestion: (typeof hits)[number]) => {
+      if (suggestion?.href) {
+        if (typeof suggestion.href === "function") {
+          history.push(suggestion.href({ location }))
+        } else {
+          history.push(suggestion.href)
+        }
+        resetForm()
+      } else if (suggestion?.openSearch) {
+        setShowSearchPopover(true)
+        setShowCommandPalettePopover(false)
+        setQuery("")
+        setSelectedIndex(0)
       }
-      resetForm()
-    } else if (suggestion?.openSearch) {
-      setShowSearchPopover(true)
-      setShowCommandPalettePopover(false)
-      setQuery("")
-      setSelectedIndex(0)
+    },
+    [history, location],
+  )
+
+  useEffect(() => {
+    // Based on: https://github.com/jamiebuilds/tinykeys/blob/9223df7d34505386f8650e03d979cd6e89c9b242/src/tinykeys.ts#L107
+    let possibleMatches = new Map<string[], string[]>()
+    let timer: number | NodeJS.Timeout | null = null
+    function handleKeyDown(ev: KeyboardEvent) {
+      if (isInputFocused()) {
+        return
+      }
+      for (const option of options) {
+        if (option.keys) {
+          let remainingExpectedPresses =
+            possibleMatches.get(option.keys) ?? option.keys
+          let currentExpectedPress = remainingExpectedPresses[0]
+          if (ev.key !== currentExpectedPress) {
+            possibleMatches.delete(option.keys)
+          } else if (remainingExpectedPresses.length > 1) {
+            possibleMatches.set(option.keys, remainingExpectedPresses.slice(1))
+          } else {
+            // we have a match
+            possibleMatches.delete(option.keys)
+            handleSelect(option)
+          }
+        }
+      }
+      if (timer) {
+        clearTimeout(timer)
+      }
+      timer = setTimeout(() => {
+        possibleMatches.clear()
+      }, 1000)
     }
-  }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [handleSelect])
+
   const suggestions = hits.map((hit, index) => {
     const isCurrentSelection = index === selectedIndex
     return (
@@ -153,16 +199,25 @@ export function CommandPalette() {
         )}
       >
         <div className="flex items-center gap-2">
-          <div className="flex flex-col overflow-x-hidden text-ellipsis whitespace-pre">
-            <div className="flex items-center gap-2">
-              {hit.icon}
-              <div
-                className={clx(
-                  "grow-0 overflow-x-hidden text-ellipsis whitespace-pre",
-                )}
-              >
-                {hit.name}
+          <div className="flex w-full flex-col overflow-x-hidden text-ellipsis whitespace-pre">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                {hit.icon}
+                <div
+                  className={clx(
+                    "grow-0 overflow-x-hidden text-ellipsis whitespace-pre",
+                  )}
+                >
+                  {hit.name}
+                </div>
               </div>
+              {hit.keys && (
+                <div>
+                  {hit.keys.map((k) => (
+                    <Kbd key={k}>{k}</Kbd>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -176,7 +231,6 @@ export function CommandPalette() {
     setShowCommandPalettePopover(false)
     setShowSearchPopover(false)
   }
-  const history = useHistory()
 
   const [showSearchPopover, setShowSearchPopover] = useState(false)
   const handleSearchKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
