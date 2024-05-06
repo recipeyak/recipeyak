@@ -57,7 +57,6 @@ def test_recipe_field_trimming(client: Client, user: User, team: Team) -> None:
         "tags": ["  my_tag_name  "],
         "servings": "  4 servings  ",
         "source": " example.com ",
-        "team": team.pk,
     }
     recipe_id = res.json()["id"]
     res = client.patch(

@@ -21,7 +21,7 @@ def test_fetching_team_calendar_v2(
 
     res = client.get(
         "/api/v1/calendar/",
-        {"start": date(1976, 1, 1), "end": date(1977, 1, 1), "v2": 1},
+        {"start": date(1976, 1, 1), "end": date(1977, 1, 1)},
     )
     assert res.status_code == 200
 
