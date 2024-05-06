@@ -1,4 +1,5 @@
 import {
+  CornerRightDown,
   CornerRightUp,
   GripVertical,
   MoveDown,
@@ -9,7 +10,6 @@ import {
 import React, { useState } from "react"
 import { Menu, MenuTrigger, Separator } from "react-aria-components"
 import { useDrag, useDrop } from "react-dnd"
-import { CornerRightDown } from "react-feather"
 
 import { clx } from "@/classnames"
 import { Button } from "@/components/Buttons"

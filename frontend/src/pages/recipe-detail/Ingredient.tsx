@@ -1,8 +1,14 @@
-import { MoveDown, MoveUp, Pencil, Trash } from "lucide-react"
+import {
+  CornerRightDown,
+  CornerRightUp,
+  MoveDown,
+  MoveUp,
+  Pencil,
+  Trash,
+} from "lucide-react"
 import React, { useState } from "react"
 import { Menu, MenuTrigger, Separator } from "react-aria-components"
 import { useDrag, useDrop } from "react-dnd"
-import { CornerRightDown, CornerRightUp } from "react-feather"
 
 import { isMobile } from "@/browser"
 import { clx } from "@/classnames"
