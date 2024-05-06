@@ -1,3 +1,16 @@
+import {
+  Archive,
+  ArchiveRestore,
+  CalendarPlus,
+  ChefHat,
+  ClipboardCopy,
+  History,
+  NotepadText,
+  Pencil,
+  Save,
+  Trash,
+  Upload,
+} from "lucide-react"
 import { useState } from "react"
 import { Menu, MenuTrigger, Separator } from "react-aria-components"
 
@@ -65,29 +78,51 @@ export function RecipeTitleDropdown({
   const menuItems: Array<
     | {
         type: "menuitem"
-        label: string
+        label: React.ReactNode
+        id: string
         to: string
         onClick?: undefined
         hardNavigate?: boolean
       }
-    | { type: "menuitem"; label: string; to?: undefined; onClick: () => void }
+    | {
+        type: "menuitem"
+        label: React.ReactNode
+        id: string
+        to?: undefined
+        onClick: () => void
+      }
     | { type: "separator"; id: string }
   > = [
     {
       type: "menuitem",
-      label: "Schedule…",
+      id: "schedule",
+      label: (
+        <>
+          Schedule <CalendarPlus size={16} />
+        </>
+      ),
       onClick: () => {
         setShowScheduleModal(true)
       },
     },
     {
       type: "menuitem",
-      label: "Start Cooking",
+      id: "cook",
+      label: (
+        <>
+          Start Cooking <ChefHat size={16} />
+        </>
+      ),
       to: pathCookDetail({ recipeId: recipeId.toString() }),
     },
     {
       type: "menuitem",
-      label: "Copy Ingredients",
+      id: "copy",
+      label: (
+        <>
+          Copy Ingredients <ClipboardCopy size={16} />
+        </>
+      ),
       onClick: () => {
         const ingredients = recipeIngredients.map(ingredientToString).join("\n")
         copyToClipboard(ingredients)
@@ -96,19 +131,38 @@ export function RecipeTitleDropdown({
     },
     {
       type: "menuitem",
-      label: "Version History",
+      id: "versions",
+      label: (
+        <>
+          Version History <History size={16} />
+        </>
+      ),
       onClick: () => {
         setShowVersionModal(true)
       },
     },
     {
       type: "menuitem",
-      label: "Schedule History",
+      id: "scheduled",
+      label: (
+        <>
+          Schedule History <NotepadText size={16} />
+        </>
+      ),
       to: recipeURL(recipeId, recipeName) + "?timeline=1",
     },
     {
       type: "menuitem",
-      label: editingEnabled ? "Disable Editing" : "Enable Editing…",
+      id: "edit",
+      label: editingEnabled ? (
+        <>
+          Disable Editing <Save size={16} />
+        </>
+      ) : (
+        <>
+          Enable Editing <Pencil size={16} />
+        </>
+      ),
       onClick: toggleEditing,
     },
     {
@@ -117,7 +171,16 @@ export function RecipeTitleDropdown({
     },
     {
       type: "menuitem",
-      label: !isArchived ? "Archive" : "Unarchive",
+      id: "archive",
+      label: !isArchived ? (
+        <>
+          Archive <Archive size={16} />
+        </>
+      ) : (
+        <>
+          Unarchive <ArchiveRestore size={16} />
+        </>
+      ),
       onClick: () => {
         if (!isArchived) {
           setIsArchiveModalOpen(true)
@@ -139,14 +202,24 @@ export function RecipeTitleDropdown({
     },
     {
       type: "menuitem",
-      label: "Export",
+      id: "export",
+      label: (
+        <>
+          Export <Upload size={16} />
+        </>
+      ),
       // TODO: pop up a modal and ask for what file export type
       to: pathRecipeDetail({ recipeId: recipeId.toString() }) + ".yaml",
       hardNavigate: true,
     },
     {
       type: "menuitem",
-      label: "Delete…",
+      id: "delete",
+      label: (
+        <>
+          Delete <Trash size={16} />
+        </>
+      ),
       onClick: () => {
         setIsDeleteModalOpen(true)
       },
@@ -162,9 +235,7 @@ export function RecipeTitleDropdown({
         <Menu
           className="outline-none"
           onAction={(key) => {
-            const metadata = menuItems.find(
-              (x) => "label" in x && x.label === key,
-            )
+            const metadata = menuItems.find((x) => x.id === key)
             if (metadata && "label" in metadata) {
               if (metadata.to && metadata.hardNavigate) {
                 // hacky way to get hard navigation for a given link
@@ -186,11 +257,7 @@ export function RecipeTitleDropdown({
               )
             }
             return (
-              <MenuItem
-                id={menuItem.label}
-                key={menuItem.label}
-                href={menuItem.to}
-              >
+              <MenuItem id={menuItem.id} key={menuItem.id} href={menuItem.to}>
                 {menuItem.label}
               </MenuItem>
             )
