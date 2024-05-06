@@ -1,4 +1,4 @@
-import { Download } from "react-feather"
+import { Download } from "lucide-react"
 
 import { pathRecipesExportJson, pathRecipesExportYaml } from "@/paths"
 

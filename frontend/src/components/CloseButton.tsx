@@ -1,4 +1,4 @@
-import { X } from "react-feather"
+import { X } from "lucide-react"
 
 export function CloseButton({ onClose }: { onClose?: () => void }) {
   return (

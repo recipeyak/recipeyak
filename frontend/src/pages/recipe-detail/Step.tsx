@@ -30,6 +30,8 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import {
+  CornerRightDown,
+  CornerRightUp,
   Ellipsis,
   GripVertical,
   MoveDown,
@@ -41,7 +43,6 @@ import { useRef, useState } from "react"
 import { useFocusVisible } from "react-aria"
 import { Menu, MenuTrigger, PressEvent, Separator } from "react-aria-components"
 import { useDrag, useDrop } from "react-dnd"
-import { CornerRightDown, CornerRightUp } from "react-feather"
 
 import { clx } from "@/classnames"
 import { Button } from "@/components/Buttons"

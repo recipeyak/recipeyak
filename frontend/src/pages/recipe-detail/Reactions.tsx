@@ -1,8 +1,8 @@
 import Tippy from "@tippyjs/react"
 import groupBy from "lodash/groupBy"
 import orderBy from "lodash-es/orderBy"
+import { Smile } from "lucide-react"
 import { useState } from "react"
-import { Smile } from "react-feather"
 
 import { clx } from "@/classnames"
 import { findReaction } from "@/pages/recipe-detail/reactionUtils"

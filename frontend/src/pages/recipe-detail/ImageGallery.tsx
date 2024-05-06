@@ -1,5 +1,5 @@
+import { ChevronLeft, ChevronRight, Share, Star, X } from "lucide-react"
 import React from "react"
-import { ChevronLeft, ChevronRight, Share, Star, X } from "react-feather"
 
 import { Button } from "@/components/Buttons"
 import { buildGallerySrcSetUrls, formatImg } from "@/url"
