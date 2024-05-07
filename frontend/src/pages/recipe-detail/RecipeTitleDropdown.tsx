@@ -78,7 +78,8 @@ export function RecipeTitleDropdown({
   const menuItems: Array<
     | {
         type: "menuitem"
-        label: React.ReactNode
+        label: string
+        icon: React.ReactNode
         id: string
         to: string
         onClick?: undefined
@@ -86,7 +87,8 @@ export function RecipeTitleDropdown({
       }
     | {
         type: "menuitem"
-        label: React.ReactNode
+        label: string
+        icon: React.ReactNode
         id: string
         to?: undefined
         onClick: () => void
@@ -96,11 +98,8 @@ export function RecipeTitleDropdown({
     {
       type: "menuitem",
       id: "schedule",
-      label: (
-        <>
-          Schedule <CalendarPlus size={16} />
-        </>
-      ),
+      label: "Schedule",
+      icon: <CalendarPlus size={16} />,
       onClick: () => {
         setShowScheduleModal(true)
       },
@@ -108,21 +107,15 @@ export function RecipeTitleDropdown({
     {
       type: "menuitem",
       id: "cook",
-      label: (
-        <>
-          Start Cooking <ChefHat size={16} />
-        </>
-      ),
+      label: "Start Cooking",
+      icon: <ChefHat size={16} />,
       to: pathCookDetail({ recipeId: recipeId.toString() }),
     },
     {
       type: "menuitem",
       id: "copy",
-      label: (
-        <>
-          Copy Ingredients <ClipboardCopy size={16} />
-        </>
-      ),
+      label: "Copy Ingredients",
+      icon: <ClipboardCopy size={16} />,
       onClick: () => {
         const ingredients = recipeIngredients.map(ingredientToString).join("\n")
         copyToClipboard(ingredients)
@@ -132,11 +125,8 @@ export function RecipeTitleDropdown({
     {
       type: "menuitem",
       id: "versions",
-      label: (
-        <>
-          Version History <History size={16} />
-        </>
-      ),
+      label: "Version History",
+      icon: <History size={16} />,
       onClick: () => {
         setShowVersionModal(true)
       },
@@ -144,25 +134,15 @@ export function RecipeTitleDropdown({
     {
       type: "menuitem",
       id: "scheduled",
-      label: (
-        <>
-          Schedule History <NotepadText size={16} />
-        </>
-      ),
+      label: "Schedule History",
+      icon: <NotepadText size={16} />,
       to: recipeURL(recipeId, recipeName) + "?timeline=1",
     },
     {
       type: "menuitem",
       id: "edit",
-      label: editingEnabled ? (
-        <>
-          Disable Editing <Save size={16} />
-        </>
-      ) : (
-        <>
-          Enable Editing <Pencil size={16} />
-        </>
-      ),
+      label: editingEnabled ? "Disable Editing" : "Enable Editing",
+      icon: editingEnabled ? <Save size={16} /> : <Pencil size={16} />,
       onClick: toggleEditing,
     },
     {
@@ -172,15 +152,8 @@ export function RecipeTitleDropdown({
     {
       type: "menuitem",
       id: "archive",
-      label: !isArchived ? (
-        <>
-          Archive <Archive size={16} />
-        </>
-      ) : (
-        <>
-          Unarchive <ArchiveRestore size={16} />
-        </>
-      ),
+      label: !isArchived ? "Archive" : "Unarchive",
+      icon: !isArchived ? <Archive size={16} /> : <ArchiveRestore size={16} />,
       onClick: () => {
         if (!isArchived) {
           setIsArchiveModalOpen(true)
@@ -203,11 +176,8 @@ export function RecipeTitleDropdown({
     {
       type: "menuitem",
       id: "export",
-      label: (
-        <>
-          Export <Upload size={16} />
-        </>
-      ),
+      label: "Export",
+      icon: <Upload size={16} />,
       // TODO: pop up a modal and ask for what file export type
       to: pathRecipeDetail({ recipeId: recipeId.toString() }) + ".yaml",
       hardNavigate: true,
@@ -215,11 +185,8 @@ export function RecipeTitleDropdown({
     {
       type: "menuitem",
       id: "delete",
-      label: (
-        <>
-          Delete <Trash size={16} />
-        </>
-      ),
+      label: "Delete",
+      icon: <Trash size={16} />,
       onClick: () => {
         setIsDeleteModalOpen(true)
       },
@@ -258,7 +225,10 @@ export function RecipeTitleDropdown({
             }
             return (
               <MenuItem id={menuItem.id} key={menuItem.id} href={menuItem.to}>
-                {menuItem.label}
+                <div className="flex items-center gap-2">
+                  {menuItem.icon}
+                  {menuItem.label}
+                </div>
               </MenuItem>
             )
           })}
