@@ -366,7 +366,13 @@ function App() {
               <DndProvider backend={HTML5Backend}>
                 <ErrorBoundary>
                   <Helmet />
-                  <Toaster toastOptions={{ position: "bottom-center" }} />
+                  <Toaster
+                    toastOptions={{
+                      position: "bottom-center",
+                      className:
+                        "!bg-[--color-background-card] !text-[--color-text] !border-[--color-border]",
+                    }}
+                  />
                   <AppRouter />
                 </ErrorBoundary>
               </DndProvider>
