@@ -1,11 +1,11 @@
 import {
   Archive,
   ArchiveRestore,
+  CalendarClock,
   CalendarPlus,
   ChefHat,
   ClipboardCopy,
   History,
-  NotepadText,
   Pencil,
   Save,
   Trash,
@@ -125,7 +125,7 @@ export function RecipeTitleDropdown({
     {
       type: "menuitem",
       id: "versions",
-      label: "Version History",
+      label: "View Versions",
       icon: <History size={16} />,
       onClick: () => {
         setShowVersionModal(true)
@@ -134,8 +134,8 @@ export function RecipeTitleDropdown({
     {
       type: "menuitem",
       id: "scheduled",
-      label: "Schedule History",
-      icon: <NotepadText size={16} />,
+      label: "View Timeline",
+      icon: <CalendarClock size={16} />,
       to: recipeURL(recipeId, recipeName) + "?timeline=1",
     },
     {
