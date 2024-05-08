@@ -409,7 +409,12 @@ function RecipeEditor(props: { recipe: Recipe; onClose: () => void }) {
       setAttr(attr, val)
     }
   return (
-    <div>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+        onSave()
+      }}
+    >
       <label className="font-bold">
         Title
         <TextInput
@@ -476,12 +481,11 @@ function RecipeEditor(props: { recipe: Recipe; onClose: () => void }) {
           type="submit"
           variant="primary"
           loading={updateRecipe.isPending}
-          onClick={onSave}
         >
           Update Details
         </Button>
       </div>
-    </div>
+    </form>
   )
 }
 
