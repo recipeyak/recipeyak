@@ -817,13 +817,7 @@ function RecipeInfo(props: {
   )
 }
 
-export function RecipeDetailPage(props: IRecipeProps) {
-  const recipeId = parseInt(props.match.params.recipeId, 10)
-
-  const maybeRecipe = useRecipeFetch({ recipeId })
-  const history = useHistory()
-  const parsed = new URLSearchParams(props.location.search)
-  const editingEnabled = parsed.get("edit") === "1"
+function useCookModeUsers(recipeId: number) {
   const teamId = useTeamId()
   const user = useUser()
 
@@ -838,7 +832,18 @@ export function RecipeDetailPage(props: IRecipeProps) {
   const usersInCookMode = presenceData.filter(
     (x) => x.clientId !== user.id?.toString(),
   )
-  const uniqUsersInCookMode = uniqBy(usersInCookMode, (x) => x.clientId)
+  return uniqBy(usersInCookMode, (x) => x.clientId)
+}
+
+export function RecipeDetailPage(props: IRecipeProps) {
+  const recipeId = parseInt(props.match.params.recipeId, 10)
+
+  const maybeRecipe = useRecipeFetch({ recipeId })
+  const history = useHistory()
+  const parsed = new URLSearchParams(props.location.search)
+  const editingEnabled = parsed.get("edit") === "1"
+
+  const cookModeUsers = useCookModeUsers(recipeId)
 
   useAddSlugToUrl(
     pathRecipeDetail({ recipeId: recipeId.toString() }),
@@ -920,10 +925,10 @@ export function RecipeDetailPage(props: IRecipeProps) {
             Exit
           </Button>
         </RecipeBanner>
-      ) : uniqUsersInCookMode.length > 0 ? (
+      ) : cookModeUsers.length > 0 ? (
         <RecipeBanner>
           Cook mode active
-          {uniqUsersInCookMode.map((u) => (
+          {cookModeUsers.map((u) => (
             <Avatar key={u.id} avatarURL={u.data.avatarUrl} />
           ))}{" "}
           <Button
