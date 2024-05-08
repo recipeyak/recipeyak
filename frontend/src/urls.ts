@@ -1,12 +1,19 @@
 import { kebabCase } from "lodash-es"
 
-import { pathRecipeDetail, pathTeamDetail } from "@/paths"
+import { pathCookDetail, pathRecipeDetail, pathTeamDetail } from "@/paths"
 
 // we use `encodeURIComponent` for good measure
 export const toURL = (x = ""): string => encodeURIComponent(kebabCase(x))
 
 export const recipeURL = (id: string | number, name?: string): string => {
   const baseUrl = pathRecipeDetail({ recipeId: id.toString() })
+  if (name) {
+    return baseUrl + "-" + toURL(String(name))
+  }
+  return baseUrl
+}
+export const cookDetailURL = (id: string | number, name?: string): string => {
+  const baseUrl = pathCookDetail({ recipeId: id.toString() })
   if (name) {
     return baseUrl + "-" + toURL(String(name))
   }
