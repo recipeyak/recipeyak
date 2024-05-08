@@ -22,12 +22,12 @@ import { MenuPopover } from "@/components/MenuPopover"
 import { Modal } from "@/components/Modal"
 import { RecipeVersionModal } from "@/pages/recipe-detail/RecipeVersionModal"
 import { ScheduleModal } from "@/pages/recipe-detail/ScheduleModal"
-import { pathCookDetail, pathRecipeDetail } from "@/paths"
+import { pathRecipeDetail } from "@/paths"
 import { useRecipeDelete } from "@/queries/useRecipeDelete"
 import { RecipeFetchResponse as Recipe } from "@/queries/useRecipeFetch"
 import { useRecipeUpdate } from "@/queries/useRecipeUpdate"
 import { toast } from "@/toast"
-import { recipeURL } from "@/urls"
+import { cookDetailURL, recipeURL } from "@/urls"
 
 type RecentSchedule = Recipe["recentSchedules"][number]
 type Ingredient = Recipe["ingredients"][number]
@@ -109,7 +109,7 @@ export function RecipeTitleDropdown({
       id: "cook",
       label: "Start Cooking",
       icon: <ChefHat size={16} />,
-      to: pathCookDetail({ recipeId: recipeId.toString() }),
+      to: cookDetailURL(recipeId, recipeName),
     },
     {
       type: "menuitem",

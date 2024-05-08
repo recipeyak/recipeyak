@@ -1,5 +1,5 @@
 import { usePresence } from "ably/react"
-import { flatten, last, sortBy } from "lodash-es"
+import { flatten, last, sortBy, uniqBy } from "lodash-es"
 import { Heart } from "lucide-react"
 import React, { useEffect, useMemo, useState } from "react"
 import { RouteComponentProps, useHistory } from "react-router"
@@ -47,9 +47,11 @@ import { useSectionUpdate } from "@/queries/useSectionUpdate"
 import { useUserFetch } from "@/queries/useUserFetch"
 import { notEmpty } from "@/text"
 import { formatImgOpenGraph } from "@/url"
+import { cookDetailURL } from "@/urls"
 import { useAddSlugToUrl } from "@/useAddSlugToUrl"
 import { useGlobalEvent } from "@/useGlobalEvent"
 import { useTeamId } from "@/useTeamId"
+import { useUser } from "@/useUser"
 
 type Ingredient = Recipe["ingredients"]
 
@@ -331,7 +333,7 @@ function RecipeDetails({
 function ArchiveMessage({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="mx-2 rounded-[5px] bg-[--color-background-card] px-3 py-1 font-bold"
+      className="mx-2 flex items-center gap-2 rounded-[5px] bg-[--color-background-card] px-3 py-1 font-bold"
       children={children}
     />
   )
@@ -339,7 +341,10 @@ function ArchiveMessage({ children }: { children: React.ReactNode }) {
 
 function RecipeBanner({ children }: { readonly children: React.ReactNode }) {
   return (
-    <div className="flex items-center">
+    <div
+      className="sticky top-0 z-10 -mx-3 flex items-center bg-[--color-background-card]
+      sm:mx-0"
+    >
       <hr className="my-0 grow" />
       <ArchiveMessage>{children}</ArchiveMessage>
       <hr className="my-0 grow" />
@@ -819,6 +824,21 @@ export function RecipeDetailPage(props: IRecipeProps) {
   const history = useHistory()
   const parsed = new URLSearchParams(props.location.search)
   const editingEnabled = parsed.get("edit") === "1"
+  const teamId = useTeamId()
+  const user = useUser()
+
+  const { presenceData } = usePresence<{
+    avatarUrl: string
+    active?: boolean
+  }>({
+    subscribeOnly: true,
+
+    channelName: `team:${teamId}:cook_checklist:${recipeId}`,
+  })
+  const usersInCookMode = presenceData.filter(
+    (x) => x.clientId !== user.id?.toString(),
+  )
+  const uniqUsersInCookMode = uniqBy(usersInCookMode, (x) => x.clientId)
 
   useAddSlugToUrl(
     pathRecipeDetail({ recipeId: recipeId.toString() }),
@@ -887,8 +907,7 @@ export function RecipeDetailPage(props: IRecipeProps) {
         title={recipeTitle}
         image={formatImgOpenGraph(recipe.primaryImage?.url ?? "")}
       />
-      {archivedAt != null && <RecipeBanner>Archived {archivedAt}</RecipeBanner>}
-      {editingEnabled && (
+      {editingEnabled ? (
         <RecipeBanner>
           Editing
           <Button
@@ -901,7 +920,24 @@ export function RecipeDetailPage(props: IRecipeProps) {
             Exit
           </Button>
         </RecipeBanner>
-      )}
+      ) : uniqUsersInCookMode.length > 0 ? (
+        <RecipeBanner>
+          Cook mode active
+          {uniqUsersInCookMode.map((u) => (
+            <Avatar key={u.id} avatarURL={u.data.avatarUrl} />
+          ))}{" "}
+          <Button
+            size={"small"}
+            onClick={() => {
+              history.push(cookDetailURL(recipeId, recipe.name))
+            }}
+          >
+            Join
+          </Button>
+        </RecipeBanner>
+      ) : archivedAt != null ? (
+        <RecipeBanner>Archived {archivedAt}</RecipeBanner>
+      ) : null}
       {image != null && (
         <Gallery
           imageUrl={image.url}

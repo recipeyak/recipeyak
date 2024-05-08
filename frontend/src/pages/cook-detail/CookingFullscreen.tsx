@@ -1,3 +1,4 @@
+import { usePresence } from "ably/react"
 import { useState } from "react"
 import { Link } from "react-router-dom"
 
@@ -12,6 +13,8 @@ import { PickVariant } from "@/queries/useQueryUtilTypes"
 import { RecipeFetchResponse as Recipe } from "@/queries/useRecipeFetch"
 import { notEmpty } from "@/text"
 import { recipeURL } from "@/urls"
+import { useTeamId } from "@/useTeamId"
+import { useUser } from "@/useUser"
 
 type Ingredient = Recipe["ingredients"][number]
 type Step = Recipe["steps"][number]
@@ -225,6 +228,17 @@ export function CookingFullscreen({
   readonly steps: readonly Step[]
   readonly notes: readonly Note[]
 }) {
+  const teamId = useTeamId()
+  const user = useUser()
+  const avatarUrl = user.avatarURL
+  usePresence<{
+    avatarUrl: string
+
+    active?: boolean
+  }>(
+    { channelName: `team:${teamId}:cook_checklist:${recipeId}` },
+    { avatarUrl, active: true },
+  )
   return (
     <div className="fixed inset-0 z-20 items-center justify-center bg-[--color-background]">
       <div
