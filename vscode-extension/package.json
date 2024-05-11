@@ -12,6 +12,9 @@
     "onLanguage:typescript",
     "onLanguage:python"
   ],
+  "volta": {
+    "node": "18.7.0"
+  },
   "main": "./dist/extension.js",
   "contributes": {},
   "scripts": {},
