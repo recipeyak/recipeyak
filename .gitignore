@@ -21,3 +21,4 @@ pip-wheel-metadata
 .testmondata
 .eslintcache
 stats.html
+*.vsix

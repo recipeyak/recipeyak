@@ -1,0 +1,9 @@
+build/
+dist/
+node_modules/
+coverage/
+.venv/
+.mypy_cache/
+.terraform/
+.pytest_cache/
+pnpm-lock.yaml
