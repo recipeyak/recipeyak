@@ -17,7 +17,7 @@ jobs:
       - id: skip_check
         uses: fkirc/skip-duplicate-actions@c449d86cf33a2a6c7a4193264cc2578e2c3266d4 # pin@v4
         with:
-          paths: '["vscode-extension/**", ".github/workflows/**"]'
+          paths: '[".vscode/extensions/recipeyak-dev/**", ".github/workflows/**"]'
   format:
     needs: pre_job
     if: needs.pre_job.outputs.should_skip != 'true'
@@ -29,14 +29,14 @@ jobs:
           version: 8
       - uses: actions/setup-node@v3
         with:
-          node-version-file: "vscode-extension/package.json"
-          cache-dependency-path: "vscode-extension/pnpm-lock.yaml"
+          node-version-file: ".vscode/extensions/recipeyak-dev/package.json"
+          cache-dependency-path: ".vscode/extensions/recipeyak-dev/pnpm-lock.yaml"
           cache: "pnpm"
       - name: Install dependencies
-        working-directory: "vscode-extension"
+        working-directory: ".vscode/extensions/recipeyak-dev"
         run: pnpm install
       - name: Check formatting
-        working-directory: "vscode-extension"
+        working-directory: ".vscode/extensions/recipeyak-dev"
         run: ./s/fmt
   eslint:
     needs: pre_job
@@ -49,14 +49,14 @@ jobs:
           version: 8
       - uses: actions/setup-node@v3
         with:
-          node-version-file: "vscode-extension/package.json"
-          cache-dependency-path: "vscode-extension/pnpm-lock.yaml"
+          node-version-file: ".vscode/extensions/recipeyak-dev/package.json"
+          cache-dependency-path: ".vscode/extensions/recipeyak-dev/pnpm-lock.yaml"
           cache: "pnpm"
       - name: Install dependencies
-        working-directory: "vscode-extension"
+        working-directory: ".vscode/extensions/recipeyak-dev"
         run: pnpm install
       - name: Run Eslint
-        working-directory: "vscode-extension"
+        working-directory: ".vscode/extensions/recipeyak-dev"
         run: ./s/eslint
   typecheck:
     needs: pre_job
@@ -69,14 +69,14 @@ jobs:
           version: 8
       - uses: actions/setup-node@v3
         with:
-          node-version-file: "vscode-extension/package.json"
-          cache-dependency-path: "vscode-extension/pnpm-lock.yaml"
+          node-version-file: ".vscode/extensions/recipeyak-dev/package.json"
+          cache-dependency-path: ".vscode/extensions/recipeyak-dev/pnpm-lock.yaml"
           cache: "pnpm"
       - name: Install dependencies
-        working-directory: "vscode-extension"
+        working-directory: ".vscode/extensions/recipeyak-dev"
         run: pnpm install
       - name: Check types
-        working-directory: "vscode-extension"
+        working-directory: ".vscode/extensions/recipeyak-dev"
         run: ./s/typecheck
   build:
     needs: pre_job
@@ -89,12 +89,12 @@ jobs:
           version: 8
       - uses: actions/setup-node@v3
         with:
-          node-version-file: "vscode-extension/package.json"
-          cache-dependency-path: "vscode-extension/pnpm-lock.yaml"
+          node-version-file: ".vscode/extensions/recipeyak-dev/package.json"
+          cache-dependency-path: ".vscode/extensions/recipeyak-dev/pnpm-lock.yaml"
           cache: "pnpm"
       - name: Install dependencies
-        working-directory: "vscode-extension"
+        working-directory: ".vscode/extensions/recipeyak-dev"
         run: pnpm install
       - name: Build bundle
-        working-directory: "vscode-extension"
+        working-directory: ".vscode/extensions/recipeyak-dev"
         run: ./s/build

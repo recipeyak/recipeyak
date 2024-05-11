@@ -5,7 +5,7 @@
   "version": "0.0.1",
   "private": true,
   "engines": {
-    "vscode": "^1.87.2"
+    "vscode": "^1.89.1"
   },
   "type": "module",
   "activationEvents": [
@@ -15,7 +15,7 @@
   "volta": {
     "node": "18.7.0"
   },
-  "main": "./dist/extension.js",
+  "main": "./dist/extension.cjs",
   "contributes": {},
   "scripts": {},
   "devDependencies": {
@@ -32,6 +32,7 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
+    "@vscode/vsce": "^2.26.1",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-simple-import-sort": "^12.1.0",
     "prettier": "^3.2.5"
