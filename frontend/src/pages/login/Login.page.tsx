@@ -54,8 +54,9 @@ export function LoginPage() {
       { email, password },
       {
         onSuccess: (res) => {
-          login(res.user, queryClient)
-          history.push(location.state?.from ?? {})
+          login(res.user, queryClient).then(() => {
+            history.push(location.state?.from ?? {})
+          })
         },
       },
     )

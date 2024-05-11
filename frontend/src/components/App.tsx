@@ -5,7 +5,6 @@ import * as Sentry from "@sentry/react"
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister"
 import { useIsRestoring } from "@tanstack/react-query"
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client"
-import * as Ably from "ably"
 import { AblyProvider } from "ably/react"
 import { createBrowserHistory } from "history"
 import React, { Suspense, useLayoutEffect } from "react"
@@ -24,6 +23,7 @@ import {
 } from "react-router-dom"
 
 import { useIsLoggedIn } from "@/auth"
+import { client } from "@/components/ably"
 import { AlgoliaProvider } from "@/components/AlgoliaProvider"
 import { ErrorBoundary } from "@/components/ErrorBoundary"
 import { Helmet } from "@/components/Helmet"
@@ -102,8 +102,6 @@ console.log(
   "\ntree sha:",
   API_GIT_TREE_SHA,
 )
-
-const client = new Ably.Realtime.Promise({ authUrl: "/api/v1/auth/ably/" })
 
 const persister = createSyncStoragePersister({
   // eslint-disable-next-line no-restricted-globals
