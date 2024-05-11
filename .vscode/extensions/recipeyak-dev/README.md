@@ -9,7 +9,14 @@
 
 ## install
 
-TODO
+```sh
+cd .vscode/extensions/recipeyak-dev
+pnpm install
+s/build
+# either install via:
+code --install-extension *.vsix
+# or navigate to `@recommended` extensions in VSCode and install recipeyak-dev
+```
 
 ## dev
 
