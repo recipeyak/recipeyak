@@ -16,7 +16,7 @@ TODO
 1. start esbuild
 
 ```sh
-node esbuild.js --watch
+s/build_watch
 ```
 
 2. open the extension in a new window

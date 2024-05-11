@@ -1,34 +1,35 @@
-import { ExtensionContext, commands, languages } from "vscode";
-import { findAPIImplementationCommand } from "./findAPIImplementationCommand";
-import { FindAPIImplementationCodeLensProvider } from "./findAPIImplementationCodeLensProvider";
-import { FindAPICallerCodeLensProvider } from "./findAPICallerCodeLensProvider";
-import { findAPICallerCommand } from "./findAPICallerCommand";
+import { commands, ExtensionContext, languages } from "vscode"
+
+import { FindAPICallerCodeLensProvider } from "./findAPICallerCodeLensProvider"
+import { findAPICallerCommand } from "./findAPICallerCommand"
+import { FindAPIImplementationCodeLensProvider } from "./findAPIImplementationCodeLensProvider"
+import { findAPIImplementationCommand } from "./findAPIImplementationCommand"
 
 export function activate(context: ExtensionContext) {
   context.subscriptions.push(
     languages.registerCodeLensProvider(
       { language: "typescript" },
-      new FindAPIImplementationCodeLensProvider()
-    )
-  );
+      new FindAPIImplementationCodeLensProvider(),
+    ),
+  )
   context.subscriptions.push(
     languages.registerCodeLensProvider(
       { language: "python" },
-      new FindAPICallerCodeLensProvider()
-    )
-  );
+      new FindAPICallerCodeLensProvider(),
+    ),
+  )
   context.subscriptions.push(
     commands.registerCommand(
       findAPIImplementationCommand.name,
-      findAPIImplementationCommand.callback
-    )
-  );
+      findAPIImplementationCommand.callback,
+    ),
+  )
   context.subscriptions.push(
     commands.registerCommand(
       findAPICallerCommand.name,
-      findAPICallerCommand.callback
-    )
-  );
+      findAPICallerCommand.callback,
+    ),
+  )
 }
 
 export function deactivate() {}

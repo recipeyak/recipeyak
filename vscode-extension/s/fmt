@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -ex
+
+main() {
+  if [ "$CI" ]; then
+    node_modules/.bin/prettier '**/*.{js,jsx,ts,tsx,json,yaml,yml,md}' --list-different
+  else
+    node_modules/.bin/prettier '**/*.{js,jsx,ts,tsx,json,yaml,yml,md}' --write --cache
+  fi
+  
+}
+
+main "$@"
