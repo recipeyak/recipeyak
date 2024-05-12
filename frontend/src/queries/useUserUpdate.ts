@@ -16,7 +16,7 @@ export function useUserUpdate() {
       readonly theme_mode?: ThemeMode
     }) => userUpdate(payload),
     onSuccess: (res) => {
-      login(res, queryClient)
+      void login(res, queryClient)
     },
   })
 }
