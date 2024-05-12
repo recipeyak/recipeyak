@@ -20,7 +20,7 @@ export const NavLink = ({
       href={to}
       className={(p) =>
         clx(
-          "flex shrink-0 grow-0 cursor-pointer items-center justify-center gap-1 rounded-md px-2 py-1 text-[14px] font-medium leading-[1.5] text-[--color-text] transition-all [transition:background_.12s_ease-out]",
+          "flex shrink-0 grow-0 cursor-pointer items-center justify-center gap-2 rounded-md px-2 py-1 text-[14px] font-medium leading-[1.5] text-[--color-text] transition-all [transition:background_.12s_ease-out]",
           p.isHovered &&
             "bg-[--color-background-calendar-day] text-[--color-link-hover]",
           p.isPressed && "bg-[--color-border]",
