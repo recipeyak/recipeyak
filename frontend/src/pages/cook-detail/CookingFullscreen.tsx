@@ -1,7 +1,7 @@
 import { usePresence } from "ably/react"
 import { useState } from "react"
-import { Link } from "react-router-dom"
 
+import { Button } from "@/components/Buttons"
 import { getInitialIngredients } from "@/ingredients"
 import { IngredientViewContent } from "@/pages/recipe-detail/IngredientView"
 import { Note } from "@/pages/recipe-detail/Notes"
@@ -196,7 +196,6 @@ function TabAnchor({
       // eslint-disable-next-line no-restricted-syntax
       style={{
         textUnderlineOffset: "0.25rem",
-        paddingBottom: "0.25rem",
         fontWeight: "500",
         fontSize: "18px",
       }}
@@ -249,14 +248,13 @@ export function CookingFullscreen({
           height: "100%",
         }}
       >
-        <Link
-          to={recipeURL(recipeId, recipeName)}
-          className="mb-2 px-1 py-2 text-sm"
-        >
-          ← Return to Recipe
-        </Link>
+        <div className="mx-auto mt-2 flex min-w-[min(600px,100%)] max-w-[1000px] flex-col gap-2 pb-2 text-lg">
+          <div>
+            <Button to={recipeURL(recipeId, recipeName)}>
+              ← Return to Recipe
+            </Button>
+          </div>
 
-        <div className="mx-auto flex min-w-[min(600px,100%)] max-w-[1000px] flex-col gap-2 pb-2 text-lg">
           <div
             id="ingredients"
             className="cursor-auto select-text"
@@ -288,8 +286,8 @@ export function CookingFullscreen({
               <RecipeSource source={recipeSource} />
             </div>
           )}
-          <div className="absolute  inset-x-0 bottom-0 z-20 flex justify-around border-[thin] border-solid border-[--color-border] bg-[--color-background]">
-            <div className="flex items-center gap-4 py-2">
+          <div className="sticky  inset-x-0 bottom-0 z-20 flex justify-around ">
+            <div className="flex items-center gap-4 rounded border-[thin] border-solid border-[--color-border] bg-[--color-background] px-4 py-1">
               <TabAnchor href="#ingredients">ingredients</TabAnchor>
               <TabAnchor href="#steps">steps</TabAnchor>
               <TabAnchor href="#notes">notes</TabAnchor>
