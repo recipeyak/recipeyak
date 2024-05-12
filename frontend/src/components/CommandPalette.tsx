@@ -278,15 +278,15 @@ export function CommandPalette({
     },
   })
 
-  const searchContainerRef = useRef(null)
-  useOnClickOutside(searchContainerRef, () => {
+  const palleteRef = useRef(null)
+  useOnClickOutside(palleteRef, () => {
     resetForm()
   })
 
   if (showCommandPalettePopover) {
     return (
       <Palette
-        ref={searchContainerRef}
+        ref={palleteRef}
         icon={<ChevronRight size={16} />}
         value={query}
         onChange={(e) => {
