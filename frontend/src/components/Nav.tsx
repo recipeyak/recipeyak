@@ -155,15 +155,16 @@ export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
   const isSmallerOrGreater = useMedia("(min-width: 640px)")
   const size = isSmallerOrGreater ? 20 : 24
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-[1000] flex h-[3.5rem] shrink-0 items-center justify-between gap-4 bg-[--color-background] px-6 pb-1 print:!hidden sm:static sm:inset-x-[unset] sm:bottom-[unset] sm:z-[unset] sm:px-2 sm:pl-1 md:grid md:grid-cols-3">
+    <nav className="fixed inset-x-0 bottom-0 z-[1000] flex h-[3.5rem] shrink-0 items-center justify-between gap-4 bg-[rgba(16,16,16,0.85)] px-6 pb-1 backdrop-blur-[28.5px] print:!hidden sm:static sm:inset-x-[unset] sm:bottom-[unset] sm:z-[unset] sm:bg-[unset] sm:px-2 sm:pl-1 sm:backdrop-blur-[unset] md:grid md:grid-cols-3">
       <NavLink
         to={pathHome({})}
-        noActiveState={!true}
         className="col-start-1 col-end-2 justify-self-start"
       >
         <HomeIcon size={size} />
       </NavLink>
-      {includeSearch && <NavRecipeSearch size={size} />}
+      {(includeSearch || !isSmallerOrGreater) && (
+        <NavRecipeSearch size={size} />
+      )}
       <NavButtons size={size} />
     </nav>
   )
