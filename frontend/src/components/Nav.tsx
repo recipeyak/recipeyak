@@ -1,3 +1,4 @@
+import { Calendar, HomeIcon, LayoutGridIcon, PlusIcon } from "lucide-react"
 import { Menu, MenuTrigger, Separator } from "react-aria-components"
 
 import { Avatar } from "@/components/Avatar"
@@ -17,6 +18,7 @@ import {
 } from "@/paths"
 import { useAuthLogout } from "@/queries/useAuthLogout"
 import { useTeam } from "@/queries/useTeamFetch"
+import { useMedia } from "@/useMedia"
 import { useTeamId } from "@/useTeamId"
 import { useUser } from "@/useUser"
 
@@ -63,7 +65,7 @@ function UserDropdown() {
 
   return (
     <MenuTrigger>
-      <Button className="!rounded-full !border-none !p-0">
+      <Button className="col-start-3 col-end-4 !rounded-full !border-none !p-0">
         <Avatar avatarURL={user.avatarURL} />
       </Button>
       <MenuPopover>
@@ -114,32 +116,55 @@ function UserDropdown() {
   )
 }
 
-function NavButtons() {
-  return (
-    <div className="relative flex items-center justify-center gap-2 justify-self-end">
-      <div className="flex print:!hidden sm:gap-2">
-        <NavLink to={pathRecipeAdd({})}>Add</NavLink>
-        <NavLink to={pathRecipesList({})}>Browse</NavLink>
-        <NavLink to={pathSchedule({})}>Calendar</NavLink>
-      </div>
+function NavButtons({ size }: { size: number }) {
+  const isSmallerOrGreater = useMedia("(min-width: 640px)")
+  const items = (
+    <>
+      <NavLink
+        to={pathRecipeAdd({})}
+        className="col-start-3 col-end-4 flex-none"
+      >
+        <PlusIcon size={size} />
+      </NavLink>
+
+      <NavLink
+        to={pathRecipesList({})}
+        className="col-start-3 col-end-4 flex-none"
+      >
+        <LayoutGridIcon size={size} />
+      </NavLink>
+      <NavLink
+        to={pathSchedule({})}
+        className="col-start-3 col-end-4 flex-none"
+      >
+        <Calendar size={size} />
+      </NavLink>
 
       <UserDropdown />
-    </div>
+    </>
   )
+  if (isSmallerOrGreater) {
+    return (
+      <div className="col-start-3 flex justify-end gap-2 sm:gap-6">{items}</div>
+    )
+  }
+  return items
 }
 
 export function Navbar({ includeSearch = true }: { includeSearch?: boolean }) {
+  const isSmallerOrGreater = useMedia("(min-width: 640px)")
+  const size = isSmallerOrGreater ? 20 : 24
   return (
-    <nav className="flex h-[3.5rem] shrink-0 justify-between gap-1 pb-1 pl-1 pr-2 print:!hidden sm:pl-2 md:grid md:grid-cols-3">
-      <div className="flex items-center justify-start gap-2">
-        <NavLink to={pathHome({})} noActiveState={!true}>
-          <span className="font-medium">Home</span>
-        </NavLink>
-      </div>
-      <div className="flex grow items-center">
-        {includeSearch && <NavRecipeSearch />}
-      </div>
-      <NavButtons />
+    <nav className="fixed inset-x-0 bottom-0 z-[1000] flex h-[3.5rem] shrink-0 items-center justify-between gap-4 bg-[--color-background] px-6 pb-1 print:!hidden sm:static sm:inset-x-[unset] sm:bottom-[unset] sm:z-[unset] sm:px-2 sm:pl-1 md:grid md:grid-cols-3">
+      <NavLink
+        to={pathHome({})}
+        noActiveState={!true}
+        className="col-start-1 col-end-2 justify-self-start"
+      >
+        <HomeIcon size={size} />
+      </NavLink>
+      {includeSearch && <NavRecipeSearch size={size} />}
+      <NavButtons size={size} />
     </nav>
   )
 }

@@ -6,8 +6,9 @@ import { Button } from "@/components/Buttons"
 import { SearchIcon, SearchPalette } from "@/components/SearchPalette"
 import { isInputFocused } from "@/input"
 import { useGlobalEvent } from "@/useGlobalEvent"
+import { useMedia } from "@/useMedia"
 
-export function NavRecipeSearch() {
+export function NavRecipeSearch({ size }: { size: number }) {
   const [query, setQuery] = useState("")
   const [selectedIndex, setSelectedIndex] = useState(0)
   // If a user clicks outside of the dropdown, we want to hide the dropdown, but
@@ -37,9 +38,13 @@ export function NavRecipeSearch() {
     setSelectedIndex(0)
     setShowPopover(false)
   }
+  const isSmallerOrGreater = useMedia("(min-width: 640px)")
 
   return (
-    <div ref={searchContainerRef} className="flex sm:w-full">
+    <div
+      ref={searchContainerRef}
+      className="col-start-2 col-end-3 flex sm:w-full"
+    >
       <Button
         ref={searchInputRef}
         onKeyDown={(e) => {
@@ -79,14 +84,17 @@ export function NavRecipeSearch() {
         }}
         children={
           <>
-            <SearchIcon />
-            <div className="block sm:hidden">Search</div>
+            <SearchIcon size={size} />
             <span className="hidden sm:block">Press / to search</span>
           </>
         }
         variant="nostyle"
         className={clx(
-          "relative inline-flex w-full !cursor-default select-none items-center !justify-start gap-2 whitespace-nowrap rounded-md border border-solid border-[--color-border] bg-[--color-background-card] px-2 py-[5px] !pr-3 text-center align-top text-base font-normal leading-[1.5] text-[--color-text] no-underline outline-none -outline-offset-1 transition-[border-color,background-color] duration-75 focus-within:outline focus-within:outline-[2px] focus-within:outline-[rgb(47,129,247)] disabled:cursor-default print:!hidden sm:!cursor-text",
+          "relative inline-flex w-full !cursor-pointer select-none items-center !justify-start gap-2 whitespace-nowrap rounded-md text-center align-top text-base font-normal leading-[1.5] text-[--color-text] no-underline outline-none -outline-offset-1 transition-[background-color] duration-75 focus-within:outline focus-within:outline-[2px] focus-within:outline-[rgb(47,129,247)] disabled:cursor-default print:!hidden sm:!cursor-text",
+          isSmallerOrGreater
+            ? "border border-solid border-[--color-border] bg-[--color-background-card] px-2 py-[5px] !pr-3"
+            : "cursor-pointer border-none bg-inherit px-2 py-1",
+          "hover:bg-[--color-background-calendar-day] hover:text-[--color-link-hover]",
         )}
       />
       {showPopover && (
