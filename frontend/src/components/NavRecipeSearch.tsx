@@ -1,24 +1,22 @@
-import { useRef, useState } from "react"
+import { useRef } from "react"
 import useOnClickOutside from "use-onclickoutside"
 
 import { clx } from "@/classnames"
 import { Button } from "@/components/Buttons"
-import { SearchIcon, SearchPalette } from "@/components/SearchPalette"
+import { SearchIcon } from "@/components/SearchPalette"
 import { isInputFocused } from "@/input"
 import { useGlobalEvent } from "@/useGlobalEvent"
 import { useMedia } from "@/useMedia"
 
-export function NavRecipeSearch({ size }: { size: number }) {
-  const [query, setQuery] = useState("")
-  const [selectedIndex, setSelectedIndex] = useState(0)
-  // If a user clicks outside of the dropdown, we want to hide the dropdown, but
-  // keep their search query.
-  //
-  // The alternative would be to clear the search query when clicking outside,
-  // but I'm not sure that's desirable.
-  const [showPopover, setShowPopover] = useState(false)
-  const searchInputRef = useRef<HTMLButtonElement>(null)
-
+export function NavRecipeSearch({
+  size,
+  setShowPopover,
+  searchInputRef,
+}: {
+  size: number
+  setShowPopover: (_: boolean) => void
+  searchInputRef: React.RefObject<HTMLButtonElement>
+}) {
   const searchContainerRef = useRef(null)
   useOnClickOutside(searchContainerRef, () => {
     setShowPopover(false)
@@ -33,11 +31,6 @@ export function NavRecipeSearch({ size }: { size: number }) {
     },
   })
 
-  const resetForm = () => {
-    setQuery("")
-    setSelectedIndex(0)
-    setShowPopover(false)
-  }
   const isSmallerOrGreater = useMedia("(min-width: 640px)")
 
   return (
@@ -97,25 +90,6 @@ export function NavRecipeSearch({ size }: { size: number }) {
           "hover:bg-[--color-background-calendar-day] hover:text-[--color-link-hover]",
         )}
       />
-      {showPopover && (
-        <SearchPalette
-          selectedIndex={selectedIndex}
-          query={query}
-          setSelectedIndex={setSelectedIndex}
-          setQuery={(query) => {
-            setQuery(query)
-            // If we start searching after we already selected a
-            // suggestion, we should reset back to the initial state aka 0
-            if (selectedIndex !== 0) {
-              setSelectedIndex(0)
-            }
-          }}
-          onClose={() => {
-            resetForm()
-          }}
-          searchInputRef={searchInputRef}
-        />
-      )}
     </div>
   )
 }
