@@ -1,0 +1,100 @@
+name: VSCode Extension
+
+on:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  pre_job:
+    runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+      paths_result: ${{ steps.skip_check.outputs.paths_result }}
+    steps:
+      - id: skip_check
+        uses: fkirc/skip-duplicate-actions@c449d86cf33a2a6c7a4193264cc2578e2c3266d4 # pin@v4
+        with:
+          paths: '[".vscode/extensions/recipeyak-dev/**", ".github/workflows/**"]'
+  format:
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: ".vscode/extensions/recipeyak-dev/package.json"
+          cache-dependency-path: ".vscode/extensions/recipeyak-dev/pnpm-lock.yaml"
+          cache: "pnpm"
+      - name: Install dependencies
+        working-directory: ".vscode/extensions/recipeyak-dev"
+        run: pnpm install
+      - name: Check formatting
+        working-directory: ".vscode/extensions/recipeyak-dev"
+        run: ./s/fmt
+  eslint:
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: ".vscode/extensions/recipeyak-dev/package.json"
+          cache-dependency-path: ".vscode/extensions/recipeyak-dev/pnpm-lock.yaml"
+          cache: "pnpm"
+      - name: Install dependencies
+        working-directory: ".vscode/extensions/recipeyak-dev"
+        run: pnpm install
+      - name: Run Eslint
+        working-directory: ".vscode/extensions/recipeyak-dev"
+        run: ./s/eslint
+  typecheck:
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: ".vscode/extensions/recipeyak-dev/package.json"
+          cache-dependency-path: ".vscode/extensions/recipeyak-dev/pnpm-lock.yaml"
+          cache: "pnpm"
+      - name: Install dependencies
+        working-directory: ".vscode/extensions/recipeyak-dev"
+        run: pnpm install
+      - name: Check types
+        working-directory: ".vscode/extensions/recipeyak-dev"
+        run: ./s/typecheck
+  build:
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: ".vscode/extensions/recipeyak-dev/package.json"
+          cache-dependency-path: ".vscode/extensions/recipeyak-dev/pnpm-lock.yaml"
+          cache: "pnpm"
+      - name: Install dependencies
+        working-directory: ".vscode/extensions/recipeyak-dev"
+        run: pnpm install
+      - name: Build bundle
+        working-directory: ".vscode/extensions/recipeyak-dev"
+        run: ./s/build

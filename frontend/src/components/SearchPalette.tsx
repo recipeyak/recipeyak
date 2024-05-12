@@ -18,8 +18,13 @@ const stylesSuggestion =
 
 type Hits = NonNullable<ResponseFromUse<typeof useSearchRecipes>>["hits"]
 
-export function SearchIcon({ className }: { className?: string }) {
-  const size = 16
+export function SearchIcon({
+  className,
+  size = 16,
+}: {
+  className?: string
+  size?: number
+}) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

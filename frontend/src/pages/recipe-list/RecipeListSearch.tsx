@@ -409,7 +409,7 @@ export function RecipeSearchList() {
     results.data?.archivedFacetData.facets?.["archived"]?.["true"] ?? 0
 
   return (
-    <div className="mx-auto flex max-w-[1000px] flex-col gap-2">
+    <div className="mx-auto flex max-w-[1000px] flex-col gap-2 pt-2 sm:pt-0">
       <SearchInput
         value={query}
         onChange={(e) => {

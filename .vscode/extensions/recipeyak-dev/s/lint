@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -ex
+
+main() {
+  ./s/fmt
+  ./s/eslint
+  ./s/typecheck
+}
+
+main "$@"
