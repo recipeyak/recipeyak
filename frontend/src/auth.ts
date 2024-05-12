@@ -52,6 +52,7 @@ export async function login(
   try {
     await ablyClient.auth.authorize()
   } catch {
+    // eslint-disable-next-line no-console
     console.error("Failed to initialize ably")
   }
   setItem(LOGGED_IN_CACHE_KEY, "1")

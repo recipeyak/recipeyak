@@ -61,8 +61,9 @@ export function SignupPage() {
       },
       {
         onSuccess: (res) => {
-          login(res.user, queryClient)
-          history.push(pathRecipeAdd({}))
+          void login(res.user, queryClient).then(() => {
+            history.push(pathRecipeAdd({}))
+          })
         },
       },
     )

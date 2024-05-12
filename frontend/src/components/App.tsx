@@ -23,7 +23,7 @@ import {
 } from "react-router-dom"
 
 import { useIsLoggedIn } from "@/auth"
-import { client } from "@/components/ably"
+import { client as ablyClient } from "@/components/ably"
 import { AlgoliaProvider } from "@/components/AlgoliaProvider"
 import { ErrorBoundary } from "@/components/ErrorBoundary"
 import { Helmet } from "@/components/Helmet"
@@ -335,7 +335,7 @@ function App() {
     //
     // A component suspended while responding to synchronous input. This will cause the UI to
     <Suspense>
-      <AblyProvider client={client}>
+      <AblyProvider client={ablyClient}>
         <PersistQueryClientProvider
           client={queryClient}
           persistOptions={{

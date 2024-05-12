@@ -11,7 +11,7 @@ export function useUserFetch() {
     queryKey: getQueryKey(),
     queryFn: async () => {
       const res = await userRetrieve()
-      login(res, queryClient)
+      void login(res, queryClient)
       return res
     },
   })

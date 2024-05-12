@@ -67,8 +67,9 @@ export function PasswordResetConfirmPage(props: RouteProps) {
       },
       {
         onSuccess: (res) => {
-          login(res, queryClient)
-          history.push(pathHome({}))
+          void login(res, queryClient).then(() => {
+            history.push(pathHome({}))
+          })
         },
         onSettled: () => {
           setNewPassword1("")
