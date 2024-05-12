@@ -11,11 +11,9 @@ import { useMedia } from "@/useMedia"
 export function NavRecipeSearch({
   size,
   setShowPopover,
-  searchInputRef,
 }: {
   size: number
   setShowPopover: (_: boolean) => void
-  searchInputRef: React.RefObject<HTMLButtonElement>
 }) {
   const searchContainerRef = useRef(null)
   useOnClickOutside(searchContainerRef, () => {
@@ -39,7 +37,6 @@ export function NavRecipeSearch({
       className="col-start-2 col-end-3 flex sm:w-full"
     >
       <Button
-        ref={searchInputRef}
         onKeyDown={(e) => {
           if (e.key === "/") {
             // the other event handler takes care of this

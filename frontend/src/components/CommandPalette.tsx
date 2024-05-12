@@ -9,7 +9,6 @@ import useOnClickOutside from "use-onclickoutside"
 import { isMobile } from "@/browser"
 import { clx } from "@/classnames"
 import { Palette } from "@/components/Palette"
-import { SearchPalette } from "@/components/SearchPalette"
 import { toISODateString } from "@/date"
 import { isInputFocused } from "@/input"
 import { Kbd } from "@/pages/schedule/Kbd"
@@ -108,7 +107,11 @@ const options = [
   },
 ]
 
-export function CommandPalette() {
+export function CommandPalette({
+  onShowSearchPalette,
+}: {
+  onShowSearchPalette: () => void
+}) {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [query, setQuery] = useState("")
   const location = useLocation()
@@ -137,13 +140,13 @@ export function CommandPalette() {
         }
         resetForm()
       } else if (suggestion?.openSearch) {
-        setShowSearchPopover(true)
+        onShowSearchPalette()
         setShowCommandPalettePopover(false)
         setQuery("")
         setSelectedIndex(0)
       }
     },
-    [history, location],
+    [history, location, onShowSearchPalette],
   )
 
   useEffect(() => {
@@ -229,10 +232,8 @@ export function CommandPalette() {
     setQuery("")
     setSelectedIndex(0)
     setShowCommandPalettePopover(false)
-    setShowSearchPopover(false)
   }
 
-  const [showSearchPopover, setShowSearchPopover] = useState(false)
   const handleSearchKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     // We need to extract the key from the synthetic event before we lose the
     // event.
@@ -268,12 +269,7 @@ export function CommandPalette() {
     keyDown(e) {
       if (e.key === "k" && e.metaKey) {
         e.preventDefault()
-        if (showSearchPopover) {
-          setShowSearchPopover(false)
-          setQuery("")
-          setSelectedIndex(0)
-          setShowCommandPalettePopover(true)
-        } else if (!isInputFocused() && !showCommandPalettePopover) {
+        if (!isInputFocused() && !showCommandPalettePopover) {
           setShowCommandPalettePopover(true)
         } else if (showCommandPalettePopover) {
           setShowCommandPalettePopover(false)
@@ -287,27 +283,6 @@ export function CommandPalette() {
     resetForm()
   })
 
-  if (showSearchPopover) {
-    return (
-      <SearchPalette
-        selectedIndex={selectedIndex}
-        query={query}
-        setSelectedIndex={setSelectedIndex}
-        setQuery={(query) => {
-          setQuery(query)
-          // If we start searching after we already selected a
-          // suggestion, we should reset back to the initial state aka 0
-          if (selectedIndex !== 0) {
-            setSelectedIndex(0)
-          }
-        }}
-        onClose={() => {
-          resetForm()
-        }}
-        searchInputRef={null}
-      />
-    )
-  }
   if (showCommandPalettePopover) {
     return (
       <Palette

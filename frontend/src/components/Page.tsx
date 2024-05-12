@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 
 import { CommandPalette } from "@/components/CommandPalette"
@@ -19,18 +19,22 @@ const ContainerBase = ({
   const [showRecipeSearch, setShowRecipeSearch] = useState(false)
   const [query, setQuery] = useState("")
   const [selectedIndex, setSelectedIndex] = useState(0)
-  const searchInputRef = useRef<HTMLButtonElement>(null)
   // TODO(sbdchd): we should figure out a better way to handle the Palettes since
   // they're kind of global
   return (
     <>
-      <CommandPalette />
+      <CommandPalette
+        onShowSearchPalette={() => {
+          setShowRecipeSearch(true)
+        }}
+      />
       <Navbar
         includeSearch={includeSearch}
         setShowRecipeSearch={setShowRecipeSearch}
-        searchInputRef={searchInputRef}
       />
       {showRecipeSearch && (
+        // TODO(sbdchd): cmd+k should open the command palette when in the
+        // search palette
         <SearchPalette
           selectedIndex={selectedIndex}
           query={query}
@@ -48,7 +52,6 @@ const ContainerBase = ({
             setSelectedIndex(0)
             setShowRecipeSearch(false)
           }}
-          searchInputRef={searchInputRef}
         />
       )}
       <ErrorBoundary>{children}</ErrorBoundary>
