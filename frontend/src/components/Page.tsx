@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { Link } from "react-router-dom"
 
 import { CommandPalette } from "@/components/CommandPalette"
@@ -6,6 +6,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary"
 import { Footer } from "@/components/Footer"
 import { Helmet } from "@/components/Helmet"
 import { Navbar } from "@/components/Nav"
+import { SearchPalette } from "@/components/SearchPalette"
 import { pathHome } from "@/paths"
 
 const ContainerBase = ({
@@ -15,10 +16,41 @@ const ContainerBase = ({
   children: React.ReactNode
   includeSearch?: boolean
 }) => {
+  const [showRecipeSearch, setShowRecipeSearch] = useState(false)
+  const [query, setQuery] = useState("")
+  const [selectedIndex, setSelectedIndex] = useState(0)
+  const searchInputRef = useRef<HTMLButtonElement>(null)
+  // TODO(sbdchd): we should figure out a better way to handle the Palettes since
+  // they're kind of global
   return (
     <>
       <CommandPalette />
-      <Navbar includeSearch={includeSearch} />
+      <Navbar
+        includeSearch={includeSearch}
+        setShowRecipeSearch={setShowRecipeSearch}
+        searchInputRef={searchInputRef}
+      />
+      {showRecipeSearch && (
+        <SearchPalette
+          selectedIndex={selectedIndex}
+          query={query}
+          setSelectedIndex={setSelectedIndex}
+          setQuery={(query) => {
+            setQuery(query)
+            // If we start searching after we already selected a
+            // suggestion, we should reset back to the initial state aka 0
+            if (selectedIndex !== 0) {
+              setSelectedIndex(0)
+            }
+          }}
+          onClose={() => {
+            setQuery("")
+            setSelectedIndex(0)
+            setShowRecipeSearch(false)
+          }}
+          searchInputRef={searchInputRef}
+        />
+      )}
       <ErrorBoundary>{children}</ErrorBoundary>
     </>
   )

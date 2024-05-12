@@ -417,8 +417,8 @@ export function RecipeSearchList() {
         }}
         placeholder={
           searchBy === "name_author"
-            ? "search by title & author..."
-            : "search by ingredient..."
+            ? "Search by title & author..."
+            : "Search by ingredient..."
         }
       />
       <div className="flex flex-col gap-2">
