@@ -1,6 +1,3 @@
-import { useRef } from "react"
-import useOnClickOutside from "use-onclickoutside"
-
 import { clx } from "@/classnames"
 import { Button } from "@/components/Buttons"
 import { SearchIcon } from "@/components/SearchPalette"
@@ -15,11 +12,6 @@ export function NavRecipeSearch({
   size: number
   setShowPopover: (_: boolean) => void
 }) {
-  const searchContainerRef = useRef(null)
-  useOnClickOutside(searchContainerRef, () => {
-    setShowPopover(false)
-  })
-
   useGlobalEvent({
     keyDown(e) {
       if (e.key === "/" && !isInputFocused()) {
@@ -32,10 +24,7 @@ export function NavRecipeSearch({
   const isSmallerOrGreater = useMedia("(min-width: 640px)")
 
   return (
-    <div
-      ref={searchContainerRef}
-      className="col-start-2 col-end-3 flex sm:w-full"
-    >
+    <div className="col-start-2 col-end-3 flex sm:w-full">
       <Button
         onKeyDown={(e) => {
           if (e.key === "/") {

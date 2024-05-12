@@ -1,6 +1,8 @@
 import { clamp } from "lodash-es"
+import { useRef } from "react"
 import { useFocusVisible } from "react-aria"
 import { Link, useHistory } from "react-router-dom"
+import useOnClickOutside from "use-onclickoutside"
 
 import { isMobile } from "@/browser"
 import { clx } from "@/classnames"
@@ -93,6 +95,10 @@ export function SearchPalette({
   const { isFocusVisible } = useFocusVisible({
     autoFocus: true,
   })
+  const paletteRef = useRef(null)
+  useOnClickOutside(paletteRef, () => {
+    onClose()
+  })
 
   const history = useHistory()
   const handleSearchKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -178,6 +184,7 @@ export function SearchPalette({
   })
   return (
     <Palette
+      ref={paletteRef}
       icon={<SearchIcon />}
       value={query}
       onChange={(e) => {
