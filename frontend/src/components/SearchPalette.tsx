@@ -80,14 +80,12 @@ export function SearchPalette({
   selectedIndex,
   onClose,
   setSelectedIndex,
-  searchInputRef,
 }: {
   query: string
   setQuery: (_: string) => void
   selectedIndex: number
   onClose: () => void
   setSelectedIndex: (_: (_: number) => number) => void
-  searchInputRef: React.RefObject<HTMLButtonElement> | null
 }) {
   const [hits, hitCount] = useSearchResults(query)
 
@@ -104,9 +102,7 @@ export function SearchPalette({
       case "Escape": {
         // end up with the trigger button focused when a user hits
         // escape so they can press enter to open the modal again
-        // setShowPopover(false)
         onClose()
-        searchInputRef?.current?.focus()
         break
       }
       case "ArrowUp":
