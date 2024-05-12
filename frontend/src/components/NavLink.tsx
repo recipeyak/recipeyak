@@ -1,5 +1,4 @@
 import { Link } from "react-aria-components"
-import { useLocation } from "react-router-dom"
 
 import { clx } from "@/classnames"
 
@@ -7,14 +6,11 @@ export const NavLink = ({
   to,
   children,
   className,
-  noActiveState,
 }: {
   to: string
   children?: React.ReactNode
   className?: string
-  noActiveState?: boolean
 }) => {
-  const location = useLocation()
   return (
     <Link
       href={to}
@@ -28,9 +24,6 @@ export const NavLink = ({
           p.isFocusVisible
             ? "focus-visible:outline-[3px] focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)]"
             : "outline-none",
-          !noActiveState &&
-            location.pathname === to &&
-            "bg-[--color-background-calendar-day]",
           className,
         )
       }

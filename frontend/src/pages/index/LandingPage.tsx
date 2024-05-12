@@ -193,7 +193,7 @@ export const LandingPage = () => {
     <>
       <nav className="flex h-[3.5rem] shrink-0 justify-between gap-1 pb-1 pl-1 pr-2 print:!hidden">
         <div className="flex items-center justify-start">
-          <NavLink to={pathHome({})} noActiveState>
+          <NavLink to={pathHome({})}>
             <span className="text-2xl">Recipe Yak</span>
           </NavLink>
         </div>
