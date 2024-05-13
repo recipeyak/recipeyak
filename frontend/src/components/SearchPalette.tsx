@@ -155,6 +155,9 @@ export function SearchPalette({
             !isMobile() &&
             "rounded-md bg-[--color-border-selected-day]",
         )}
+        onClick={() => {
+          onClose()
+        }}
         onDragStart={(e) => {
           e.dataTransfer.setData("recipeyak/recipe", JSON.stringify(hit))
           e.dataTransfer.effectAllowed = "copyMove"
