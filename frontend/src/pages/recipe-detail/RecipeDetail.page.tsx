@@ -660,8 +660,8 @@ function RecipeInfo(props: {
           inlineLayout && "md:[grid-area:1_/_span_2]",
         )}
       >
-        <div className="flex w-full justify-between pr-4">
-          <div className="flex flex-wrap items-center gap-2">
+        <div className="flex w-full flex-row-reverse justify-between sm:flex-row sm:pr-4">
+          <div className="flex flex-row-reverse flex-wrap items-center gap-2 sm:flex-row">
             <RecipeTitleDropdown
               recipeIsArchived={props.recipe.archived_at != null}
               recipeId={props.recipe.id}
