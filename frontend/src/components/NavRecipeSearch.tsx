@@ -11,7 +11,7 @@ export function NavRecipeSearch({
   triggerRef,
 }: {
   size: number
-  setShowPopover: (_: boolean) => void
+  setShowPopover: React.Dispatch<React.SetStateAction<boolean>>
   triggerRef: React.RefObject<HTMLButtonElement>
 }) {
   useGlobalEvent({
@@ -62,7 +62,7 @@ export function NavRecipeSearch({
         }}
         // more closely mimic the behavior of the search input vs onPress/onClick
         onPressStart={() => {
-          setShowPopover(true)
+          setShowPopover((s) => !s)
         }}
         children={
           <>
