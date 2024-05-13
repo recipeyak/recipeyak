@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { Link } from "react-router-dom"
 
 import { CommandPalette } from "@/components/CommandPalette"
@@ -17,6 +17,7 @@ const ContainerBase = ({
   includeSearch?: boolean
 }) => {
   const [showRecipeSearch, setShowRecipeSearch] = useState(false)
+  const triggerRef = useRef<HTMLButtonElement>(null)
   const [query, setQuery] = useState("")
   const [selectedIndex, setSelectedIndex] = useState(0)
   // TODO(sbdchd): we should figure out a better way to handle the Palettes since
@@ -30,6 +31,7 @@ const ContainerBase = ({
       />
       <Navbar
         includeSearch={includeSearch}
+        triggerRef={triggerRef}
         setShowRecipeSearch={setShowRecipeSearch}
       />
       {showRecipeSearch && (
@@ -37,6 +39,7 @@ const ContainerBase = ({
         // search palette
         <SearchPalette
           selectedIndex={selectedIndex}
+          triggerRef={triggerRef}
           query={query}
           setSelectedIndex={setSelectedIndex}
           setQuery={(query) => {

@@ -8,9 +8,11 @@ import { useMedia } from "@/useMedia"
 export function NavRecipeSearch({
   size,
   setShowPopover,
+  triggerRef,
 }: {
   size: number
   setShowPopover: (_: boolean) => void
+  triggerRef: React.RefObject<HTMLButtonElement>
 }) {
   useGlobalEvent({
     keyDown(e) {
@@ -26,6 +28,7 @@ export function NavRecipeSearch({
   return (
     <div className="col-start-2 col-end-3 flex sm:w-full">
       <Button
+        ref={triggerRef}
         onKeyDown={(e) => {
           if (e.key === "/") {
             // the other event handler takes care of this
