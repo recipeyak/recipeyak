@@ -154,9 +154,11 @@ function NavButtons({ size }: { size: number }) {
 export function Navbar({
   includeSearch = true,
   setShowRecipeSearch,
+  triggerRef,
 }: {
   includeSearch?: boolean
   setShowRecipeSearch: (_: boolean) => void
+  triggerRef: React.RefObject<HTMLButtonElement>
 }) {
   const isSmallerOrGreater = useMedia("(min-width: 640px)")
   const size = isSmallerOrGreater ? 20 : 24
@@ -169,7 +171,11 @@ export function Navbar({
         <HomeIcon size={size} />
       </NavLink>
       {(includeSearch || !isSmallerOrGreater) && (
-        <NavRecipeSearch size={size} setShowPopover={setShowRecipeSearch} />
+        <NavRecipeSearch
+          size={size}
+          setShowPopover={setShowRecipeSearch}
+          triggerRef={triggerRef}
+        />
       )}
       <NavButtons size={size} />
     </nav>

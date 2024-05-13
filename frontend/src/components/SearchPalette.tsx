@@ -82,12 +82,14 @@ export function SearchPalette({
   selectedIndex,
   onClose,
   setSelectedIndex,
+  triggerRef,
 }: {
   query: string
   setQuery: (_: string) => void
   selectedIndex: number
   onClose: () => void
   setSelectedIndex: (_: (_: number) => number) => void
+  triggerRef: React.RefObject<HTMLButtonElement>
 }) {
   const [hits, hitCount] = useSearchResults(query)
 
@@ -96,8 +98,17 @@ export function SearchPalette({
     autoFocus: true,
   })
   const paletteRef = useRef(null)
-  useOnClickOutside(paletteRef, () => {
-    onClose()
+  useOnClickOutside(paletteRef, (event) => {
+    // Avoid immediately closing search palette on open.
+    //
+    // https://github.com/Andarist/use-onclickoutside/issues/9#issuecomment-549612836
+    if (
+      event.target &&
+      // @ts-expect-error ts(2345): Argument of type 'EventTarget' is not assignable to parameter of type 'Node'.
+      !triggerRef.current?.contains(event.target)
+    ) {
+      onClose()
+    }
   })
 
   const history = useHistory()
