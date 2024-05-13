@@ -124,20 +124,29 @@ function NavButtons({ size }: { size: number }) {
         to={pathRecipeAdd({})}
         className="col-start-3 col-end-4 flex-none"
       >
-        <PlusIcon size={size} />
+        <div className="flex items-center gap-1">
+          <PlusIcon size={size} />
+          <div className="hidden xl:block">Add Recipe</div>
+        </div>
       </NavLink>
 
       <NavLink
         to={pathRecipesList({})}
         className="col-start-3 col-end-4 flex-none"
       >
-        <LayoutGridIcon size={size} />
+        <div className="flex items-center gap-2">
+          <LayoutGridIcon size={size} />
+          <div className="hidden xl:block">Browse</div>
+        </div>
       </NavLink>
       <NavLink
         to={pathSchedule({})}
         className="col-start-3 col-end-4 flex-none"
       >
-        <Calendar size={size} />
+        <div className="flex items-center gap-2">
+          <Calendar size={size} />
+          <div className="hidden xl:block">Calendar</div>
+        </div>
       </NavLink>
 
       <UserDropdown />
@@ -168,7 +177,10 @@ export function Navbar({
         to={pathHome({})}
         className="col-start-1 col-end-2 justify-self-start"
       >
-        <HomeIcon size={size} />
+        <div className="flex items-center gap-2">
+          <HomeIcon size={size} />
+          <div className="hidden sm:block">Home</div>
+        </div>
       </NavLink>
       {(includeSearch || !isSmallerOrGreater) && (
         <NavRecipeSearch
