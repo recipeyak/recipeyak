@@ -157,7 +157,7 @@ export function Navbar({
   triggerRef,
 }: {
   includeSearch?: boolean
-  setShowRecipeSearch: (_: boolean) => void
+  setShowRecipeSearch: React.Dispatch<React.SetStateAction<boolean>>
   triggerRef: React.RefObject<HTMLButtonElement>
 }) {
   const isSmallerOrGreater = useMedia("(min-width: 640px)")
