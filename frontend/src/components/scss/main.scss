@@ -391,7 +391,7 @@ table {
   --color-input-placeholder: rgb(151, 151, 154);
 
   --color-border: rgb(68, 76, 86);
-  --color-border-selected-day: var(--color-accent);
+  --color-border-selected-day: var(--color-background);
   --color-accent: var(--color-text);
 
   --color-danger: #fb5274;
@@ -551,7 +551,7 @@ table {
   --color-input-placeholder: #b1b1b1;
 
   --color-border: #93a1a1;
-  --color-border-selected-day: var(--color-border);
+  --color-border-selected-day: var(--color-background-calendar-day);
   --color-accent: #657b83;
 
   --color-danger: #dc322f;
