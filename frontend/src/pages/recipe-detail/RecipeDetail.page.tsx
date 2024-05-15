@@ -333,7 +333,7 @@ function RecipeDetails({
 function ArchiveMessage({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="mx-2 flex items-center gap-2 rounded-[5px] bg-[--color-background-card] px-3 py-1 font-bold"
+      className="mx-2 flex items-center gap-2 rounded-lg bg-[--color-background-card] px-3 py-1 font-semibold"
       children={children}
     />
   )
@@ -342,12 +342,10 @@ function ArchiveMessage({ children }: { children: React.ReactNode }) {
 function RecipeBanner({ children }: { readonly children: React.ReactNode }) {
   return (
     <div
-      className="sticky top-0 z-10 -mx-3 flex items-center bg-[--color-background-card]
+      className="sticky top-[2px] z-10 -mx-3 flex items-center justify-center
       sm:mx-0"
     >
-      <hr className="my-0 grow" />
       <ArchiveMessage>{children}</ArchiveMessage>
-      <hr className="my-0 grow" />
     </div>
   )
 }
@@ -963,7 +961,7 @@ export function RecipeDetailPage(props: IRecipeProps) {
 
       <div
         className={clx(
-          "mx-auto mt-4 grid max-w-[1000px] grid-cols-1 gap-2 print:!flex print:!flex-col md:[grid-template-columns:minmax(350px,3fr)_5fr]",
+          "mx-auto mt-2 grid max-w-[1000px] grid-cols-1 gap-2 print:!flex print:!flex-col md:mt-4 md:[grid-template-columns:minmax(350px,3fr)_5fr]",
           enableLargeImageRow
             ? "[grid-template-rows:auto_auto_auto]"
             : "[grid-template-rows:auto]",
