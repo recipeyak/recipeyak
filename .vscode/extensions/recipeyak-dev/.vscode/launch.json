@@ -9,9 +9,13 @@
       "name": "Run Extension",
       "type": "extensionHost",
       "request": "launch",
-      "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        // recipeyak root folder.
+        // this only works if there is no open editor for recipeyak.
+        "${workspaceFolder}/../../../"
+      ],
       "outFiles": ["${workspaceFolder}/dist/**/*.cjs"]
-      //   "preLaunchTask": "${defaultBuildTask}"
     }
   ]
 }
