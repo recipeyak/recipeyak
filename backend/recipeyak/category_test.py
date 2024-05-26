@@ -106,6 +106,8 @@ def test_categorize_ingredient_test_cases(snapshot: SnapshotAssertion) -> None:
     store bought or homemade za’atar
     loaf sweet egg bread like challah or brioche
     oyster sauce
+    fresno peppers
+    cherry or grape tomatoes
     matcha powder
     sesame aioli
     chipotle aioli (store bought)
