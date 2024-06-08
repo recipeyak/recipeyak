@@ -1,4 +1,3 @@
-import { BrowserClient, Feedback, getClient } from "@sentry/react"
 import { Calendar, HomeIcon, LayoutGridIcon, PlusIcon } from "lucide-react"
 import { Menu, MenuTrigger, Separator } from "react-aria-components"
 
@@ -21,6 +20,7 @@ import { useAuthLogout } from "@/queries/useAuthLogout"
 import { useTeam } from "@/queries/useTeamFetch"
 import { notUndefined } from "@/typeguard"
 import { useMedia } from "@/useMedia"
+import { useSentryFeedback } from "@/useSentryFeedback"
 import { useTeamId } from "@/useTeamId"
 import { useUser } from "@/useUser"
 
@@ -28,8 +28,7 @@ function UserDropdown() {
   const user = useUser()
 
   const logoutUser = useAuthLogout()
-  const client = getClient<BrowserClient>()
-  const feedback = client?.getIntegration(Feedback)
+  const feedback = useSentryFeedback()
 
   const menuItems = [
     {
@@ -55,7 +54,9 @@ function UserDropdown() {
       ? {
           type: "menuitem",
           label: "Send Feedback",
-          onClick: () => {},
+          onClick: async () => {
+            await feedback.open()
+          },
         }
       : null,
     {

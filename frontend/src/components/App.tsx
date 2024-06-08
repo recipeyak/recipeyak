@@ -86,8 +86,12 @@ Sentry.init({
     Sentry.extraErrorDataIntegration(),
     Sentry.reactRouterV5BrowserTracingIntegration({ history }),
     Sentry.feedbackIntegration({
-      // Disable injecting the default widget
       autoInject: false,
+      showBranding: false,
+      showName: false,
+      // form text
+      formTitle: "Send Feedback",
+      submitButtonLabel: "Send Feedback",
     }),
   ],
   tracesSampleRate: 1.0,
