@@ -6,7 +6,6 @@
   "devDependencies": {
     "@darkobits/vite-plugin-favicons": "^0.3.0",
     "@sanity/diff-match-patch": "^3.1.1",
-    "@sentry/babel-plugin-component-annotate": "^2.17.0",
     "@sentry/vite-plugin": "^2.17.0",
     "@tanstack/eslint-plugin-query": "^5.8.4",
     "@testing-library/react": "^13.3.0",
@@ -29,6 +28,7 @@
     "prettier-plugin-tailwindcss": "^0.5.7",
     "remark-breaks": "^4.0.0",
     "rollup-plugin-visualizer": "^5.7.1",
+    "sharp": "^0.33.4",
     "tailwindcss": "^3.3.5",
     "typescript": "5.2.2",
     "vite": "^5.0.10",
