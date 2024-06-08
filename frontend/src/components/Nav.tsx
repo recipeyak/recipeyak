@@ -1,3 +1,4 @@
+import { BrowserClient, Feedback, getClient } from "@sentry/react"
 import { Calendar, HomeIcon, LayoutGridIcon, PlusIcon } from "lucide-react"
 import { Menu, MenuTrigger, Separator } from "react-aria-components"
 
@@ -18,6 +19,7 @@ import {
 } from "@/paths"
 import { useAuthLogout } from "@/queries/useAuthLogout"
 import { useTeam } from "@/queries/useTeamFetch"
+import { notUndefined } from "@/typeguard"
 import { useMedia } from "@/useMedia"
 import { useTeamId } from "@/useTeamId"
 import { useUser } from "@/useUser"
@@ -26,12 +28,10 @@ function UserDropdown() {
   const user = useUser()
 
   const logoutUser = useAuthLogout()
+  const client = getClient<BrowserClient>()
+  const feedback = client?.getIntegration(Feedback)
 
-  const menuItems: Array<
-    | { type: "menuitem"; label: string; to: string; onClick?: undefined }
-    | { type: "menuitem"; label: string; to?: undefined; onClick: () => void }
-    | { type: "separator"; id: string }
-  > = [
+  const menuItems = [
     {
       type: "menuitem",
       label: "Profile",
@@ -51,6 +51,13 @@ function UserDropdown() {
       type: "separator",
       id: "separator-1",
     },
+    feedback
+      ? {
+          type: "menuitem",
+          label: "Send Feedback",
+          onClick: () => {},
+        }
+      : null,
     {
       type: "menuitem",
       label: "Logout",
@@ -58,7 +65,7 @@ function UserDropdown() {
         logoutUser.mutate()
       },
     },
-  ]
+  ].filter(notUndefined)
 
   const teamId = useTeamId()
   const team = useTeam({ teamId })

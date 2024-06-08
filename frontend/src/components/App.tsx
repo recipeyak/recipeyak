@@ -1,6 +1,5 @@
 import "@/components/scss/main.scss"
 
-import { ExtraErrorData } from "@sentry/integrations"
 import * as Sentry from "@sentry/react"
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister"
 import { useIsRestoring } from "@tanstack/react-query"
@@ -84,11 +83,11 @@ Sentry.init({
   dsn: SENTRY_DSN,
   release: GIT_SHA || "",
   integrations: [
-    new ExtraErrorData(),
-    new Sentry.BrowserTracing({
-      // See docs for support of different versions of variation of react router
-      // https://docs.sentry.io/platforms/javascript/guides/react/configuration/integrations/react-router/
-      routingInstrumentation: Sentry.reactRouterV5Instrumentation(history),
+    Sentry.extraErrorDataIntegration(),
+    Sentry.reactRouterV5BrowserTracingIntegration({ history }),
+    Sentry.feedbackIntegration({
+      // Disable injecting the default widget
+      autoInject: false,
     }),
   ],
   tracesSampleRate: 1.0,
