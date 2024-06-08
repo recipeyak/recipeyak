@@ -1,7 +1,7 @@
-import { DefaultBodyType, MockedRequest, rest } from "msw"
+import { http } from "msw"
 import { setupServer } from "msw/node"
 
-export { rest }
+export { http }
 
 type Deferred<T> = {
   promise: PromiseLike<T>
@@ -45,19 +45,19 @@ afterEach(() => {
 // We setup all this stuff below to get test failures when we forget to mock an
 // endpoint.
 // ideally it would be builtin, waiting on: https://github.com/mswjs/msw/issues/946
-const inprogress = new Map<string, Deferred<MockedRequest<DefaultBodyType>>>()
+const inprogress = new Map<string, Deferred<{ request: Request }>>()
 
 // Two options, either a request is mocked or it's not.
 // If it's mocked we'll hit the request:match, otherwise we'll hit
 // request:unhandled.
 server.events.on("request:start", (req) => {
-  inprogress.set(req.id, deferred(req))
+  inprogress.set(req.requestId, deferred(req))
 })
 server.events.on("request:match", (req) => {
-  inprogress.get(req.id)?.done()
+  inprogress.get(req.requestId)?.done()
 })
 server.events.on("request:unhandled", (req) => {
-  inprogress.get(req.id)?.error()
+  inprogress.get(req.requestId)?.error()
 })
 
 // check if we had any unhandled requests
@@ -67,16 +67,13 @@ afterEach(async () => {
   )
     .filter((x): x is PromiseRejectedResult => x.status === "rejected")
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    .map((x): MockedRequest<DefaultBodyType> => x.reason)
+    .map((x): Request => x.reason)
   inprogress.clear()
   if (errors.length) {
     // TODO: figure out if we can include where in the code the request was called
     const err = Error(
       errors
-        .map(
-          (req) =>
-            `found an unhandled ${req.method} request to ${req.url.href}`,
-        )
+        .map((req) => `found an unhandled ${req.method} request to ${req.url}`)
         .join("\n\n"),
     )
     // clear the useless stack trace
