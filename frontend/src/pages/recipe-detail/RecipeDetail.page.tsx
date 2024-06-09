@@ -1,4 +1,4 @@
-import { usePresence } from "ably/react"
+import { usePresence, usePresenceListener } from "ably/react"
 import { flatten, last, sortBy, uniqBy } from "lodash-es"
 import { Heart } from "lucide-react"
 import React, { useEffect, useMemo, useState } from "react"
@@ -604,15 +604,18 @@ function RecipePresence({
 }) {
   const teamId = useTeamId()
   const avatarUrl = user.avatar_url
-  const { presenceData, updateStatus } = usePresence<{
+  const { updateStatus } = usePresence<{
     avatarUrl: string
     active?: boolean
   }>(
-    {
-      channelName: `team:${teamId}:recipe:${recipeId}`,
-    },
+    { channelName: `team:${teamId}:recipe:${recipeId}` },
     { avatarUrl, active: true },
   )
+  const { presenceData } = usePresenceListener<{
+    avatarUrl: string
+    active?: boolean
+  }>({ channelName: `team:${teamId}:recipe:${recipeId}` })
+
   const peers = uniqPresense(
     presenceData.filter((msg) => msg.clientId !== user.id.toString()),
   ).map((msg, index) => (
@@ -626,9 +629,9 @@ function RecipePresence({
   useEffect(() => {
     const listener = () => {
       if (document.visibilityState === "visible") {
-        updateStatus({ avatarUrl, active: true })
+        void updateStatus({ avatarUrl, active: true })
       } else {
-        updateStatus({ avatarUrl, active: false })
+        void updateStatus({ avatarUrl, active: false })
       }
     }
     document.addEventListener("visibilitychange", listener)
@@ -823,14 +826,10 @@ function useCookModeUsers(recipeId: number) {
   const teamId = useTeamId()
   const user = useUser()
 
-  const { presenceData } = usePresence<{
+  const { presenceData } = usePresenceListener<{
     avatarUrl: string
     active?: boolean
-  }>({
-    subscribeOnly: true,
-
-    channelName: `team:${teamId}:cook_checklist:${recipeId}`,
-  })
+  }>({ channelName: `team:${teamId}:cook_checklist:${recipeId}` })
   const usersInCookMode = presenceData.filter(
     (x) => x.clientId !== user.id?.toString(),
   )
