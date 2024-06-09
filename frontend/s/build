@@ -2,7 +2,7 @@
 set -ex
 
 main() {
-  yarn vite build
+  ./node_modules/.bin/vite build
 }
 
 main "$@"

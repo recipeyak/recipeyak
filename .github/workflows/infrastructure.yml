@@ -84,11 +84,11 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version-file: "frontend/package.json"
-          cache-dependency-path: "frontend/yarn.lock"
-          cache: "yarn"
+          cache-dependency-path: "frontend/package-lock.json"
+          cache: "npm"
       - name: Install dependencies
         working-directory: "frontend"
-        run: yarn install --frozen-lockfile
+        run: npm ci
       - name: Build
         env:
           FRONTEND_GIT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}

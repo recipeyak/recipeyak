@@ -3,13 +3,14 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { persistQueryClient } from "@tanstack/react-query-persist-client"
 import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import { HttpResponse } from "msw"
 import { HelmetProvider } from "react-helmet-async"
 import { BrowserRouter, useLocation } from "react-router-dom"
 
 import { LoginPage as Login } from "@/pages/login/Login.page"
 import { useAuthLogin } from "@/queries/useAuthLogin"
 import { ResponseFromUse } from "@/queries/useQueryUtilTypes"
-import { rest, server } from "@/testUtils"
+import { http as rest, server } from "@/testUtils"
 
 const queryClientPersistent = new QueryClient({
   defaultOptions: {
@@ -35,34 +36,34 @@ export const LocationDisplay = () => {
 
 test("login success", async () => {
   server.use(
-    rest.post(
-      "http://localhost:3000/api/v1/auth/login",
-      async (req, res, ctx) => {
-        const requestJson = await req.json<{
-          email?: string
-          password?: string
-        }>()
-        if (
-          typeof requestJson["email"] === "string" &&
-          typeof requestJson["password"] === "string"
-        ) {
-          const user: ResponseFromUse<typeof useAuthLogin> = {
-            user: {
-              avatar_url: "",
-              email: "foo@example.com",
-              name: "",
-              id: 123,
-              schedule_team: null,
-              theme_day: "light",
-              theme_night: "dark",
-              theme_mode: "single",
-            },
-          }
-          return res(ctx.status(200), ctx.json(user))
+    rest.post<
+      never,
+      {
+        email?: string
+        password?: string
+      }
+    >("http://localhost:3000/api/v1/auth/login", async ({ request }) => {
+      const requestJson = await request.json()
+      if (
+        typeof requestJson["email"] === "string" &&
+        typeof requestJson["password"] === "string"
+      ) {
+        const user: ResponseFromUse<typeof useAuthLogin> = {
+          user: {
+            avatar_url: "",
+            email: "foo@example.com",
+            name: "",
+            id: 123,
+            schedule_team: null,
+            theme_day: "light",
+            theme_night: "dark",
+            theme_mode: "single",
+          },
         }
-        return res(ctx.status(500))
-      },
-    ),
+        return HttpResponse.json(user, { status: 200 })
+      }
+      return new Response(null, { status: 500 })
+    }),
   )
   const user = userEvent.setup()
 
@@ -94,29 +95,29 @@ test("login success", async () => {
 
 test("login failure", async () => {
   server.use(
-    rest.post(
-      "http://localhost:3000/api/v1/auth/login",
-      async (req, res, ctx) => {
-        const requestJson = await req.json<{
-          email?: string
-          password?: string
-        }>()
-        if (
-          typeof requestJson["email"] === "string" &&
-          typeof requestJson["password"] === "string"
-        ) {
-          const error: {
-            email?: string[]
-            password1?: string[]
-            non_field_errors?: string[]
-          } = {
-            email: ["invalid email"],
-          }
-          return res(ctx.status(400), ctx.json(error))
+    rest.post<
+      never,
+      {
+        email?: string
+        password?: string
+      }
+    >("http://localhost:3000/api/v1/auth/login", async ({ request }) => {
+      const requestJson = await request.json()
+      if (
+        typeof requestJson["email"] === "string" &&
+        typeof requestJson["password"] === "string"
+      ) {
+        const error: {
+          email?: string[]
+          password1?: string[]
+          non_field_errors?: string[]
+        } = {
+          email: ["invalid email"],
         }
-        return res(ctx.status(500))
-      },
-    ),
+        return HttpResponse.json(error, { status: 400 })
+      }
+      return new Response(null, { status: 500 })
+    }),
   )
   const user = userEvent.setup()
 
