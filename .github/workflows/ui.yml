@@ -28,11 +28,11 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version-file: "frontend/package.json"
-          cache-dependency-path: "frontend/yarn.lock"
-          cache: "yarn"
+          cache-dependency-path: "frontend/package-lock.json"
+          cache: "npm"
       - name: Install dependencies
         working-directory: "frontend"
-        run: yarn install --frozen-lockfile
+        run: npm ci
       - name: Run tests
         working-directory: "frontend"
         run: ./s/test --no-watch --reporter junit --outputFile ~/test-results/frontend_tests.xml
@@ -51,11 +51,11 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version-file: "frontend/package.json"
-          cache-dependency-path: "frontend/yarn.lock"
-          cache: "yarn"
+          cache-dependency-path: "frontend/package-lock.json"
+          cache: "npm"
       - name: Install dependencies
         working-directory: "frontend"
-        run: yarn install --frozen-lockfile
+        run: npm ci
       - name: Check formatting
         working-directory: "frontend"
         run: ./s/fmt
@@ -69,11 +69,11 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version-file: "frontend/package.json"
-          cache-dependency-path: "frontend/yarn.lock"
-          cache: "yarn"
+          cache-dependency-path: "frontend/package-lock.json"
+          cache: "npm"
       - name: Install dependencies
         working-directory: "frontend"
-        run: yarn install --frozen-lockfile
+        run: npm ci
       - name: Run Eslint
         working-directory: "frontend"
         run: ./s/eslint
@@ -87,11 +87,11 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version-file: "frontend/package.json"
-          cache-dependency-path: "frontend/yarn.lock"
-          cache: "yarn"
+          cache-dependency-path: "frontend/package-lock.json"
+          cache: "npm"
       - name: Install dependencies
         working-directory: "frontend"
-        run: yarn install --frozen-lockfile
+        run: npm ci
       - name: Check types
         working-directory: "frontend"
         run: ./s/typecheck
@@ -105,11 +105,11 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version-file: "frontend/package.json"
-          cache-dependency-path: "frontend/yarn.lock"
-          cache: "yarn"
+          cache-dependency-path: "frontend/package-lock.json"
+          cache: "npm"
       - name: Install dependencies
         working-directory: "frontend"
-        run: yarn install --frozen-lockfile
+        run: npm ci
       - name: Build bundle
         working-directory: "frontend"
         run: ./s/build

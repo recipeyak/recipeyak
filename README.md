@@ -75,7 +75,7 @@ To have a centralized location where multiple people can organize a meal plan.
 ## Dev
 
 **Note:** postgres is required. Either run it via `docker-compose -f **docker-compose-dev.yml -d` or via the homebrew cask mac app.
-[Yarn](https://yarnpkg.com/en/) and [Poetry](https://github.com/sdispater/poetry) (0.12) are required for frontend and backend installation.
+NPM and [Poetry](https://github.com/sdispater/poetry) (0.12) are required for frontend and backend installation.
 
 ```shell
 # create a .env with `DEBUG=1`. Note: you may need to update database URIs and related vars.
@@ -83,7 +83,7 @@ cp .env-example .env
 echo "DEBUG=1" >> .env
 
 cd frontend
-yarn install
+npm install
 s/dev
 s/test
 s/lint
@@ -98,8 +98,8 @@ s/dev
 s/test
 s/lint
 
-# use `yarn` and `poetry` to add and upgrade dependencies
-yarn add $FOO
+# use `npm` and `poetry` to add and upgrade dependencies
+npm add $FOO
 poetry add $BAR
 ```
 

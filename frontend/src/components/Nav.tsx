@@ -19,7 +19,9 @@ import {
 } from "@/paths"
 import { useAuthLogout } from "@/queries/useAuthLogout"
 import { useTeam } from "@/queries/useTeamFetch"
+import { notUndefined } from "@/typeguard"
 import { useMedia } from "@/useMedia"
+import { useSentryFeedback } from "@/useSentryFeedback"
 import { useTeamId } from "@/useTeamId"
 import { useUser } from "@/useUser"
 
@@ -27,12 +29,9 @@ function UserDropdown() {
   const user = useUser()
 
   const logoutUser = useAuthLogout()
+  const feedback = useSentryFeedback()
 
-  const menuItems: Array<
-    | { type: "menuitem"; label: string; to: string; onClick?: undefined }
-    | { type: "menuitem"; label: string; to?: undefined; onClick: () => void }
-    | { type: "separator"; id: string }
-  > = [
+  const menuItems = [
     {
       type: "menuitem",
       label: "Profile",
@@ -52,6 +51,15 @@ function UserDropdown() {
       type: "separator",
       id: "separator-1",
     },
+    feedback
+      ? {
+          type: "menuitem",
+          label: "Send Feedback",
+          onClick: async () => {
+            await feedback.open()
+          },
+        }
+      : null,
     {
       type: "menuitem",
       label: "Logout",
@@ -59,7 +67,7 @@ function UserDropdown() {
         logoutUser.mutate()
       },
     },
-  ]
+  ].filter(notUndefined)
 
   const teamId = useTeamId()
   const team = useTeam({ teamId })

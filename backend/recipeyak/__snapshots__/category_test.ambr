@@ -129,6 +129,10 @@
       'produce',
     ),
     tuple(
+      'cherry or grape tomatoes',
+      'produce',
+    ),
+    tuple(
       'chicken stock',
       'canned & packaged',
     ),
@@ -243,6 +247,10 @@
     tuple(
       'fish sauce',
       'condiments',
+    ),
+    tuple(
+      'fresno peppers',
+      'produce',
     ),
     tuple(
       'garlic cloves',
