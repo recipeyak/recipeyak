@@ -4,7 +4,6 @@ import react from "@vitejs/plugin-react-swc"
 import path from "path"
 import { faviconsPlugin } from "@darkobits/vite-plugin-favicons"
 import { visualizer } from "rollup-plugin-visualizer"
-import { sentryVitePlugin } from "@sentry/vite-plugin"
 
 const logoSrc = {
   source: "./src/static/images/logo/recipeyak-logo.svg",
@@ -13,8 +12,7 @@ const logoSrc = {
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    react(),
-    sentryVitePlugin({ reactComponentAnnotation: { enabled: true } }),
+    react({}),
     faviconsPlugin({
       icons: {
         favicons: logoSrc,
