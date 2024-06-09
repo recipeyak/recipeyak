@@ -29,11 +29,7 @@ const ContainerBase = ({
           setShowRecipeSearch(true)
         }}
       />
-      <Navbar
-        includeSearch={includeSearch}
-        triggerRef={triggerRef}
-        setShowRecipeSearch={setShowRecipeSearch}
-      />
+
       {showRecipeSearch && (
         // TODO(sbdchd): cmd+k should open the command palette when in the
         // search palette
@@ -58,16 +54,22 @@ const ContainerBase = ({
         />
       )}
       <ErrorBoundary>{children}</ErrorBoundary>
+      <Navbar
+        className="order-4 sm:order-1"
+        includeSearch={includeSearch}
+        triggerRef={triggerRef}
+        setShowRecipeSearch={setShowRecipeSearch}
+      />
     </>
   )
 }
 
 const Container = ({ children }: { children: React.ReactNode }) => (
   <>
-    <div className="w-full px-3 pb-3 pt-0 print:!text-black">
+    <div className="order-2 w-full px-3 pb-3 pt-0 print:!text-black">
       <ErrorBoundary>{children}</ErrorBoundary>
     </div>
-    <Footer />
+    <Footer className="order-3 " />
   </>
 )
 

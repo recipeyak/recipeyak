@@ -1,6 +1,7 @@
 import { Calendar, HomeIcon, LayoutGridIcon, PlusIcon } from "lucide-react"
 import { Menu, MenuTrigger, Separator } from "react-aria-components"
 
+import { clx } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
 import { Button } from "@/components/Buttons"
 import { MenuItem } from "@/components/MenuItem"
@@ -172,15 +173,22 @@ export function Navbar({
   includeSearch = true,
   setShowRecipeSearch,
   triggerRef,
+  className,
 }: {
   includeSearch?: boolean
   setShowRecipeSearch: React.Dispatch<React.SetStateAction<boolean>>
   triggerRef: React.RefObject<HTMLButtonElement>
+  className?: string
 }) {
   const isSmallerOrGreater = useMedia("(min-width: 640px)")
   const size = isSmallerOrGreater ? 20 : 24
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-[1000] flex h-[3.5rem] shrink-0 items-center justify-between gap-4  px-6 pb-1 backdrop-blur-[28.5px] print:!hidden sm:static sm:inset-x-[unset] sm:bottom-[unset] sm:z-[unset] sm:bg-[unset] sm:px-2 sm:pl-1 sm:backdrop-blur-[unset] md:grid md:grid-cols-3">
+    <nav
+      className={clx(
+        "sticky bottom-0 z-[1000] flex h-[3.5rem] shrink-0 items-center justify-between gap-4 px-6 pb-1 backdrop-blur-[28.5px] print:!hidden sm:bottom-[unset] sm:z-[unset] sm:bg-[unset] sm:px-2 sm:pl-1 sm:backdrop-blur-[unset] md:grid md:grid-cols-3",
+        className,
+      )}
+    >
       <NavLink
         to={pathHome({})}
         className="col-start-1 col-end-2 justify-self-start"

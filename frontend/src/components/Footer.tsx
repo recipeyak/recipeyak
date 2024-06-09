@@ -1,10 +1,16 @@
+import { clx } from "@/classnames"
 import { GIT_SHA } from "@/settings"
 import { useSentryFeedback } from "@/useSentryFeedback"
 
-export const Footer = () => {
+export const Footer = (props: { className?: string }) => {
   const feedback = useSentryFeedback()
   return (
-    <footer className="mt-auto flex items-center justify-between px-4 py-6 text-[14px]">
+    <footer
+      className={clx(
+        "mt-auto flex items-center justify-between px-4 py-6 text-[14px]",
+        props.className,
+      )}
+    >
       <span className="font-semibold print:hidden">
         Recipe Yak •{" "}
         <a
