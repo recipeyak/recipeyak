@@ -206,7 +206,7 @@ jobs:
         # change this to use https://github.com/marketplace/actions/squawk-action
         working-directory: "backend"
         run: ./s/squawk.py
-      - uses: sbdchd/squawk-action@bb9cb7734d9a87dabbdf8082514762d54dd1a7bc
+      - uses: sbdchd/squawk-action@ae25674f46089bbb5bd0228d554effc6d8b885e9
         with:
           pattern: "backend/recipeyak/migrations/*.sql"
           version: "latest"
