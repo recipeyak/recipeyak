@@ -65,6 +65,7 @@ function AddIngredientForm({
       <div className="mb-2 flex flex-col gap-2">
         <div className="flex flex-row gap-2">
           <TextInput
+            autoCapitalize="none"
             id="firstinput"
             onChange={(e) => {
               setQuantity(e.target.value)
@@ -75,6 +76,7 @@ function AddIngredientForm({
             className="!w-2/3"
           />
           <TextInput
+            autoCapitalize="none"
             onChange={(e) => {
               setName(e.target.value)
             }}
@@ -86,6 +88,7 @@ function AddIngredientForm({
         </div>
         <div>
           <TextInput
+            autoCapitalize="none"
             onChange={(e) => {
               setDescription(e.target.value)
             }}

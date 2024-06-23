@@ -151,6 +151,7 @@ export function Ingredient(props: {
       <div className="flex flex-col gap-2">
         <div className="flex flex-row gap-2">
           <TextInput
+            autoCapitalize="none"
             onChange={(e) => {
               setQuantity(e.target.value)
             }}
@@ -161,6 +162,7 @@ export function Ingredient(props: {
           />
 
           <TextInput
+            autoCapitalize="none"
             onChange={(e) => {
               setName(e.target.value)
             }}
@@ -171,6 +173,7 @@ export function Ingredient(props: {
         </div>
 
         <TextInput
+          autoCapitalize="none"
           onChange={(e) => {
             setDescription(e.target.value)
           }}
