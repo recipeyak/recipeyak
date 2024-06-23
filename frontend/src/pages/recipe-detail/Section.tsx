@@ -122,6 +122,7 @@ export function Section({
       className="flex w-full flex-col gap-2"
     >
       <TextInput
+        autoCapitalize="none"
         onChange={(e) => {
           setLocalTitle(e.target.value)
         }}

@@ -39,6 +39,7 @@ export function AddSectionForm({
     <form onSubmit={handleSubmit}>
       <div className="my-2">
         <TextInput
+          autoCapitalize="none"
           onChange={(e) => {
             setSection(e.target.value)
           }}
