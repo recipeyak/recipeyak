@@ -225,6 +225,10 @@
       'dry goods',
     ),
     tuple(
+      'dried oregano',
+      'spices',
+    ),
+    tuple(
       'dry mustard powder',
       'spices',
     ),
@@ -262,7 +266,7 @@
     ),
     tuple(
       'ground ginger',
-      'produce',
+      'spices',
     ),
     tuple(
       'hamburger buns',
@@ -315,6 +319,10 @@
     tuple(
       'medium-coarse yellow cornmeal',
       'dry goods',
+    ),
+    tuple(
+      'onion powder',
+      'spices',
     ),
     tuple(
       'oyster sauce',
