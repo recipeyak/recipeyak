@@ -89,6 +89,8 @@ def test_categorize_ingredient_test_cases(snapshot: SnapshotAssertion) -> None:
     finely chopped cornichons or small kosher dill pickles
     finely grated ginger
     fish sauce
+    barley rusks
+    slices bread
     boti masala
     cloves garlic
     garlic cloves

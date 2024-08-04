@@ -97,6 +97,10 @@
       'produce',
     ),
     tuple(
+      'barley rusks',
+      'bread',
+    ),
+    tuple(
       'beef broth',
       'canned & packaged',
     ),
@@ -335,6 +339,10 @@
     tuple(
       'sesame aioli',
       'condiments',
+    ),
+    tuple(
+      'slices bread',
+      'bread',
     ),
     tuple(
       'store bought or homemade za’atar',

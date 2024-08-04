@@ -251,6 +251,7 @@ _DEPARTMENT_MAPPING = {
         "rolls",
         "baguette",
         "tortillas",
+        "barley rusks",
         "sub roll",
         "english muffins",
         "bagel",
