@@ -92,6 +92,8 @@ def test_categorize_ingredient_test_cases(snapshot: SnapshotAssertion) -> None:
     boti masala
     cloves garlic
     garlic cloves
+    dried oregano
+    onion powder
     graham cracker crumbs
     fennel seed
     ground ginger
