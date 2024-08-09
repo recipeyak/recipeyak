@@ -1,4 +1,4 @@
-# Recipe Yak [![CircleCI](https://circleci.com/gh/recipeyak/recipeyak.svg?style=svg)](https://circleci.com/gh/recipeyak/recipeyak)
+# Recipe Yak
 
 > Application to automate the selection of meals and creation of shopping lists.
 
@@ -28,6 +28,7 @@ To have a centralized location where multiple people can organize a meal plan.
 | [Chicken Ping](http://web.archive.org/web/20090701031430/http://www.chickenping.com:80/)                      | [2009-06-22](http://web.archive.org/web/20090701031430/http://www.chickenping.com:80/)                                                                                     | ❌                                            |
 | [Eat Your Books](https://www.eatyourbooks.com/)                                                               | [2009-08-01](https://www.eatyourbooks.com/blog/2009/08/01/welcome-to-eat-your-books)                                                                                       | ❌                                            |
 | [MealBoard](https://www.mealboard.com)                                                                        | [2009-09-24](https://web.archive.org/web/20091014175504/http://www.mealboard.com/)                                                                                         | ❌                                            |
+| [Punchfork](https://www.punchfork.com)                                                                        | [2010-05-19](https://web.archive.org/web/20110710234720/http://blog.punchfork.com/2010/05/)                                                                                | ❌                                            |
 | [Open Eats](https://github.com/qgriffith-zz/OpenEats)                                                         | [2010-05-25](https://github.com/qgriffith-zz/OpenEats/commit/a823c31bd3d0e229a647a66c8cb19f5bf2a33462)                                                                     | ✅                                            |
 | [Pepperplate](https://www.pepperplate.com)                                                                    | [2010-06-08](https://www.whois.com/whois/pepperplate.com)                                                                                                                  | ❌                                            |
 | [Paprika](https://www.paprikaapp.com)                                                                         | [2010-08-16](https://www.whois.com/whois/paprikaapp.com)                                                                                                                   | ❌                                            |
@@ -214,4 +215,3 @@ Environment variables are used for configuration. Unless otherwise stated, a val
 
 [django-secret]: https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-SECRET_KEY
 [sentry-dsn]: https://docs.sentry.io/quickstart/#about-the-dsn
-[drknox]: https://github.com/James1345/django-rest-knox
