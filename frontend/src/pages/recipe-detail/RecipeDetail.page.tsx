@@ -342,7 +342,7 @@ function ArchiveMessage({ children }: { children: React.ReactNode }) {
 function RecipeBanner({ children }: { readonly children: React.ReactNode }) {
   return (
     <div
-      className="sticky top-[2px] z-10 -mx-3 flex items-center justify-center
+      className="sticky top-[2px] z-[900] -mx-3 flex items-center justify-center
       sm:mx-0"
     >
       <ArchiveMessage>{children}</ArchiveMessage>
@@ -806,7 +806,7 @@ function RecipeInfo(props: {
           {props.editingEnabled && (
             <>
               <div className="z-[35] -mx-3 rounded-none bg-[--color-modal-background] [grid-area:2/1] sm:mx-0 sm:rounded-md md:[grid-area:1/2]" />
-              <div className="z-[999] flex items-center justify-center [grid-area:2/1] md:[grid-area:1/2]">
+              <div className="z-[800] flex items-center justify-center [grid-area:2/1] md:[grid-area:1/2]">
                 <HeaderImgUploader>
                   <div>Select a primary image from note uploads.</div>
                 </HeaderImgUploader>
