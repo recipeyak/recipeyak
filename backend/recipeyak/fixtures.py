@@ -24,11 +24,11 @@ def create_team(*, user: User) -> Team:
     return team
 
 
-def create_recipe(*, team: Team, user: User) -> Recipe:
+def create_recipe(*, team: Team, user: User, source: str | None = None) -> Recipe:
     recipe = Recipe.objects.create(
         name="Recipe name",
         author="Recipe author",
-        source="www.exmple.com",
+        source=source or "www.exmple.com",
         time="1 hour",
         team=team,
     )

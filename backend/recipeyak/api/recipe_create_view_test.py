@@ -1,14 +1,18 @@
 from __future__ import annotations
 
+import unittest
 from datetime import UTC, datetime
 from typing import Any
+from unittest.mock import Mock, patch
 
 import pytest
 from django.test.client import Client
 from django.utils.dateparse import parse_datetime
 
 from recipeyak import ordering
+from recipeyak.fixtures import create_recipe, create_team, create_user
 from recipeyak.models import Ingredient, Note, Recipe, Step, Team, TimelineEvent, User
+from recipeyak.scraper.scrape_recipe import ScrapeResult
 
 pytestmark = pytest.mark.django_db
 
@@ -80,9 +84,7 @@ def test_recipe_creation_for_a_team(client: Client, team: Team, user: User) -> N
         "team": team.id,
     }
 
-    url = "/api/v1/recipes/"
-
-    res = client.post(url, data, content_type="application/json")
+    res = client.post("/api/v1/recipes/", data, content_type="application/json")
     assert res.status_code == 200
 
     assert (
@@ -200,9 +202,9 @@ def test_updating_step_of_recipe(
         "position": ordering.position_after(step.position),
     }
 
-    url = f"/api/v1/steps/{step.id}/"
-
-    res = client.patch(url, step_data, content_type="application/json")
+    res = client.patch(
+        f"/api/v1/steps/{step.id}/", step_data, content_type="application/json"
+    )
     assert res.status_code == 200
 
     res = client.get(f"/api/v1/recipes/{recipe.id}/")
@@ -458,3 +460,110 @@ def test_updating_edit_recipe_via_api_empty_tags(
         f"/api/v1/recipes/{recipe.id}/", {"tags": []}, content_type="application/json"
     )
     assert res.status_code == 200
+
+
+def test_create_from_url_does_not_recreate() -> None:
+    client = Client()
+    user = create_user()
+    team = create_team(user=user)
+    url = "https://cooking.nytimes.com/recipes/1021424-amus-chicken-korma"
+    recipe = create_recipe(team=team, user=user, source=url)
+    client.force_login(user)
+
+    with patch(
+        "recipeyak.api.recipe_create_view.scrape_recipe",
+        return_value=ScrapeResult(
+            title=None,
+            total_time=None,
+            yields=None,
+            image=None,
+            upload_id=None,
+            instructions=[],
+            ingredient_groups=[],
+            author=None,
+            canonical_url=url,
+        ),
+    ) as mock_scrape:
+        res = client.post(
+            "/api/v1/recipes/",
+            {
+                "from_url": url,
+                "team": team.id,
+            },
+            content_type="application/json",
+        )
+
+        mock_scrape.assert_called_once()
+        assert res.status_code == 200
+        assert res.json()["id"] == recipe.id
+
+
+def test_create_from_url_canonical_already_exists() -> None:
+    client = Client()
+    user = create_user()
+    team = create_team(user=user)
+    url = "https://cooking.nytimes.com/recipes/1021424-amus-chicken-korma"
+    recipe = create_recipe(team=team, user=user, source=url)
+    client.force_login(user)
+
+    with patch(
+        "recipeyak.api.recipe_create_view.scrape_recipe",
+        return_value=ScrapeResult(
+            title=None,
+            total_time=None,
+            yields=None,
+            image=None,
+            upload_id=None,
+            instructions=[],
+            ingredient_groups=[],
+            author=None,
+            canonical_url=url,
+        ),
+    ) as mock_scrape:
+        res = client.post(
+            "/api/v1/recipes/",
+            {
+                "from_url": url + "?foo=1",
+                "team": team.id,
+            },
+            content_type="application/json",
+        )
+
+        mock_scrape.assert_called_once()
+        assert res.status_code == 200
+        assert res.json()["id"] == recipe.id
+
+
+def test_create_from_url_creates_dupe() -> None:
+    url = "https://cooking.nytimes.com/recipes/1021424-amus-chicken-korma"
+    client = Client()
+    user = create_user()
+    team = create_team(user=user)
+    recipe = create_recipe(team=team, user=user)
+    client.force_login(user)
+    with patch(
+        "recipeyak.api.recipe_create_view.scrape_recipe",
+        return_value=ScrapeResult(
+            title="Amu's Chicken Korma",
+            total_time=None,
+            yields=None,
+            image=None,
+            upload_id=None,
+            instructions=[],
+            ingredient_groups=[],
+            author=None,
+            canonical_url=url,
+        ),
+    ) as mock_scrape:
+        res = client.post(
+            "/api/v1/recipes/",
+            {
+                "from_url": url + "?foo=1",
+                "team": team.id,
+            },
+            content_type="application/json",
+        )
+
+        mock_scrape.assert_called_once()
+        assert res.status_code == 200
+        assert res.json()["id"] != recipe.id
