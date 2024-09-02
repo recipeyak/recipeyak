@@ -121,6 +121,13 @@ def recipe_create_view(
 
     with transaction.atomic():
         if scrape_result is not None:
+            # bail out if we've already scraped that recipe
+            if scrape_result.canonical_url is not None and (
+                existing_recipe := Recipe.objects.filter(
+                    team=team, source=scrape_result.canonical_url
+                ).first()
+            ):
+                return serialize_recipe(existing_recipe, user=request.user)
             recipe = _create_recipe_from_scrape(scrape=scrape_result, team=team)
         else:
             recipe = Recipe.objects.create(team=team, name=params.name)
