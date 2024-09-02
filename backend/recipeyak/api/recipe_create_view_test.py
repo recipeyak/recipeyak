@@ -4,9 +4,13 @@ from datetime import UTC, datetime
 from typing import Any
 from unittest.mock import patch
 
+import advocate
 import pytest
+import requests
+from django.core.exceptions import ValidationError
 from django.test.client import Client
 from django.utils.dateparse import parse_datetime
+from recipe_scrapers._exceptions import RecipeScrapersExceptions
 
 from recipeyak import ordering
 from recipeyak.fixtures import create_recipe, create_team, create_user
@@ -566,3 +570,61 @@ def test_create_from_url_creates_dupe() -> None:
         mock_scrape.assert_called_once()
         assert res.status_code == 200
         assert res.json()["id"] != recipe.id
+
+
+def test_create_from_url_connection_error() -> None:
+    url = "https://cooking.nytimes.com/recipes/1021424-amus-chicken-korma"
+    client = Client()
+    user = create_user()
+    team = create_team(user=user)
+    client.force_login(user)
+    with patch(
+        "recipeyak.api.recipe_create_view.scrape_recipe",
+    ) as mock_scrape:
+        mock_scrape.side_effect = requests.exceptions.ConnectionError()
+        res = client.post(
+            "/api/v1/recipes/",
+            {
+                "from_url": url,
+                "team": team.id,
+            },
+            content_type="application/json",
+        )
+
+        mock_scrape.assert_called_once()
+        assert res.status_code == 400
+        assert res.json()["error"]["code"] == "connection_error"
+        assert res.json()["error"]["message"] == "Problem connecting to url."
+
+
+@pytest.mark.parametrize(
+    "exception",
+    [
+        advocate.exceptions.UnacceptableAddressException(),
+        ValidationError("invalid url"),
+        RecipeScrapersExceptions("invalid url"),
+    ],
+)
+def test_create_from_url_invalid_url_error(exception: Exception) -> None:
+    url = "https://cooking.nytimes.com/recipes/1021424-amus-chicken-korma"
+    client = Client()
+    user = create_user()
+    team = create_team(user=user)
+    client.force_login(user)
+    with patch(
+        "recipeyak.api.recipe_create_view.scrape_recipe",
+    ) as mock_scrape:
+        mock_scrape.side_effect = exception
+        res = client.post(
+            "/api/v1/recipes/",
+            {
+                "from_url": url,
+                "team": team.id,
+            },
+            content_type="application/json",
+        )
+
+        mock_scrape.assert_called_once()
+        assert res.status_code == 400
+        assert res.json()["error"]["code"] == "invalid_url"
+        assert res.json()["error"]["message"] == "Invalid url."
