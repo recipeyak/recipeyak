@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Annotated
 
 import advocate
+import requests
 import structlog
 from django.core.exceptions import ValidationError
 from django.db import transaction
@@ -118,6 +119,11 @@ def recipe_create_view(
         ) as e:
             log.info("invalid url")
             raise APIError(code="invalid_url", message="Invalid url.") from e
+        except requests.exceptions.ConnectionError as e:
+            log.info("probably connecting to url")
+            raise APIError(
+                code="connection_error", message="Problem connecting to url."
+            ) from e
 
     with transaction.atomic():
         if scrape_result is not None:
