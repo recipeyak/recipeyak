@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-import unittest
 from datetime import UTC, datetime
 from typing import Any
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 import pytest
 from django.test.client import Client
