@@ -1,60 +1,61 @@
-[tool.poetry]
+[project]
 name = "backend"
 version = "0.1.0"
 description = ""
 authors = ["Steve Dignam <steve@dignam.xyz>", "Christopher Dignam <chris@dignam.xyz>"]
 
-[tool.poetry.dependencies]
-python = "^3.10"
-Django = "^3.2.9"
-dj-database-url = "0.4.2"
-gunicorn = "20.1.0"
-django-user-sessions = "^1.6"
-python-dotenv = "0.21.0"
-djangorestframework-types = "^0.2.0"
-orjson = "3.8.1"
-psycopg2-binary = "^2.9.3"
-boto3 = "^1.24.44"
-yarl = "^1.8.1"
-advocate = "^1.0.0"
-Pillow = "^9.3.0"
-httpx = "^0.23.1"
-asyncpg = "^0.27.0"
-asyncpg-stubs = "^0.27.0"
-typer = "^0.7.0"
-structlog = "^22.3.0"
-types-Pillow = "^9.3.0"
-pillow-heif = "^0.9.0"
-tldextract = "^3.4.0"
-sentry-sdk = "^1.35.0"
-ably = "^2.0.1"
-recipe-scrapers = "^14.52.0"
-algoliasearch = "^3.0.0"
-async-timeout = "^4.0.3"
-aiohttp = "^3.9.1"
-ruamel-yaml = "^0.18.5"
-pydantic = {extras = ["email"], version = "^2.5.3"}
-pydantic-settings = "^2.1.0"
-jsonref = "^1.1.0"
-pywatchman = "^2.0.0"
+requires-python = ">=3.10"
+dependencies = [
+    "django~=3.2.9",
+    "dj-database-url==0.4.2",
+    "gunicorn==20.1.0",
+    "django-user-sessions~=1.6",
+    "python-dotenv==0.21.0",
+    "djangorestframework-types~=0.2.0",
+    "orjson==3.8.1",
+    "psycopg2-binary~=2.9.3",
+    "boto3~=1.24.44",
+    "yarl~=1.8.1",
+    "advocate~=1.0.0",
+    "pillow~=9.3.0",
+    "httpx~=0.23.1",
+    "asyncpg~=0.27.0",
+    "asyncpg-stubs~=0.27.0",
+    "typer~=0.7.0",
+    "structlog~=22.3.0",
+    "types-pillow~=9.3.0",
+    "pillow-heif~=0.9.0",
+    "tldextract~=3.4.0",
+    "sentry-sdk~=1.35.0",
+    "ably~=2.0.1",
+    "recipe-scrapers~=14.52.0",
+    "algoliasearch~=3.0.0",
+    "async-timeout~=4.0.3",
+    "aiohttp~=3.9.1",
+    "ruamel-yaml~=0.18.5",
+    "pydantic-settings~=2.1.0",
+    "jsonref~=1.1.0",
+    "pywatchman~=2.0.0",
+    "pydantic[email]~=2.5.3",
+]
 
-[tool.poetry.dev-dependencies]
-pytest = "7.2.0"
-pytest-django = "4.5.2"
-ipdb = "^0.13.9"
-django-types = "^0.19.1"
-types-PyYAML = "^6.0.0"
-types-requests = "^2.25.11"
-syrupy = "^3.0.5"
-boto3-stubs = {extras = ["s3"], version = "^1.24.44"}
-types-urllib3 = "^1.26.23"
-types-dj-database-url = "^1.0.0"
-mypy = "^1.7.0"
-
-[tool.poetry.group.dev.dependencies]
-bpython = "^0.24"
-ruff = "^0.3.5"
-pytest-xdist = "^3.5.0"
+[tool.uv]
+dev-dependencies = [
+    "pytest==7.2.0",
+    "pytest-django==4.5.2",
+    "ipdb~=0.13.9",
+    "django-types~=0.19.1",
+    "types-pyyaml~=6.0.0",
+    "types-requests~=2.25.11",
+    "syrupy~=3.0.5",
+    "types-urllib3~=1.26.23",
+    "types-dj-database-url~=1.0.0",
+    "mypy~=1.7.0",
+    "bpython~=0.24",
+    "ruff~=0.3.5",
+    "pytest-xdist~=3.5.0",
+    "boto3-stubs[s3]~=1.24.44",
+]
 
 [tool.ruff]
 src = ["recipeyak"]
@@ -183,3 +184,7 @@ init_forbid_extra = true
 init_typed = true
 warn_required_dynamic_aliases = true
 warn_untyped_fields = true
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

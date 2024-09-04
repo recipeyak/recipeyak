@@ -77,7 +77,7 @@ To have a centralized location where multiple people can organize a meal plan.
 ## Dev
 
 **Note:** postgres is required. Either run it via `docker-compose -f **docker-compose-dev.yml -d` or via the homebrew cask mac app.
-NPM and [Poetry](https://github.com/sdispater/poetry) (0.12) are required for frontend and backend installation.
+NPM and [uv](https://docs.astral.sh/uv/) are required for frontend and backend installation.
 
 ```shell
 # create a .env with `DEBUG=1`. Note: you may need to update database URIs and related vars.
@@ -93,16 +93,15 @@ cd -
 
 cd backend
 brew install postgres # necessary for binary pyscopg2
-poetry config virtualenvs.in-project true
-poetry install
+uv sync
 # start postgres (DBngin.app is nice on Mac)
 s/dev
 s/test
 s/lint
 
-# use `npm` and `poetry` to add and upgrade dependencies
+# use `npm` and `uv` to add and upgrade dependencies
 npm add $FOO
-poetry add $BAR
+uv add $BAR
 ```
 
 ### view postgres queries
