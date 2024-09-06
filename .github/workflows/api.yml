@@ -40,18 +40,18 @@ jobs:
           --health-retries 5
     steps:
       - uses: actions/checkout@v3
-      - name: Install poetry
-        run: |
-          pipx install poetry==1.7.1
-          poetry config virtualenvs.in-project true
       - uses: actions/setup-python@v4
         with:
           python-version-file: "./backend/.python-version"
-          cache: poetry
-          cache-dependency-path: "./backend/poetry.lock"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v1
+        with:
+          version: "0.4.5"
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
       - name: Install dependencies
         working-directory: "./backend"
-        run: poetry install
+        run: uv sync --locked
       - name: Run tests
         working-directory: "backend"
         run: ./s/test --junitxml=~/test-results/backend_tests.xml
@@ -68,18 +68,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install poetry
-        run: |
-          pipx install poetry==1.7.1
-          poetry config virtualenvs.in-project true
       - uses: actions/setup-python@v4
         with:
           python-version-file: "./backend/.python-version"
-          cache: poetry
-          cache-dependency-path: "./backend/poetry.lock"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v1
+        with:
+          version: "0.4.5"
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
       - name: Install dependencies
         working-directory: "./backend"
-        run: poetry install
+        run: uv sync --locked
       - name: Check formatting with Ruff
         working-directory: "backend"
         run: ./s/fmt
@@ -91,18 +91,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install poetry
-        run: |
-          pipx install poetry==1.7.1
-          poetry config virtualenvs.in-project true
       - uses: actions/setup-python@v4
         with:
           python-version-file: "./backend/.python-version"
-          cache: poetry
-          cache-dependency-path: "./backend/poetry.lock"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v1
+        with:
+          version: "0.4.5"
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
       - name: Install dependencies
         working-directory: "./backend"
-        run: poetry install
+        run: uv sync --locked
       - name: Lint with Ruff
         working-directory: "backend"
         run: ./s/ruff
@@ -114,18 +114,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install poetry
-        run: |
-          pipx install poetry==1.7.1
-          poetry config virtualenvs.in-project true
       - uses: actions/setup-python@v4
         with:
           python-version-file: "./backend/.python-version"
-          cache: poetry
-          cache-dependency-path: "./backend/poetry.lock"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v1
+        with:
+          version: "0.4.5"
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
       - name: Install dependencies
         working-directory: "./backend"
-        run: poetry install
+        run: uv sync --locked
       - name: Typecheck with mypy
         working-directory: "backend"
         run: ./s/typecheck
@@ -151,18 +151,18 @@ jobs:
           --health-retries 5
     steps:
       - uses: actions/checkout@v3
-      - name: Install poetry
-        run: |
-          pipx install poetry==1.7.1
-          poetry config virtualenvs.in-project true
       - uses: actions/setup-python@v4
         with:
           python-version-file: "./backend/.python-version"
-          cache: poetry
-          cache-dependency-path: "./backend/poetry.lock"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v1
+        with:
+          version: "0.4.5"
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
       - name: Install dependencies
         working-directory: "./backend"
-        run: poetry install
+        run: uv sync --locked
       - name: Check for missing migrations
         working-directory: "backend"
         run: ./s/check_migrations
@@ -190,18 +190,19 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: "0"
-      - name: Install poetry
-        run: |
-          pipx install poetry==1.7.1
-          poetry config virtualenvs.in-project true
+
       - uses: actions/setup-python@v4
         with:
           python-version-file: "./backend/.python-version"
-          cache: poetry
-          cache-dependency-path: "./backend/poetry.lock"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v1
+        with:
+          version: "0.4.5"
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
       - name: Install dependencies
         working-directory: "./backend"
-        run: poetry install
+        run: uv sync --locked
       - name: Run squawk
         # change this to use https://github.com/marketplace/actions/squawk-action
         working-directory: "backend"
@@ -217,15 +218,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install poetry
-        run: |
-          pipx install poetry==1.7.1
-          poetry config virtualenvs.in-project true
       - uses: actions/setup-python@v4
         with:
           python-version-file: "./backend/.python-version"
-          cache: poetry
-          cache-dependency-path: "./backend/poetry.lock"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v1
+        with:
+          version: "0.4.5"
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
       - uses: pnpm/action-setup@v2
         with:
           version: 8
@@ -236,7 +237,7 @@ jobs:
           cache: "pnpm"
       - name: Install python dependencies
         working-directory: "./backend"
-        run: poetry install
+        run: uv sync --locked
       - name: Install js dependencies
         working-directory: "backend"
         run: pnpm install
@@ -271,15 +272,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install poetry
-        run: |
-          pipx install poetry==1.7.1
-          poetry config virtualenvs.in-project true
       - uses: actions/setup-python@v4
         with:
           python-version-file: "./backend/.python-version"
-          cache: poetry
-          cache-dependency-path: "./backend/poetry.lock"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v1
+        with:
+          version: "0.4.5"
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
       - uses: pnpm/action-setup@v2
         with:
           version: 8
@@ -290,7 +291,7 @@ jobs:
           cache: "pnpm"
       - name: Install python dependencies
         working-directory: "backend"
-        run: poetry install
+        run: uv sync --locked
       - name: Install js dependencies
         working-directory: "backend"
         run: pnpm install
