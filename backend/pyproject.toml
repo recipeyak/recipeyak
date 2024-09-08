@@ -59,6 +59,7 @@ dev-dependencies = [
     "pytest-xdist~=3.5.0",
     "boto3-stubs[s3]~=1.24.44",
 ]
+package = false
 
 [tool.ruff]
 src = ["recipeyak"]
@@ -187,6 +188,3 @@ init_forbid_extra = true
 init_typed = true
 warn_required_dynamic_aliases = true
 warn_untyped_fields = true
-
-[tool.setuptools]
-packages = ["recipeyak"]
