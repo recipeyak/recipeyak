@@ -114,6 +114,8 @@ def test_categorize_ingredient_test_cases(snapshot: SnapshotAssertion) -> None:
     cherry or grape tomatoes
     matcha powder
     sesame aioli
+    raw papaya paste
+    (3/4 inch thick) slices of a 10 inch round peasant loaf
     chipotle aioli (store bought)
     low sodium chicken stock
     low-sodium chicken broth
