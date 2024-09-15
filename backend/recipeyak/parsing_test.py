@@ -312,6 +312,15 @@ def test_parse_quantity_name(ingredient: str, expected: tuple[str, str]) -> None
             "2 pounds raw, cooked, frozen, skinless, shredded chicken",
             ("2 pounds raw, cooked, frozen, skinless, shredded chicken", ""),
         ),
+        (
+            "2 Tablespoons/30 grams argan oil, or walnut or peanut oil",
+            ("2 Tablespoons/30 grams argan oil, or walnut or peanut oil", ""),
+        ),
+        ("1/4 cup salted, roasted peanuts", ("1/4 cup salted, roasted peanuts", "")),
+        (
+            "4 soft, sturdy hamburger buns, such as King's Hawaiian rolls",
+            ("4 soft, sturdy hamburger buns", "such as King's Hawaiian rolls"),
+        ),
     ],
 )
 def test_parse_name_description(ingredient: str, expected: tuple[str, str]) -> None:

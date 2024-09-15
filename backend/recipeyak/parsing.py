@@ -444,7 +444,20 @@ def _parse_quantity_name(text: str) -> tuple[str, str]:
 
 
 _NON_INGREDIENT_NAMES = frozenset(
-    {"bone-in", "skin-on", "fresh", "cooked", "raw", "frozen", "skinless", "boneless"}
+    {
+        "bone-in",
+        "skin-on",
+        "fresh",
+        "cooked",
+        "raw",
+        "frozen",
+        "skinless",
+        "boneless",
+        "salted",
+        "roasted",
+        "soft",
+        "sturdy",
+    }
 )
 
 
@@ -455,7 +468,9 @@ def _parse_name_description(text: str) -> tuple[str, str]:
     prefix = ""
     temp = []
     is_all_suffix_now = False
-    for word in text.split():
+    words = text.split()
+    for i, word in enumerate(words):
+        next_word = words[i + 1] if i + 1 < len(words) else None
         if word.endswith(",") and not is_all_suffix_now:
             word_stripped = word.removesuffix(",")
             if word_stripped in _NON_INGREDIENT_NAMES:
@@ -463,6 +478,11 @@ def _parse_name_description(text: str) -> tuple[str, str]:
                 continue
             if _is_unit(word_stripped):
                 temp.append(word_stripped)
+                continue
+            # Ensure that when there are options listed we include all of them in the prefix!
+            # e.g., 2 Tablespoons/30 grams argan oil, or walnut or peanut oil
+            if next_word == "or":
+                temp.append(word)
                 continue
             temp.append(word_stripped)
             prefix = " ".join(temp)
