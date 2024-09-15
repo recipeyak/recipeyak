@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from typing import cast
 
 import extruct
+from markdownify import markdownify
 from recipe_scrapers import AbstractScraper
 from recipe_scrapers._exceptions import SchemaOrgException
 
@@ -118,16 +119,17 @@ def extract_recipe(parsed: AbstractScraper) -> _ExtractedRecipe:
     easier
     """
     total_time = _extract_total_time(parsed)
-    tips = _extract_tips(parsed)
+    tips_html = _extract_tips(parsed)
     yields = _extract_yields(parsed)
     author = _extract_author(parsed)
     ingredient_groups = _extract_ingredient_groups(parsed)
     canonical_url = parsed.canonical_url()
     instructions = parsed.instructions_list()
-    if tips:
-        # NOTE: we don't have a tips contstruct in the data model so we stuff
+    if tips_html:
+        # NOTE: we don't have a tips construct in the data model so we stuff
         # them into a final step and add a markdown header
-        tips_blob = "\n\n".join(tips)
+        tips_markdown = [markdownify(t) for t in tips_html]
+        tips_blob = "\n\n".join(tips_markdown)
         instructions.append("**Tips**\n" + tips_blob)
     title = parsed.title()
 

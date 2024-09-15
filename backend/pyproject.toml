@@ -40,6 +40,7 @@ dependencies = [
     "jsonref~=1.1.0",
     "pywatchman~=2.0.0",
     "pydantic[email]~=2.5.3",
+    "markdownify>=0.13.1",
 ]
 
 [tool.uv]
