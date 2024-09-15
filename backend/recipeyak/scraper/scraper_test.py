@@ -1,6 +1,4 @@
-from io import StringIO
 from pathlib import Path
-from pprint import pprint
 
 from syrupy.assertion import SnapshotAssertion
 
