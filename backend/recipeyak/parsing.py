@@ -6,6 +6,7 @@ import itertools
 from dataclasses import dataclass
 from decimal import Decimal
 from enum import Enum
+from functools import cache
 
 from recipeyak.string import starts_with
 
@@ -357,12 +358,22 @@ _UNIT_TO_ALIASES: dict[Unit, list[str]] = {
     ],
 }
 
-# NOTE(sbdchd): we add some whitespace so when we search the ingredient for the quantity
-_units_ws = tuple(
-    x + " " for x in itertools.chain.from_iterable(_UNIT_TO_ALIASES.values())
-)
 
-_larger_to_smaller_units_ws = sorted(_units_ws, key=lambda x: -len(x))
+@cache
+def unit_prefixes() -> tuple[str, ...]:
+    out = []
+    for x in itertools.chain.from_iterable(_UNIT_TO_ALIASES.values()):
+        # NOTE(sbdchd): we add some whitespace so when we search the ingredient for the quantity
+        out.append(x + " ")
+        # Handle cases like:
+        # 1 cup plus 2 Tablespoons/148 grams all-purpose flour
+        out.append(x + "/")
+    return tuple(out)
+
+
+@cache
+def larger_to_smaller_unit_prefixes() -> list[str]:
+    return sorted(unit_prefixes(), key=lambda x: -len(x))
 
 
 def _parse_quantity_name(text: str) -> tuple[str, str]:
@@ -407,16 +418,21 @@ def _parse_quantity_name(text: str) -> tuple[str, str]:
             idx += 1
             continue
         else:
-            if starts_with(value[idx:], _units_ws) and in_quantity:
+            if starts_with(value[idx:], unit_prefixes()) and in_quantity:
                 in_quantity = False
                 eat_count = 0
-                for unit in _larger_to_smaller_units_ws:
+                for unit in larger_to_smaller_unit_prefixes():
                     if starts_with(value[idx:], unit):
                         eat_count = len(unit)
+                        # Handle cases like:
+                        # 1 cup plus 2 Tablespoons/148 grams all-purpose flour
+                        if unit.endswith("/"):
+                            eat_count -= 1
                         break
                 for _ in range(eat_count):
                     quantity += value[idx]
                     idx += 1
+
                 # parse the parens that can occur after quantities, like:
                 #   12 ounces (about 4 to 6 thighs)
                 if value[idx] == "(":
@@ -428,6 +444,13 @@ def _parse_quantity_name(text: str) -> tuple[str, str]:
                     # parse: 1/2 cup (8 Tablespoons)/115 grams butter
                     if value[idx] == "/":
                         in_quantity = True
+                # Handle cases like:
+                #
+                # 1 cup plus 2 Tablespoons/148 grams all-purpose flour
+                #
+                # where we've only parsed "1 cup plus 2 Tablespoons/"
+                elif value[idx] == "/":
+                    in_quantity = True
                 for conjunction in ("plus", "+"):
                     if starts_with(value[idx:], conjunction):
                         quantity += conjunction

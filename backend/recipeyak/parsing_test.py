@@ -442,6 +442,15 @@ def test_parse_name_description(ingredient: str, expected: tuple[str, str]) -> N
             ),
             id="lemon-juice",
         ),
+        pytest.param(
+            "1 cup plus 2 Tablespoons/148 grams all-purpose flour, plus more for dusting",
+            _IngredientResult(
+                quantity="1 cup plus 2 Tablespoons/148 grams",
+                name="all-purpose flour",
+                description="plus more for dusting",
+            ),
+            id="flour",
+        ),
     ],
 )
 def test_parse_ingredient(ingredient: str, expected: _IngredientResult) -> None:
