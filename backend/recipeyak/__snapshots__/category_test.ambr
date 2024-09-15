@@ -17,6 +17,10 @@
       'canned & packaged',
     ),
     tuple(
+      '(3/4 inch thick) slices of a 10 inch round peasant loaf',
+      'bread',
+    ),
+    tuple(
       '(6-inch) corn tortillas',
       'bread',
     ),
@@ -330,6 +334,10 @@
     ),
     tuple(
       'oyster sauce',
+      'canned & packaged',
+    ),
+    tuple(
+      'raw papaya paste',
       'canned & packaged',
     ),
     tuple(
