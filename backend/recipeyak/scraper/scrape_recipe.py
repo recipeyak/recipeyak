@@ -22,7 +22,7 @@ from recipeyak import config
 from recipeyak.models import Scrape
 from recipeyak.models.upload import Upload
 from recipeyak.models.user import User
-from recipeyak.scraper.extract import extract_recipe
+from recipeyak.scraper.extract import _ExtractedRecipe, extract_recipe
 from recipeyak.scraper.fetch import fetch_bytes, fetch_content_length
 from recipeyak.storage import s3
 
@@ -120,6 +120,14 @@ def _find_and_save_largest_image(
     )
 
 
+def _parse_recipe(*, html: bytes, url: str) -> _ExtractedRecipe:
+    """
+    No IO parsing of the html, in its own function to make testing easier.
+    """
+    parsed = parse_html(html=html, org_url=url)  # type: ignore[arg-type]
+    return extract_recipe(parsed)
+
+
 def scrape_recipe(*, url: str, user: User) -> ScrapeResult:
     """
     fetch a recipe and avoid:
@@ -134,9 +142,7 @@ def scrape_recipe(*, url: str, user: User) -> ScrapeResult:
     _validate_url(url)
     html, _ = fetch_bytes(url=url)
 
-    parsed = parse_html(html=html, org_url=url)  # type: ignore[arg-type]
-
-    recipe = extract_recipe(parsed)
+    recipe = _parse_recipe(html=html, url=url)
 
     image = _find_and_save_largest_image(image_urls=recipe.image_urls, user=user)
 

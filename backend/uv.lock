@@ -259,6 +259,7 @@ dependencies = [
     { name = "gunicorn" },
     { name = "httpx" },
     { name = "jsonref" },
+    { name = "markdownify" },
     { name = "orjson" },
     { name = "pillow" },
     { name = "pillow-heif" },
@@ -312,6 +313,7 @@ requires-dist = [
     { name = "gunicorn", specifier = "==20.1.0" },
     { name = "httpx", specifier = "~=0.23.1" },
     { name = "jsonref", specifier = "~=1.1.0" },
+    { name = "markdownify", specifier = ">=0.13.1" },
     { name = "orjson", specifier = "==3.8.1" },
     { name = "pillow", specifier = "~=9.3.0" },
     { name = "pillow-heif", specifier = "~=0.9.0" },
@@ -1217,6 +1219,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ef/b7/407da72fcd7b92fc4f41f3b8e94a733b2deae061d6d4ccf26d2c86dc1d42/lxml_html_clean-0.2.2.tar.gz", hash = "sha256:cc34178e34673025c49c3d7f4bd48754e9e4b23875df2308f43c21733d8437fb", size = 19619 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/0f/20/3581a4c3bac717ed6d7e832cc40623b18c9d4ba53fc1e130d7d1a083c9e2/lxml_html_clean-0.2.2-py3-none-any.whl", hash = "sha256:177ebe822b39d1b68df7c0c34ba005cb087b23d3791dae87efb3a2bb162ef398", size = 13136 },
+]
+
+[[package]]
+name = "markdownify"
+version = "0.13.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "beautifulsoup4" },
+    { name = "six" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/19/5a/bd1b685ee9efbfb0b22774a30188dfb4048c64e8a6c80a65a7f207af4ea1/markdownify-0.13.1.tar.gz", hash = "sha256:ab257f9e6bd4075118828a28c9d02f8a4bfeb7421f558834aa79b2dfeb32a098", size = 13609 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6c/e9/6e2757a670b8c48bc48eff1c20cb9d71f1476e844038bdbdb76f17e6a12b/markdownify-0.13.1-py3-none-any.whl", hash = "sha256:1d181d43d20902bcc69d7be85b5316ed174d0dda72ff56e14ae4c95a4a407d22", size = 10800 },
 ]
 
 [[package]]
