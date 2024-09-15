@@ -318,8 +318,8 @@ def test_parse_quantity_name(ingredient: str, expected: tuple[str, str]) -> None
         ),
         ("1/4 cup salted, roasted peanuts", ("1/4 cup salted, roasted peanuts", "")),
         (
-            "4 soft, sturdy hamburger buns, such as King’s Hawaiian rolls",
-            ("4 soft, sturdy hamburger buns", "such as King’s Hawaiian rolls"),
+            "4 soft, sturdy hamburger buns, such as King's Hawaiian rolls",
+            ("4 soft, sturdy hamburger buns", "such as King's Hawaiian rolls"),
         ),
     ],
 )
