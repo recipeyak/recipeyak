@@ -45,7 +45,8 @@ export const Gallery = (props: {
 
   const starColor = props.isPrimary ? "#ffbf00" : undefined
   return (
-    <div className="fixed left-0 top-0 z-30 h-full w-full !opacity-100">
+    // This needs to be above the RecipeBanner's z-index
+    <div className="fixed left-0 top-0 z-[950] h-full w-full !opacity-100">
       <div className="left-0 top-0 h-full w-full bg-[#000] opacity-[0.8]" />
       <div className="absolute left-0 top-0 h-full w-full">
         <div
