@@ -451,6 +451,15 @@ def test_parse_name_description(ingredient: str, expected: tuple[str, str]) -> N
             ),
             id="flour",
         ),
+        pytest.param(
+            "1 large, ripe tomato, halved horizontally",
+            _IngredientResult(
+                quantity="1",
+                name="large, ripe tomato",
+                description="halved horizontally",
+            ),
+            id="tomato",
+        ),
     ],
 )
 def test_parse_ingredient(ingredient: str, expected: _IngredientResult) -> None:
