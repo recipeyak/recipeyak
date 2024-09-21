@@ -468,6 +468,9 @@ def _parse_quantity_name(text: str) -> tuple[str, str]:
 
 _NON_INGREDIENT_NAMES = frozenset(
     {
+        "large",
+        "medium",
+        "small",
         "bone-in",
         "skin-on",
         "fresh",
