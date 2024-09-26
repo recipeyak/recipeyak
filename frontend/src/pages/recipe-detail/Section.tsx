@@ -160,7 +160,7 @@ export function Section({
     <li
       ref={editingEnabled ? ref : undefined}
       className={clx(
-        "mt-1 flex cursor-auto select-text items-start justify-between text-sm font-bold",
+        "mt-2 flex cursor-auto select-text items-start justify-between text-sm font-bold",
         isDragging && "opacity-0",
       )}
     >
