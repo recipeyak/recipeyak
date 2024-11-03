@@ -54,6 +54,8 @@ def test_categorize_ingredient_test_cases(snapshot: SnapshotAssertion) -> None:
     all-butter puff pastry
     almond butter
     almond paste
+    pickled jalapeno
+    pepper jack cheese
     apple cider vinegar
     baby bok choy
     beef broth
