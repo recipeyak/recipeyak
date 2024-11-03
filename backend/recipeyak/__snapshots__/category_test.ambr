@@ -337,6 +337,14 @@
       'canned & packaged',
     ),
     tuple(
+      'pepper jack cheese',
+      'cheese',
+    ),
+    tuple(
+      'pickled jalapeno',
+      'condiments',
+    ),
+    tuple(
       'raw papaya paste',
       'canned & packaged',
     ),
