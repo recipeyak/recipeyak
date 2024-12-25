@@ -68,7 +68,7 @@ wait_for()
         fi
         sleep 1
     done
-    return $result
+    return "$result"
 }
 
 wait_for_wrapper()
