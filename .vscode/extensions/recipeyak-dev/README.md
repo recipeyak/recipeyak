@@ -9,14 +9,27 @@
 
 ## install
 
+1. install deps and build
+
 ```sh
 cd .vscode/extensions/recipeyak-dev
 pnpm install
 s/build
-# either install via:
-code --install-extension *.vsix
-# or navigate to `@recommended` extensions in VSCode and install recipeyak-dev
 ```
+
+2. enable extension in vscode
+
+In the command palette run:
+
+```
+Extensions: Show Recommended Extensions
+```
+
+You should then see the `recipeyak-dev` extension in the results.
+
+Press the `Install Workspace Extension` button.
+
+Done!
 
 ## dev
 
@@ -35,3 +48,7 @@ code vscode_extension
 3. run `View: Show Run and Debug` from the command palette
 
 4. run the extension using the play button
+
+## related
+
+<https://code.visualstudio.com/updates/v1_89#_local-workspace-extensions>
