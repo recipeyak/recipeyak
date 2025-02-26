@@ -4,8 +4,9 @@ IO-free recipe-scraping
 
 from __future__ import annotations
 
-import json
 import base64
+import binascii
+import json
 from dataclasses import dataclass
 from typing import cast
 
