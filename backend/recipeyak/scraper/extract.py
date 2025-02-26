@@ -4,6 +4,8 @@ IO-free recipe-scraping
 
 from __future__ import annotations
 
+import base64
+import binascii
 import json
 from dataclasses import dataclass
 from typing import cast
@@ -50,7 +52,10 @@ def _extract_tips(parsed: AbstractScraper) -> list[str]:
     if nextjs_data_tag is None:
         return []
     # TODO: make more robust, this is really only intended for nyt cooking
-    json_next_data = json.loads(nextjs_data_tag.text)
+    try:
+        json_next_data = json.loads(base64.b64decode(nextjs_data_tag.text))
+    except (json.JSONDecodeError, binascii.Error):
+        return []
     try:
         tips: list[str] = json_next_data["props"]["pageProps"]["recipe"]["tips"]
     except KeyError:
