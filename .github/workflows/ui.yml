@@ -37,7 +37,7 @@ jobs:
         working-directory: "frontend"
         run: ./s/test --no-watch --reporter junit --outputFile ~/test-results/frontend_tests.xml
       - name: Archive code coverage results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: ~/test-results
