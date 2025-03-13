@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { useDrag, useFocusVisible, usePress } from "react-aria"
+import { useDrag, useFocusVisible } from "react-aria"
 import { Link } from "react-router-dom"
 
 import { clx } from "@/classnames"
@@ -81,19 +81,6 @@ export function CalendarItem({
 
   useGlobalEvent({ keyUp: handleKeyPress })
 
-  // We're doing some sketchy stuff here so that we can support clicking on the
-  // schedule recipe to open the modal but also allow shift clicking to open in
-  // a new tab
-  const { pressProps } = usePress({
-    ...dragProps,
-    onPress: (e) => {
-      if (e.shiftKey || e.metaKey) {
-        return
-      }
-      setShow(true)
-    },
-  })
-
   const { isFocusVisible } = useFocusVisible()
 
   return (
@@ -112,12 +99,12 @@ export function CalendarItem({
               : "outline-none",
           )}
           to={recipeURL(recipeID, recipeName)}
-          {...pressProps}
           onClick={(e) => {
             if (e.shiftKey || e.metaKey) {
               return
             }
             e.preventDefault()
+            setShow(true)
           }}
         >
           <Image
