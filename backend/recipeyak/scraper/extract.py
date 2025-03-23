@@ -8,7 +8,7 @@ import base64
 import binascii
 import json
 from dataclasses import dataclass
-from typing import cast
+from typing import Any, cast
 
 import extruct
 from markdownify import markdownify
@@ -45,6 +45,16 @@ def _extract_open_graph_image(html: bytes | str) -> str | None:
     return cast(str | None, og_data[0].get("og:image"))
 
 
+def _extract_next_json(tag_text: str) -> dict[str, Any] | None:
+    try:
+        return json.loads(tag_text)  # type: ignore[no-any-return]
+    except json.JSONDecodeError:
+        try:
+            return json.loads(base64.b64decode(tag_text))  # type: ignore[no-any-return]
+        except (json.JSONDecodeError, binascii.Error):
+            return None
+
+
 def _extract_tips(parsed: AbstractScraper) -> list[str]:
     nextjs_data_tag = parsed.soup.find(
         "script", type="application/json", id="__NEXT_DATA__"
@@ -52,9 +62,8 @@ def _extract_tips(parsed: AbstractScraper) -> list[str]:
     if nextjs_data_tag is None:
         return []
     # TODO: make more robust, this is really only intended for nyt cooking
-    try:
-        json_next_data = json.loads(base64.b64decode(nextjs_data_tag.text))
-    except (json.JSONDecodeError, binascii.Error):
+    json_next_data = _extract_next_json(nextjs_data_tag.text)
+    if json_next_data is None:
         return []
     try:
         tips: list[str] = json_next_data["props"]["pageProps"]["recipe"]["tips"]
