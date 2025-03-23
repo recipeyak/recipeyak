@@ -8,7 +8,7 @@ import base64
 import binascii
 import json
 from dataclasses import dataclass
-from typing import cast
+from typing import cast, Any
 
 import extruct
 from markdownify import markdownify
@@ -45,12 +45,12 @@ def _extract_open_graph_image(html: bytes | str) -> str | None:
     return cast(str | None, og_data[0].get("og:image"))
 
 
-def _extract_next_json(tag_text: str) -> str | None:
+def _extract_next_json(tag_text: str) -> dict[str, Any] | None:
     try:
-        return json.loads(tag_text)
+        return json.loads(tag_text)  # type: ignore[no-any-return]
     except json.JSONDecodeError:
         try:
-            return json.loads(base64.b64decode(tag_text))
+            return json.loads(base64.b64decode(tag_text))  # type: ignore[no-any-return]
         except (json.JSONDecodeError, binascii.Error):
             return None
 
