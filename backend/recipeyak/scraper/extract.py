@@ -49,11 +49,10 @@ def _extract_next_json(tag_text: str) -> str | None:
     try:
         return json.loads(tag_text)
     except json.JSONDecodeError:
-        return None
-    try:
-        return json.loads(base64.b64decode(tag_text))
-    except (json.JSONDecodeError, binascii.Error):
-        return None
+        try:
+            return json.loads(base64.b64decode(tag_text))
+        except (json.JSONDecodeError, binascii.Error):
+            return None
 
 
 def _extract_tips(parsed: AbstractScraper) -> list[str]:
