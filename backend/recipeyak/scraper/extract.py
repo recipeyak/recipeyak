@@ -8,7 +8,7 @@ import base64
 import binascii
 import json
 from dataclasses import dataclass
-from typing import cast, Any
+from typing import Any, cast
 
 import extruct
 from markdownify import markdownify
