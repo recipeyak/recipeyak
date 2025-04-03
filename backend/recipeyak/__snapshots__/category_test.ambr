@@ -89,6 +89,10 @@
       'condiments',
     ),
     tuple(
+      'almond flour',
+      'baking',
+    ),
+    tuple(
       'almond paste',
       'condiments',
     ),
@@ -159,6 +163,10 @@
     tuple(
       'coconut extract',
       'produce',
+    ),
+    tuple(
+      'coconut noosa',
+      'dairy',
     ),
     tuple(
       'coconut oil',
