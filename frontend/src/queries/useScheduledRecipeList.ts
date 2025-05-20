@@ -3,13 +3,32 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query"
+import { useChannel } from "ably/react"
 import { addWeeks, endOfWeek, startOfWeek, subWeeks } from "date-fns"
 import parseISO from "date-fns/parseISO"
 
 import { calendarList } from "@/api/calendarList"
 import { toISODateString } from "@/date"
 import { cacheUpsertScheduledRecipesWeek } from "@/queries/useScheduledRecipeCreate"
+import { onRecipeDeletion } from "@/queries/useScheduledRecipeDelete"
+import { onScheduledRecipeUpdateSuccess } from "@/queries/useScheduledRecipeUpdate"
 import { useTeamId } from "@/useTeamId"
+
+type ScheduledRecipeUpdated = {
+  created: string
+  createdBy: null
+  id: number
+  on: string
+  recipe: {
+    id: number
+    name: string
+    author: string | null
+    archivedAt: string | null
+    primaryImage: { id: string; url: string; backgroundUrl: string } | null
+  }
+  team: null
+  user: null
+}
 
 // NOTE: At a high level we want the UI to be able to subscribe to a range of
 // data, like, all the calendar items with date > X && date < Y. We also want to
@@ -24,6 +43,30 @@ export function useScheduledRecipeList({
 }) {
   const teamId = useTeamId()
   const queryClient = useQueryClient()
+  useChannel(`team:${teamId}:scheduled_recipe`, (message) => {
+    switch (message.name) {
+      case "scheduled_recipe_updated": {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument
+        const apiRes: ScheduledRecipeUpdated = JSON.parse(message.data)
+        onScheduledRecipeUpdateSuccess({
+          queryClient,
+          scheduledRecipeId: apiRes.id,
+          teamId,
+          updatedCalRecipe: apiRes,
+        })
+        break
+      }
+      case "scheduled_recipe_delete": {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument
+        const apiRes: { recipeId: number } = JSON.parse(message.data)
+        onRecipeDeletion(queryClient, {
+          teamId,
+          scheduledRecipeId: apiRes.recipeId,
+        })
+        break
+      }
+    }
+  })
   return useQuery({
     queryKey: [teamId, "calendar", startOfWeekMs],
     queryFn: async () => {

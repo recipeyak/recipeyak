@@ -1,6 +1,7 @@
 import * as Sentry from "@sentry/react"
 import { QueryClient } from "@tanstack/react-query"
 
+import { client as ablyClient } from "@/components/ably"
 import { cacheUpsertUser } from "@/queries/useUserFetch"
 import { removeItem, setItem } from "@/storage"
 import { themeSet } from "@/theme"
@@ -48,5 +49,11 @@ export async function login(
       return user
     },
   })
+  try {
+    await ablyClient.auth.authorize()
+  } catch {
+    // eslint-disable-next-line no-console
+    console.error("Failed to initialize ably")
+  }
   setItem(LOGGED_IN_CACHE_KEY, "1")
 }
