@@ -1,12 +1,10 @@
-import { usePresence } from "ably/react"
-import { flatten, last, sortBy, uniqBy } from "lodash-es"
+import { flatten, last, sortBy } from "lodash-es"
 import { Heart } from "lucide-react"
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useMemo, useState } from "react"
 import { RouteComponentProps, useHistory } from "react-router"
 import { Link } from "react-router-dom"
 
 import { clx } from "@/classnames"
-import { Avatar } from "@/components/Avatar"
 import { Button } from "@/components/Buttons"
 import { Image } from "@/components/Image"
 import { Loader } from "@/components/Loader"
@@ -26,7 +24,6 @@ import AddStep from "@/pages/recipe-detail/AddStep"
 import { Gallery } from "@/pages/recipe-detail/ImageGallery"
 import { Ingredient } from "@/pages/recipe-detail/Ingredient"
 import { NoteContainer } from "@/pages/recipe-detail/Notes"
-import { uniqPresense } from "@/pages/recipe-detail/presenceUtils"
 import { SectionTitle } from "@/pages/recipe-detail/RecipeHelpers"
 import { RecipeSource } from "@/pages/recipe-detail/RecipeSource"
 import { RecipeTimeline } from "@/pages/recipe-detail/RecipeTimeline"
@@ -44,14 +41,11 @@ import {
 } from "@/queries/useRecipeFetch"
 import { useRecipeUpdate } from "@/queries/useRecipeUpdate"
 import { useSectionUpdate } from "@/queries/useSectionUpdate"
-import { useUserFetch } from "@/queries/useUserFetch"
 import { notEmpty } from "@/text"
 import { formatImgOpenGraph } from "@/url"
 import { cookDetailURL } from "@/urls"
 import { useAddSlugToUrl } from "@/useAddSlugToUrl"
 import { useGlobalEvent } from "@/useGlobalEvent"
-import { useTeamId } from "@/useTeamId"
-import { useUser } from "@/useUser"
 
 type Ingredient = Recipe["ingredients"]
 
@@ -595,50 +589,6 @@ function isNote(x: TimelineItem): x is Note {
   return x.type === "note"
 }
 
-function RecipePresence({
-  recipeId,
-  user,
-}: {
-  recipeId: number
-  user: { avatar_url: string; id: number }
-}) {
-  const teamId = useTeamId()
-  const avatarUrl = user.avatar_url
-  const { presenceData, updateStatus } = usePresence<{
-    avatarUrl: string
-    active?: boolean
-  }>(
-    {
-      channelName: `team:${teamId}:recipe:${recipeId}`,
-    },
-    { avatarUrl, active: true },
-  )
-  const peers = uniqPresense(
-    presenceData.filter((msg) => msg.clientId !== user.id.toString()),
-  ).map((msg, index) => (
-    <Avatar
-      key={index}
-      avatarURL={msg.data.avatarUrl}
-      grayscale={!msg.data.active}
-    />
-  ))
-
-  useEffect(() => {
-    const listener = () => {
-      if (document.visibilityState === "visible") {
-        updateStatus({ avatarUrl, active: true })
-      } else {
-        updateStatus({ avatarUrl, active: false })
-      }
-    }
-    document.addEventListener("visibilitychange", listener)
-    return () => {
-      document.removeEventListener("visibilitychange", listener)
-    }
-  }, [avatarUrl, updateStatus])
-  return <div className="flex flex-wrap gap-2">{peers}</div>
-}
-
 function RecipeInfo(props: {
   recipe: Recipe
   editingEnabled: boolean
@@ -647,7 +597,6 @@ function RecipeInfo(props: {
 }) {
   const [showEditor, setShowEditor] = useState(false)
   const inlineLayout = !props.recipe.primaryImage && !props.editingEnabled
-  const user = useUserFetch()
   const updateRecipe = useRecipeUpdate()
 
   return (
@@ -693,9 +642,6 @@ function RecipeInfo(props: {
               )}
             </Button>
           </div>
-          {user.data && (
-            <RecipePresence recipeId={props.recipe.id} user={user.data} />
-          )}
         </div>
         {showEditor ? (
           <RecipeEditor
@@ -819,24 +765,6 @@ function RecipeInfo(props: {
   )
 }
 
-function useCookModeUsers(recipeId: number) {
-  const teamId = useTeamId()
-  const user = useUser()
-
-  const { presenceData } = usePresence<{
-    avatarUrl: string
-    active?: boolean
-  }>({
-    subscribeOnly: true,
-
-    channelName: `team:${teamId}:cook_checklist:${recipeId}`,
-  })
-  const usersInCookMode = presenceData.filter(
-    (x) => x.clientId !== user.id?.toString(),
-  )
-  return uniqBy(usersInCookMode, (x) => x.clientId)
-}
-
 export function RecipeDetailPage(props: IRecipeProps) {
   const recipeId = parseInt(props.match.params.recipeId, 10)
 
@@ -845,7 +773,7 @@ export function RecipeDetailPage(props: IRecipeProps) {
   const parsed = new URLSearchParams(props.location.search)
   const editingEnabled = parsed.get("edit") === "1"
 
-  const cookModeUsers = useCookModeUsers(recipeId)
+  const cookModeUsers = []
 
   useAddSlugToUrl(
     pathRecipeDetail({ recipeId: recipeId.toString() }),
@@ -929,10 +857,7 @@ export function RecipeDetailPage(props: IRecipeProps) {
         </RecipeBanner>
       ) : cookModeUsers.length > 0 ? (
         <RecipeBanner>
-          Cook mode active
-          {cookModeUsers.map((u) => (
-            <Avatar key={u.id} avatarURL={u.data.avatarUrl} />
-          ))}{" "}
+          Cook mode active{" "}
           <Button
             size={"small"}
             onClick={() => {
