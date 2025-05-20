@@ -4,7 +4,6 @@ import * as Sentry from "@sentry/react"
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister"
 import { useIsRestoring } from "@tanstack/react-query"
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client"
-import { AblyProvider } from "ably/react"
 import { createBrowserHistory } from "history"
 import React, { Suspense, useLayoutEffect } from "react"
 import { RouterProvider } from "react-aria-components"
@@ -22,7 +21,6 @@ import {
 } from "react-router-dom"
 
 import { useIsLoggedIn } from "@/auth"
-import { client as ablyClient } from "@/components/ably"
 import { AlgoliaProvider } from "@/components/AlgoliaProvider"
 import { ErrorBoundary } from "@/components/ErrorBoundary"
 import { Helmet } from "@/components/Helmet"
@@ -338,49 +336,46 @@ function App() {
     //
     // A component suspended while responding to synchronous input. This will cause the UI to
     <Suspense>
-      <AblyProvider client={ablyClient}>
-        <PersistQueryClientProvider
-          client={queryClient}
-          persistOptions={{
-            // NOTE: Ideally we'd only bust the cache when the cache schema changes
-            // in a backwards incompatible way but calculating that is annoying so
-            // just break it on every deploy
-            buster: API_GIT_TREE_SHA,
-            persister,
-            maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-            dehydrateOptions: {
-              // see: https://github.com/TanStack/query/discussions/3735#discussioncomment-3007804
-              shouldDehydrateQuery: (query) => {
-                const skipPersistence =
-                  query?.meta?.["skipPersistence"] ?? false
-                if (skipPersistence) {
-                  return false
-                }
-                // default implementation
-                return query.state.status === "success"
-              },
+      <PersistQueryClientProvider
+        client={queryClient}
+        persistOptions={{
+          // NOTE: Ideally we'd only bust the cache when the cache schema changes
+          // in a backwards incompatible way but calculating that is annoying so
+          // just break it on every deploy
+          buster: API_GIT_TREE_SHA,
+          persister,
+          maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+          dehydrateOptions: {
+            // see: https://github.com/TanStack/query/discussions/3735#discussioncomment-3007804
+            shouldDehydrateQuery: (query) => {
+              const skipPersistence = query?.meta?.["skipPersistence"] ?? false
+              if (skipPersistence) {
+                return false
+              }
+              // default implementation
+              return query.state.status === "success"
             },
-          }}
-        >
-          <AlgoliaProvider>
-            <HelmetProvider>
-              <DndProvider backend={HTML5Backend}>
-                <ErrorBoundary>
-                  <Helmet />
-                  <Toaster
-                    toastOptions={{
-                      position: "bottom-center",
-                      className:
-                        "!bg-[--color-background-card] !text-[--color-text] !border-[--color-border]",
-                    }}
-                  />
-                  <AppRouter />
-                </ErrorBoundary>
-              </DndProvider>
-            </HelmetProvider>
-          </AlgoliaProvider>
-        </PersistQueryClientProvider>
-      </AblyProvider>
+          },
+        }}
+      >
+        <AlgoliaProvider>
+          <HelmetProvider>
+            <DndProvider backend={HTML5Backend}>
+              <ErrorBoundary>
+                <Helmet />
+                <Toaster
+                  toastOptions={{
+                    position: "bottom-center",
+                    className:
+                      "!bg-[--color-background-card] !text-[--color-text] !border-[--color-border]",
+                  }}
+                />
+                <AppRouter />
+              </ErrorBoundary>
+            </DndProvider>
+          </HelmetProvider>
+        </AlgoliaProvider>
+      </PersistQueryClientProvider>
     </Suspense>
   )
 }
