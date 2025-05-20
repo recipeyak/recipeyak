@@ -41,7 +41,6 @@ import {
 } from "@/queries/useRecipeFetch"
 import { useRecipeUpdate } from "@/queries/useRecipeUpdate"
 import { useSectionUpdate } from "@/queries/useSectionUpdate"
-import { useUserFetch } from "@/queries/useUserFetch"
 import { notEmpty } from "@/text"
 import { formatImgOpenGraph } from "@/url"
 import { cookDetailURL } from "@/urls"
@@ -598,7 +597,6 @@ function RecipeInfo(props: {
 }) {
   const [showEditor, setShowEditor] = useState(false)
   const inlineLayout = !props.recipe.primaryImage && !props.editingEnabled
-  const user = useUserFetch()
   const updateRecipe = useRecipeUpdate()
 
   return (
