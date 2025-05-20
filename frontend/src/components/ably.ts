@@ -1,6 +1,6 @@
 import * as Ably from "ably"
 
-export const client = new Ably.Realtime.Promise({
+export const client = new Ably.Realtime({
   authUrl: "/api/v1/auth/ably/",
-  log: { level: 2 },
+  logLevel: 2,
 })

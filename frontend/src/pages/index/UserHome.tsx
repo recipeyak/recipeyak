@@ -1,3 +1,4 @@
+import { ChannelProvider } from "ably/react"
 import {
   addDays,
   eachDayOfInterval,
@@ -19,6 +20,7 @@ import { useRecentlyCreatedRecipesList } from "@/queries/useRecentlyCreatedRecip
 import { useRecentlyViewedRecipesList } from "@/queries/useRecentlyViewedRecipesList"
 import { useScheduledRecipeList } from "@/queries/useScheduledRecipeList"
 import { recipeURL } from "@/urls"
+import { useTeamId } from "@/useTeamId"
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return <div className="pb-1 text-base font-medium">{children}</div>
@@ -247,13 +249,17 @@ function RecentlyCreated() {
 }
 
 export const UserHome = () => {
+  const teamId = useTeamId()
   return (
-    <NavPage title="Home">
-      <div className="mt-2 flex flex-wrap items-start justify-center gap-4">
-        <SchedulePreview />
-        <RecentlyViewed />
-        <RecentlyCreated />
-      </div>
-    </NavPage>
+    <ChannelProvider channelName={`team:${teamId}:scheduled_recipe`}>
+      <NavPage title="Home">
+        <div className="mt-2 flex flex-wrap items-start justify-center gap-4">
+          <SchedulePreview />
+
+          <RecentlyViewed />
+          <RecentlyCreated />
+        </div>
+      </NavPage>
+    </ChannelProvider>
   )
 }

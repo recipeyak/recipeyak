@@ -1,3 +1,4 @@
+import { ChannelProvider } from "ably/react"
 import { RouteComponentProps } from "react-router"
 
 import { Loader } from "@/components/Loader"
@@ -12,6 +13,7 @@ import {
 } from "@/queries/useRecipeFetch"
 import { formatImgOpenGraph } from "@/url"
 import { useAddSlugToUrl } from "@/useAddSlugToUrl"
+import { useTeamId } from "@/useTeamId"
 
 type TimelineItem = Recipe["timelineItems"][number]
 type Note = PickVariant<TimelineItem, "note">
@@ -20,9 +22,7 @@ function isNote(x: TimelineItem): x is Note {
   return x.type === "note"
 }
 
-export function CookDetailPage(
-  props: RouteComponentProps<{ recipeId: string }>,
-) {
+function CookDetailPageInner(props: RouteComponentProps<{ recipeId: string }>) {
   const recipeId = parseInt(props.match.params.recipeId, 10)
   const maybeRecipe = useRecipeFetch({ recipeId })
   const myRecipe = maybeRecipe.isSuccess ? maybeRecipe.data : null
@@ -64,5 +64,22 @@ export function CookDetailPage(
         notes={notes}
       />
     </NavPage>
+  )
+}
+
+export function CookDetailPage(
+  props: RouteComponentProps<{ recipeId: string }>,
+) {
+  const teamId = useTeamId()
+  const recipeId = parseInt(props.match.params.recipeId, 10)
+
+  return (
+    <ChannelProvider channelName={`team:${teamId}:recipe:${recipeId}`}>
+      <ChannelProvider
+        channelName={`team:${teamId}:cook_checklist:${recipeId}`}
+      >
+        <CookDetailPageInner {...props} />
+      </ChannelProvider>
+    </ChannelProvider>
   )
 }

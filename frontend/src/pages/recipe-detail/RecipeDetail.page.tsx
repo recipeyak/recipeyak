@@ -1,4 +1,4 @@
-import { usePresence } from "ably/react"
+import { ChannelProvider, usePresence, usePresenceListener } from "ably/react"
 import { flatten, last, sortBy, uniqBy } from "lodash-es"
 import { Heart } from "lucide-react"
 import React, { useEffect, useMemo, useState } from "react"
@@ -595,6 +595,11 @@ function isNote(x: TimelineItem): x is Note {
   return x.type === "note"
 }
 
+type PresenceEventData = {
+  avatarUrl: string
+  active?: boolean
+}
+
 function RecipePresence({
   recipeId,
   user,
@@ -604,10 +609,10 @@ function RecipePresence({
 }) {
   const teamId = useTeamId()
   const avatarUrl = user.avatar_url
-  const { presenceData, updateStatus } = usePresence<{
-    avatarUrl: string
-    active?: boolean
-  }>(
+  const { presenceData } = usePresenceListener<PresenceEventData>({
+    channelName: `team:${teamId}:recipe:${recipeId}`,
+  })
+  const { updateStatus } = usePresence<PresenceEventData>(
     {
       channelName: `team:${teamId}:recipe:${recipeId}`,
     },
@@ -626,9 +631,9 @@ function RecipePresence({
   useEffect(() => {
     const listener = () => {
       if (document.visibilityState === "visible") {
-        updateStatus({ avatarUrl, active: true })
+        void updateStatus({ avatarUrl, active: true })
       } else {
-        updateStatus({ avatarUrl, active: false })
+        void updateStatus({ avatarUrl, active: false })
       }
     }
     document.addEventListener("visibilitychange", listener)
@@ -648,6 +653,7 @@ function RecipeInfo(props: {
   const [showEditor, setShowEditor] = useState(false)
   const inlineLayout = !props.recipe.primaryImage && !props.editingEnabled
   const user = useUserFetch()
+
   const updateRecipe = useRecipeUpdate()
 
   return (
@@ -823,12 +829,7 @@ function useCookModeUsers(recipeId: number) {
   const teamId = useTeamId()
   const user = useUser()
 
-  const { presenceData } = usePresence<{
-    avatarUrl: string
-    active?: boolean
-  }>({
-    subscribeOnly: true,
-
+  const { presenceData } = usePresenceListener<PresenceEventData>({
     channelName: `team:${teamId}:cook_checklist:${recipeId}`,
   })
   const usersInCookMode = presenceData.filter(
@@ -837,7 +838,7 @@ function useCookModeUsers(recipeId: number) {
   return uniqBy(usersInCookMode, (x) => x.clientId)
 }
 
-export function RecipeDetailPage(props: IRecipeProps) {
+export function RecipeDetailPageInner(props: IRecipeProps) {
   const recipeId = parseInt(props.match.params.recipeId, 10)
 
   const maybeRecipe = useRecipeFetch({ recipeId })
@@ -985,5 +986,20 @@ export function RecipeDetailPage(props: IRecipeProps) {
         )}
       </div>
     </NavPage>
+  )
+}
+
+export function RecipeDetailPage(props: IRecipeProps) {
+  const teamId = useTeamId()
+  const recipeId = parseInt(props.match.params.recipeId, 10)
+
+  return (
+    <ChannelProvider channelName={`team:${teamId}:recipe:${recipeId}`}>
+      <ChannelProvider
+        channelName={`team:${teamId}:cook_checklist:${recipeId}`}
+      >
+        <RecipeDetailPageInner {...props} />
+      </ChannelProvider>
+    </ChannelProvider>
   )
 }
