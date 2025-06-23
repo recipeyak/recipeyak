@@ -161,6 +161,10 @@
       'produce',
     ),
     tuple(
+      'coarsely grated mozzarella',
+      'cheese',
+    ),
+    tuple(
       'coconut extract',
       'produce',
     ),
@@ -367,6 +371,10 @@
     tuple(
       'slices bread',
       'bread',
+    ),
+    tuple(
+      'small basil leaves (preferably thai or cinnamon basil)',
+      'produce',
     ),
     tuple(
       'store bought or homemade za’atar',

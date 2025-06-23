@@ -57,6 +57,8 @@ def test_categorize_ingredient_test_cases(snapshot: SnapshotAssertion) -> None:
     pickled jalapeno
     pepper jack cheese
     apple cider vinegar
+    coarsely grated mozzarella
+    small basil leaves (preferably thai or cinnamon basil)
     coconut noosa
     almond flour
     baby bok choy
