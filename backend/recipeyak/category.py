@@ -27,6 +27,7 @@ _DEPARTMENT_MAPPING = {
     },
     "produce": {
         "basil",
+        "basil leaves",
         "coconut",
         "blueberries",
         "blackberries",
