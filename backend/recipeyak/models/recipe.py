@@ -8,7 +8,6 @@ from django.db import models
 from django.db.models.manager import Manager
 
 from recipeyak.models.base import CommonInfo
-from recipeyak.models.calendar import Calendar
 from recipeyak.models.ingredient import Ingredient
 from recipeyak.models.scheduled_recipe import ScheduledRecipe
 from recipeyak.models.section import Section

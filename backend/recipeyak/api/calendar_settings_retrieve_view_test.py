@@ -4,7 +4,6 @@ import pytest
 from django.test.client import Client
 
 from recipeyak.models import Recipe, Team, User
-from recipeyak.models.calendar import Calendar
 from recipeyak.models.membership import Membership
 
 pytestmark = pytest.mark.django_db
