@@ -8,13 +8,13 @@ from recipeyak.models import get_pinned_calendar, get_team
 from recipeyak.realtime import publish_calendar_event_deleted
 
 
-class CalendarDeleteParams(Params):
+class CalendarEventDeleteParams(Params):
     scheduled_recipe_id: int
 
 
 @endpoint()
 def calendar_event_delete_view(
-    request: AuthedHttpRequest, params: CalendarDeleteParams
+    request: AuthedHttpRequest, params: CalendarEventDeleteParams
 ) -> None:
     team_id = get_team(request.user).id
     calendar_id = get_pinned_calendar(request.user, team_id).id
