@@ -8,6 +8,7 @@ from django.db import models
 from django.db.models.manager import Manager
 
 from recipeyak.models.base import CommonInfo
+from recipeyak.models.calendar import Calendar
 from recipeyak.models.ingredient import Ingredient
 from recipeyak.models.scheduled_recipe import ScheduledRecipe
 from recipeyak.models.section import Section
@@ -55,9 +56,11 @@ class Recipe(CommonInfo):
     class Meta:
         db_table = "core_recipe"
 
-    def schedule(self, *, on: date, user: User, team: Team) -> ScheduledRecipe:
+    def schedule(
+        self, *, on: date, user: User, team: Team, calendar: Calendar
+    ) -> ScheduledRecipe:
         return ScheduledRecipe.objects.create_scheduled(
-            recipe=self, on=on, user=user, team=team
+            recipe=self, on=on, user=user, team=team, calendar=calendar
         )
 
     notes: RelatedManager[Note]

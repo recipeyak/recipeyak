@@ -16,6 +16,7 @@ class UserSerializer(pydantic.BaseModel):
     theme_night: Literal["light", "dark", "dark_dimmed", "autumn", "solarized"]
     theme_mode: Literal["single", "sync_with_system"]
     schedule_team: int | None
+    calendar_id: int | None = None
 
 
 def serialize_user(user: User) -> UserSerializer:
@@ -40,6 +41,7 @@ def serialize_user(user: User) -> UserSerializer:
         ),
         theme_mode=cast(Literal["single", "sync_with_system"], user.theme_mode),
         schedule_team=user.schedule_team_id,
+        calendar_id=user.pinned_calendar_id,
     )
 
 
