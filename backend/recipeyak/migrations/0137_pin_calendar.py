@@ -5,15 +5,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('recipeyak', '0136_calendars'),
+        ("recipeyak", "0136_calendars"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='pinned_calendar',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='recipeyak.calendar'),
+            model_name="user",
+            name="pinned_calendar",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="recipeyak.calendar",
+            ),
         ),
     ]
