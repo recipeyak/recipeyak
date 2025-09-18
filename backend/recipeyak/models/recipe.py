@@ -56,9 +56,9 @@ class Recipe(CommonInfo):
     class Meta:
         db_table = "core_recipe"
 
-    def schedule(
-        self, *, on: date, user: User, team: Team, calendar: Calendar
-    ) -> ScheduledRecipe:
+    def schedule(self, *, on: date, user: User, team: Team) -> ScheduledRecipe:
+        calendar = user.pinned_calendar
+        assert calendar is not None
         return ScheduledRecipe.objects.create_scheduled(
             recipe=self, on=on, user=user, team=team, calendar=calendar
         )

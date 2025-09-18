@@ -33,7 +33,6 @@ def scheduled_recipe_create_view(
         on=params.on,
         user=request.user,
         team=get_object_or_404(get_teams(request.user), pk=team.id),
-        calendar=calendar,
     )
     res = serialize_scheduled_recipe(
         scheduled_recipe, user_id=request.user.id, team_id=team.id

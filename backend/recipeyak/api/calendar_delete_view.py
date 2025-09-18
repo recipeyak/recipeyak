@@ -20,4 +20,4 @@ class CalendarDeleteParams(Params):
 def calendar_delete_view(
     request: AuthedHttpRequest, params: CalendarDeleteParams
 ) -> CalendarDeleteResponse:
-    return CalendarDeleteResponse(id=123, name=params.name)
+    raise NotImplementedError
