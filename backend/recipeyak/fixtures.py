@@ -2,6 +2,7 @@
 Create test data
 """
 
+from recipeyak.models.calendar import Calendar
 from recipeyak.models.ingredient import Ingredient
 from recipeyak.models.note import Note
 from recipeyak.models.recipe import Recipe
@@ -18,8 +19,10 @@ def create_user(*, email: str = "j.person@example.com") -> User:
 
 def create_team(*, user: User) -> Team:
     team = Team.objects.create(name="Recipe Yak Team")
+    calendar = Calendar.objects.create(team=team, name="Default")
     team.force_join_admin(user=user)
     user.schedule_team = team
+    user.pinned_calendar = calendar
     user.save()
     return team
 
