@@ -3,7 +3,7 @@ from __future__ import annotations
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 
-from recipeyak.models.calendar import Calendar  # noqa: F401
+from recipeyak.models.calendar import Calendar
 from recipeyak.models.ingredient import Ingredient
 from recipeyak.models.ingredient_historical import IngredientHistorical  # noqa: F401
 from recipeyak.models.invite import Invite  # noqa: F401

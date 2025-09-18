@@ -8,7 +8,7 @@ from django.db import models
 from recipeyak.models.base import CommonInfo
 
 if TYPE_CHECKING:
-    from recipeyak.models.calendar import Calendar  # noqa: F401
+    from recipeyak.models.calendar import Calendar
     from recipeyak.models.recipe import Recipe
     from recipeyak.models.team import Team
     from recipeyak.models.user import User
