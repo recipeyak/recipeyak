@@ -8,6 +8,7 @@ from django.utils.text import slugify
 from django.views.decorators.http import require_http_methods
 
 from recipeyak.ical import Event, calendar
+from recipeyak.models.user import User
 
 
 @require_http_methods(["GET", "HEAD"])
@@ -20,6 +21,13 @@ def ical_retrieve_view(
     We limit the recipes to the last year to avoid having the response size
     gradually increasing & time.
     """
+
+    user = User.objects.filter(
+        membership__team_id=team_id, membership__calendar_secret_key=ical_id
+    ).first()
+    if user is None:
+        return HttpResponse(status=404)
+
     with connection.cursor() as cursor:
         cursor.execute(
             """
@@ -41,6 +49,7 @@ select
         join core_recipe recipe on scheduled_recipe.recipe_id = recipe.id
         where scheduled_recipe.created > now() - '2 years'::interval
         and scheduled_recipe.team_id = %(team_id)s
+        and scheduled_recipe.calendar_id = %(calendar_id)s
         order by "on"
       ) sub
     )
@@ -53,7 +62,11 @@ where
   and team_id = %(team_id)s
   and calendar_secret_key = %(calendar_secret_key)s
 """,
-            {"team_id": team_id, "calendar_secret_key": ical_id},
+            {
+                "team_id": team_id,
+                "calendar_secret_key": ical_id,
+                "calendar_id": user.pinned_calendar_id,
+            },
         )
         row = cursor.fetchone()
         if row is None:
