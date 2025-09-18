@@ -11,12 +11,15 @@ import { useHistory, useLocation } from "react-router-dom"
 import { clx } from "@/classnames"
 import { Button } from "@/components/Buttons"
 import { Modal } from "@/components/Modal"
+import { Select } from "@/components/Select"
 import { toISODateString } from "@/date"
 import { CalendarDay } from "@/pages/schedule/CalendarDay"
 import HelpMenuModal from "@/pages/schedule/HelpMenuModal"
 import { Kbd } from "@/pages/schedule/Kbd"
 import { ScheduleRecipeModal } from "@/pages/schedule/ScheduleRecipeModal"
 import ShoppingList from "@/pages/schedule/ShoppingList"
+import { useCalendarMutation } from "@/queries/useCalendarMutation"
+import { useCalendars } from "@/queries/useCalendarsFetch"
 import { ScheduledRecipe } from "@/queries/useScheduledRecipeCreate"
 import { useScheduledRecipeList } from "@/queries/useScheduledRecipeList"
 import { removeQueryParams, setQueryParams } from "@/querystring"
@@ -197,6 +200,35 @@ function ScheduleButton() {
     </DialogTrigger>
   )
 }
+function CalendarPicker() {
+  const calendars = useCalendars()
+  const pinnedCalendar =
+    calendars.data?.calendars.find((cal) => cal.pinned) ||
+    calendars.data?.calendars[0]
+  const pinCalendar = useCalendarMutation()
+  if (!pinnedCalendar) {
+    return null
+  }
+
+  if (calendars.data == null) {
+    return null
+  }
+
+  return (
+    <Select
+      onChange={(e) => {
+        pinCalendar.mutate({ calendar_id: Number(e.target.value) })
+      }}
+      value={pinnedCalendar.id}
+    >
+      {calendars.data.calendars.map((cal) => (
+        <option key={cal.id} value={String(cal.id)}>
+          {cal.name}
+        </option>
+      ))}
+    </Select>
+  )
+}
 
 function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
   return (
@@ -204,8 +236,8 @@ function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
       <div className="flex items-center gap-1">
         <CalTitle dayTs={dayTs} />
         <ShoppingListButton />
-
         <ScheduleButton />
+        <CalendarPicker />
       </div>
       <div className="flex gap-1">
         <Button size="small" onClick={onPrev} aria-label="previous week">

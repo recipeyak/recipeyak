@@ -21,6 +21,7 @@ import { useRecentlyViewedRecipesList } from "@/queries/useRecentlyViewedRecipes
 import { useScheduledRecipeList } from "@/queries/useScheduledRecipeList"
 import { recipeURL } from "@/urls"
 import { useTeamId } from "@/useTeamId"
+import { useUser } from "@/useUser"
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return <div className="pb-1 text-base font-medium">{children}</div>
@@ -250,8 +251,12 @@ function RecentlyCreated() {
 
 export const UserHome = () => {
   const teamId = useTeamId()
+  const user = useUser()
+  const calendarId = user.calendarID
   return (
-    <ChannelProvider channelName={`team:${teamId}:scheduled_recipe`}>
+    <ChannelProvider
+      channelName={`team:${teamId}:calendar:${calendarId}:scheduled_recipe`}
+    >
       <NavPage title="Home">
         <div className="mt-2 flex flex-wrap items-start justify-center gap-4">
           <SchedulePreview />
