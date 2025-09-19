@@ -8,12 +8,13 @@ from django.utils.text import slugify
 from django.views.decorators.http import require_http_methods
 
 from recipeyak.ical import Event, calendar
+from recipeyak.models.calendar import Calendar
 from recipeyak.models.user import User
 
 
 @require_http_methods(["GET", "HEAD"])
 def ical_retrieve_view(
-    request: HttpRequest, team_id: int, ical_id: str
+    request: HttpRequest, team_id: int, ical_id: str, calendar_id: int | None = None
 ) -> HttpResponse:
     """
     Return an icalendar formatted string of scheduled recipes.
@@ -27,6 +28,16 @@ def ical_retrieve_view(
     ).first()
     if user is None:
         return HttpResponse(status=404)
+
+    selected_calendar = None
+    if calendar_id is not None:
+        selected_calendar = Calendar.objects.filter(
+            id=calendar_id, team=team_id
+        ).first()
+        if selected_calendar is None:
+            return HttpResponse(
+                "You don't have permission to view this calendar", status=403
+            )
 
     with connection.cursor() as cursor:
         cursor.execute(
@@ -65,7 +76,9 @@ where
             {
                 "team_id": team_id,
                 "calendar_secret_key": ical_id,
-                "calendar_id": user.pinned_calendar_id,
+                "calendar_id": selected_calendar.id
+                if selected_calendar
+                else user.pinned_calendar_id,
             },
         )
         row = cursor.fetchone()

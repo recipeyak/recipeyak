@@ -4,6 +4,7 @@ import format from "date-fns/format"
 import isValid from "date-fns/isValid"
 import parseISO from "date-fns/parseISO"
 import { chunk, first } from "lodash-es"
+import { Calendar as CalendarIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Dialog, DialogTrigger, Popover } from "react-aria-components"
 import { useHistory, useLocation } from "react-router-dom"
@@ -131,6 +132,7 @@ const Plus = () => (
     <path d="M12 5v14" />
   </svg>
 )
+
 interface INavProps {
   readonly dayTs: number
   readonly onPrev: () => void
@@ -255,7 +257,10 @@ function CalendarPicker() {
 
   return (
     <DialogTrigger>
-      <Button>{pinnedCalendar.name}</Button>
+      <Button size="small" className="gap-2">
+        <span className="hidden sm:block">{pinnedCalendar.name}</span>
+        <CalendarIcon size={16} />
+      </Button>
       <Popover>
         <CalendarPickerPopoverContent
           calendars={calendars.data.calendars}

@@ -416,6 +416,11 @@ routes = [
         view=ical_retrieve_view,
     ),
     route(
+        "t/<int:team_id>/ical/<str:ical_id>/calendar/<int:calendar_id>/schedule.ics",
+        method=("get", "head"),
+        view=ical_retrieve_view,
+    ),
+    route(
         r"^api/v1/bot-recipes/(?P<recipe_id>[0-9]+)(-.*)?$",
         method="get",
         view=recipe_bot_detail_view,
