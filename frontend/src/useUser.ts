@@ -8,5 +8,6 @@ export function useUser() {
     email: res.data?.email ?? "",
     name: res.data?.name ?? "",
     scheduleTeamID: res.data?.schedule_team ?? null,
+    calendarID: res.data?.calendar_id ?? null,
   }
 }

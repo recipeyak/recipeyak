@@ -5,18 +5,21 @@ import isValid from "date-fns/isValid"
 import parseISO from "date-fns/parseISO"
 import { chunk, first } from "lodash-es"
 import { useEffect, useState } from "react"
-import { DialogTrigger } from "react-aria-components"
+import { Dialog, DialogTrigger, Popover } from "react-aria-components"
 import { useHistory, useLocation } from "react-router-dom"
 
 import { clx } from "@/classnames"
 import { Button } from "@/components/Buttons"
 import { Modal } from "@/components/Modal"
+import { Select } from "@/components/Select"
 import { toISODateString } from "@/date"
 import { CalendarDay } from "@/pages/schedule/CalendarDay"
 import HelpMenuModal from "@/pages/schedule/HelpMenuModal"
 import { Kbd } from "@/pages/schedule/Kbd"
 import { ScheduleRecipeModal } from "@/pages/schedule/ScheduleRecipeModal"
 import ShoppingList from "@/pages/schedule/ShoppingList"
+import { useCalendarMutation } from "@/queries/useCalendarMutation"
+import { useCalendars } from "@/queries/useCalendarsFetch"
 import { ScheduledRecipe } from "@/queries/useScheduledRecipeCreate"
 import { useScheduledRecipeList } from "@/queries/useScheduledRecipeList"
 import { removeQueryParams, setQueryParams } from "@/querystring"
@@ -198,14 +201,81 @@ function ScheduleButton() {
   )
 }
 
+function CalendarPickerPopoverContent({
+  calendars,
+  onSubmit,
+}: {
+  calendars: { id: number; name: string }[]
+  onSubmit: (calendar_id: number) => void
+}) {
+  const [calendar, setCalendar] = useState<number | null>(0)
+  return (
+    <Dialog className="flex flex-col gap-2  rounded border border-solid border-[--color-border] bg-[--color-background-card] p-4 shadow-lg">
+      <Select
+        onChange={(e) => {
+          setCalendar(Number(e.target.value))
+        }}
+        value={calendar || 0}
+      >
+        <option value="0" disabled>
+          Select Calendar
+        </option>
+        {calendars.map((cal) => (
+          <option key={cal.id} value={String(cal.id)}>
+            {cal.name}
+          </option>
+        ))}
+      </Select>
+
+      <Button
+        onClick={() => {
+          if (calendar != null) {
+            onSubmit(calendar)
+          }
+        }}
+      >
+        Pin Calendar
+      </Button>
+    </Dialog>
+  )
+}
+function CalendarPicker() {
+  const calendars = useCalendars()
+  const pinnedCalendar =
+    calendars.data?.calendars.find((cal) => cal.pinned) ||
+    calendars.data?.calendars[0]
+  const pinCalendar = useCalendarMutation()
+  if (!pinnedCalendar) {
+    return null
+  }
+
+  if (calendars.data == null) {
+    return null
+  }
+
+  return (
+    <DialogTrigger>
+      <Button>{pinnedCalendar.name}</Button>
+      <Popover>
+        <CalendarPickerPopoverContent
+          calendars={calendars.data.calendars}
+          onSubmit={(calendarId) => {
+            pinCalendar.mutate({ calendar_id: calendarId })
+          }}
+        />
+      </Popover>
+    </DialogTrigger>
+  )
+}
+
 function Nav({ dayTs, onPrev, onNext, onCurrent }: INavProps) {
   return (
     <div className="flex shrink-0 items-center justify-between">
       <div className="flex items-center gap-1">
         <CalTitle dayTs={dayTs} />
         <ShoppingListButton />
-
         <ScheduleButton />
+        <CalendarPicker />
       </div>
       <div className="flex gap-1">
         <Button size="small" onClick={onPrev} aria-label="previous week">

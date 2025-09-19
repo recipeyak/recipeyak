@@ -10,7 +10,7 @@ from recipeyak.api.calendar_serialization import (
     ScheduleRecipeSerializer,
     serialize_scheduled_recipe,
 )
-from recipeyak.models import ScheduleEvent, get_team
+from recipeyak.models import ScheduleEvent, get_pinned_calendar, get_team
 from recipeyak.realtime import publish_calendar_event
 
 
@@ -24,7 +24,10 @@ def calendar_update_view(
     request: AuthedHttpRequest, params: CalendarUpdateParams
 ) -> ScheduleRecipeSerializer:
     team_id = get_team(request.user).id
-    scheduled_recipe = get_scheduled_recipes(team_id).get(id=params.scheduled_recipe_id)
+    calendar_id = get_pinned_calendar(request.user, team_id).id
+    scheduled_recipe = get_scheduled_recipes(team_id, calendar_id).get(
+        id=params.scheduled_recipe_id
+    )
     with transaction.atomic():
         scheduled_recipe.on = params.on
         scheduled_recipe.save()
@@ -39,6 +42,6 @@ def calendar_update_view(
         scheduled_recipe, user_id=(request.user.id), team_id=(team_id)
     )
 
-    publish_calendar_event(res, team_id)
+    publish_calendar_event(res, team_id, calendar_id)
 
     return res

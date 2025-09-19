@@ -55,6 +55,7 @@ test("login success", async () => {
             name: "",
             id: 123,
             schedule_team: null,
+            calendar_id: null,
             theme_day: "light",
             theme_night: "dark",
             theme_mode: "single",

@@ -12,6 +12,7 @@ from recipeyak.api.base.decorators import endpoint
 from recipeyak.api.base.request import AnonymousHttpRequest
 from recipeyak.api.base.serialization import Params
 from recipeyak.api.user_retrieve_view import UserSerializer, serialize_user
+from recipeyak.models.calendar import Calendar
 from recipeyak.models.team import Team
 from recipeyak.models.user import User
 
@@ -50,10 +51,12 @@ def user_create_view(
 ) -> UserCreateResponse:
     with transaction.atomic():
         team = Team.objects.create(name="Personal")
+        calendar = Calendar.objects.create(team=team, name="Default")
         user = User()
         user.email = params.email
         user.set_password(params.password1)
         user.schedule_team = team
+        user.pinned_calendar = calendar
         user.save()
         team.force_join_admin(user)
 

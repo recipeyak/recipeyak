@@ -2,7 +2,7 @@ import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query"
 import { addWeeks, parseISO, startOfWeek, subWeeks } from "date-fns"
 import produce from "immer"
 
-import { calendarDelete } from "@/api/calendarDelete"
+import { calendarEventDelete } from "@/api/calendarEventDelete"
 import {
   cacheUpsertScheduledRecipesWeek,
   ScheduledRecipe,
@@ -40,7 +40,7 @@ export function useScheduledRecipeDelete() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: ({ scheduledRecipeId }: { scheduledRecipeId: number }) =>
-      calendarDelete({ scheduled_recipe_id: scheduledRecipeId }),
+      calendarEventDelete({ scheduled_recipe_id: scheduledRecipeId }),
     onMutate: (vars) => {
       return onRecipeDeletion(queryClient, {
         scheduledRecipeId: vars.scheduledRecipeId,
