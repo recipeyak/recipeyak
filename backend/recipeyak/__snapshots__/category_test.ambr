@@ -277,6 +277,14 @@
       'produce',
     ),
     tuple(
+      'frozen banana',
+      'frozen',
+    ),
+    tuple(
+      'frozen strawberry',
+      'frozen',
+    ),
+    tuple(
       'garlic cloves',
       'produce',
     ),
@@ -382,6 +390,10 @@
     ),
     tuple(
       'tomato paste',
+      'canned & packaged',
+    ),
+    tuple(
+      'tomato puree',
       'canned & packaged',
     ),
   ])

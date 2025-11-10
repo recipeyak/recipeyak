@@ -117,6 +117,8 @@ def test_categorize_ingredient_test_cases(snapshot: SnapshotAssertion) -> None:
     loaf sweet egg bread like challah or brioche
     oyster sauce
     fresno peppers
+    frozen strawberry
+    frozen banana
     cherry or grape tomatoes
     matcha powder
     sesame aioli
@@ -128,6 +130,7 @@ def test_categorize_ingredient_test_cases(snapshot: SnapshotAssertion) -> None:
     malted milk powder
     medium-coarse yellow cornmeal
     tomato paste
+    tomato puree
     """  # noqa: RUF001
     ).splitlines()
 
