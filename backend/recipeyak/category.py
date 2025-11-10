@@ -282,6 +282,7 @@ _DEPARTMENT_MAPPING = {
         "arrabbiata sauce",
         "oyster sauce",
         "tomato paste",
+        "tomato puree",
         "tuna",
         "anchovies",
         "adobo",
@@ -523,7 +524,7 @@ def _search(item: str) -> dict[str, set[int]]:
 
 
 def category(ingredient: str) -> str:
-    res = _search(
+    ingredient = (
         ingredient.lower()
         .replace("-", " ")
         .replace(",", "")
@@ -531,6 +532,11 @@ def category(ingredient: str) -> str:
         .replace("(", "")
         .replace("’", "'")  # noqa: RUF001
     )
+
+    if "frozen" in ingredient:
+        return "frozen"
+
+    res = _search(ingredient)
     if not res:
         return "unknown"
 
