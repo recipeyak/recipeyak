@@ -119,7 +119,12 @@ export function RecipeTitleDropdown({
       onClick: () => {
         const ingredients = recipeIngredients.map(ingredientToString).join("\n")
         copyToClipboard(ingredients)
-        toast("Copied ingredients to clipboard!")
+          .then(() => {
+            toast("Copied ingredients to clipboard!")
+          })
+          .catch(() => {
+            toast.error("Error, couldn't copy to clipboard.")
+          })
       },
     },
     {

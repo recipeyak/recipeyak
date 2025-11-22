@@ -60,8 +60,7 @@ export function NavRecipeSearch({
           }
           setShowPopover(true)
         }}
-        // more closely mimic the behavior of the search input vs onPress/onClick
-        onPressStart={() => {
+        onClick={() => {
           setShowPopover((s) => !s)
         }}
         children={

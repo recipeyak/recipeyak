@@ -12,7 +12,7 @@ from recipeyak.api.calendar_serialization import (
     serialize_scheduled_recipe,
 )
 from recipeyak.api.team_update_view import get_teams
-from recipeyak.models import filter_recipes, get_team
+from recipeyak.models import filter_recipes, get_pinned_calendar, get_team
 from recipeyak.realtime import publish_calendar_event
 
 
@@ -28,7 +28,7 @@ def scheduled_recipe_create_view(
     team = get_team(request.user)
 
     recipe = get_object_or_404(filter_recipes(team=team), id=params.recipe)
-
+    calendar = get_pinned_calendar(request.user, team.id)
     scheduled_recipe = recipe.schedule(
         on=params.on,
         user=request.user,
@@ -38,5 +38,5 @@ def scheduled_recipe_create_view(
         scheduled_recipe, user_id=request.user.id, team_id=team.id
     )
 
-    publish_calendar_event(res, team_id=team.id)
+    publish_calendar_event(res, team_id=team.id, calendar_id=calendar.id)
     return res

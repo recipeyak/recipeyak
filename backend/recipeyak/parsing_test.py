@@ -321,6 +321,13 @@ def test_parse_quantity_name(ingredient: str, expected: tuple[str, str]) -> None
             "4 soft, sturdy hamburger buns, such as King's Hawaiian rolls",
             ("4 soft, sturdy hamburger buns", "such as King's Hawaiian rolls"),
         ),
+        (
+            "2 pounds mixed mushrooms (cremini, oyster, shitake), trimmed or stemmed and thinly sliced",
+            (
+                "2 pounds mixed mushrooms (cremini, oyster, shitake)",
+                "trimmed or stemmed and thinly sliced",
+            ),
+        ),
     ],
 )
 def test_parse_name_description(ingredient: str, expected: tuple[str, str]) -> None:
@@ -450,6 +457,24 @@ def test_parse_name_description(ingredient: str, expected: tuple[str, str]) -> N
                 description="plus more for dusting",
             ),
             id="flour",
+        ),
+        pytest.param(
+            "1 large, ripe tomato, halved horizontally",
+            _IngredientResult(
+                quantity="1",
+                name="large, ripe tomato",
+                description="halved horizontally",
+            ),
+            id="tomato",
+        ),
+        pytest.param(
+            "2 pounds mixed mushrooms (cremini, oyster, shitake), trimmed or stemmed and thinly sliced",
+            _IngredientResult(
+                quantity="2 pounds",
+                name="mixed mushrooms (cremini, oyster, shitake)",
+                description="trimmed or stemmed and thinly sliced",
+            ),
+            id="mushrooms",
         ),
     ],
 )

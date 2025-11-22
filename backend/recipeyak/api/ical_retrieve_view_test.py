@@ -79,16 +79,19 @@ def test_ical_view_with_correct_id(
         recipe=recipe,
         team=team,
         on=date(1976, 7, 6),
+        calendar=user.pinned_calendar,
     )
     ScheduledRecipe.objects.create(
         recipe=recipe,
         team=team,
         on=date(1976, 7, 7),
+        calendar=user.pinned_calendar,
     )
     ScheduledRecipe.objects.create(
         recipe=recipe,
         team=team,
         on=date(1976, 7, 10),
+        calendar=user.pinned_calendar,
     )
 
     membership = Membership.objects.filter(user=user).get(team=team)
@@ -110,12 +113,14 @@ def test_filter_to_current_team(
         recipe=recipe,
         team=team,
         on=date(1976, 7, 6),
+        calendar=user.pinned_calendar,
     )
     team_2 = Team.objects.create(name="Recipe Yak Team")
     ScheduledRecipe.objects.create(
         recipe=recipe,
         team=team_2,
         on=date(1976, 7, 10),
+        calendar=user.pinned_calendar,
     )
     membership = Membership.objects.filter(user=user).get(team=team)
     membership.calendar_sync_enabled = True

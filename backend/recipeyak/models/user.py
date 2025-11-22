@@ -18,6 +18,7 @@ if TYPE_CHECKING:
     from django.db.models.manager import RelatedManager
     from user_sessions.models import Session
 
+    from recipeyak.models.calendar import Calendar  # noqa: F401
     from recipeyak.models.scheduled_recipe import ScheduledRecipe
     from recipeyak.models.team import Team
     from recipeyak.models.upload import Upload  # noqa: F401
@@ -76,6 +77,11 @@ class User(AbstractBaseUser):
         related_name="+",
     )
     schedule_team_id: int | None
+
+    pinned_calendar = models.ForeignKey["Calendar"](
+        "Calendar", on_delete=models.SET_NULL, null=True, blank=True
+    )
+    pinned_calendar_id: int | None
 
     profile_upload = models.ForeignKey["Upload"](
         "Upload", related_name="+", on_delete=models.SET_NULL, null=True

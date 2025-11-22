@@ -32,6 +32,7 @@ export async function login(
     readonly theme_night: Theme
     readonly theme_mode: ThemeMode
     readonly schedule_team: number | null
+    readonly calendar_id: number | null
   },
   queryClient: QueryClient,
 ) {

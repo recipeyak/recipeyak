@@ -89,6 +89,10 @@
       'condiments',
     ),
     tuple(
+      'almond flour',
+      'baking',
+    ),
+    tuple(
       'almond paste',
       'condiments',
     ),
@@ -157,8 +161,16 @@
       'produce',
     ),
     tuple(
+      'coarsely grated mozzarella',
+      'cheese',
+    ),
+    tuple(
       'coconut extract',
       'produce',
+    ),
+    tuple(
+      'coconut noosa',
+      'dairy',
     ),
     tuple(
       'coconut oil',
@@ -265,6 +277,14 @@
       'produce',
     ),
     tuple(
+      'frozen banana',
+      'frozen',
+    ),
+    tuple(
+      'frozen strawberry',
+      'frozen',
+    ),
+    tuple(
       'garlic cloves',
       'produce',
     ),
@@ -337,6 +357,14 @@
       'canned & packaged',
     ),
     tuple(
+      'pepper jack cheese',
+      'cheese',
+    ),
+    tuple(
+      'pickled jalapeno',
+      'condiments',
+    ),
+    tuple(
       'raw papaya paste',
       'canned & packaged',
     ),
@@ -353,11 +381,19 @@
       'bread',
     ),
     tuple(
+      'small basil leaves (preferably thai or cinnamon basil)',
+      'produce',
+    ),
+    tuple(
       'store bought or homemade za’atar',
       'spices',
     ),
     tuple(
       'tomato paste',
+      'canned & packaged',
+    ),
+    tuple(
+      'tomato puree',
       'canned & packaged',
     ),
   ])

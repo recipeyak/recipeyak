@@ -3,6 +3,7 @@ from __future__ import annotations
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 
+from recipeyak.models.calendar import Calendar
 from recipeyak.models.ingredient import Ingredient
 from recipeyak.models.ingredient_historical import IngredientHistorical  # noqa: F401
 from recipeyak.models.invite import Invite  # noqa: F401
@@ -45,6 +46,12 @@ def get_team(user: User) -> Team:
     team_id = user.schedule_team_id
     assert team_id is not None, "should always have a team selected"
     return get_team_by_id(user_id=user.id, team_id=team_id)
+
+
+def get_pinned_calendar(user: User, team_id: int) -> Calendar:
+    calendar_id = user.pinned_calendar_id
+    assert calendar_id is not None, "should always have a pinned calendar selected"
+    return Calendar.objects.filter(team=team_id).get(id=calendar_id)
 
 
 def get_team_by_id(*, user_id: int, team_id: int) -> Team:

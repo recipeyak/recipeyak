@@ -1,14 +1,18 @@
 from recipeyak.api.ably_retrieve_view import ably_retrieve_view
 from recipeyak.api.algolia_retrieve_view import algolia_retrieve_view
 from recipeyak.api.base.router import create_urlpatterns, route
+from recipeyak.api.calendar_create_view import calendar_create_view
 from recipeyak.api.calendar_delete_view import calendar_delete_view
+from recipeyak.api.calendar_event_delete_view import calendar_event_delete_view
 from recipeyak.api.calendar_generate_link_view import calendar_generate_link_view
 from recipeyak.api.calendar_list_view import calendar_list_view
+from recipeyak.api.calendar_pin_create_view import calendar_pin_create_view
 from recipeyak.api.calendar_settings_retrieve_view import (
     calendar_settings_retrieve_view,
 )
 from recipeyak.api.calendar_update_settings_view import calendar_update_settings_view
 from recipeyak.api.calendar_update_view import calendar_update_view
+from recipeyak.api.calendars_list_view import calendars_list_view
 from recipeyak.api.cook_checklist_create_view import cook_checklist_create_view
 from recipeyak.api.cook_checklist_retrieve_view import cook_checklist_retrieve_view
 from recipeyak.api.export_recipes_list_view import export_recipes_list_view
@@ -307,6 +311,26 @@ routes = [
         view=session_delete_view,
     ),
     route(
+        "api/v1/calendars/",
+        method="get",
+        view=calendars_list_view,
+    ),
+    route(
+        "api/v1/calendars/",
+        method="post",
+        view=calendar_create_view,
+    ),
+    route(
+        "api/v1/calendars/<int:calendar_id>/",
+        method="delete",
+        view=calendar_delete_view,
+    ),
+    route(
+        "api/v1/calendars/<int:calendar_id>/pin/",
+        method="post",
+        view=calendar_pin_create_view,
+    ),
+    route(
         "api/v1/calendar/",
         method="get",
         view=calendar_list_view,
@@ -339,7 +363,7 @@ routes = [
     route(
         "api/v1/calendar/<int:scheduled_recipe_id>/",
         method="delete",
-        view=calendar_delete_view,
+        view=calendar_event_delete_view,
     ),
     route(
         "api/v1/shoppinglist/",
@@ -388,6 +412,11 @@ routes = [
     ),
     route(
         "t/<int:team_id>/ical/<str:ical_id>/schedule.ics",
+        method=("get", "head"),
+        view=ical_retrieve_view,
+    ),
+    route(
+        "t/<int:team_id>/ical/<str:ical_id>/calendar/<int:calendar_id>/schedule.ics",
         method=("get", "head"),
         view=ical_retrieve_view,
     ),

@@ -12,11 +12,13 @@ from recipeyak.api.calendar_serialization import (
     ScheduleRecipeSerializer,
     serialize_scheduled_recipe,
 )
-from recipeyak.models import ScheduledRecipe, get_team
+from recipeyak.models import ScheduledRecipe, get_pinned_calendar, get_team
 
 
-def get_scheduled_recipes(team_id: int) -> QuerySet[ScheduledRecipe]:
-    return ScheduledRecipe.objects.filter(team_id=team_id).select_related(
+def get_scheduled_recipes(team_id: int, calendar_id: int) -> QuerySet[ScheduledRecipe]:
+    return ScheduledRecipe.objects.filter(
+        team_id=team_id, calendar_id=calendar_id
+    ).select_related(
         "recipe",
         "created_by",
         "recipe__primary_image",
@@ -43,8 +45,13 @@ def calendar_list_view(
     start = params.start
     end = params.end
     team_id = get_team(request.user).id
+    calendar_id = get_pinned_calendar(request.user, team_id).id
 
-    queryset = get_scheduled_recipes(team_id).filter(on__gte=start).filter(on__lte=end)
+    queryset = (
+        get_scheduled_recipes(team_id, calendar_id)
+        .filter(on__gte=start)
+        .filter(on__lte=end)
+    )
 
     scheduled_recipes = [
         serialize_scheduled_recipe(

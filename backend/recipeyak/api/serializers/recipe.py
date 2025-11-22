@@ -355,13 +355,16 @@ def serialize_timeline_items(
     return items
 
 
-def serialize_recent_schedules(recipe: Recipe) -> list[RecentScheduleResponse]:
+def serialize_recent_schedules(
+    recipe: Recipe, calendar_id: int
+) -> list[RecentScheduleResponse]:
     now = datetime.now(UTC).date()
     return [
         RecentScheduleResponse(id=s.id, on=s.on)
         for s in recipe.scheduledrecipe_set.all()
         # HACK: we do the filtering in application land so we can use the `prefetch_related` query we already have.
         if now - timedelta(weeks=3) <= s.on <= now + timedelta(weeks=3)
+        and s.calendar_id == calendar_id
     ]
 
 
@@ -509,7 +512,10 @@ order by recipe_historical.created desc
 def serialize_recipe(recipe: Recipe, user: User) -> RecipeSerializer:
     ingredients = [serialize_ingredient(x) for x in recipe.ingredient_set.all()]
     steps = [serialize_step(x) for x in recipe.step_set.all()]
-    recent_schedules = serialize_recent_schedules(recipe)
+    assert user.pinned_calendar_id is not None
+    recent_schedules = serialize_recent_schedules(
+        recipe, calendar_id=user.pinned_calendar_id
+    )
     sections = [serialize_section(x) for x in recipe.section_set.all()]
     timeline_items = serialize_timeline_items(recipe)
     primary_image = (

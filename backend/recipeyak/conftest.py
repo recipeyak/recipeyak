@@ -17,6 +17,7 @@ from recipeyak.models import (
     Team,
     User,
 )
+from recipeyak.models.calendar import Calendar
 
 
 @pytest.fixture
@@ -169,8 +170,10 @@ def recipe2(user: User, team: Team) -> Recipe:
 @pytest.fixture
 def team(user: User) -> Team:
     team = Team.objects.create(name="Recipe Yak Team")
+    calendar = Calendar.objects.create(team=team, name="Default")
     team.force_join_admin(user=user)
     user.schedule_team = team
+    user.pinned_calendar = calendar
     user.save()
     return team
 
@@ -197,7 +200,10 @@ def team_with_recipes_no_members(recipe: Recipe, recipe_pie: Recipe) -> Team:
 
 @pytest.fixture
 def scheduled_recipe(recipe: Recipe, team: Team) -> ScheduledRecipe:
-    return ScheduledRecipe.objects.create(recipe=recipe, team=team, on=date(1976, 7, 6))
+    calendar = Calendar.objects.filter(team=team).get()
+    return ScheduledRecipe.objects.create(
+        recipe=recipe, team=team, on=date(1976, 7, 6), calendar=calendar
+    )
 
 
 @pytest.fixture(scope="session", autouse=True)

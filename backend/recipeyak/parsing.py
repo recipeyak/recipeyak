@@ -468,6 +468,9 @@ def _parse_quantity_name(text: str) -> tuple[str, str]:
 
 _NON_INGREDIENT_NAMES = frozenset(
     {
+        "large",
+        "medium",
+        "small",
         "bone-in",
         "skin-on",
         "fresh",
@@ -492,9 +495,15 @@ def _parse_name_description(text: str) -> tuple[str, str]:
     temp = []
     is_all_suffix_now = False
     words = text.split()
+    inside_paren = False
     for i, word in enumerate(words):
         next_word = words[i + 1] if i + 1 < len(words) else None
-        if word.endswith(",") and not is_all_suffix_now:
+        # this is a rough heuristic, we can do better
+        if word.startswith("("):
+            inside_paren = True
+        if ")" in word:
+            inside_paren = False
+        if word.endswith(",") and not is_all_suffix_now and not inside_paren:
             word_stripped = word.removesuffix(",")
             if word_stripped in _NON_INGREDIENT_NAMES:
                 temp.append(word)

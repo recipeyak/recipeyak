@@ -8,6 +8,7 @@ from django.db import models
 from recipeyak.models.base import CommonInfo
 
 if TYPE_CHECKING:
+    from recipeyak.models.calendar import Calendar
     from recipeyak.models.recipe import Recipe
     from recipeyak.models.team import Team
     from recipeyak.models.user import User
@@ -15,17 +16,13 @@ if TYPE_CHECKING:
 
 class ScheduledRecipeManager(models.Manager["ScheduledRecipe"]):
     def create_scheduled(
-        self,
-        recipe: Recipe,
-        on: date,
-        team: Team,
-        user: User,
+        self, recipe: Recipe, on: date, team: Team, user: User, calendar: Calendar
     ) -> ScheduledRecipe:
         """
         add to existing scheduled recipe count for dupes
         """
         return ScheduledRecipe.objects.create(
-            recipe=recipe, on=on, team=team, created_by=user
+            recipe=recipe, on=on, team=team, created_by=user, calendar=calendar
         )
 
 
@@ -42,6 +39,11 @@ class ScheduledRecipe(CommonInfo):
     created_by = models.ForeignKey["User"](
         "User", on_delete=models.CASCADE, null=True, related_name="+"
     )
+
+    calendar = models.ForeignKey["Calendar"](
+        "Calendar", on_delete=models.PROTECT, blank=True, null=True
+    )
+    calendar_id: int | None
 
     objects = ScheduledRecipeManager()
 

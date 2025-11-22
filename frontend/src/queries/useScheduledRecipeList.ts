@@ -13,6 +13,7 @@ import { cacheUpsertScheduledRecipesWeek } from "@/queries/useScheduledRecipeCre
 import { onRecipeDeletion } from "@/queries/useScheduledRecipeDelete"
 import { onScheduledRecipeUpdateSuccess } from "@/queries/useScheduledRecipeUpdate"
 import { useTeamId } from "@/useTeamId"
+import { useUser } from "@/useUser"
 
 type ScheduledRecipeUpdated = {
   created: string
@@ -42,31 +43,36 @@ export function useScheduledRecipeList({
   startOfWeekMs: number
 }) {
   const teamId = useTeamId()
+  const user = useUser()
+  const calendarId = user.calendarID
   const queryClient = useQueryClient()
-  useChannel(`team:${teamId}:scheduled_recipe`, (message) => {
-    switch (message.name) {
-      case "scheduled_recipe_updated": {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument
-        const apiRes: ScheduledRecipeUpdated = JSON.parse(message.data)
-        onScheduledRecipeUpdateSuccess({
-          queryClient,
-          scheduledRecipeId: apiRes.id,
-          teamId,
-          updatedCalRecipe: apiRes,
-        })
-        break
+  useChannel(
+    `team:${teamId}:calendar:${calendarId}:scheduled_recipe`,
+    (message) => {
+      switch (message.name) {
+        case "scheduled_recipe_updated": {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument
+          const apiRes: ScheduledRecipeUpdated = JSON.parse(message.data)
+          onScheduledRecipeUpdateSuccess({
+            queryClient,
+            scheduledRecipeId: apiRes.id,
+            teamId,
+            updatedCalRecipe: apiRes,
+          })
+          break
+        }
+        case "scheduled_recipe_delete": {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument
+          const apiRes: { recipeId: number } = JSON.parse(message.data)
+          onRecipeDeletion(queryClient, {
+            teamId,
+            scheduledRecipeId: apiRes.recipeId,
+          })
+          break
+        }
       }
-      case "scheduled_recipe_delete": {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument
-        const apiRes: { recipeId: number } = JSON.parse(message.data)
-        onRecipeDeletion(queryClient, {
-          teamId,
-          scheduledRecipeId: apiRes.recipeId,
-        })
-        break
-      }
-    }
-  })
+    },
+  )
   return useQuery({
     queryKey: [teamId, "calendar", startOfWeekMs],
     queryFn: async () => {

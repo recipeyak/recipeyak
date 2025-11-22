@@ -14,7 +14,13 @@ from recipeyak.api.base.serialization import Params
 from recipeyak.category import category
 from recipeyak.combine import Ingredient, combine_ingredients
 from recipeyak.models import Ingredient as DBIngredient
-from recipeyak.models import ScheduledRecipe, ShoppingList, Team, get_team
+from recipeyak.models import (
+    ScheduledRecipe,
+    ShoppingList,
+    Team,
+    get_pinned_calendar,
+    get_team,
+)
 from recipeyak.parsing import Unit
 
 
@@ -24,14 +30,16 @@ class ShoppinglistRetrieveParams(Params):
 
 
 def get_scheduled_recipes(
-    *, params: ShoppinglistRetrieveParams, team_id: int
+    *, params: ShoppinglistRetrieveParams, team_id: int, calendar_id: int
 ) -> QuerySet[ScheduledRecipe] | None:
     team = Team.objects.filter(pk=team_id).first()
     if team is None:
         return None
     try:
-        return team.scheduledrecipe_set.filter(on__gte=params.start).filter(
-            on__lte=params.end
+        return (
+            team.scheduledrecipe_set.filter(on__gte=params.start)
+            .filter(on__lte=params.end)
+            .filter(calendar=calendar_id)
         )
     except (ValueError, ValidationError):
         return None
@@ -64,7 +72,10 @@ def shoppinglist_retrieve_view(
     request: AuthedHttpRequest, params: ShoppinglistRetrieveParams
 ) -> ShoppinglistRetrieveResponse:
     team_id = get_team(request.user).id
-    scheduled_recipes = get_scheduled_recipes(params=params, team_id=team_id)
+    calendar = get_pinned_calendar(request.user, team_id)
+    scheduled_recipes = get_scheduled_recipes(
+        params=params, team_id=team_id, calendar_id=calendar.id
+    )
     if scheduled_recipes is None:
         raise APIError(code="invalid_params", message="Couldn't find scheduled recipes")
     recipes = dict[int, ShoppingListRecipe]()

@@ -260,6 +260,17 @@
                               "type": "null"
                             }
                           ]
+                        },
+                        "calendar_id": {
+                          "anyOf": [
+                            {
+                              "type": "integer"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ],
+                          "default": null
                         }
                       },
                       "required": [
@@ -516,6 +527,17 @@
                           "type": "null"
                         }
                       ]
+                    },
+                    "calendar_id": {
+                      "anyOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "default": null
                     }
                   },
                   "required": [
@@ -616,6 +638,17 @@
                               "type": "null"
                             }
                           ]
+                        },
+                        "calendar_id": {
+                          "anyOf": [
+                            {
+                              "type": "integer"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ],
+                          "default": null
                         }
                       },
                       "required": [
@@ -4974,6 +5007,142 @@
         }
       }
     },
+    "/api/v1/calendars/": {
+      "get": {
+        "operationId": "CalendarsList",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "calendars": {
+                      "items": {
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "pinned": {
+                            "default": false,
+                            "type": "boolean"
+                          }
+                        },
+                        "required": ["id", "name"],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": ["calendars"],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful response."
+          }
+        }
+      },
+      "post": {
+        "operationId": "CalendarCreate",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "required": ["name"],
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["id", "name"],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful response."
+          }
+        }
+      }
+    },
+    "/api/v1/calendars/{calendar_id}/": {
+      "delete": {
+        "operationId": "CalendarDelete",
+        "parameters": [
+          {
+            "name": "calendar_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["id", "name"],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful response."
+          }
+        }
+      }
+    },
+    "/api/v1/calendars/{calendar_id}/pin/": {
+      "post": {
+        "operationId": "CalendarPinCreate",
+        "parameters": [
+          {
+            "name": "calendar_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        }
+      }
+    },
     "/api/v1/calendar/": {
       "get": {
         "operationId": "CalendarList",
@@ -5581,7 +5750,7 @@
         }
       },
       "delete": {
-        "operationId": "CalendarDelete",
+        "operationId": "CalendarEventDelete",
         "parameters": [
           {
             "name": "scheduled_recipe_id",
@@ -5887,6 +6056,17 @@
                           "type": "null"
                         }
                       ]
+                    },
+                    "calendar_id": {
+                      "anyOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "default": null
                     }
                   },
                   "required": [
@@ -6054,6 +6234,17 @@
                           "type": "null"
                         }
                       ]
+                    },
+                    "calendar_id": {
+                      "anyOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "default": null
                     }
                   },
                   "required": [

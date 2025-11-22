@@ -27,6 +27,7 @@ _DEPARTMENT_MAPPING = {
     },
     "produce": {
         "basil",
+        "basil leaves",
         "coconut",
         "blueberries",
         "blackberries",
@@ -181,6 +182,7 @@ _DEPARTMENT_MAPPING = {
         "colby jack",
         "provolone",
         "queso fresco",
+        "pepper jack",
         "parmigiano",
         "mascarpone",
         "fontina",
@@ -199,6 +201,7 @@ _DEPARTMENT_MAPPING = {
         "ricotta",
         "yogurt",
         "yoghurt",
+        "coconut noosa",
         "butter",
         "half-and-half",
         "creme",
@@ -209,6 +212,7 @@ _DEPARTMENT_MAPPING = {
         "sugar",
         "granulated",
         "flour",
+        "almond flour",
         "chocolate",
         "choclate",
         "poppy seeds",
@@ -278,6 +282,7 @@ _DEPARTMENT_MAPPING = {
         "arrabbiata sauce",
         "oyster sauce",
         "tomato paste",
+        "tomato puree",
         "tuna",
         "anchovies",
         "adobo",
@@ -301,6 +306,7 @@ _DEPARTMENT_MAPPING = {
         "doubanjiang",
         "fish sauce",
         "gochujang",
+        "pickled jalapeno",
         "salsa",
         "chimichurri",
         "pickle",
@@ -518,7 +524,7 @@ def _search(item: str) -> dict[str, set[int]]:
 
 
 def category(ingredient: str) -> str:
-    res = _search(
+    ingredient = (
         ingredient.lower()
         .replace("-", " ")
         .replace(",", "")
@@ -526,6 +532,11 @@ def category(ingredient: str) -> str:
         .replace("(", "")
         .replace("’", "'")  # noqa: RUF001
     )
+
+    if "frozen" in ingredient:
+        return "frozen"
+
+    res = _search(ingredient)
     if not res:
         return "unknown"
 

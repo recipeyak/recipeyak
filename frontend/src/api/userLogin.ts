@@ -18,6 +18,7 @@ export function userLogin(params: { email: string; password: string }) {
       theme_night: "light" | "dark" | "dark_dimmed" | "autumn" | "solarized"
       theme_mode: "single" | "sync_with_system"
       schedule_team: number | null
+      calendar_id: number | null
     }
   }>({
     url: "/api/v1/auth/login/",

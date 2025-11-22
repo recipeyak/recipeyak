@@ -132,7 +132,7 @@ export function Step({
   return (
     <div
       ref={isEditing ? ref : undefined}
-      className={clx("mb-2", isDragging && "opacity-0")}
+      className={clx("mb-3", isDragging && "opacity-0")}
     >
       <div className="flex justify-between">
         <div className="flex items-center">
