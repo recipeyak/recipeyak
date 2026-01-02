@@ -75,6 +75,7 @@ To have a centralized location where multiple people can organize a meal plan.
 | [Umami](https://www.umami.recipes)                                                                            | [2022-07-12](https://web.archive.org/web/20220801023533/https://apps.apple.com/us/app/umami-recipes/id1597523594)                                                          | ❌                                            |
 | [Potluck](https://www.inkandswitch.com/potluck/)                                                              | [2022-11-01](https://web.archive.org/web/20221101163749/https://www.inkandswitch.com/potluck/)                                                                             | ❌                                            |
 | [Cookboox](https://apps.apple.com/us/app/cookboox/id6743146885)                                               | [2025-03-21](https://apps.apple.com/us/app/cookboox/id6743146885)                                                                                                          | ❌                                            |
+| [Prepbook](https://prepbook.app/recipes)                                                                      | [2025-12-27](https://bsky.app/profile/prepbook.app/post/3maxoxtkquk26)                                                                                                     | ❌                                            |
 
 ## Dev
 
