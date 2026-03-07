@@ -17,7 +17,7 @@ dependencies = [
     "djangorestframework-types~=0.2.0",
     "orjson==3.8.1",
     "psycopg2-binary~=2.9.3",
-    "boto3~=1.24.44",
+    "boto3~=1.42.63",
     "yarl~=1.8.1",
     "advocate~=1.0.0",
     "pillow~=9.3.0",
@@ -31,7 +31,7 @@ dependencies = [
     "tldextract~=3.4.0",
     "sentry-sdk~=1.35.0",
     "ably~=2.0.1",
-    "recipe-scrapers~=14.52.0",
+    "recipe-scrapers~=15.11.0",
     "algoliasearch~=3.0.0",
     "async-timeout~=4.0.3",
     "aiohttp~=3.9.1",
@@ -58,7 +58,7 @@ dev-dependencies = [
     "bpython~=0.24",
     "ruff~=0.3.5",
     "pytest-xdist~=3.5.0",
-    "boto3-stubs[s3]~=1.24.44",
+    "boto3-stubs[s3]~=1.42.63",
 ]
 package = false
 
