@@ -75,9 +75,7 @@ def test_parse_recipe_with_howto_section_dict_item_list_element(
     its keys (`@type`, `text`, `url`) as step text. Make sure we unwrap it.
     """
     html = (
-        Path(__file__).parent
-        / "test_data"
-        / "777654990-cheeseburger-sliders.html"
+        Path(__file__).parent / "test_data" / "777654990-cheeseburger-sliders.html"
     ).read_bytes()
 
     result = _parse_recipe(
