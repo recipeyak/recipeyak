@@ -66,6 +66,27 @@ def test_parse_recipe_with_empty_trailing_howto_section(
     assert result == snapshot()
 
 
+def test_parse_recipe_with_howto_section_dict_item_list_element(
+    snapshot: SnapshotAssertion,
+) -> None:
+    """
+    NYTimes wraps some steps in a HowToSection whose `itemListElement` is a
+    single dict instead of a list. recipe-scrapers iterates the dict and emits
+    its keys (`@type`, `text`, `url`) as step text. Make sure we unwrap it.
+    """
+    html = (
+        Path(__file__).parent
+        / "test_data"
+        / "777654990-cheeseburger-sliders.html"
+    ).read_bytes()
+
+    result = _parse_recipe(
+        html=html,
+        url="https://cooking.nytimes.com/recipes/777654990-cheeseburger-sliders",
+    )
+    assert result == snapshot()
+
+
 def test_parse_links_in_steps(snapshot: SnapshotAssertion) -> None:
     """
     Check that we convert links from html to markdown in steps.

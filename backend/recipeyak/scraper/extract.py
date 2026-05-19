@@ -129,18 +129,24 @@ def _sanitize_schema_instructions(parsed: AbstractScraper) -> None:
     # HowToSection lacks `itemListElement` (iterates None). NYTimes occasionally
     # emits a trailing empty `{"@type": "HowToSection"}`, so drop those before
     # calling instructions_list().
+    #
+    # Separately, NYTimes also emits HowToSections whose `itemListElement` is a
+    # single dict instead of a list of steps. recipe-scrapers iterates that dict
+    # and yields its keys (`@type`, `text`, `url`) as step text, so wrap any
+    # bare dict in a list first.
     instructions = parsed.schema.data.get("recipeInstructions")
     if not isinstance(instructions, list):
         return
-    parsed.schema.data["recipeInstructions"] = [
-        item
-        for item in instructions
-        if not (
-            isinstance(item, dict)
-            and item.get("@type") == "HowToSection"
-            and not item.get("itemListElement")
-        )
-    ]
+    sanitized: list[Any] = []
+    for item in instructions:
+        if isinstance(item, dict) and item.get("@type") == "HowToSection":
+            element = item.get("itemListElement")
+            if not element:
+                continue
+            if isinstance(element, dict):
+                item = {**item, "itemListElement": [element]}
+        sanitized.append(item)
+    parsed.schema.data["recipeInstructions"] = sanitized
 
 
 def extract_recipe(parsed: AbstractScraper) -> _ExtractedRecipe:
