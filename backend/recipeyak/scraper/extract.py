@@ -124,6 +124,25 @@ def _extract_ingredient_groups(parsed: AbstractScraper) -> list[_IngredientGroup
         return [_IngredientGroup(name=None, ingredients=parsed.ingredients())]
 
 
+def _sanitize_schema_instructions(parsed: AbstractScraper) -> None:
+    # recipe-scrapers 15.11.0 crashes in _extract_howto_instructions_text when a
+    # HowToSection lacks `itemListElement` (iterates None). NYTimes occasionally
+    # emits a trailing empty `{"@type": "HowToSection"}`, so drop those before
+    # calling instructions_list().
+    instructions = parsed.schema.data.get("recipeInstructions")
+    if not isinstance(instructions, list):
+        return
+    parsed.schema.data["recipeInstructions"] = [
+        item
+        for item in instructions
+        if not (
+            isinstance(item, dict)
+            and item.get("@type") == "HowToSection"
+            and not item.get("itemListElement")
+        )
+    ]
+
+
 def extract_recipe(parsed: AbstractScraper) -> _ExtractedRecipe:
     """
     Extact what data we can from the html without doing any IO
@@ -138,6 +157,7 @@ def extract_recipe(parsed: AbstractScraper) -> _ExtractedRecipe:
     author = _extract_author(parsed)
     ingredient_groups = _extract_ingredient_groups(parsed)
     canonical_url = parsed.canonical_url()
+    _sanitize_schema_instructions(parsed)
     instructions = parsed.instructions_list()
     if tips_html:
         # NOTE: we don't have a tips construct in the data model so we stuff
