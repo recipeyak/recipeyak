@@ -5,11 +5,12 @@ from uuid import uuid4
 import asyncpg
 import sentry_sdk
 import structlog
-import typer
 from dotenv import load_dotenv
 from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings
 from structlog.stdlib import BoundLogger
+
+from recipeyak.jobs.runner import run_job
 
 logger = structlog.stdlib.get_logger()
 
@@ -23,8 +24,9 @@ class Config(BaseSettings):
 
 async def job(database_url: str, log: BoundLogger) -> None:
     pg = await asyncpg.connect(dsn=database_url)
-    res = await pg.execute(
-        """
+    try:
+        res = await pg.execute(
+            """
 delete from recipe_cook_checklist_check
 where recipe_id in (
     select recipe_id
@@ -34,8 +36,10 @@ where recipe_id in (
     limit 10
 );
 """
-    )
-    log.info("deleted", response=res)
+        )
+        log.info("deleted", response=res)
+    finally:
+        await pg.close()
 
 
 def main() -> None:
@@ -43,8 +47,8 @@ def main() -> None:
     log.info("initiate")
     sentry_sdk.init(
         send_default_pii=True,
-        traces_sample_rate=1.0,
-        profiles_sample_rate=1.0,
+        traces_sample_rate=0.0,
+        profiles_sample_rate=0.0,
     )
     config = Config()
     start = time.monotonic()
@@ -55,4 +59,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    run_job(main)

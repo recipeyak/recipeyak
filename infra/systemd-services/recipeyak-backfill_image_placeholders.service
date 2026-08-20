@@ -1,6 +1,7 @@
 [Unit]
 Description=Runs backfill_image_placeholders job
 [Service]
+ExecStartPre=-/usr/bin/docker rm -f backfill_image_placeholders
 ExecStart=/usr/bin/docker run \
         --rm \
         --network host \
@@ -9,8 +10,11 @@ ExecStart=/usr/bin/docker run \
         --name backfill_image_placeholders \
         recipeyak/django:{{GIT_SHA}} \
         ./.venv/bin/python -m recipeyak.jobs.backfill_image_placeholders --no-dry-run
+ExecStopPost=-/usr/bin/docker rm -f backfill_image_placeholders
 KillSignal=SIGINT
-# kill after 10 minutes
-TimeoutSec=600
+# TimeoutSec only bounds startup and shutdown; RuntimeMaxSec is what
+# kills a job that hangs while running.
+RuntimeMaxSec=600
+TimeoutStopSec=30
 [Install]
 WantedBy=multi-user.target

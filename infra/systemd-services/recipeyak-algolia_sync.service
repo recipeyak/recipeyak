@@ -1,6 +1,7 @@
 [Unit]
 Description=Runs algolia sync job once
 [Service]
+ExecStartPre=-/usr/bin/docker rm -f live_search_sync_one_off
 ExecStart=/usr/bin/docker run \
         --rm \
         --network host \
@@ -9,8 +10,11 @@ ExecStart=/usr/bin/docker run \
         --name live_search_sync_one_off \
         recipeyak/django:{{GIT_SHA}} \
         ./.venv/bin/python -m recipeyak.jobs.live_search_sync --backfill-all
+ExecStopPost=-/usr/bin/docker rm -f live_search_sync_one_off
 KillSignal=SIGINT
-# kill after 2 minutes
-TimeoutSec=120
+# TimeoutSec only bounds startup and shutdown; RuntimeMaxSec is what
+# kills a job that hangs while running.
+RuntimeMaxSec=120
+TimeoutStopSec=30
 [Install]
 WantedBy=multi-user.target
