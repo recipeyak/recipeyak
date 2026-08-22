@@ -1,8 +1,7 @@
-from typing import Self
+from typing import Self, Unpack
 
 import pydantic
 from pydantic.config import ConfigDict
-from typing_extensions import Unpack
 
 from recipeyak.api.base.exceptions import RequestValidationError
 

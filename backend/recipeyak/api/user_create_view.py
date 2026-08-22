@@ -19,7 +19,7 @@ from recipeyak.models.user import User
 
 def _validate_email(email: str) -> str:
     if User.objects.filter(email=email).first() is not None:
-        msg = f"An email/password account is already associated with { email }."
+        msg = f"An email/password account is already associated with {email}."
         raise ValueError(msg)
     return email
 

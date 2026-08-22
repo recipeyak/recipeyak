@@ -92,7 +92,7 @@
             }
           }
         ],
-        "description": "\n    1. Admins of the team can edit any other member of the team\n    2. Non-admins can edit themselves\n    ",
+        "description": "\n1. Admins of the team can edit any other member of the team\n2. Non-admins can edit themselves\n",
         "responses": {
           "204": {
             "description": "No content"
@@ -185,7 +185,7 @@
     "/api/v1/auth/login/": {
       "post": {
         "operationId": "UserLogin",
-        "description": "\n    Check the credentials and login if credentials are valid and authenticated.\n    Calls Django Auth login method to register User ID in Django session framework.\n\n    Accept the following POST parameters: username, password\n    ",
+        "description": "\nCheck the credentials and login if credentials are valid and authenticated.\nCalls Django Auth login method to register User ID in Django session framework.\n\nAccept the following POST parameters: username, password\n",
         "requestBody": {
           "required": true,
           "content": {
@@ -299,7 +299,7 @@
     "/api/v1/auth/logout/": {
       "post": {
         "operationId": "UserLogout",
-        "description": "\n    Calls Django logout method and logs out current User object.\n\n    Accepts/Returns nothing.\n    ",
+        "description": "\nCalls Django logout method and logs out current User object.\n\nAccepts/Returns nothing.\n",
         "responses": {
           "200": {
             "content": {
@@ -328,6 +328,7 @@
             "content": {
               "application/json": {
                 "schema": {
+                  "additionalProperties": true,
                   "type": "object"
                 }
               }
@@ -360,7 +361,7 @@
     "/api/v1/auth/password/change/": {
       "post": {
         "operationId": "UserPasswordUpdate",
-        "description": "\n    Calls Django Auth SetPasswordForm save method.\n\n    Accepts the following POST parameters: new_password1, new_password2\n    Returns the success/fail message.\n    ",
+        "description": "\nCalls Django Auth SetPasswordForm save method.\n\nAccepts the following POST parameters: new_password1, new_password2\nReturns the success/fail message.\n",
         "requestBody": {
           "required": true,
           "content": {
@@ -898,7 +899,7 @@
             }
           }
         ],
-        "description": "\n    for creating, we want: level, user_id\n    for response, we want: id, user data, team\n    We want id, user object, and team data response\n    need to use to_representation or form_represenation\n    ",
+        "description": "\nfor creating, we want: level, user_id\nfor response, we want: id, user data, team\nWe want id, user object, and team data response\nneed to use to_representation or form_represenation\n",
         "requestBody": {
           "required": true,
           "content": {
@@ -1254,7 +1255,8 @@
                           },
                           "type": {
                             "const": "upload",
-                            "default": "upload"
+                            "default": "upload",
+                            "type": "string"
                           }
                         },
                         "required": [
@@ -1317,7 +1319,8 @@
                     },
                     "type": {
                       "const": "note",
-                      "default": "note"
+                      "default": "note",
+                      "type": "string"
                     }
                   },
                   "required": [
@@ -1703,7 +1706,8 @@
                                     },
                                     "type": {
                                       "const": "upload",
-                                      "default": "upload"
+                                      "default": "upload",
+                                      "type": "string"
                                     }
                                   },
                                   "required": [
@@ -1771,7 +1775,8 @@
                               },
                               "type": {
                                 "const": "note",
-                                "default": "note"
+                                "default": "note",
+                                "type": "string"
                               }
                             },
                             "required": [
@@ -1791,7 +1796,8 @@
                                 "type": "integer"
                               },
                               "type": {
-                                "const": "recipe"
+                                "const": "recipe",
+                                "type": "string"
                               },
                               "action": {
                                 "enum": [
@@ -2113,7 +2119,8 @@
                                       ]
                                     },
                                     "type": {
-                                      "const": "ingredient"
+                                      "const": "ingredient",
+                                      "type": "string"
                                     },
                                     "description": {
                                       "type": "string"
@@ -2155,7 +2162,8 @@
                                       ]
                                     },
                                     "type": {
-                                      "const": "section"
+                                      "const": "section",
+                                      "type": "string"
                                     },
                                     "title": {
                                       "type": "string"
@@ -2469,7 +2477,8 @@
                                     },
                                     "type": {
                                       "const": "upload",
-                                      "default": "upload"
+                                      "default": "upload",
+                                      "type": "string"
                                     }
                                   },
                                   "required": [
@@ -2537,7 +2546,8 @@
                               },
                               "type": {
                                 "const": "note",
-                                "default": "note"
+                                "default": "note",
+                                "type": "string"
                               }
                             },
                             "required": [
@@ -2557,7 +2567,8 @@
                                 "type": "integer"
                               },
                               "type": {
-                                "const": "recipe"
+                                "const": "recipe",
+                                "type": "string"
                               },
                               "action": {
                                 "enum": [
@@ -2879,7 +2890,8 @@
                                       ]
                                     },
                                     "type": {
-                                      "const": "ingredient"
+                                      "const": "ingredient",
+                                      "type": "string"
                                     },
                                     "description": {
                                       "type": "string"
@@ -2921,7 +2933,8 @@
                                       ]
                                     },
                                     "type": {
-                                      "const": "section"
+                                      "const": "section",
+                                      "type": "string"
                                     },
                                     "title": {
                                       "type": "string"
@@ -3349,7 +3362,8 @@
                                     },
                                     "type": {
                                       "const": "upload",
-                                      "default": "upload"
+                                      "default": "upload",
+                                      "type": "string"
                                     }
                                   },
                                   "required": [
@@ -3417,7 +3431,8 @@
                               },
                               "type": {
                                 "const": "note",
-                                "default": "note"
+                                "default": "note",
+                                "type": "string"
                               }
                             },
                             "required": [
@@ -3437,7 +3452,8 @@
                                 "type": "integer"
                               },
                               "type": {
-                                "const": "recipe"
+                                "const": "recipe",
+                                "type": "string"
                               },
                               "action": {
                                 "enum": [
@@ -3759,7 +3775,8 @@
                                       ]
                                     },
                                     "type": {
-                                      "const": "ingredient"
+                                      "const": "ingredient",
+                                      "type": "string"
                                     },
                                     "description": {
                                       "type": "string"
@@ -3801,7 +3818,8 @@
                                       ]
                                     },
                                     "type": {
-                                      "const": "section"
+                                      "const": "section",
+                                      "type": "string"
                                     },
                                     "title": {
                                       "type": "string"
@@ -4266,7 +4284,8 @@
                           },
                           "type": {
                             "const": "upload",
-                            "default": "upload"
+                            "default": "upload",
+                            "type": "string"
                           }
                         },
                         "required": [
@@ -4329,7 +4348,8 @@
                     },
                     "type": {
                       "const": "note",
-                      "default": "note"
+                      "default": "note",
+                      "type": "string"
                     }
                   },
                   "required": [
@@ -6510,7 +6530,8 @@
                                     },
                                     "type": {
                                       "const": "upload",
-                                      "default": "upload"
+                                      "default": "upload",
+                                      "type": "string"
                                     }
                                   },
                                   "required": [
@@ -6578,7 +6599,8 @@
                               },
                               "type": {
                                 "const": "note",
-                                "default": "note"
+                                "default": "note",
+                                "type": "string"
                               }
                             },
                             "required": [

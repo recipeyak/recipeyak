@@ -34,13 +34,12 @@ class Config(BaseSettings):
 def get_placeholder_image(image: BytesIO) -> str:
     with Image.open(image) as im:
         # remove transparency which isn't support by jpeg
-        if im.mode == "RGBA":
-            im = im.convert("RGB")
+        thumbnail: Image.Image = im.convert("RGB") if im.mode == "RGBA" else im
         # ensure thumbnail is oriented according EXIF orientation.
-        im = ImageOps.exif_transpose(im)
-        im.thumbnail((42, 42))
+        thumbnail = ImageOps.exif_transpose(thumbnail)
+        thumbnail.thumbnail((42, 42))
         buf = BytesIO()
-        im.save(buf, optimize=True, format="jpeg")
+        thumbnail.save(buf, optimize=True, format="jpeg")
         img_str = base64.b64encode(buf.getvalue())
         return (b"data:image/jpg;base64," + img_str).decode()
 

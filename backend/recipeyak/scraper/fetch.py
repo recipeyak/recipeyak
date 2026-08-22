@@ -36,7 +36,7 @@ def fetch_bytes(*, url: str) -> tuple[bytes, str]:
     # and https://github.com/getsentry/sentry/blob/66b93770e95290a3ab257311e4a2598304fb4e6f/src/sentry/http.py#L171
     try:
         content_len = int(response.headers["content-length"])
-    except (LookupError, ValueError):
+    except LookupError, ValueError:
         content_len = 0
     if content_len > MAX_RES_LENGTH:
         raise OverflowError
@@ -83,5 +83,5 @@ def fetch_content_length(*, url: str) -> int | None:
         if size > MAX_RES_LENGTH:
             raise OverflowError
         return size
-    except (LookupError, ValueError):
+    except LookupError, ValueError:
         return None

@@ -61,11 +61,10 @@ def create_urlpatterns(*routes: Route) -> list[URLPattern]:
         urlpatterns.append(
             create_path(
                 p,
-                lambda request,
-                *args,
-                method_to_view=method_to_view,
-                **kwargs: _method_router(
-                    request, *args, method_to_view=method_to_view, **kwargs
+                lambda request, *args, method_to_view=method_to_view, **kwargs: (
+                    _method_router(
+                        request, *args, method_to_view=method_to_view, **kwargs
+                    )
                 ),
             )
         )

@@ -113,4 +113,4 @@ def _parse_param_data(
                 ]
             )
     request_params |= kwargs
-    return cast(Params, param_type).parse_obj(request_params)
+    return cast("Params", param_type).parse_obj(request_params)

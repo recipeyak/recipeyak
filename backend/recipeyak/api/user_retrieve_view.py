@@ -32,14 +32,14 @@ def serialize_user(user: User) -> UserSerializer:
         ),
         email=user.email,
         theme_day=cast(
-            Literal["light", "dark", "dark_dimmed", "autumn", "solarized"],
+            "Literal['light', 'dark', 'dark_dimmed', 'autumn', 'solarized']",
             user.theme_day,
         ),
         theme_night=cast(
-            Literal["light", "dark", "dark_dimmed", "autumn", "solarized"],
+            "Literal['light', 'dark', 'dark_dimmed', 'autumn', 'solarized']",
             user.theme_night,
         ),
-        theme_mode=cast(Literal["single", "sync_with_system"], user.theme_mode),
+        theme_mode=cast("Literal['single', 'sync_with_system']", user.theme_mode),
         schedule_team=user.schedule_team_id,
         calendar_id=user.pinned_calendar_id,
     )

@@ -27,7 +27,7 @@ def test_categorize_ingredients() -> None:
 
     out["unknown"] -= expected_unknown
 
-    assert not out["unknown"], f'remaining {len(out["unknown"])}'
+    assert not out["unknown"], f"remaining {len(out['unknown'])}"
 
 
 def test_categorize_ingredient_test_cases(snapshot: SnapshotAssertion) -> None:
