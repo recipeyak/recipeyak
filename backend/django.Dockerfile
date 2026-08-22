@@ -1,7 +1,5 @@
 # keep this >= 3.11.1: 3.11.0 can deadlock on exit when a daemon thread is
 # killed mid GIL handoff (https://github.com/python/cpython/issues/96387)
-# not slim: netifaces (via advocate) has no wheel past cp39, so it builds
-# from source and needs a compiler
 FROM python:3.11-bookworm@sha256:c17b9ca6def1a936e55c77f086aaaf5f6a6c5f4d2fb4b7ac8c0113ba94e8b6ab
 
 # Install uv
