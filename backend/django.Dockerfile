@@ -17,7 +17,14 @@ COPY pyproject.toml pyproject.toml
 COPY uv.lock uv.lock
 
 # Install our dev dependencies
-RUN uv sync --frozen
+# netifaces (via advocate) has no wheel past cp39 so it builds from source, and
+# unlike bullseye, bookworm-slim doesn't ship a compiler
+RUN set -ex && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends gcc libc6-dev && \
+    uv sync --frozen && \
+    apt-get purge -y --auto-remove gcc libc6-dev && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY . /var/app
 # Inject GIT SHA into settings file to track releases via Sentry
