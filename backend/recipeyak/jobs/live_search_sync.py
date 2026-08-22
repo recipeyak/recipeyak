@@ -189,25 +189,28 @@ async def job(*, log: BoundLogger, config: Config, backfill_all: bool) -> None:
     dsn = str(config.DATABASE_URL)
     pg = await asyncpg.connect(dsn=dsn)
 
-    if backfill_all:
-        await process_queue(pg, config=config, backfill_all=backfill_all, log=log)
-        return
+    try:
+        if backfill_all:
+            await process_queue(pg, config=config, backfill_all=backfill_all, log=log)
+            return
 
-    async def callback(
-        conn: asyncpg.Connection[Any],
-        pid: int,
-        channel: str,
-        payload: object,
-    ) -> None:
-        await process_queue(conn, config=config, backfill_all=backfill_all, log=log)
+        async def callback(
+            conn: asyncpg.Connection[Any],
+            pid: int,
+            channel: str,
+            payload: object,
+        ) -> None:
+            await process_queue(conn, config=config, backfill_all=backfill_all, log=log)
 
-    await pg.add_listener("recipe_enqueued_for_indexing", callback)  # type: ignore[arg-type]
-    await pg.execute("notify recipe_enqueued_for_indexing")
+        await pg.add_listener("recipe_enqueued_for_indexing", callback)  # type: ignore[arg-type]
+        await pg.execute("notify recipe_enqueued_for_indexing")
 
-    while True:
-        await asyncio.sleep(0.5)
-        if random.random() < 0.005:
-            log.info("tick")
+        while True:
+            await asyncio.sleep(0.5)
+            if random.random() < 0.005:
+                log.info("tick")
+    finally:
+        await pg.close()
 
 
 def main(backfill_all: bool = False) -> None:
@@ -215,7 +218,7 @@ def main(backfill_all: bool = False) -> None:
     log.info("initiate")
     sentry_sdk.init(
         send_default_pii=True,
-        traces_sample_rate=1.0,
+        traces_sample_rate=0.0,
     )
     config = Config()
     start = time.monotonic()

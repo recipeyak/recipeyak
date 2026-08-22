@@ -67,9 +67,10 @@ async def job(
     log = log.bind(dry_run=dry_run)
     log.info("starting up", dry_run=dry_run)
     pg = await asyncpg.connect(dsn=database_url)
-    log.info("fetching upload data")
-    rows = await pg.fetch(
-        """
+    try:
+        log.info("fetching upload data")
+        rows = await pg.fetch(
+            """
     select id, key from core_upload
     where completed = true
       and background_url is null
@@ -77,52 +78,56 @@ async def job(
       and content_type like 'image/%'
     limit 50;
     """
-    )
-    log = log.bind(row_count=len(rows))
-    log.info("downloading images")
-
-    if not rows:
-        log.info("no rows to update, exiting")
-        return
-
-    async with httpx.AsyncClient(timeout=None) as http:
-        results = await asyncio.gather(
-            *[
-                get_image_data(
-                    http,
-                    url=public_url(key=key, storage_hostname=storage_hostname),
-                    id=upload_id,
-                )
-                for (upload_id, key) in rows
-            ]
         )
+        log = log.bind(row_count=len(rows))
+        log.info("downloading images")
 
-    id_to_placeholder: dict[int, str] = {}
-    for upload_id, url, image_bytes in results:
-        log.info("generating placeholder", url=url, upload_id=upload_id)
-        try:
-            id_to_placeholder[upload_id] = get_placeholder_image(BytesIO(image_bytes))
-        except UnidentifiedImageError:
-            # With PDFs we'll get an error when trying to Image.open them:
-            #   UnidentifiedImageError
-            #   cannot identify image file <_io.BytesIO object at 0x7f50b38b0a90>
-            log.exception("problem generating placeholder", upload_id=upload_id)
+        if not rows:
+            log.info("no rows to update, exiting")
+            return
 
-    log = log.bind(placeholder_count=len(id_to_placeholder))
+        async with httpx.AsyncClient(timeout=None) as http:
+            results = await asyncio.gather(
+                *[
+                    get_image_data(
+                        http,
+                        url=public_url(key=key, storage_hostname=storage_hostname),
+                        id=upload_id,
+                    )
+                    for (upload_id, key) in rows
+                ]
+            )
 
-    if dry_run:
-        log.info("would update")
-        return
+        id_to_placeholder: dict[int, str] = {}
+        for upload_id, url, image_bytes in results:
+            log.info("generating placeholder", url=url, upload_id=upload_id)
+            try:
+                id_to_placeholder[upload_id] = get_placeholder_image(
+                    BytesIO(image_bytes)
+                )
+            except UnidentifiedImageError:
+                # With PDFs we'll get an error when trying to Image.open them:
+                #   UnidentifiedImageError
+                #   cannot identify image file <_io.BytesIO object at 0x7f50b38b0a90>
+                log.exception("problem generating placeholder", upload_id=upload_id)
 
-    log.info("updating uploads")
-    await pg.executemany(
-        """
+        log = log.bind(placeholder_count=len(id_to_placeholder))
+
+        if dry_run:
+            log.info("would update")
+            return
+
+        log.info("updating uploads")
+        await pg.executemany(
+            """
     update core_upload
     set background_url = $2
     where id = $1 and background_url is null
     """,
-        list(id_to_placeholder.items()),
-    )
+            list(id_to_placeholder.items()),
+        )
+    finally:
+        await pg.close()
 
 
 def main(dry_run: bool = False) -> None:
@@ -133,8 +138,8 @@ def main(dry_run: bool = False) -> None:
     log.info("initiate")
     sentry_sdk.init(
         send_default_pii=True,
-        traces_sample_rate=1.0,
-        profiles_sample_rate=1.0,
+        traces_sample_rate=0.0,
+        profiles_sample_rate=0.0,
     )
     with sentry_sdk.monitor(monitor_slug="backfill-image-placeholders"):
         start = time.monotonic()

@@ -23,8 +23,9 @@ class Config(BaseSettings):
 
 async def job(database_url: str, log: BoundLogger) -> None:
     pg = await asyncpg.connect(dsn=database_url)
-    res = await pg.execute(
-        """
+    try:
+        res = await pg.execute(
+            """
 delete from recipe_cook_checklist_check
 where recipe_id in (
     select recipe_id
@@ -34,8 +35,10 @@ where recipe_id in (
     limit 10
 );
 """
-    )
-    log.info("deleted", response=res)
+        )
+        log.info("deleted", response=res)
+    finally:
+        await pg.close()
 
 
 def main() -> None:
@@ -43,8 +46,8 @@ def main() -> None:
     log.info("initiate")
     sentry_sdk.init(
         send_default_pii=True,
-        traces_sample_rate=1.0,
-        profiles_sample_rate=1.0,
+        traces_sample_rate=0.0,
+        profiles_sample_rate=0.0,
     )
     config = Config()
     start = time.monotonic()

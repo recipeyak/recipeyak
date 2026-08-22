@@ -2,6 +2,7 @@
 Description=Runs algolia sync job once
 [Service]
 Restart=always
+ExecStartPre=-/usr/bin/docker rm -f live_search_sync_continuous
 ExecStart=/usr/bin/docker run \
         --rm \
         --network host \
@@ -10,6 +11,8 @@ ExecStart=/usr/bin/docker run \
         --name live_search_sync_continuous \
         recipeyak/django:{{GIT_SHA}} \
         ./.venv/bin/python -m recipeyak.jobs.live_search_sync --no-backfill-all
+ExecStopPost=-/usr/bin/docker rm -f live_search_sync_continuous
 KillSignal=SIGINT
+TimeoutStopSec=30
 [Install]
 WantedBy=multi-user.target
