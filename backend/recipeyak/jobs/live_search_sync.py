@@ -10,13 +10,12 @@ from uuid import uuid4
 import asyncpg
 import sentry_sdk
 import structlog
+import typer
 from algoliasearch.search_client import SearchClient
 from dotenv import load_dotenv
 from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings
 from structlog.stdlib import BoundLogger
-
-from recipeyak.jobs.runner import run_job
 
 logger = structlog.stdlib.get_logger()
 
@@ -229,4 +228,4 @@ def main(backfill_all: bool = False) -> None:
 
 
 if __name__ == "__main__":
-    run_job(main)
+    typer.run(main)

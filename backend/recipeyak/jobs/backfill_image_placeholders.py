@@ -8,6 +8,7 @@ import asyncpg
 import httpx
 import sentry_sdk
 import structlog
+import typer
 from dotenv import load_dotenv
 from PIL import Image, ImageOps, UnidentifiedImageError
 from pillow_heif import register_heif_opener
@@ -15,8 +16,6 @@ from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings
 from structlog.stdlib import BoundLogger
 from yarl import URL
-
-from recipeyak.jobs.runner import run_job
 
 logger = structlog.stdlib.get_logger()
 
@@ -157,4 +156,4 @@ def main(dry_run: bool = False) -> None:
 
 
 if __name__ == "__main__":
-    run_job(main)
+    typer.run(main)

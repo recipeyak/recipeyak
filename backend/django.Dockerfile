@@ -1,4 +1,6 @@
-FROM python:3.11-slim-bullseye@sha256:6286a3059285256b485fa617640d0fe2f1df6e7b6248f75199cd815e4c4a1c41
+# keep this >= 3.11.1: 3.11.0 can deadlock on exit when a daemon thread is
+# killed mid GIL handoff (https://github.com/python/cpython/issues/96387)
+FROM python:3.11-slim-bookworm@sha256:2e32f7d302adc1c37428355c1e646897c0c53f4fd60b6a551245fb90ee129f91
 
 # Install uv
 # update github actions if you change this version
