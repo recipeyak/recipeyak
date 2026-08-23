@@ -25,4 +25,4 @@ def test_user_delete(client: Client, user: User, team: Team) -> None:
     res = client.delete("/api/v1/user/")
     assert res.status_code == 204
 
-    assert not cast(Any, get_user_model()).objects.filter(id=user.id).exists()
+    assert not cast("Any", get_user_model()).objects.filter(id=user.id).exists()

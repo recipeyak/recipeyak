@@ -19,9 +19,9 @@ def test_creating_scheduled_recipe(
     res = client.post(url, data, content_type="application/json")
     assert res.status_code == 200
     assert ScheduledRecipe.objects.filter(id=res.json()["id"]).exists()
-    assert res.json()[
-        "created"
-    ], "ensure we have the created at property for sorting on the frontend"
+    assert res.json()["created"], (
+        "ensure we have the created at property for sorting on the frontend"
+    )
 
 
 def test_adding_to_team_calendar(

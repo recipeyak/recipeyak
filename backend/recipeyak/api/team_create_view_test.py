@@ -17,9 +17,9 @@ def test_creating_team(client: Client, user: User, user2: User) -> None:
     url = "/api/v1/t/"
 
     res = client.post(url, data, content_type="application/json")
-    assert (
-        res.status_code == 403
-    ), "Unauthenticated users should not be able to create a team"
+    assert res.status_code == 403, (
+        "Unauthenticated users should not be able to create a team"
+    )
 
     client.force_login(user)
     res = client.post(url, data, content_type="application/json")
@@ -37,9 +37,9 @@ def test_creating_team(client: Client, user: User, user2: User) -> None:
     assert team.is_admin(user), "Team creator should be an admin"
 
     client.force_login(user2)
-    assert (
-        client.get(url).status_code == 404
-    ), "user2 cannnot access team since they aren't members"
+    assert client.get(url).status_code == 404, (
+        "user2 cannnot access team since they aren't members"
+    )
 
 
 def test_updating_team_name(
@@ -90,9 +90,9 @@ def test_deleting_team(
     assert not team.is_member(user3)
     assert empty_team.is_admin(user3)
     client.force_login(user3)
-    assert (
-        client.delete(url).status_code == 404
-    ), "admin of another team cannot delete this team"
+    assert client.delete(url).status_code == 404, (
+        "admin of another team cannot delete this team"
+    )
 
 
 def test_list_team(
@@ -184,27 +184,27 @@ def test_destory_team_member(
     # non-members cannot delete team memberships
     assert not team.is_member(user2)
     client.force_login(user2)
-    assert (
-        client.delete(f"/api/v1/members/{user_membership.id}/").status_code == 403
-    ), "non-member should not be able to delete member"
+    assert client.delete(f"/api/v1/members/{user_membership.id}/").status_code == 403, (
+        "non-member should not be able to delete member"
+    )
 
     # non-admins cannot delete team members
     team.force_join(user3)
     assert not team.is_admin(user3)
     assert team.is_member(user3)
     client.force_login(user3)
-    assert (
-        client.delete(f"/api/v1/members/{user_membership.id}/").status_code == 403
-    ), "non-admin member should not be able to revoke admin user's membership"
+    assert client.delete(f"/api/v1/members/{user_membership.id}/").status_code == 403, (
+        "non-admin member should not be able to revoke admin user's membership"
+    )
 
     user3_membership = user3.membership_set.get(team=team)
     # admins can remove memberships of members
     client.force_login(user)
     res = client.delete(f"/api/v1/members/{user3_membership.id}/")
     assert res.status_code == 204
-    assert not Membership.objects.filter(
-        id=user3_membership.id
-    ).exists(), "admin should be able to remove team membership of member"
+    assert not Membership.objects.filter(id=user3_membership.id).exists(), (
+        "admin should be able to remove team membership of member"
+    )
 
     # admins can remove other admins
     team.force_join_admin(user3)
@@ -427,12 +427,12 @@ def test_user_invites(
         content_type="application/json",
     )
     assert res.status_code == 200
-    assert user2.membership_set.filter(
-        team=team
-    ).exists(), "user should be a member of the team"
-    assert not user2.membership_set.get(
-        team=team
-    ).is_active, "user membership should be inactive"
+    assert user2.membership_set.filter(team=team).exists(), (
+        "user should be a member of the team"
+    )
+    assert not user2.membership_set.get(team=team).is_active, (
+        "user membership should be inactive"
+    )
     assert Invite.objects.filter(membership__user=user2).exists(), "user has invite"
 
     # invite user3 to team

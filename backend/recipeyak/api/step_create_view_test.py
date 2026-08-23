@@ -61,9 +61,9 @@ def test_adding_step_to_recipe(
     res = client.get(f"/api/v1/recipes/{recipe.id}/")
     assert res.status_code == 200
 
-    assert step.get("text") in (
-        step.get("text") for step in res.json().get("steps")
-    ), "step was not in the steps of the recipe"
+    assert step.get("text") in (step.get("text") for step in res.json().get("steps")), (
+        "step was not in the steps of the recipe"
+    )
 
 
 def test_position_constraint_with_deleted_steps(recipe: Recipe) -> None:

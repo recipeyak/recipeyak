@@ -41,4 +41,4 @@ def user_login_view(
 
     login(request, user)
 
-    return UserLoginResponse(user=serialize_user(cast(User, user)))
+    return UserLoginResponse(user=serialize_user(cast("User", user)))

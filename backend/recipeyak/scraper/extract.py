@@ -42,7 +42,7 @@ def _extract_open_graph_image(html: bytes | str) -> str | None:
     og_data = extruct.extract(html, syntaxes=["opengraph"], uniform=True)["opengraph"]
     if not og_data:
         return None
-    return cast(str | None, og_data[0].get("og:image"))
+    return cast("str | None", og_data[0].get("og:image"))
 
 
 def _extract_next_json(tag_text: str) -> dict[str, Any] | None:
@@ -51,7 +51,7 @@ def _extract_next_json(tag_text: str) -> dict[str, Any] | None:
     except json.JSONDecodeError:
         try:
             return json.loads(base64.b64decode(tag_text))  # type: ignore[no-any-return]
-        except (json.JSONDecodeError, binascii.Error):
+        except json.JSONDecodeError, binascii.Error:
             return None
 
 
@@ -106,7 +106,7 @@ def _extract_yields(parsed: AbstractScraper) -> str | None:
 
 def _extract_author(parsed: AbstractScraper) -> str | None:
     try:
-        return cast(str | None, parsed.author())
+        return cast("str | None", parsed.author())
     except AttributeError:
         return None
 

@@ -1,11 +1,8 @@
-# keep this >= 3.11.1: 3.11.0 can deadlock on exit when a daemon thread is
-# killed mid GIL handoff (https://github.com/python/cpython/issues/96387)
-FROM python:3.11-bookworm@sha256:c17b9ca6def1a936e55c77f086aaaf5f6a6c5f4d2fb4b7ac8c0113ba94e8b6ab
+FROM python:3.14-bookworm@sha256:8771427e2ac3e39208c1632f17e8b09e464333d262844a03705cc5e0023c16e2
 
 # Install uv
 # update github actions if you change this version
-RUN set -ex && python3 -m pip install pip==22.2.2 && \
-    python3 -m pip install uv==0.4.5
+RUN set -ex && python3 -m pip install uv==0.12.5
 
 # Install Application into container
 RUN set -ex && mkdir -p /var/app

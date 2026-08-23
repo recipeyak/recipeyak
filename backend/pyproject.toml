@@ -7,64 +7,67 @@ authors = [
     { name="Christopher Dignam", email="chris@dignam.xyz" },
 ]
 
-requires-python = ">=3.10"
+requires-python = ">=3.14"
 dependencies = [
-    "django~=3.2.9",
-    "dj-database-url==0.4.2",
-    "gunicorn==20.1.0",
-    "django-user-sessions~=1.6",
-    "python-dotenv==0.21.0",
-    "djangorestframework-types~=0.2.0",
-    "orjson==3.8.1",
-    "psycopg2-binary~=2.9.3",
-    "boto3~=1.42.63",
-    "yarl~=1.8.1",
+    "django~=5.2.11",
+    "dj-database-url==3.1.2",
+    "gunicorn==26.1.0",
+    "django-user-sessions~=2.0",
+    # django-user-sessions imports pkg_resources, which python no longer
+    # bundles and setuptools dropped in 81
+    "setuptools<81",
+    "python-dotenv==1.2.3",
+    "djangorestframework-types~=0.9.0",
+    "orjson==3.12.0",
+    "psycopg2-binary~=2.9.12",
+    "boto3~=1.43.78",
+    "yarl~=1.24.5",
     "advocate~=1.0.0",
-    "pillow~=9.3.0",
-    "httpx~=0.23.1",
-    "asyncpg~=0.27.0",
-    "asyncpg-stubs~=0.27.0",
-    "typer~=0.7.0",
-    "structlog~=22.3.0",
-    "types-pillow~=9.3.0",
-    "pillow-heif~=0.9.0",
-    "tldextract~=3.4.0",
-    "sentry-sdk~=1.35.0",
-    "ably~=2.0.1",
-    "recipe-scrapers~=15.11.0",
+    "pillow~=12.3.0",
+    "httpx~=0.28.1",
+    "asyncpg~=0.31.0",
+    "asyncpg-stubs~=0.31.3",
+    "typer~=0.27.1",
+    "structlog~=26.1.0",
+    "pillow-heif~=1.5.0",
+    "tldextract~=5.3.2",
+    "sentry-sdk~=2.68.0",
+    "ably~=3.1.2",
+    "recipe-scrapers~=15.12.0",
     "algoliasearch~=3.0.0",
-    "async-timeout~=4.0.3",
-    "aiohttp~=3.9.1",
-    "ruamel-yaml~=0.18.5",
-    "pydantic-settings~=2.1.0",
+    "async-timeout~=5.0.1",
+    "aiohttp~=3.14.3",
+    "ruamel-yaml~=0.19.1",
+    "pydantic-settings~=2.15.0",
     "jsonref~=1.1.0",
-    "pywatchman~=2.0.0",
-    "pydantic[email]~=2.5.3",
+    "pywatchman~=4.0.0",
+    "pydantic[email]~=2.13.4",
     "markdownify>=0.13.1",
 ]
 
 [tool.uv]
 dev-dependencies = [
-    "pytest==7.2.0",
-    "pytest-django==4.5.2",
-    "ipdb~=0.13.9",
-    "django-types~=0.19.1",
+    "pytest==9.1.1",
+    "pytest-django==4.14.0",
+    "ipdb~=0.13.13",
+    "django-types~=0.24.0",
     "types-pyyaml~=6.0.0",
+    # advocate pins urllib3<2, so the newer stubs, which require urllib3>=2, conflict
     "types-requests~=2.25.11",
-    "syrupy~=3.0.5",
     "types-urllib3~=1.26.23",
-    "types-dj-database-url~=1.0.0",
-    "mypy~=1.7.0",
-    "bpython~=0.24",
-    "ruff~=0.3.5",
-    "pytest-xdist~=3.5.0",
-    "boto3-stubs[s3]~=1.42.63",
+    "syrupy~=6.0.0",
+    "types-dj-database-url~=1.3.0",
+    "mypy~=2.3.1",
+    "bpython~=0.26",
+    "ruff~=0.16.4",
+    "pytest-xdist~=3.8.0",
+    "boto3-stubs[s3]~=1.43.78",
 ]
 package = false
 
 [tool.ruff]
 src = ["recipeyak"]
-target-version = "py311"
+target-version = "py314"
 
 [tool.ruff.lint]
 select = [
@@ -84,7 +87,7 @@ select = [
     "DTZ",
     "ERA",
     "PTH",
-    "TCH",
+    "TC",
     "PYI",
     "PT",
     "INP001",
@@ -105,10 +108,17 @@ ignore = [
     "RET505", # if, elif, else are fine with returns
     "RET507", # if, elif, else with continue is also fine
     "RET508", # if, elif, else with break is also fine
-    "TCH003", # not until autofixable
-    "TCH002", # not until autofixable
-    "TCH001", # not until autofixable
-    "PT004", # makes the function appear unused to pyright
+    "TC003", # not until autofixable
+    "TC002", # not until autofixable
+    "TC001", # not until autofixable
+    # these all want codebase wide rewrites that are worth doing on their own:
+    "UP040", # TypeAlias -> the `type` keyword
+    "UP042", # str + Enum -> StrEnum, which changes how members stringify
+    "UP046", # Generic[T] -> PEP 695 type parameters
+    "UP047", # generic functions -> PEP 695 type parameters
+    # Decimal(4.92892) and Decimal("4.92892") are not the same number, so
+    # this one needs a careful look at each call site
+    "RUF032",
 ]
 unfixable = ["ERA001"] # we want to check ourselves before we delete commented out code. Also this doesn't cleanup all of it.
 
