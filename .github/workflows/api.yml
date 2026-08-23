@@ -183,6 +183,10 @@ jobs:
     needs: pre_job
     if: needs.pre_job.outputs.should_skip != 'true'
 
+    permissions:
+      # squawk-action posts its migration lint results as a PR comment
+      pull-requests: write
+
     runs-on: ubuntu-latest
     services:
       postgres:
