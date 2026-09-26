@@ -48,6 +48,12 @@ export function Textarea({
   })
   return (
     <TextareaAutosize
+      // Without explicit hints iOS Safari guesses the field type and can offer
+      // credit card AutoFill instead of normal prose typing behavior.
+      autoComplete="off"
+      autoCorrect="on"
+      autoCapitalize="sentences"
+      spellCheck
       {...props}
       ref={ref}
       className={clx(
