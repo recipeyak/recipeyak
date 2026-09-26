@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react"
-
 import { Button } from "@/components/Buttons"
 import { RecipeListItem } from "@/pages/recipe-list/RecipeItem"
 import { pathRecipeAdd } from "@/paths"
@@ -47,24 +45,9 @@ export function RecipeList(props: {
   readonly isSuccess: boolean
   readonly query: string
 }) {
-  const [initialLimit, setLimit] = useState(20)
-
-  const recipeItems = props.hits
-    .map((hit, index) => {
-      return <RecipeListItem key={index} index={index} hit={hit} {...hit} />
-    })
-    .slice(0, initialLimit)
-
-  // HACK(cdignam): We initially render only 20 items, then we render the remaining items.
-  //
-  // Ideally we'd use windowing to fix this.
-  useEffect(() => {
-    if (recipeItems.length === 20) {
-      setTimeout(() => {
-        setLimit(Infinity)
-      }, 1)
-    }
-  }, [recipeItems.length])
+  const recipeItems = props.hits.map((hit, index) => {
+    return <RecipeListItem key={hit.id} index={index} hit={hit} />
+  })
 
   if (!props.query && recipeItems.length === 0 && props.isSuccess) {
     return <AddRecipeCallToAction />

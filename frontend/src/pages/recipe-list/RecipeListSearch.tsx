@@ -1,5 +1,5 @@
 import { snakeCase } from "lodash-es"
-import { useEffect, useRef, useState } from "react"
+import { useDeferredValue, useEffect, useRef, useState } from "react"
 import { useHistory, useLocation } from "react-router"
 
 import { Button } from "@/components/Buttons"
@@ -380,6 +380,8 @@ function useSearchState() {
   return [query, setQuery] as const
 }
 
+const emptyHits: never[] = []
+
 export function RecipeSearchList() {
   const searchTools = useSearchTools()
   const [searchBy, setSearchBy] = useSearchByState()
@@ -403,7 +405,9 @@ export function RecipeSearchList() {
   })
 
   const totalCount = results.data?.result.nbHits ?? 0
-  const hits = results.data?.hits ?? []
+  // Render the result grid at low priority so typing in the search box stays
+  // responsive.
+  const hits = useDeferredValue(results.data?.hits ?? emptyHits)
   const showArchived = facetFilters.OrArchived === false
   const archivedCount =
     results.data?.archivedFacetData.facets?.["archived"]?.["true"] ?? 0
