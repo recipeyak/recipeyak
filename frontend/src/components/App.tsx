@@ -6,7 +6,7 @@ import { useIsRestoring } from "@tanstack/react-query"
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client"
 import { AblyProvider } from "ably/react"
 import { createBrowserHistory } from "history"
-import React, { Suspense, useLayoutEffect } from "react"
+import React, { Suspense, useEffect, useLayoutEffect } from "react"
 import { RouterProvider } from "react-aria-components"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
@@ -28,26 +28,8 @@ import { ErrorBoundary } from "@/components/ErrorBoundary"
 import { Helmet } from "@/components/Helmet"
 import { queryClient } from "@/components/queryClient"
 import { ScrollRestore } from "@/components/ScrollRestore"
-import { NotFoundPage } from "@/pages/404/404.page"
-import { CookDetailPage } from "@/pages/cook-detail/CookDetail.page"
 import { HomePage } from "@/pages/index/Index.page"
 import { LoginPage } from "@/pages/login/Login.page"
-import { PasswordChangePage } from "@/pages/password-change/PasswordChange.page"
-import { PasswordResetPage } from "@/pages/password-reset/PasswordReset.page"
-import { PasswordResetConfirmPage } from "@/pages/password-reset-confirm/PasswordResetConfirm.page"
-import { ProfilePage } from "@/pages/profile/Profile.page"
-import { RecipeCreatePage } from "@/pages/recipe-create/RecipeCreate.page"
-import { RecipeDetailPage } from "@/pages/recipe-detail/RecipeDetail.page"
-import { RecipeListPage } from "@/pages/recipe-list/RecipeList.page"
-import { SchedulePage } from "@/pages/schedule/Schedule.page"
-import { SettingsPage } from "@/pages/settings/Settings.page"
-import { SignupPage } from "@/pages/signup/Signup.page"
-import { TeamCreatePage } from "@/pages/team-create/TeamCreate.page"
-import { TeamDetailPage } from "@/pages/team-detail/TeamDetail.page"
-import { TeamInvitePage } from "@/pages/team-invite/TeamInvite.page"
-import { TeamListPage } from "@/pages/team-list/TeamList.page"
-import { UserCommentsPage } from "@/pages/user-comments/UserComments.page"
-import { UserUploadsPage } from "@/pages/user-comments/UserUploads.page"
 import {
   pathCookDetail,
   pathDeprecatedSchedule,
@@ -71,10 +53,135 @@ import {
   pathTeamList,
   pathTeamSettings,
 } from "@/paths"
+import { useUserFetch } from "@/queries/useUserFetch"
 import { API_GIT_TREE_SHA, GIT_SHA, SENTRY_DSN } from "@/settings"
 import { themeSet } from "@/theme"
 import { Toaster } from "@/toast"
 import { useUserTheme } from "@/useUserTheme"
+
+// Pages other than the home & login pages are split into their own chunks so
+// the initial page load doesn't have to download & parse the entire app.
+const lazyPages: Array<() => Promise<unknown>> = []
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function lazyPage<T extends React.ComponentType<any>>(
+  load: () => Promise<{ default: T }>,
+) {
+  lazyPages.push(load)
+  return React.lazy(load)
+}
+
+/**
+ * Load the remaining pages after the current page has settled so navigation is
+ * instant, without competing with the current page's requests.
+ */
+function usePreloadPages() {
+  useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout> | undefined
+    const preload = () => {
+      timeoutId = setTimeout(() => {
+        for (const load of lazyPages) {
+          void load()
+        }
+      }, 3000)
+    }
+    if (document.readyState === "complete") {
+      preload()
+    } else {
+      window.addEventListener("load", preload, { once: true })
+    }
+    return () => {
+      window.removeEventListener("load", preload)
+      clearTimeout(timeoutId)
+    }
+  }, [])
+}
+
+const NotFoundPage = lazyPage(() =>
+  import("@/pages/404/404.page").then((m) => ({ default: m.NotFoundPage })),
+)
+const CookDetailPage = lazyPage(() =>
+  import("@/pages/cook-detail/CookDetail.page").then((m) => ({
+    default: m.CookDetailPage,
+  })),
+)
+const PasswordChangePage = lazyPage(() =>
+  import("@/pages/password-change/PasswordChange.page").then((m) => ({
+    default: m.PasswordChangePage,
+  })),
+)
+const PasswordResetPage = lazyPage(() =>
+  import("@/pages/password-reset/PasswordReset.page").then((m) => ({
+    default: m.PasswordResetPage,
+  })),
+)
+const PasswordResetConfirmPage = lazyPage(() =>
+  import("@/pages/password-reset-confirm/PasswordResetConfirm.page").then(
+    (m) => ({ default: m.PasswordResetConfirmPage }),
+  ),
+)
+const ProfilePage = lazyPage(() =>
+  import("@/pages/profile/Profile.page").then((m) => ({
+    default: m.ProfilePage,
+  })),
+)
+const RecipeCreatePage = lazyPage(() =>
+  import("@/pages/recipe-create/RecipeCreate.page").then((m) => ({
+    default: m.RecipeCreatePage,
+  })),
+)
+const RecipeDetailPage = lazyPage(() =>
+  import("@/pages/recipe-detail/RecipeDetail.page").then((m) => ({
+    default: m.RecipeDetailPage,
+  })),
+)
+const RecipeListPage = lazyPage(() =>
+  import("@/pages/recipe-list/RecipeList.page").then((m) => ({
+    default: m.RecipeListPage,
+  })),
+)
+const SchedulePage = lazyPage(() =>
+  import("@/pages/schedule/Schedule.page").then((m) => ({
+    default: m.SchedulePage,
+  })),
+)
+const SettingsPage = lazyPage(() =>
+  import("@/pages/settings/Settings.page").then((m) => ({
+    default: m.SettingsPage,
+  })),
+)
+const SignupPage = lazyPage(() =>
+  import("@/pages/signup/Signup.page").then((m) => ({ default: m.SignupPage })),
+)
+const TeamCreatePage = lazyPage(() =>
+  import("@/pages/team-create/TeamCreate.page").then((m) => ({
+    default: m.TeamCreatePage,
+  })),
+)
+const TeamDetailPage = lazyPage(() =>
+  import("@/pages/team-detail/TeamDetail.page").then((m) => ({
+    default: m.TeamDetailPage,
+  })),
+)
+const TeamInvitePage = lazyPage(() =>
+  import("@/pages/team-invite/TeamInvite.page").then((m) => ({
+    default: m.TeamInvitePage,
+  })),
+)
+const TeamListPage = lazyPage(() =>
+  import("@/pages/team-list/TeamList.page").then((m) => ({
+    default: m.TeamListPage,
+  })),
+)
+const UserCommentsPage = lazyPage(() =>
+  import("@/pages/user-comments/UserComments.page").then((m) => ({
+    default: m.UserCommentsPage,
+  })),
+)
+const UserUploadsPage = lazyPage(() =>
+  import("@/pages/user-comments/UserUploads.page").then((m) => ({
+    default: m.UserUploadsPage,
+  })),
+)
 
 const history = createBrowserHistory()
 const BaseRoute = Sentry.withSentryRouting(RRBaseRoute)
@@ -199,115 +306,121 @@ function Routes() {
 
   return (
     <RouterProvider navigate={history.push}>
-      <Switch>
-        <PublicOnlyRoute exact path={pathLogin.pattern} component={LoginPage} />
-        <PublicOnlyRoute
-          exact
-          path={pathSignup.pattern}
-          component={SignupPage}
-        />
-        <Route
-          exact
-          path={pathPasswordReset.pattern}
-          component={PasswordResetPage}
-        />
-        <Route
-          exact
-          path={pathPasswordConfirm.pattern}
-          component={PasswordResetConfirmPage}
-        />
+      <Suspense fallback={null}>
         <Switch>
-          <Route exact path={pathHome.pattern} component={HomePage} />
-          <PrivateRoute
+          <PublicOnlyRoute
             exact
-            path={pathSchedule.pattern}
-            component={SchedulePage}
+            path={pathLogin.pattern}
+            component={LoginPage}
+          />
+          <PublicOnlyRoute
+            exact
+            path={pathSignup.pattern}
+            component={SignupPage}
           />
           <Route
-            path={pathDeprecatedSchedule.pattern}
-            component={() => (
-              <Redirect
-                to={{
-                  pathname: pathSchedule({}),
-                }}
-              />
-            )}
+            exact
+            path={pathPasswordReset.pattern}
+            component={PasswordResetPage}
+          />
+          <Route
+            exact
+            path={pathPasswordConfirm.pattern}
+            component={PasswordResetConfirmPage}
           />
           <Switch>
+            <Route exact path={pathHome.pattern} component={HomePage} />
             <PrivateRoute
               exact
-              path={pathRecipeAdd.pattern}
-              component={RecipeCreatePage}
+              path={pathSchedule.pattern}
+              component={SchedulePage}
             />
-            <PrivateRoute
-              exact
-              path={pathRecipesList.pattern}
-              component={RecipeListPage}
+            <Route
+              path={pathDeprecatedSchedule.pattern}
+              component={() => (
+                <Redirect
+                  to={{
+                    pathname: pathSchedule({}),
+                  }}
+                />
+              )}
             />
-            <PrivateRoute
-              exact
-              path={pathRecipeDetail.pattern}
-              component={RecipeDetailPage}
-            />
-            <PrivateRoute
-              exact
-              path={pathCookDetail.pattern}
-              component={CookDetailPage}
-            />
-            <PrivateRoute
-              exact
-              path={pathSettings.pattern}
-              component={SettingsPage}
-            />
-            <PrivateRoute
-              exact
-              path={pathProfileById.pattern}
-              component={ProfilePage}
-            />
-            <PrivateRoute
-              exact
-              path={pathProfileByIdComments.pattern}
-              component={UserCommentsPage}
-            />
-            <PrivateRoute
-              exact
-              path={pathProfileByIdPhotos.pattern}
-              component={UserUploadsPage}
-            />
-            <PrivateRoute
-              exact
-              path={pathPassword.pattern}
-              component={PasswordChangePage}
-            />
-            <PrivateRoute
-              exact
-              path={pathTeamCreate.pattern}
-              component={TeamCreatePage}
-            />
-            <PrivateRoute
-              exact
-              path={pathTeamInvite.pattern}
-              component={TeamInvitePage}
-            />
-            <PrivateRoute
-              exact
-              path={pathTeamSettings.pattern}
-              component={TeamDetailPage}
-            />
-            <PrivateRoute
-              exact
-              path={pathTeamDetail.pattern}
-              component={TeamDetailPage}
-            />
-            <PrivateRoute
-              exact
-              path={pathTeamList.pattern}
-              component={TeamListPage}
-            />
-            <Route component={NotFoundPage} />
+            <Switch>
+              <PrivateRoute
+                exact
+                path={pathRecipeAdd.pattern}
+                component={RecipeCreatePage}
+              />
+              <PrivateRoute
+                exact
+                path={pathRecipesList.pattern}
+                component={RecipeListPage}
+              />
+              <PrivateRoute
+                exact
+                path={pathRecipeDetail.pattern}
+                component={RecipeDetailPage}
+              />
+              <PrivateRoute
+                exact
+                path={pathCookDetail.pattern}
+                component={CookDetailPage}
+              />
+              <PrivateRoute
+                exact
+                path={pathSettings.pattern}
+                component={SettingsPage}
+              />
+              <PrivateRoute
+                exact
+                path={pathProfileById.pattern}
+                component={ProfilePage}
+              />
+              <PrivateRoute
+                exact
+                path={pathProfileByIdComments.pattern}
+                component={UserCommentsPage}
+              />
+              <PrivateRoute
+                exact
+                path={pathProfileByIdPhotos.pattern}
+                component={UserUploadsPage}
+              />
+              <PrivateRoute
+                exact
+                path={pathPassword.pattern}
+                component={PasswordChangePage}
+              />
+              <PrivateRoute
+                exact
+                path={pathTeamCreate.pattern}
+                component={TeamCreatePage}
+              />
+              <PrivateRoute
+                exact
+                path={pathTeamInvite.pattern}
+                component={TeamInvitePage}
+              />
+              <PrivateRoute
+                exact
+                path={pathTeamSettings.pattern}
+                component={TeamDetailPage}
+              />
+              <PrivateRoute
+                exact
+                path={pathTeamDetail.pattern}
+                component={TeamDetailPage}
+              />
+              <PrivateRoute
+                exact
+                path={pathTeamList.pattern}
+                component={TeamListPage}
+              />
+              <Route component={NotFoundPage} />
+            </Switch>
           </Switch>
         </Switch>
-      </Switch>
+      </Suspense>
     </RouterProvider>
   )
 }
@@ -318,11 +431,21 @@ function AppRouter() {
     themeSet(theme)
   }, [theme])
   const isRestoring = useIsRestoring()
+  const isLoggedIn = useIsLoggedIn()
+  const user = useUserFetch()
+  usePreloadPages()
   if (isRestoring) {
     // NOTE: we don't render the site until react-query finishes hydrating from cache
     // some sites like linear show a loader, but they must guarentee it shows
     // for $N milliseconds or something because when it's really quick, < $N
     // milliseconds it looks like a glitchy flash
+    return null
+  }
+  if (isLoggedIn && user.isPending && user.failureCount === 0) {
+    // Most queries are keyed by the user's team, so wait for the user to load
+    // instead of fetching everything with a placeholder team and then again
+    // with the real one. If the request fails, render anyway rather than
+    // showing a blank page while it retries.
     return null
   }
   return (

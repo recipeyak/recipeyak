@@ -16,6 +16,8 @@ import { algoliaRetrieve } from "@/api/algoliaRetrieve"
 export function useAlgoliaClient(teamId: number) {
   const res = useQuery({
     queryKey: ["algolia", teamId],
+    // wait for the user's team to load, `-1` is the placeholder
+    enabled: teamId !== -1,
     // refetch hourly. Tokens expire after 1 hour.
     staleTime: 50 * 60 * 1000,
     refetchInterval: 25 * 60 * 1000,
