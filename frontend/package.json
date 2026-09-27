@@ -9,12 +9,12 @@
     "@tanstack/eslint-plugin-query": "^5.8.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^14.3.0",
-    "@types/node": "^18.6.2",
+    "@types/node": "^24.13.6",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
     "@typescript-eslint/eslint-plugin": "^6.12.0",
     "@typescript-eslint/parser": "^6.12.0",
-    "@vitejs/plugin-react-swc": "^3.5.0",
+    "@vitejs/plugin-react-swc": "^4.3.3",
     "autoprefixer": "^10.4.16",
     "eslint": "^8.20.0",
     "eslint-plugin-import": "^2.26.0",
@@ -26,11 +26,11 @@
     "postcss": "^8.4.31",
     "prettier-plugin-tailwindcss": "^0.5.7",
     "remark-breaks": "^4.0.0",
-    "rollup-plugin-visualizer": "^5.7.1",
+    "rollup-plugin-visualizer": "^7.1.1",
     "tailwindcss": "^3.3.5",
     "typescript": "5.2.2",
-    "vite": "^5.0.10",
-    "vitest": "^1.6.0",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.1",
     "vitest-dom": "^0.1.1"
   },
   "dependencies": {
@@ -69,18 +69,23 @@
     "react-textarea-autosize": "^8.3.4",
     "remark-gfm": "^3.0.1",
     "remark-smartypants": "^2.0.0",
-    "sass": "^1.54.0",
+    "sass": "^1.104.1",
     "sharp": "^0.33.4",
     "static-path": "^0.0.4",
     "use-onclickoutside": "^0.4.1"
   },
   "volta": {
-    "node": "18.20.3"
+    "node": "24.21.0"
   },
   "postcss": {
     "plugins": {
       "tailwindcss": {},
       "autoprefixer": {}
+    }
+  },
+  "overrides": {
+    "@darkobits/vite-plugin-favicons": {
+      "vite": "$vite"
     }
   }
 }
