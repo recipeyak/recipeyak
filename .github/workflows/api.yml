@@ -184,6 +184,10 @@ jobs:
     if: needs.pre_job.outputs.should_skip != 'true'
 
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # squawk-action comments its results on the PR
+      pull-requests: write
     services:
       postgres:
         image: postgres:16
