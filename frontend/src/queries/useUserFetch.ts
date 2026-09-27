@@ -11,7 +11,7 @@ export function useUserFetch() {
     queryKey: getQueryKey(),
     queryFn: async () => {
       const res = await userRetrieve()
-      void login(res, queryClient, { refreshRealtimeAuth: false })
+      void login(res, queryClient)
       return res
     },
     // The app waits for the user to load before rendering, so without this

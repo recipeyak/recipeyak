@@ -35,7 +35,6 @@ export async function login(
     readonly calendar_id: number | null
   },
   queryClient: QueryClient,
-  { refreshRealtimeAuth = true }: { refreshRealtimeAuth?: boolean } = {},
 ) {
   Sentry.setUser({
     email: user.email,
@@ -51,17 +50,8 @@ export async function login(
       return user
     },
   })
-  // The realtime client authenticates itself when it connects, so we only need
-  // to force a new token when the connection isn't healthy, e.g., after going
-  // from logged out to logged in.
-  const connectionState = ablyClient.connection.state
-  const needsAuth =
-    refreshRealtimeAuth ||
-    (connectionState !== "connected" && connectionState !== "connecting")
   try {
-    if (needsAuth) {
-      await ablyClient.auth.authorize()
-    }
+    await ablyClient.auth.authorize()
   } catch {
     // eslint-disable-next-line no-console
     console.error("Failed to initialize ably")
