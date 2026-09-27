@@ -12,9 +12,9 @@ export function Tag({
   return (
     <span
       className={clx(
-        "inline-flex h-[2em] items-center justify-center whitespace-nowrap rounded-[290486px] bg-[--color-background-card] px-[0.875em] text-xs leading-[1.5] text-[--color-text]",
+        "inline-flex h-[2em] items-center justify-center rounded-[290486px] bg-(--color-background-card) px-[0.875em] text-xs leading-[1.5] whitespace-nowrap text-(--color-text)",
         fontWeight && "font-normal",
-        selectable && "!cursor-auto !select-text",
+        selectable && "cursor-auto! select-text!",
       )}
     >
       {children}

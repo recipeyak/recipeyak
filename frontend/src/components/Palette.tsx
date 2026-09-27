@@ -7,7 +7,7 @@ const stylesSuggestion =
   "px-2 py-2 overflow-x-hidden whitespace-nowrap text-ellipsis"
 
 const styleSuggestionInfo = clx(
-  "text-center text-[--color-text-muted]",
+  "text-center text-(--color-text-muted)",
   stylesSuggestion,
 )
 
@@ -32,13 +32,13 @@ export const Palette = forwardRef(
   ) => {
     return (
       <div
-        className="pointer-events-none fixed inset-x-0 top-[2px] z-[1000] flex w-full justify-center"
+        className="pointer-events-none fixed inset-x-0 top-[2px] z-1000 flex w-full justify-center"
         ref={ref}
       >
-        <div className="pointer-events-auto flex w-full flex-col gap-2 rounded-xl border border-solid border-[--color-border] bg-[--color-background-card] px-2 pb-1 pt-3 sm:inset-x-[unset] sm:max-w-[600px]">
+        <div className="pointer-events-auto flex w-full flex-col gap-2 rounded-xl border border-solid border-(--color-border) bg-(--color-background-card) px-2 pt-3 pb-1 sm:inset-x-[unset] sm:max-w-[600px]">
           <div
             className={clx(
-              "z-[1] flex w-full items-center justify-start gap-1 rounded-md  bg-[--color-background-card] pl-1",
+              "z-1 flex w-full items-center justify-start gap-1 rounded-md bg-(--color-background-card) pl-1",
             )}
             onClick={(e) => {
               // Allow clicking on the input -- it shouldn't close the modal
@@ -49,7 +49,7 @@ export const Palette = forwardRef(
             <SearchInput
               value={value}
               autoFocus
-              className="w-full border-none bg-transparent py-[5px] pr-2 text-base text-[--color-text] outline-none placeholder:text-[--color-input-placeholder]"
+              className="w-full border-none bg-transparent py-[5px] pr-2 text-base text-(--color-text) outline-hidden placeholder:text-(--color-input-placeholder)"
               placeholder=""
               onChange={(e) => {
                 onChange(e)

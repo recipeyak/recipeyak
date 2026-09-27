@@ -23,7 +23,7 @@ export const Footer = (props: { className?: string }) => {
       {feedback && (
         <span className="font-semibold print:hidden">
           <div
-            className="cursor-pointer "
+            className="cursor-pointer"
             onClick={() => {
               void feedback.open()
             }}

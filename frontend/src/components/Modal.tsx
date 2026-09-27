@@ -19,18 +19,18 @@ export function Modal({
 }) {
   return (
     <ModalOverlay
-      className="fixed inset-0 z-[1000] flex min-h-full justify-center overflow-y-auto bg-[--color-modal-background] sm:p-3"
+      className="fixed inset-0 z-1000 flex min-h-full justify-center overflow-y-auto bg-(--color-modal-background) sm:p-3"
       isDismissable
       isOpen={isOpen}
       onOpenChange={onOpenChange}
     >
       <AriaModal
         className={clx(
-          "h-full w-full overflow-hidden bg-[--color-background-card] p-6 shadow-xl outline-none sm:rounded-md",
+          "h-full w-full overflow-hidden bg-(--color-background-card) p-6 shadow-xl outline-hidden sm:rounded-md",
           !full && "sm:mt-[8vh] sm:h-[max-content] sm:max-w-md",
         )}
       >
-        <Dialog className="h-full outline-none">
+        <Dialog className="h-full outline-hidden">
           {({ close }) => (
             <div
               onClick={(e) => {

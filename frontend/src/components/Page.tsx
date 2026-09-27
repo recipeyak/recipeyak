@@ -66,10 +66,10 @@ const ContainerBase = ({
 
 const Container = ({ children }: { children: React.ReactNode }) => (
   <>
-    <div className="order-2 w-full px-3 pb-3 pt-0 print:!text-black">
+    <div className="order-2 w-full px-3 pt-0 pb-3 print:text-black!">
       <ErrorBoundary>{children}</ErrorBoundary>
     </div>
-    <Footer className="order-3 " />
+    <Footer className="order-3" />
   </>
 )
 
@@ -104,13 +104,13 @@ export function AuthPage(props: { children: React.ReactNode; title: string }) {
   useEffect(() => {
     const el = document.querySelector("html")
     if (el) {
-      el.classList.add("bg-[--color-primary]")
+      el.classList.add("bg-(--color-primary)")
     }
 
     return () => {
       const el2 = document.querySelector("html")
       if (el2) {
-        el2.classList.remove("bg-[--color-primary]")
+        el2.classList.remove("bg-(--color-primary)")
       }
     }
   }, [])
@@ -118,7 +118,7 @@ export function AuthPage(props: { children: React.ReactNode; title: string }) {
   return (
     <div
       // 2 rem is roughly the padding we want on the side of the panel
-      className="mx-auto flex min-w-[min(400px,100%-2rem)] max-w-[min(400px,100%-2rem)] flex-col"
+      className="mx-auto flex max-w-[min(400px,100%-2rem)] min-w-[min(400px,100%-2rem)] flex-col"
     >
       <Helmet title={props.title} />
       <Link

@@ -10,6 +10,7 @@
     "@darkobits/vite-plugin-favicons": "^0.3.0",
     "@sanity/diff-match-patch": "^3.1.1",
     "@size-limit/file": "14.0.0",
+    "@tailwindcss/vite": "^4.3.3",
     "@tanstack/eslint-plugin-query": "^5.8.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^14.3.0",
@@ -19,7 +20,6 @@
     "@typescript-eslint/eslint-plugin": "^6.12.0",
     "@typescript-eslint/parser": "^6.12.0",
     "@vitejs/plugin-react": "^6.1.1",
-    "autoprefixer": "^10.4.16",
     "eslint": "^8.20.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-react": "^7.30.1",
@@ -27,12 +27,11 @@
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "jsdom": "^20.0.0",
     "msw": "^2.3.1",
-    "postcss": "^8.4.31",
-    "prettier-plugin-tailwindcss": "^0.5.7",
+    "prettier-plugin-tailwindcss": "^0.8.1",
     "remark-breaks": "^4.0.0",
     "rollup-plugin-visualizer": "^7.1.1",
     "size-limit": "14.0.0",
-    "tailwindcss": "^3.3.5",
+    "tailwindcss": "^4.3.3",
     "typescript": "5.2.2",
     "vite": "^8.3.0",
     "vitest": "^5.0.1",
@@ -54,12 +53,11 @@
     "date-fns": "^2.4.1",
     "dnd-core": "^9.3.4",
     "eslint-plugin-react-refresh": "^0.4.5",
-    "eslint-plugin-tailwindcss": "^3.13.0",
     "history": "^4.7.2",
     "immer": "^9.0.15",
     "lodash-es": "^4.17.21",
     "lucide-react": "^0.363.0",
-    "prettier": "^3.1.0",
+    "prettier": "^3.9.8",
     "react": "^18.2.0",
     "react-aria-components": "^1.7.0",
     "react-dnd": "^16.0.1",
@@ -81,12 +79,6 @@
   },
   "volta": {
     "node": "24.21.0"
-  },
-  "postcss": {
-    "plugins": {
-      "tailwindcss": {},
-      "autoprefixer": {}
-    }
   },
   "overrides": {
     "@darkobits/vite-plugin-favicons": {

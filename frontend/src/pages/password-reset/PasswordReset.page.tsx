@@ -66,7 +66,7 @@ export function PasswordResetPage() {
     <AuthPage title="Password Reset">
       <form
         onSubmit={handleReset}
-        className="flex flex-col rounded-none bg-[--color-background] p-3 text-[--color-text] sm:rounded-md"
+        className="flex flex-col rounded-none bg-(--color-background) p-3 text-(--color-text) sm:rounded-md"
       >
         <h1 className="text-xl font-medium">Password Reset</h1>
 

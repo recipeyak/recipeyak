@@ -239,7 +239,7 @@ export function CookingFullscreen({
     { avatarUrl, active: true },
   )
   return (
-    <div className="fixed inset-0 z-20 items-center justify-center bg-[--color-background]">
+    <div className="fixed inset-0 z-20 items-center justify-center bg-(--color-background)">
       <div
         className="px-5"
         // eslint-disable-next-line no-restricted-syntax
@@ -248,7 +248,7 @@ export function CookingFullscreen({
           height: "100%",
         }}
       >
-        <div className="mx-auto mt-2 flex min-w-[min(600px,100%)] max-w-[1000px] flex-col gap-2 pb-2 text-lg">
+        <div className="mx-auto mt-2 flex max-w-[1000px] min-w-[min(600px,100%)] flex-col gap-2 pb-2 text-lg">
           <div>
             <Button to={recipeURL(recipeId, recipeName)}>
               ← Return to Recipe
@@ -268,7 +268,7 @@ export function CookingFullscreen({
             {recipeName}
           </div>
 
-          <div className="grid grid-cols-1 gap-2 md:[grid-template-columns:minmax(350px,3fr)_5fr] ">
+          <div className="grid grid-cols-1 gap-2 md:[grid-template-columns:minmax(350px,3fr)_5fr]">
             <Ingredients
               ingredients={ingredients}
               sections={sections}
@@ -286,8 +286,8 @@ export function CookingFullscreen({
               <RecipeSource source={recipeSource} />
             </div>
           )}
-          <div className="sticky  inset-x-0 bottom-0 z-20 flex justify-around ">
-            <div className="flex items-center gap-4 rounded border-[thin] border-solid border-[--color-border] bg-[--color-background] px-4 py-1">
+          <div className="sticky inset-x-0 bottom-0 z-20 flex justify-around">
+            <div className="flex items-center gap-4 rounded border-[thin] border-solid border-(--color-border) bg-(--color-background) px-4 py-1">
               <TabAnchor href="#ingredients">ingredients</TabAnchor>
               <TabAnchor href="#steps">steps</TabAnchor>
               <TabAnchor href="#notes">notes</TabAnchor>

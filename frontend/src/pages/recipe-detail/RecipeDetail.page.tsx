@@ -333,7 +333,7 @@ function RecipeDetails({
 function ArchiveMessage({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="mx-2 flex items-center gap-2 rounded-lg bg-[--color-background-card] px-3 py-1 font-semibold"
+      className="mx-2 flex items-center gap-2 rounded-lg bg-(--color-background-card) px-3 py-1 font-semibold"
       children={children}
     />
   )
@@ -341,10 +341,7 @@ function ArchiveMessage({ children }: { children: React.ReactNode }) {
 
 function RecipeBanner({ children }: { readonly children: React.ReactNode }) {
   return (
-    <div
-      className="sticky top-[2px] z-[900] -mx-3 flex items-center justify-center
-      sm:mx-0"
-    >
+    <div className="sticky top-[2px] z-900 -mx-3 flex items-center justify-center sm:mx-0">
       <ArchiveMessage>{children}</ArchiveMessage>
     </div>
   )
@@ -490,7 +487,7 @@ function RecipeEditor(props: { recipe: Recipe; onClose: () => void }) {
 function HeaderImgUploader({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="rounded bg-[--color-background-card] p-2 text-sm !opacity-100"
+      className="rounded bg-(--color-background-card) p-2 text-sm opacity-100!"
       children={children}
     />
   )
@@ -680,7 +677,7 @@ function RecipeInfo(props: {
             />
 
             <Button
-              className="h-full !px-2"
+              className="h-full px-2!"
               onClick={() => {
                 updateRecipe.mutate({
                   update: { user_favorite: !props.recipe.user_favorite },
@@ -714,7 +711,7 @@ function RecipeInfo(props: {
           <>
             <div className="flex grow items-center">
               <div className="flex flex-col gap-2">
-                <div className="cursor-auto select-text font-serif text-[2.5rem] leading-10">
+                <div className="cursor-auto font-serif text-[2.5rem] leading-10 select-text">
                   {props.recipe.name}
                 </div>
                 {notEmpty(props.recipe.author) && (
@@ -792,7 +789,7 @@ function RecipeInfo(props: {
       </div>
       {(props.recipe.primaryImage || props.editingEnabled) && (
         <>
-          <div className="relative -mx-3 aspect-[3/2] [grid-area:2/1] print:!hidden sm:mx-0 md:[grid-area:1/2]">
+          <div className="relative -mx-3 aspect-3/2 [grid-area:2/1] sm:mx-0 md:[grid-area:1/2] print:hidden!">
             <Image
               sources={props.recipe.primaryImage}
               size="large"
@@ -804,15 +801,15 @@ function RecipeInfo(props: {
               ariaLabel="open primary image"
             />
             {props.recipe.primaryImage?.author != null && (
-              <div className="absolute right-0 mr-2 text-right text-xs font-medium text-[--color-text-muted] sm:mr-0">
+              <div className="absolute right-0 mr-2 text-right text-xs font-medium text-(--color-text-muted) sm:mr-0">
                 {props.recipe.primaryImage.author}
               </div>
             )}
           </div>
           {props.editingEnabled && (
             <>
-              <div className="z-[35] -mx-3 rounded-none bg-[--color-modal-background] [grid-area:2/1] sm:mx-0 sm:rounded-md md:[grid-area:1/2]" />
-              <div className="z-[800] flex items-center justify-center [grid-area:2/1] md:[grid-area:1/2]">
+              <div className="z-35 -mx-3 rounded-none bg-(--color-modal-background) [grid-area:2/1] sm:mx-0 sm:rounded-md md:[grid-area:1/2]" />
+              <div className="z-800 flex items-center justify-center [grid-area:2/1] md:[grid-area:1/2]">
                 <HeaderImgUploader>
                   <div>Select a primary image from note uploads.</div>
                 </HeaderImgUploader>
@@ -962,10 +959,10 @@ export function RecipeDetailPageInner(props: IRecipeProps) {
 
       <div
         className={clx(
-          "mx-auto mt-2 grid max-w-[1000px] grid-cols-1 gap-2 print:!flex print:!flex-col md:mt-4 md:[grid-template-columns:minmax(350px,3fr)_5fr]",
+          "mx-auto mt-2 grid max-w-[1000px] grid-cols-1 gap-2 md:mt-4 md:[grid-template-columns:minmax(350px,3fr)_5fr] print:flex! print:flex-col!",
           enableLargeImageRow
-            ? "[grid-template-rows:auto_auto_auto]"
-            : "[grid-template-rows:auto]",
+            ? "grid-rows-[auto_auto_auto]"
+            : "grid-rows-[auto]",
         )}
       >
         <RecipeInfo

@@ -46,7 +46,7 @@ function MembersList({
   if (members.length === 0) {
     return (
       <div>
-        <h1 className="text-center text-2xl font-bold text-[--color-text-muted]">
+        <h1 className="text-center text-2xl font-bold text-(--color-text-muted)">
           No Team Members
         </h1>
         <div className="text-center">Add one via the Invite button</div>
@@ -158,9 +158,7 @@ function MembersList({
                               memberId: member.id,
                               // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
                               level: e.target.value as
-                                | "admin"
-                                | "contributor"
-                                | "read",
+                                "admin" | "contributor" | "read",
                             })
                           }}
                         >

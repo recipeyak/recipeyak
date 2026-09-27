@@ -212,7 +212,7 @@ function CalendarPickerPopoverContent({
 }) {
   const [calendar, setCalendar] = useState<number | null>(0)
   return (
-    <Dialog className="flex flex-col gap-2  rounded border border-solid border-[--color-border] bg-[--color-background-card] p-4 shadow-lg">
+    <Dialog className="flex flex-col gap-2 rounded border border-solid border-(--color-border) bg-(--color-background-card) p-4 shadow-lg">
       <Select
         onChange={(e) => {
           setCalendar(Number(e.target.value))
@@ -315,7 +315,7 @@ function HelpPrompt() {
   return (
     <>
       <div
-        className="mb-1 mt-2 hidden md:block"
+        className="mt-2 mb-1 hidden md:block"
         onClick={() => {
           setShow(true)
         }}

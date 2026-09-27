@@ -38,7 +38,7 @@ function HomeContainer({
 function FeaturesContainer({ children }: { children: JSX.Element[] }) {
   return (
     // eslint-disable-next-line react/forbid-elements
-    <section className="bg-[--color-primary] p-4 text-white">
+    <section className="bg-(--color-primary) p-4 text-white">
       <HomeContainer>
         <h2 className={styles.subtitle}>Features</h2>
         <ul className="grid gap-4">{children}</ul>
@@ -128,7 +128,7 @@ function HowTo({ content, index, imageURL }: IHowToProps) {
         {content}
       </p>
       <div className="md:w-1/2">
-        <img className="shadow " src={imageURL} alt="" />
+        <img className="shadow" src={imageURL} alt="" />
       </div>
     </FeatureGrid>
   )
@@ -191,7 +191,7 @@ const howToSteps = [
 export const LandingPage = () => {
   return (
     <>
-      <nav className="flex h-[3.5rem] shrink-0 justify-between gap-1 pb-1 pl-1 pr-2 print:!hidden">
+      <nav className="flex h-[3.5rem] shrink-0 justify-between gap-1 pr-2 pb-1 pl-1 print:hidden!">
         <div className="flex items-center justify-start">
           <NavLink to={pathHome({})}>
             <span className="text-2xl">Recipe Yak</span>
@@ -221,7 +221,7 @@ export const LandingPage = () => {
         </HomeContainer>
 
         {/* eslint-disable-next-line react/forbid-elements */}
-        <section className="bg-gradient-to-b from-[--color-background] from-50% to-[--color-primary] to-50% px-4 pt-4">
+        <section className="bg-linear-to-b from-(--color-background) from-50% to-(--color-primary) to-50% px-4 pt-4">
           <HomeContainer>
             <img className="shadow" src={landingImg} alt="" />
           </HomeContainer>
@@ -240,7 +240,7 @@ export const LandingPage = () => {
             to={pathSignup({})}
             variant="primary"
             size="large"
-            className="mb-2 mt-4 justify-self-center"
+            className="mt-4 mb-2 justify-self-center"
           >
             Create Account
           </Button>

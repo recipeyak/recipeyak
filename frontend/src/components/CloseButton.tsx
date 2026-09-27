@@ -10,9 +10,9 @@ export function CloseButton({ onClose }: { onClose?: () => void }) {
     <button
       onClick={onClose}
       data-testid="close modal"
-      className="cursor-pointer !border-none bg-[unset] p-0 !shadow-none"
+      className="cursor-pointer border-none! bg-[unset] p-0 shadow-none!"
     >
-      <div className="rounded-full bg-[--color-background-card] p-1 text-[--color-text]">
+      <div className="rounded-full bg-(--color-background-card) p-1 text-(--color-text)">
         <X size={14} strokeWidth={3} />
       </div>
     </button>

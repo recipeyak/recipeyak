@@ -83,7 +83,7 @@ export function Image({
             }),
       }}
       className={clx(
-        "relative bg-[--color-background-empty-image]",
+        "relative bg-(--color-background-empty-image)",
         rounded && "rounded-md",
         roundDesktop && "sm:rounded-md",
       )}
@@ -97,7 +97,7 @@ export function Image({
             // set key to forcefull replace DOM node.
             key={formatSource(sources.url ?? "")}
             className={clx(
-              "absolute z-[1] h-full w-full object-cover",
+              "absolute z-1 h-full w-full object-cover",
               rounded && "rounded-md",
               roundDesktop && "sm:rounded-md",
               grayscale && "grayscale",
@@ -114,9 +114,9 @@ export function Image({
                 : undefined,
             }}
             className={clx(
-              "absolute bottom-0 left-0 right-0 top-0 bg-cover bg-center",
+              "absolute top-0 right-0 bottom-0 left-0 bg-cover bg-center",
               // kind of tricky: https://stackoverflow.com/a/70810692/3720597
-              "bg-[image:--backgroundImage]",
+              "bg-(image:--backgroundImage)",
               rounded && "rounded-md",
               roundDesktop && "sm:rounded-md",
               grayscale && "grayscale",

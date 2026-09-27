@@ -16,12 +16,12 @@ export function MenuItem(
         clx(
           "flex items-center justify-between rounded px-2 py-1",
           !props.isInfo &&
-            "cursor-pointer [transition:background_.12s_ease-out] hover:bg-[--color-border]",
+            "cursor-pointer [transition:background_.12s_ease-out] hover:bg-(--color-border)",
           // Only show the focus ring on keyboard devices
           p.isFocusVisible
             ? "focus-visible:outline-[3px] focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)]"
-            : "outline-none",
-          props.isDestructive && "text-[--color-danger]",
+            : "outline-hidden",
+          props.isDestructive && "text-(--color-danger)",
         )
       }
     />

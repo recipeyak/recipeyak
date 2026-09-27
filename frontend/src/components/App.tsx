@@ -1,3 +1,4 @@
+import "@/components/scss/tailwind.css"
 import "@/components/scss/main.scss"
 
 import * as Sentry from "@sentry/react"
@@ -120,8 +121,9 @@ const persister = createSyncStoragePersister({
 })
 
 interface IAuthRouteProps extends Pick<RouteProps, "exact" | "path"> {
-  readonly component: // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  | React.ComponentType<RouteComponentProps<any>>
+  readonly component:
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    | React.ComponentType<RouteComponentProps<any>>
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     | React.ComponentType<any>
 }
@@ -371,7 +373,7 @@ function App() {
                     toastOptions={{
                       position: "bottom-center",
                       className:
-                        "!bg-[--color-background-card] !text-[--color-text] !border-[--color-border]",
+                        "bg-(--color-background-card)! text-(--color-text)! border-(--color-border)!",
                     }}
                   />
                   <AppRouter />

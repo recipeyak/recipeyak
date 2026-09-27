@@ -48,7 +48,7 @@ export function IngredientViewContent({
       </Markdown>
       <Markdown inline>{description}</Markdown>{" "}
       {optional ? (
-        <span className="text-[--color-text-muted] print:!text-black">
+        <span className="text-(--color-text-muted) print:text-black!">
           [optional]
         </span>
       ) : (
@@ -68,7 +68,7 @@ export default function IngredientView({
 }: IIngredientVIewProps & { isEditing: boolean }) {
   return (
     <div
-      className="flex  cursor-auto select-text items-center justify-between gap-1 whitespace-pre-wrap pb-2 leading-5"
+      className="flex cursor-auto items-center justify-between gap-1 pb-2 leading-5 whitespace-pre-wrap select-text"
       ref={dragRef}
     >
       {isEditing && <GripVertical size={18} className="shrink-0 cursor-move" />}

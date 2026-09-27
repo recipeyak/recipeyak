@@ -73,7 +73,7 @@ export function SignupPage() {
 
   return (
     <AuthPage title="Sign Up">
-      <div className="rounded-none bg-[--color-background] p-3 text-[--color-text] sm:rounded-md">
+      <div className="rounded-none bg-(--color-background) p-3 text-(--color-text) sm:rounded-md">
         <Tabs>
           <Tab>
             <Link to={pathLogin({})} className="no-underline">

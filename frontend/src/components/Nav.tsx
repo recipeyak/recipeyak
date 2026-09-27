@@ -74,12 +74,12 @@ function UserDropdown() {
 
   return (
     <MenuTrigger>
-      <Button className="col-start-3 col-end-4 !rounded-full !border-none !p-0">
+      <Button className="col-start-3 col-end-4 rounded-full! border-none! p-0!">
         <Avatar avatarURL={user.avatarURL} />
       </Button>
       <MenuPopover>
         <Menu
-          className="outline-none"
+          className="outline-hidden"
           onAction={(key) => {
             const metadata = menuItems.find(
               (x) => x.type === "menuitem" && x.label === key,
@@ -91,21 +91,21 @@ function UserDropdown() {
           disabledKeys={["meta-info"]}
         >
           <MenuItem id="meta-info" isInfo>
-            <div className="pb-1 ">
+            <div className="pb-1">
               <span>{user.name ?? user.email}</span>
               <span> · </span>
-              <span className="text-sm ">{team.data?.name}</span>
-              <div className="text-sm ">{user.email}</div>
+              <span className="text-sm">{team.data?.name}</span>
+              <div className="text-sm">{user.email}</div>
             </div>
           </MenuItem>
-          <Separator className="my-1 h-[1px] bg-[--color-border]" />
+          <Separator className="my-1 h-px bg-(--color-border)" />
           {menuItems.map((menuItem) => {
             if (menuItem.type === "separator") {
               return (
                 <Separator
                   id={menuItem.id}
                   key={menuItem.id}
-                  className="my-1 h-[1px] bg-[--color-border]"
+                  className="my-1 h-px bg-(--color-border)"
                 />
               )
             }
@@ -185,7 +185,7 @@ export function Navbar({
   return (
     <nav
       className={clx(
-        "sticky bottom-0 z-[1000] flex h-[3.5rem] shrink-0 items-center justify-between gap-4 px-6 pb-1 backdrop-blur-[28.5px] print:!hidden sm:bottom-[unset] sm:z-[unset] sm:bg-[unset] sm:px-2 sm:pl-1 sm:backdrop-blur-[unset] md:grid md:grid-cols-3",
+        "sticky bottom-0 z-1000 flex h-[3.5rem] shrink-0 items-center justify-between gap-4 px-6 pb-1 backdrop-blur-[28.5px] sm:bottom-[unset] sm:z-[unset] sm:bg-[unset] sm:px-2 sm:pl-1 sm:backdrop-blur-[unset] md:grid md:grid-cols-3 print:hidden!",
         className,
       )}
     >

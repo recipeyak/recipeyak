@@ -66,11 +66,11 @@ export function MoreButton() {
       size="small"
       variant="nostyle"
       className={clx(
-        "cursor-pointer rounded border-none bg-[unset] outline-none",
+        "cursor-pointer rounded border-none bg-[unset] outline-hidden",
         focusVisibleStyles(isFocusVisible),
       )}
     >
-      <Ellipsis className="text-[--color-text]" size={20} />
+      <Ellipsis className="text-(--color-text)" size={20} />
     </Button>
   )
 }
@@ -313,7 +313,7 @@ function StepEditMenu({
       <MoreButton />
       <MenuPopover>
         <Menu
-          className="outline-none"
+          className="outline-hidden"
           onAction={(actionId) => {
             const action = actions.find(
               (x) => x.type === "action" && x.id === actionId,
@@ -328,7 +328,7 @@ function StepEditMenu({
               return (
                 <Separator
                   key={"sep" + idx}
-                  className="my-1 h-[1px] bg-[--color-border]"
+                  className="my-1 h-px bg-(--color-border)"
                 />
               )
             } else {

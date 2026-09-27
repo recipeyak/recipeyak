@@ -76,7 +76,7 @@ export const RecipeListItem = memo(function RecipeListItem({
           grayscale={hit.archived_at != null}
         />
       </div>
-      <div className="flex h-full flex-col gap-1 pb-2 pt-1 leading-5">
+      <div className="flex h-full flex-col gap-1 pt-1 pb-2 leading-5">
         <div
           className={clx(
             hit.archived_at != null && "line-through",

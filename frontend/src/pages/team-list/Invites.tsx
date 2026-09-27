@@ -76,7 +76,7 @@ export function Invites() {
 
   if (invites.data.length === 0) {
     return (
-      <div className="self-center text-sm text-[--color-text-muted]">
+      <div className="self-center text-sm text-(--color-text-muted)">
         No new notifications.
       </div>
     )

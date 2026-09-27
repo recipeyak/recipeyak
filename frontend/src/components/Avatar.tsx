@@ -3,7 +3,7 @@ import { clx } from "@/classnames"
 import { formatImg } from "@/url"
 
 const avatarCss =
-  "max-h-none rounded-full object-cover bg-[--color-background-empty-image] print:!hidden"
+  "max-h-none rounded-full object-cover bg-(--color-background-empty-image) print:hidden!"
 
 function UserProfileImage({
   onClick,

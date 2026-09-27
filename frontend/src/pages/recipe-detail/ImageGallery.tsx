@@ -46,9 +46,9 @@ export const Gallery = (props: {
   const starColor = props.isPrimary ? "#ffbf00" : undefined
   return (
     // This needs to be above the RecipeBanner's z-index
-    <div className="fixed left-0 top-0 z-[950] h-full w-full !opacity-100">
-      <div className="left-0 top-0 h-full w-full bg-[#000] opacity-[0.8]" />
-      <div className="absolute left-0 top-0 h-full w-full">
+    <div className="fixed top-0 left-0 z-950 h-full w-full opacity-100!">
+      <div className="top-0 left-0 h-full w-full bg-[#000] opacity-[0.8]" />
+      <div className="absolute top-0 left-0 h-full w-full">
         <div
           className="flex h-full"
           onClick={onClick}
@@ -103,7 +103,7 @@ export const Gallery = (props: {
               target="_blank"
               rel="noopener noreferrer"
               href={props.imageUrl}
-              className="pointer-events-auto ml-auto rounded-md !border-none px-3 py-[calc(0.375em-1px)] text-white !shadow-none backdrop-blur-[10px] [background-color:rgba(0,0,0,0.46)]"
+              className="pointer-events-auto ml-auto rounded-md border-none! bg-[rgba(0,0,0,0.46)] px-3 py-[calc(0.375em-1px)] text-white shadow-none! backdrop-blur-[10px]"
             >
               <Share />
             </a>

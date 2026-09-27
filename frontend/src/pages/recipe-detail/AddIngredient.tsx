@@ -73,7 +73,7 @@ function AddIngredientForm({
             value={quantity}
             error={createIngredient.isError}
             placeholder="3 lbs"
-            className="!w-2/3"
+            className="w-2/3!"
           />
           <TextInput
             autoCapitalize="none"
@@ -83,7 +83,7 @@ function AddIngredientForm({
             value={name}
             error={createIngredient.isError}
             placeholder="tomato"
-            className="!w-2/3"
+            className="w-2/3!"
           />
         </div>
         <div>
@@ -98,7 +98,7 @@ function AddIngredientForm({
           />
           {createIngredient.isError ? (
             // eslint-disable-next-line react/forbid-elements
-            <p className="text-base text-[--color-danger]">
+            <p className="text-base text-(--color-danger)">
               A recipe needs at least one ingredient
             </p>
           ) : null}

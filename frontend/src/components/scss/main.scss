@@ -1,171 +1,114 @@
-@import "./reset.css";
+// In a layer so tailwind utilities take precedence.
+@layer base {
+  html {
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    min-width: 300px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    text-rendering: optimizeLegibility;
 
-html {
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  min-width: 300px;
-  overflow-x: hidden;
-  overflow-y: scroll;
-  text-rendering: optimizeLegibility;
+    height: 100%;
+    font-size: 16px;
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: default;
+    color: var(--color-text);
+    background-color: var(--color-background);
+  }
 
-  height: 100%;
-  font-size: 16px;
-  user-select: none;
-  -webkit-user-select: none;
-  cursor: default;
-  color: var(--color-text);
-  background-color: var(--color-background);
-}
+  article,
+  aside,
+  figure,
+  footer,
+  header,
+  hgroup,
+  section {
+    display: block;
+  }
 
-article,
-aside,
-figure,
-footer,
-header,
-hgroup,
-section {
-  display: block;
-}
+  body,
+  button,
+  input,
+  select,
+  textarea {
+    font-family:
+      BlinkMacSystemFont,
+      -apple-system,
+      "Segoe UI",
+      "Roboto",
+      "Oxygen",
+      "Ubuntu",
+      "Cantarell",
+      "Fira Sans",
+      "Droid Sans",
+      "Helvetica Neue",
+      "Helvetica",
+      "Arial",
+      sans-serif;
+  }
 
-body,
-button,
-input,
-select,
-textarea {
-  font-family:
-    BlinkMacSystemFont,
-    -apple-system,
-    "Segoe UI",
-    "Roboto",
-    "Oxygen",
-    "Ubuntu",
-    "Cantarell",
-    "Fira Sans",
-    "Droid Sans",
-    "Helvetica Neue",
-    "Helvetica",
-    "Arial",
-    sans-serif;
-}
+  code,
+  pre {
+    -moz-osx-font-smoothing: auto;
+    -webkit-font-smoothing: auto;
+    font-family: monospace;
+  }
 
-code,
-pre {
-  -moz-osx-font-smoothing: auto;
-  -webkit-font-smoothing: auto;
-  font-family: monospace;
-}
+  body {
+    color: var(--color-text);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    height: 100%;
+  }
 
-body {
-  color: var(--color-text);
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.5;
-  height: 100%;
-}
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
+  hr {
+    background-color: var(--color-border);
+    border: none;
+    display: block;
+    height: 1px;
+    margin: 1.5rem 0;
+  }
 
-hr {
-  background-color: var(--color-border);
-  border: none;
-  display: block;
-  height: 1px;
-  margin: 1.5rem 0;
-}
+  img {
+    height: auto;
+    max-width: 100%;
+  }
 
-img {
-  height: auto;
-  max-width: 100%;
-}
+  input[type="checkbox"],
+  input[type="radio"] {
+    vertical-align: baseline;
+  }
 
-input[type="checkbox"],
-input[type="radio"] {
-  vertical-align: baseline;
-}
+  small {
+    font-size: 0.875em;
+  }
 
-small {
-  font-size: 0.875em;
-}
+  span {
+    font-style: inherit;
+    font-weight: inherit;
+  }
 
-span {
-  font-style: inherit;
-  font-weight: inherit;
-}
+  strong {
+    font-weight: 700;
+  }
 
-strong {
-  font-weight: 700;
-}
-
-// Block
-table {
-  width: 100%;
-  td,
-  th {
-    text-align: left;
-    vertical-align: top;
+  // Block
+  table {
+    width: 100%;
+    td,
+    th {
+      text-align: left;
+      vertical-align: top;
+    }
   }
 }
-
-// NOTE:
-// workaround for broken backdrop blur utils in tailwind
-// from: https://github.com/tailwindlabs/tailwindcss/discussions/7044#discussioncomment-4697891
-:root {
-  --empty: ;
-}
-*,
-:after,
-:before {
-  --tw-translate-x: 0;
-  --tw-translate-y: 0;
-  --tw-rotate: 0;
-  --tw-skew-x: 0;
-  --tw-skew-y: 0;
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
-  --tw-pan-x: var(--empty,);
-  --tw-pan-y: var(--empty,);
-  --tw-pinch-zoom: var(--empty,);
-  --tw-scroll-snap-strictness: proximity;
-  --tw-ordinal: var(--empty,);
-  --tw-slashed-zero: var(--empty,);
-  --tw-numeric-figure: var(--empty,);
-  --tw-numeric-spacing: var(--empty,);
-  --tw-numeric-fraction: var(--empty,);
-  --tw-ring-inset: var(--empty,);
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgba(59, 130, 246, 0.5);
-  --tw-ring-offset-shadow: 0 0 #0000;
-  --tw-ring-shadow: 0 0 #0000;
-  --tw-shadow: 0 0 #0000;
-  --tw-shadow-colored: 0 0 #0000;
-  --tw-blur: var(--empty,);
-  --tw-brightness: var(--empty,);
-  --tw-contrast: var(--empty,);
-  --tw-grayscale: var(--empty,);
-  --tw-hue-rotate: var(--empty,);
-  --tw-invert: var(--empty,);
-  --tw-saturate: var(--empty,);
-  --tw-sepia: var(--empty,);
-  --tw-drop-shadow: var(--empty,);
-  --tw-backdrop-blur: var(--empty,);
-  --tw-backdrop-brightness: var(--empty,);
-  --tw-backdrop-contrast: var(--empty,);
-  --tw-backdrop-grayscale: var(--empty,);
-  --tw-backdrop-hue-rotate: var(--empty,);
-  --tw-backdrop-invert: var(--empty,);
-  --tw-backdrop-opacity: var(--empty,);
-  --tw-backdrop-saturate: var(--empty,);
-  --tw-backdrop-sepia: var(--empty,);
-}
-
-// actual tailwind css
-// we're not using the tailwind reset, didn't like how it setup ::placeholder color
-@tailwind components;
-@tailwind utilities;
 
 @mixin theme-light {
   // theme-light

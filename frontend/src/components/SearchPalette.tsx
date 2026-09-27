@@ -68,10 +68,10 @@ function useSearchResults(query: string) {
 
   const hitCount = !query
     ? recentlyViewedRecipeHits.length
-    : results.data?.result.nbHits ?? 0
+    : (results.data?.result.nbHits ?? 0)
 
   // Show recently viewed recipes when there's no search query.
-  const hits = !query ? recentlyViewedRecipeHits : results.data?.hits ?? []
+  const hits = !query ? recentlyViewedRecipeHits : (results.data?.hits ?? [])
 
   return [hits, hitCount] as const
 }
@@ -153,7 +153,7 @@ export function SearchPalette({
           stylesSuggestion,
           isCurrentSelection &&
             !isMobile() &&
-            "rounded-md bg-[--color-border-selected-day]",
+            "rounded-md bg-(--color-border-selected-day)",
         )}
         onClick={() => {
           onClose()
@@ -209,11 +209,11 @@ export function SearchPalette({
       footer={
         <div
           className={clx(
-            "flex justify-between border-[0] border-t border-solid border-[--color-border] py-1",
+            "flex justify-between border-0 border-t border-solid border-(--color-border) py-1",
             stylesSuggestion,
           )}
         >
-          <span className="text-[--color-text-muted]">results: {hitCount}</span>
+          <span className="text-(--color-text-muted)">results: {hitCount}</span>
           <Link
             to={{
               pathname: pathRecipesList({}),

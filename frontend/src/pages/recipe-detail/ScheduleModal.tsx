@@ -49,7 +49,7 @@ function RecipeItem({
         >
           {name}
         </div>
-        <div className="line-clamp-1 text-ellipsis text-sm">{author}</div>
+        <div className="line-clamp-1 text-sm text-ellipsis">{author}</div>
       </div>
     </div>
   )
@@ -148,7 +148,7 @@ export function ScheduleModal({
                         className="flex items-center justify-between"
                         key={i}
                       >
-                        <Link to={to} className="grow ">
+                        <Link to={to} className="grow">
                           {format(on, "E")}, {formatHumanDate(on)}
                           {isToday(on)
                             ? // avoid showing "3 hours ago" for today

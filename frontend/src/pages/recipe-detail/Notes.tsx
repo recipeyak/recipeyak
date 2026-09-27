@@ -158,7 +158,7 @@ export function Note({
           {!readonly && (
             <>
               <ReactionPopover
-                className="ml-auto print:!hidden"
+                className="ml-auto print:hidden!"
                 onPick={(emoji) => {
                   const existingReaction = findReaction(
                     note.reactions,
@@ -184,7 +184,7 @@ export function Note({
               />
               {note.created_by.id === userId ? (
                 <a
-                  className="ml-2 cursor-pointer text-[0.825rem] text-[--color-text-muted] print:hidden"
+                  className="ml-2 cursor-pointer text-[0.825rem] text-(--color-text-muted) print:hidden"
                   data-testid="edit-note"
                   onClick={() => {
                     setIsEditing(true)

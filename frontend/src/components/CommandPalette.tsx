@@ -195,10 +195,10 @@ export function CommandPalette({
           handleSelect(hit)
         }}
         className={clx(
-          "cursor-pointer overflow-x-hidden text-ellipsis whitespace-nowrap px-2 py-2",
+          "cursor-pointer overflow-x-hidden px-2 py-2 text-ellipsis whitespace-nowrap",
           isCurrentSelection &&
             !isMobile() &&
-            "rounded-md bg-[--color-border-selected-day]",
+            "rounded-md bg-(--color-border-selected-day)",
         )}
       >
         <div className="flex items-center gap-2">

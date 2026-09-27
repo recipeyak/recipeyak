@@ -66,7 +66,7 @@ export function LoginPage() {
 
   return (
     <AuthPage title="Login">
-      <div className="rounded-none bg-[--color-background] p-3 text-[--color-text] sm:rounded-md">
+      <div className="rounded-none bg-(--color-background) p-3 text-(--color-text) sm:rounded-md">
         <Tabs>
           <Tab isActive>
             <Link to={pathLogin({})} className="no-underline">

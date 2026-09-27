@@ -55,7 +55,7 @@ export function RecipeList(props: {
 
   return (
     <div className={props.className}>
-      <div className="grid gap-2 [grid-template-columns:repeat(auto-fill,minmax(175px,1fr))] sm:[grid-template-columns:repeat(auto-fill,minmax(225px,1fr))]">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(175px,1fr))] gap-2 sm:[grid-template-columns:repeat(auto-fill,minmax(225px,1fr))]">
         <Results recipes={recipeItems} query={props.query ?? ""} />
       </div>
     </div>

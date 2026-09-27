@@ -16,14 +16,14 @@ export const NavLink = ({
       href={to}
       className={(p) =>
         clx(
-          "flex shrink-0 grow-0 cursor-pointer items-center justify-center gap-2 rounded-md px-2 py-1 text-[14px] font-medium leading-[1.5] text-[--color-text] transition-all [transition:background_.12s_ease-out]",
+          "flex shrink-0 grow-0 cursor-pointer items-center justify-center gap-2 rounded-md px-2 py-1 text-[14px] leading-[1.5] font-medium text-(--color-text) transition-all [transition:background_.12s_ease-out]",
           p.isHovered &&
-            "bg-[--color-background-calendar-day] text-[--color-link-hover]",
-          p.isPressed && "bg-[--color-border]",
+            "bg-(--color-background-calendar-day) text-(--color-link-hover)",
+          p.isPressed && "bg-(--color-border)",
           // Only show the focus ring on keyboard devices
           p.isFocusVisible
             ? "focus-visible:outline-[3px] focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)]"
-            : "outline-none",
+            : "outline-hidden",
           className,
         )
       }

@@ -16,7 +16,7 @@ export function FilePreview({
 }) {
   return (
     <div
-      className="grid rounded-md bg-[--color-background-empty-image] print:!hidden"
+      className="grid rounded-md bg-(--color-background-empty-image) print:hidden!"
       onClick={onClick}
     >
       <img

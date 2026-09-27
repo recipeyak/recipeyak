@@ -132,11 +132,11 @@ export function CalendarDay({
       {...mergeProps(dropProps, dropCreateProps)}
       ref={ref}
       className={clx(
-        "flex shrink-0 grow basis-0 flex-col border-2 border-solid border-transparent bg-[--color-background-calendar-day] p-1 transition-[background-color,border] duration-75 [word-break:break-word]",
+        "flex shrink-0 grow basis-0 flex-col border-2 border-solid border-transparent bg-(--color-background-calendar-day) p-1 [word-break:break-word] transition-[background-color,border] duration-75",
         isSelectedDay &&
           // Could avoid the important here if we were using stylex
-          "rounded-md border-2 border-solid !border-[--color-border-selected-day]",
-        isToday && "border-b-2 border-solid border-b-[--color-accent]",
+          "rounded-md border-2 border-solid border-(--color-border-selected-day)!",
+        isToday && "border-b-2 border-solid border-b-(--color-accent)",
       )}
     >
       <Title date={date} />

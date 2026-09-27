@@ -86,7 +86,7 @@ export function PasswordResetConfirmPage(props: RouteProps) {
 
   return (
     <AuthPage title="Password Reset">
-      <div className="rounded-none bg-[--color-background] p-3 text-[--color-text] sm:rounded-md">
+      <div className="rounded-none bg-(--color-background) p-3 text-(--color-text) sm:rounded-md">
         <form onSubmit={handleReset}>
           <h1 className="text-xl">Password Reset Confirmation</h1>
 

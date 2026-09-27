@@ -12,7 +12,7 @@ function ExportLink({
   return (
     <a
       href={href}
-      className="flex items-center gap-2 rounded-md border border-solid border-[--color-border] bg-[--color-background-card] px-3 py-2 font-medium"
+      className="flex items-center gap-2 rounded-md border border-solid border-(--color-border) bg-(--color-background-card) px-3 py-2 font-medium"
     >
       <Download size={20} />
       <span>{children}</span>

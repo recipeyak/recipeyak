@@ -8,7 +8,7 @@ export function NoteTimeStamp({ created }: { readonly created: string }) {
     <time
       title={prettyDate}
       dateTime={created}
-      className="text-[0.85rem] text-[--color-text-muted] print:text-black"
+      className="text-[0.85rem] text-(--color-text-muted) print:text-black"
     >
       {humanizedDate}
     </time>

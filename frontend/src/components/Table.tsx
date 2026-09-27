@@ -21,7 +21,7 @@ export function Cell({
 }) {
   return (
     <AriaCell
-      className="group-selected:focus-visible:outline-white truncate px-4 py-2 align-middle focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-slate-600"
+      className="group-selected:focus-visible:outline-white truncate px-4 py-2 align-middle focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-slate-600 focus-visible:outline-solid"
       {...rest}
     >
       <div className={clx("flex items-center", className)}>{children}</div>
@@ -43,7 +43,7 @@ export function Table({
   return (
     <div
       className={clx(
-        "relative w-full overflow-auto rounded-md border border-solid border-[--color-border] bg-[--color-background-calendar-day] shadow",
+        "relative w-full overflow-auto rounded-md border border-solid border-(--color-border) bg-(--color-background-calendar-day) shadow",
         className,
       )}
       {...rest}
@@ -71,7 +71,7 @@ export function Column({
   return (
     <AriaColumn
       isRowHeader={isRowHeader}
-      className="sticky top-0 cursor-default whitespace-nowrap border-0 border-b border-solid border-[--color-border] p-0 text-left font-bold outline-none first:rounded-tl-md last:rounded-tr-md focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-slate-600"
+      className="sticky top-0 cursor-default border-0 border-b border-solid border-(--color-border) p-0 text-left font-bold whitespace-nowrap outline-hidden first:rounded-tl-md last:rounded-tr-md focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-slate-600 focus-visible:outline-solid"
     >
       <div className="py-1 pl-4">{children}</div>
     </AriaColumn>
@@ -81,7 +81,7 @@ export function Column({
 export function Row<T extends object>(props: Omit<RowProps<T>, "className">) {
   return (
     <AriaRow<T>
-      className="cursor-default outline-none focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-slate-600"
+      className="cursor-default outline-hidden focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-slate-600 focus-visible:outline-solid"
       {...props}
     />
   )

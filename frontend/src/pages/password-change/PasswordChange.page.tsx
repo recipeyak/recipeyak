@@ -57,7 +57,7 @@ export function PasswordChangePage() {
 
   return (
     <NavPage title="Password Change">
-      <form onSubmit={handleSubmit} className="mx-auto my-0 max-w-[400px] ">
+      <form onSubmit={handleSubmit} className="mx-auto my-0 max-w-[400px]">
         <h2 className="text-xl">Password Change</h2>
         <div className="flex flex-col gap-4">
           <div>

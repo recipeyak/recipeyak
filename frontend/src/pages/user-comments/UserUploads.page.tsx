@@ -98,7 +98,7 @@ function ImageGrid({
       {uploads.map((upload) => (
         <Link
           key={upload.id}
-          className="h-[--image-size] w-[--image-size]"
+          className="h-(--image-size) w-(--image-size)"
           // eslint-disable-next-line no-restricted-syntax
           style={{
             // eslint-disable-next-line @typescript-eslint/consistent-type-assertions

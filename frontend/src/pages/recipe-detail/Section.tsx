@@ -160,7 +160,7 @@ export function Section({
     <li
       ref={editingEnabled ? ref : undefined}
       className={clx(
-        "mt-2 flex cursor-auto select-text items-start justify-between text-sm font-bold",
+        "mt-2 flex cursor-auto items-start justify-between text-sm font-bold select-text",
         isDragging && "opacity-0",
       )}
     >
@@ -374,7 +374,7 @@ function SectionEditMenu({
       <MoreButton />
       <MenuPopover>
         <Menu
-          className="outline-none"
+          className="outline-hidden"
           onAction={(actionId) => {
             const action = actions.find(
               (x) => x.type === "action" && x.id === actionId,
@@ -389,7 +389,7 @@ function SectionEditMenu({
               return (
                 <Separator
                   key={"sep" + idx}
-                  className="my-1 h-[1px] bg-[--color-border]"
+                  className="my-1 h-px bg-(--color-border)"
                 />
               )
             } else {

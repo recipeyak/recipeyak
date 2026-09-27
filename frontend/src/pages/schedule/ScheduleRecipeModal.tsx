@@ -89,13 +89,13 @@ function RecipeSelect({
     >
       <Label className="cursor-default font-medium">Recipe</Label>
 
-      <Group className="flex rounded-md border border-solid border-[--color-border]">
+      <Group className="flex rounded-md border border-solid border-(--color-border)">
         <Input
           className={() =>
             clx(
-              "w-full flex-1 rounded-md border-none bg-transparent px-3 py-2 text-base leading-5 text-[--color-text] outline-none -outline-offset-1 placeholder:text-[--color-input-placeholder]",
+              "w-full flex-1 rounded-md border-none bg-transparent px-3 py-2 text-base leading-5 text-(--color-text) outline-hidden -outline-offset-1 placeholder:text-(--color-input-placeholder)",
               isFocusVisible &&
-                "focus-within:outline focus-within:outline-[2px] focus-within:outline-[rgb(47,129,247)]",
+                "focus-within:outline-2 focus-within:outline-[rgb(47,129,247)] focus-within:outline-solid",
             )
           }
           placeholder={"search recipes"}
@@ -104,10 +104,10 @@ function RecipeSelect({
           ▼
         </Button>
       </Group>
-      <Popover className="w-[--trigger-width] overflow-auto rounded-md border border-solid border-[--color-border] bg-[--color-background-card] text-base shadow-lg ring-1 ring-black/5">
+      <Popover className="w-(--trigger-width) overflow-auto rounded-md border border-solid border-(--color-border) bg-(--color-background-card) text-base shadow-lg ring-1 ring-black/5">
         <ListBox<
           (typeof hits)[number]
-        > className="max-h-[375px] p-1 outline-none">
+        > className="max-h-[375px] p-1 outline-hidden">
           {(hit) => {
             return (
               <UserItem textValue={hit.name}>
@@ -132,16 +132,16 @@ function UserItem(props: ListBoxItemProps & { children: React.ReactNode }) {
   return (
     <ListBoxItem
       {...props}
-      className="group flex cursor-default select-none items-center gap-2 p-1"
+      className="group flex cursor-default items-center gap-2 p-1 select-none"
     >
       {({ isSelected, isFocusVisible }) => {
         return (
           <>
             <span
               className={clx(
-                "group-selected:font-medium flex flex-1 items-center gap-3 truncate font-normal ",
+                "group-selected:font-medium flex flex-1 items-center gap-3 truncate font-normal",
                 isFocusVisible &&
-                  "rounded-md outline outline-[3px] outline-[rgb(47,129,247)]",
+                  "rounded-md outline-[3px] outline-[rgb(47,129,247)] outline-solid",
               )}
             >
               {props.children}
@@ -207,7 +207,7 @@ function RecipeItem({
         >
           {hit ? <CustomHighlight hit={hit} attribute="name" /> : name}
         </div>
-        <div className="line-clamp-1 text-ellipsis text-sm">
+        <div className="line-clamp-1 text-sm text-ellipsis">
           {hit ? <CustomHighlight hit={hit} attribute="author" /> : author}
         </div>
       </div>
@@ -290,7 +290,7 @@ export function ScheduleRecipeModal({
           </label>
 
           <div className="mt-auto flex w-full items-center gap-2">
-            <Button className="grow " variant="primary" type="submit">
+            <Button className="grow" variant="primary" type="submit">
               Schedule
             </Button>
           </div>

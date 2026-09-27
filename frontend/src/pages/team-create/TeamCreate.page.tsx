@@ -66,7 +66,7 @@ export function TeamCreatePage() {
                   <h4 className="text-base font-medium">{name}</h4>
 
                   {/* eslint-disable-next-line react/forbid-elements */}
-                  <p className="text-[--color-text-muted]">{description}</p>
+                  <p className="text-(--color-text-muted)">{description}</p>
                 </div>
               </label>
             ))}

@@ -109,7 +109,7 @@ const ShoppingListList = React.forwardRef<
   return (
     <div
       className={clx(
-        "max-h-[425px] min-h-[74px] overflow-y-auto rounded-none border-[1px] border-solid border-[--color-border] bg-[--color-background-card] p-3 text-[--color-text] sm:rounded-md",
+        "max-h-[425px] min-h-[74px] overflow-y-auto rounded-none border border-solid border-(--color-border) bg-(--color-background-card) p-3 text-(--color-text) sm:rounded-md",
         props.items.isPending || props.items.isRefetching ? "opacity-70" : "",
       )}
     >

@@ -48,7 +48,7 @@ function CreateFromURLForm() {
         </Button>
       </div>
       {recipeCreate.isError ? (
-        <div className="mb-1 text-left text-[--color-danger]">
+        <div className="mb-1 text-left text-(--color-danger)">
           Error:{" "}
           {
             // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unsafe-member-access
@@ -95,7 +95,7 @@ function CreateManuallyForm() {
           }}
         />
         {recipeCreate.isError ? (
-          <div className="mb-1 text-left text-[--color-danger]">
+          <div className="mb-1 text-left text-(--color-danger)">
             Error:
             {
               // eslint-disable-next-line @typescript-eslint/consistent-type-assertions

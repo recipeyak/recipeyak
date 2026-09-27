@@ -2,6 +2,7 @@
 /** @type {import("prettier").Config} */
 export default {
   plugins: ["prettier-plugin-tailwindcss"],
+  tailwindStylesheet: "./src/components/scss/tailwind.css",
   tailwindFunctions: ["clx", "clsx", "classNames", "cls", "className"],
   semi: false,
   useTabs: false,

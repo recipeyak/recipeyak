@@ -34,7 +34,7 @@ function CustomRefinement({
   const items = facetResults.data?.[0].facetHits ?? []
 
   return (
-    <div className="flex w-full flex-col  sm:max-h-48 sm:min-h-48 sm:w-fit ">
+    <div className="flex w-full flex-col sm:max-h-48 sm:min-h-48 sm:w-fit">
       <div className="font-medium">{label}</div>
       <SearchInput
         placeholder="search..."
@@ -435,7 +435,7 @@ export function RecipeSearchList() {
 
           <div className="flex gap-2">
             <Button
-              className="flex h-full items-center gap-2 !px-2 "
+              className="flex h-full items-center gap-2 px-2!"
               size="small"
               onClick={() => {
                 const userId = user.id?.toString() ?? null
@@ -460,10 +460,7 @@ export function RecipeSearchList() {
         </div>
 
         {searchTools.enabled && (
-          <div
-            className="flex w-full flex-wrap gap-x-6
-          sm:w-fit"
-          >
+          <div className="flex w-full flex-wrap gap-x-6 sm:w-fit">
             <div className="flex flex-col">
               <label className="font-medium">Search by</label>
               <div className="flex items-center gap-2">

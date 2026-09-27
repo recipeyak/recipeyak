@@ -95,8 +95,8 @@ export function CalendarItem({
             "flex w-full items-center gap-2 rounded-md",
             // only want to show focus outline on devices with a keyboard aka not most phones
             isFocusVisible
-              ? "focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)]"
-              : "outline-none",
+              ? "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[rgb(47,129,247)] focus-visible:outline-solid"
+              : "outline-hidden",
           )}
           to={recipeURL(recipeID, recipeName)}
           onClick={(e) => {
@@ -117,7 +117,7 @@ export function CalendarItem({
           />
           <div
             className={clx(
-              "line-clamp-3 text-ellipsis break-words text-sm font-semibold leading-tight",
+              "line-clamp-3 text-sm leading-tight font-semibold wrap-break-word text-ellipsis",
               archived && "line-through",
             )}
           >
@@ -144,7 +144,9 @@ export function CalendarItem({
   )
 }
 
-export interface ICalendarDragItem
-  extends Pick<ICalendarItemProps, "recipeID" | "scheduledId" | "date"> {
+export interface ICalendarDragItem extends Pick<
+  ICalendarItemProps,
+  "recipeID" | "scheduledId" | "date"
+> {
   readonly type: DragDrop.CAL_RECIPE
 }

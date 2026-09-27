@@ -250,7 +250,7 @@ export function ProfilePage(props: RouteComponentProps<{ userId: string }>) {
             <Link key={name} to={pathName}>
               <div
                 key={name}
-                className="flex items-center gap-1 rounded-md border border-solid border-[--color-border] bg-[--color-background-calendar-day] px-2 py-1"
+                className="flex items-center gap-1 rounded-md border border-solid border-(--color-border) bg-(--color-background-calendar-day) px-2 py-1"
               >
                 <Icon /> {name} · {formatNumber(value)}
               </div>

@@ -22,42 +22,42 @@ function getVariantStyles(
   switch (variant) {
     case undefined: {
       if (isDisabled) {
-        return "border-[--color-normal-disabled-border] bg-[--color-normal-disabled-bg] text-[--color-normal-disabled-text]"
+        return "border-(--color-normal-disabled-border) bg-(--color-normal-disabled-bg) text-(--color-normal-disabled-text)"
       }
       if (isPressed) {
-        return "border-[--color-normal-active-border] bg-[--color-normal-active-bg] text-[--color-normal-active-text]"
+        return "border-(--color-normal-active-border) bg-(--color-normal-active-bg) text-(--color-normal-active-text)"
       }
       if (isHovered) {
-        return "border-[--color-normal-hover-border] bg-[--color-normal-hover-bg] text-[--color-normal-hover-text]"
+        return "border-(--color-normal-hover-border) bg-(--color-normal-hover-bg) text-(--color-normal-hover-text)"
       }
-      return "border-[--color-normal-default-border] bg-[--color-normal-default-bg] text-[--color-normal-default-text]"
+      return "border-(--color-normal-default-border) bg-(--color-normal-default-bg) text-(--color-normal-default-text)"
     }
     case "primary": {
       if (isDisabled) {
-        return "border-[--color-primary-disabled-border] bg-[--color-primary-disabled-bg] text-[--color-primary-disabled-text]"
+        return "border-(--color-primary-disabled-border) bg-(--color-primary-disabled-bg) text-(--color-primary-disabled-text)"
       }
       if (isPressed) {
-        return "border-[--color-primary-active-border] bg-[--color-primary-active-bg] text-[--color-primary-active-text]"
+        return "border-(--color-primary-active-border) bg-(--color-primary-active-bg) text-(--color-primary-active-text)"
       }
       if (isHovered) {
-        return "border-[--color-primary-hover-border] bg-[--color-primary-hover-bg] text-[--color-primary-hover-text]"
+        return "border-(--color-primary-hover-border) bg-(--color-primary-hover-bg) text-(--color-primary-hover-text)"
       }
-      return "border-[--color-primary-default-border] bg-[--color-primary-default-bg] text-[--color-primary-default-text]"
+      return "border-(--color-primary-default-border) bg-(--color-primary-default-bg) text-(--color-primary-default-text)"
     }
     case "danger": {
       if (isDisabled) {
-        return "border-[--color-danger-disabled-border] bg-[--color-danger-disabled-bg] text-[--color-danger-disabled-text]"
+        return "border-(--color-danger-disabled-border) bg-(--color-danger-disabled-bg) text-(--color-danger-disabled-text)"
       }
       if (isHovered) {
-        return "border-[--color-danger-hover-border] bg-[--color-danger-hover-bg] text-[--color-danger-hover-text]"
+        return "border-(--color-danger-hover-border) bg-(--color-danger-hover-bg) text-(--color-danger-hover-text)"
       }
       if (isPressed) {
-        return "border-[--color-danger-active-border] bg-[--color-danger-active-bg]"
+        return "border-(--color-danger-active-border) bg-(--color-danger-active-bg)"
       }
-      return "border-[--color-danger-default-border] bg-[--color-danger-default-bg] text-[--color-danger-default-text]"
+      return "border-(--color-danger-default-border) bg-(--color-danger-default-bg) text-(--color-danger-default-text)"
     }
     case "gradient":
-      return "pointer-events-auto !border-none text-white !shadow-none backdrop-blur-[10px] ![background-color:rgba(0,0,0,0.46)]"
+      return "pointer-events-auto border-none! text-white shadow-none! backdrop-blur-[10px] bg-[rgba(0,0,0,0.46)]!"
     default:
       assertNever(variant)
   }
@@ -70,7 +70,7 @@ function getSizeStyles(size: Size): string {
     case "small":
       return "text-xs"
     case "large":
-      return "!text-2xl"
+      return "text-2xl! leading-8!"
     default:
       assertNever(size)
   }
@@ -78,7 +78,7 @@ function getSizeStyles(size: Size): string {
 
 function getBaseStyles(size: Size, isFocusVisible: boolean): string {
   return clx(
-    "relative inline-flex cursor-pointer select-none items-center justify-center whitespace-nowrap rounded-md border border-solid p-0 px-3 py-1 text-center align-top text-sm font-medium leading-[1.5] no-underline transition-[border-color,background-color] duration-75 disabled:cursor-default print:!hidden",
+    "relative inline-flex cursor-pointer items-center justify-center rounded-md border border-solid p-0 px-3 py-1 text-center align-top text-sm leading-[1.5] font-medium whitespace-nowrap no-underline transition-[border-color,background-color] duration-75 select-none disabled:cursor-default print:hidden!",
     focusVisibleStyles(isFocusVisible),
     getSizeStyles(size),
   )

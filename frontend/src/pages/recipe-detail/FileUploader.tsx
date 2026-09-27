@@ -23,7 +23,7 @@ function DeleteFileButton({
   return (
     <DialogTrigger>
       <Button
-        className="absolute right-0 top-[-4px] z-10 aspect-[1] cursor-pointer rounded-[100%] border-[0px] bg-[#4a4a4a] p-[0.3rem] font-bold leading-[0] text-[#dbdbdb]"
+        className="absolute top-[-4px] right-0 z-10 aspect-[1] cursor-pointer rounded-[100%] border-0 bg-[#4a4a4a] p-[0.3rem] leading-[0] font-bold text-[#dbdbdb]"
         variant="nostyle"
       >
         &times;
@@ -84,7 +84,7 @@ function FileWithStatus({
               <progress
                 value={progress}
                 max="100"
-                className="h-[0.2rem] rounded-none accent-[--color-primary]"
+                className="h-[0.2rem] rounded-none accent-(--color-primary)"
               />
             </div>
           )}
@@ -115,7 +115,7 @@ export function FileUploader({
   return (
     <>
       {files.length > 0 && (
-        <div className="flex flex-wrap gap-1 border-[thin] border-solid border-[--color-border] bg-[--color-background-card] p-2 [border-top-style:none]">
+        <div className="flex flex-wrap gap-1 border-[thin] border-solid [border-top-style:none] border-(--color-border) bg-(--color-background-card) p-2">
           {files.map((f) => (
             // NOTE(sbdchd): it's important that the `localId` is consistent
             // throughout the upload content, otherwise we'll wipe out the DOM
@@ -133,7 +133,7 @@ export function FileUploader({
           ))}
         </div>
       )}
-      <label className="mb-2 cursor-pointer rounded-b-[3px] border-[thin] border-solid border-[--color-border] bg-[--color-background-card] px-2 py-1 text-sm font-medium text-[--color-text-muted] [border-top-style:none]">
+      <label className="mb-2 cursor-pointer rounded-b-[3px] border-[thin] border-solid [border-top-style:none] border-(--color-border) bg-(--color-background-card) px-2 py-1 text-sm font-medium text-(--color-text-muted)">
         {/* eslint-disable-next-line react/forbid-elements */}
         <input
           type="file"

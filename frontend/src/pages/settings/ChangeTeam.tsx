@@ -106,7 +106,7 @@ export function ChangeTeam() {
               <div className="flex w-full flex-col items-center justify-between gap-2">
                 <a
                   href={settings.data.calendarLink}
-                  className="flex w-full items-center justify-center gap-2 rounded-md border border-solid border-[--color-border] bg-[--color-background-card] px-3 py-1 font-medium"
+                  className="flex w-full items-center justify-center gap-2 rounded-md border border-solid border-(--color-border) bg-(--color-background-card) px-3 py-1 font-medium"
                 >
                   <CalendarIcon size={18} />
                   <span>Add to Calendar</span>

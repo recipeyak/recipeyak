@@ -298,7 +298,7 @@ function StepsDiff({
           return (
             <div key={index}>
               <div className="text-sm font-semibold">Step {index + 1}</div>
-              <div className={clx("max-w-[max-content]")}>
+              <div className={clx("max-w-max")}>
                 <DiffToText diffs={diffs} type={type} />
               </div>
             </div>
@@ -374,7 +374,7 @@ function IngredientsDiff({
           return (
             <div
               key={index}
-              className={clx("max-w-[max-content]")}
+              className={clx("max-w-max")}
               data-meta-id={i.id + i.type + i.position}
               data-pos-id={i.position}
             >
@@ -410,13 +410,13 @@ function ImageDiff({
   return (
     <div
       className={clx(
-        "m-1 h-[100px] w-[100px] min-w-[max-content] shrink-0 rounded-sm bg-[--color-background-empty-image]",
+        "m-1 h-[100px] w-[100px] min-w-max shrink-0 rounded-sm bg-(--color-background-empty-image)",
         type === "after" &&
           diff.toValue?.id !== diff.fromValue?.id &&
-          "outline outline-2 outline-offset-2 outline-[#5ede7aa9]",
+          "outline-2 outline-offset-2 outline-[#5ede7aa9] outline-solid",
         type === "before" &&
           diff.toValue?.id !== diff.fromValue?.id &&
-          "outline outline-2 outline-offset-2 outline-[#f26f6fad]",
+          "outline-2 outline-offset-2 outline-[#f26f6fad] outline-solid",
       )}
     >
       <Image
@@ -571,7 +571,7 @@ function VersionList({
   setCurrentVersion: (_: number) => void
 }) {
   return (
-    <div className="grow md:h-full md:min-w-[350px] md:max-w-[350px]">
+    <div className="grow md:h-full md:max-w-[350px] md:min-w-[350px]">
       {versions.map((change, idx) => (
         <div
           key={change.id}

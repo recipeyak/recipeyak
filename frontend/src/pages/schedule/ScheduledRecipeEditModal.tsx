@@ -64,7 +64,7 @@ function RecipeItem({
         >
           {name}
         </div>
-        <div className="line-clamp-1 text-ellipsis text-sm">{author}</div>
+        <div className="line-clamp-1 text-sm text-ellipsis">{author}</div>
         <div className="flex items-center gap-1">
           <Avatar avatarURL={createdBy?.avatar_url ?? null} size={20} />
           <div>
@@ -255,7 +255,7 @@ function RescheduleSection({
                     value={toISODateString(localDate)}
                     onChange={handleDateChange}
                     type="date"
-                    className="w-full rounded-md border border-solid border-[--color-border] p-1 text-base"
+                    className="w-full rounded-md border border-solid border-(--color-border) p-1 text-base"
                   />
                   <Button
                     variant="primary"

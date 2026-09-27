@@ -157,7 +157,7 @@ export function Ingredient(props: {
             }}
             autoFocus
             value={quantity}
-            className="!w-1/3"
+            className="w-1/3!"
             placeholder="3 lbs"
           />
 
@@ -167,7 +167,7 @@ export function Ingredient(props: {
               setName(e.target.value)
             }}
             value={name}
-            className=" !w-2/3"
+            className="w-2/3!"
             placeholder="tomato"
           />
         </div>
@@ -440,7 +440,7 @@ function IngredientEditMenu({
       <MoreButton />
       <MenuPopover>
         <Menu
-          className="outline-none"
+          className="outline-hidden"
           onAction={(actionId) => {
             const action = actions.find(
               (x) => x.type === "action" && x.id === actionId,
@@ -455,7 +455,7 @@ function IngredientEditMenu({
               return (
                 <Separator
                   key={"sep" + idx}
-                  className="my-1 h-[1px] bg-[--color-border]"
+                  className="my-1 h-px bg-(--color-border)"
                 />
               )
             } else {

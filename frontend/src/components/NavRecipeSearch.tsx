@@ -71,11 +71,11 @@ export function NavRecipeSearch({
         }
         variant="nostyle"
         className={clx(
-          "relative inline-flex w-full !cursor-pointer select-none items-center !justify-start gap-2 whitespace-nowrap rounded-md text-center align-top text-base font-normal leading-[1.5] text-[--color-text] no-underline outline-none -outline-offset-1 transition-[background-color] duration-75 focus-within:outline focus-within:outline-[2px] focus-within:outline-[rgb(47,129,247)] disabled:cursor-default print:!hidden sm:!cursor-text",
+          "relative inline-flex w-full cursor-pointer! items-center justify-start! gap-2 rounded-md text-center align-top text-base leading-[1.5] font-normal whitespace-nowrap text-(--color-text) no-underline outline-hidden -outline-offset-1 transition-[background-color] duration-75 select-none focus-within:outline-2 focus-within:outline-[rgb(47,129,247)] focus-within:outline-solid disabled:cursor-default sm:cursor-text! print:hidden!",
           isSmallerOrGreater
-            ? "border border-solid border-[--color-border] bg-[--color-background-card] px-2 py-[5px] !pr-3"
+            ? "border border-solid border-(--color-border) bg-(--color-background-card) px-2 py-[5px] pr-3!"
             : "cursor-pointer border-none bg-inherit px-2 py-1",
-          "hover:bg-[--color-background-calendar-day] hover:text-[--color-link-hover]",
+          "hover:bg-(--color-background-calendar-day) hover:text-(--color-link-hover)",
         )}
       />
     </div>

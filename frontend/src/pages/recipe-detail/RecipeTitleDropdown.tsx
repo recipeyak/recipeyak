@@ -205,7 +205,7 @@ export function RecipeTitleDropdown({
       </Button>
       <MenuPopover>
         <Menu
-          className="outline-none"
+          className="outline-hidden"
           onAction={(key) => {
             const metadata = menuItems.find((x) => x.id === key)
             if (metadata && "label" in metadata) {
@@ -224,7 +224,7 @@ export function RecipeTitleDropdown({
                 <Separator
                   id={menuItem.id}
                   key={menuItem.id}
-                  className="my-1 h-[1px] bg-[--color-border]"
+                  className="my-1 h-px bg-(--color-border)"
                 />
               )
             }
