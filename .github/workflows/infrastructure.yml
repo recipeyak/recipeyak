@@ -50,6 +50,9 @@ jobs:
   build_api_container:
     runs-on: ubuntu-latest
     if: ${{ github.event_name != 'workflow_dispatch' }}
+    env:
+      # Dependabot and fork PRs don't get secrets, so build without pushing.
+      PUSH: ${{ secrets.DOCKERHUB_TOKEN != '' }}
     steps:
       - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
         with:
@@ -59,6 +62,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@885d1462b80bc1c1c7f0b00334ad271f09369c55 # v2
       - name: Login to Docker Hub
+        if: ${{ env.PUSH == 'true' }}
         uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -67,7 +71,7 @@ jobs:
         uses: docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25 # v5
         with:
           context: "{{defaultContext}}:backend"
-          push: true
+          push: ${{ env.PUSH == 'true' }}
           file: "django.Dockerfile"
           tags: recipeyak/django:${{ github.event.pull_request.head.sha || github.sha }}
           cache-from: type=gha,scope=django
@@ -78,6 +82,9 @@ jobs:
   build_ui_container:
     runs-on: ubuntu-latest
     if: ${{ github.event_name != 'workflow_dispatch' }}
+    env:
+      # Dependabot and fork PRs don't get secrets, so build without pushing.
+      PUSH: ${{ secrets.DOCKERHUB_TOKEN != '' }}
     steps:
       - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
         with:
@@ -87,6 +94,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@885d1462b80bc1c1c7f0b00334ad271f09369c55 # v2
       - name: Login to Docker Hub
+        if: ${{ env.PUSH == 'true' }}
         uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -109,11 +117,15 @@ jobs:
           s/build
       - name: Build and push
         working-directory: "./frontend"
+        env:
+          GIT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
-          git_sha=${{ github.event.pull_request.head.sha || github.sha }}
-          docker buildx build --push -f react.Dockerfile \
-          --tag recipeyak/react:$git_sha .
-          echo "Pushed \`recipeyak/react:$git_sha\`" >> $GITHUB_STEP_SUMMARY
+          if [ "$PUSH" = "true" ]; then
+            docker buildx build --push -f react.Dockerfile --tag "recipeyak/react:$GIT_SHA" .
+            echo "Pushed \`recipeyak/react:$GIT_SHA\`" >> "$GITHUB_STEP_SUMMARY"
+          else
+            docker buildx build -f react.Dockerfile --tag "recipeyak/react:$GIT_SHA" .
+          fi
 
   deploy:
     needs: [build_api_container, build_ui_container]
