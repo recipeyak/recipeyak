@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-set -ex
-
-main() {
-  ./node_modules/.bin/size-limit "$@"
-}
-
-main "$@"
