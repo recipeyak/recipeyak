@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+from functools import cache
 
 from ably import AblyRest
 
@@ -10,19 +11,25 @@ from recipeyak.api.team_update_view import get_teams
 from recipeyak.config import ABLY_API_KEY
 
 
-async def get_token(user_id: str, team_ids: list[int]) -> dict[str, object]:
-    async with AblyRest(ABLY_API_KEY) as ably:
-        res = await ably.auth.create_token_request(
-            {
-                "client_id": user_id,
-                "capability": {
-                    f"team:{team_id}:*": ["subscribe", "presence"]
-                    for team_id in team_ids
-                },
-            }
-        )
+@cache
+def ably_client() -> AblyRest:
+    # Constructing a client builds an HTTP client and SSL context, which is
+    # most of this endpoint's cost. Token requests are signed locally, so the
+    # HTTP client is never used and can be shared across requests.
+    return AblyRest(ABLY_API_KEY)
 
-        return res.to_dict()
+
+async def get_token(user_id: str, team_ids: list[int]) -> dict[str, object]:
+    res = await ably_client().auth.create_token_request(
+        {
+            "client_id": user_id,
+            "capability": {
+                f"team:{team_id}:*": ["subscribe", "presence"] for team_id in team_ids
+            },
+        }
+    )
+
+    return res.to_dict()
 
 
 @endpoint()
