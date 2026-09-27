@@ -38,9 +38,9 @@ def test_recipe_creation(client: Client, user: User, team: Team) -> None:
     res = client.get(f"/api/v1/recipes/{recipe_id}/")
     assert res.status_code == 200
 
-    assert isinstance(
-        parse_datetime(res.json()["created"]), datetime
-    ), "return a valid date time string"
+    assert isinstance(parse_datetime(res.json()["created"]), datetime), (
+        "return a valid date time string"
+    )
 
 
 def test_creating_recipe_with_empty_ingredients_and_steps(
@@ -241,9 +241,9 @@ def test_deleting_step_from_recipe(
     res = client.get(f"/api/v1/recipes/{recipe.id}/")
     assert res.status_code == 200
 
-    assert step_id not in (
-        step.get("id") for step in res.json().get("steps")
-    ), "step was still in the recipe after being deleted"
+    assert step_id not in (step.get("id") for step in res.json().get("steps")), (
+        "step was still in the recipe after being deleted"
+    )
 
 
 ingredient = {
@@ -396,9 +396,9 @@ def test_updating_ingredient_of_recipe(
         x for x in res.json()["ingredients"] if x["id"] == ingredient_id
     )
 
-    assert updated_ingredient.get("name") == ingredient.get(
-        "name"
-    ), "ingredient didn't update"
+    assert updated_ingredient.get("name") == ingredient.get("name"), (
+        "ingredient didn't update"
+    )
 
 
 def test_updating_ingredient_position(

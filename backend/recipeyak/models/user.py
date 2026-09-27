@@ -8,13 +8,13 @@ from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
 )
-from django.contrib.postgres.fields import CIEmailField
 from django.db import models, transaction
 
 from recipeyak.models.membership import Membership
 from recipeyak.models.upload import public_url
 
 if TYPE_CHECKING:
+    from django.db.backends.base.base import BaseDatabaseWrapper
     from django.db.models.manager import RelatedManager
     from user_sessions.models import Session
 
@@ -24,6 +24,17 @@ if TYPE_CHECKING:
     from recipeyak.models.upload import Upload  # noqa: F401
 
 logger = logging.getLogger(__name__)
+
+
+class CIEmailField(models.EmailField[str]):
+    """
+    Django deprecated its postgres citext fields in 4.2 and removed them in
+    5.1, in favor of non deterministic collations, but our column is still
+    citext, which is what makes email lookups case insensitive.
+    """
+
+    def db_type(self, connection: BaseDatabaseWrapper) -> str:
+        return "citext"
 
 
 class UserManager(BaseUserManager["User"]):

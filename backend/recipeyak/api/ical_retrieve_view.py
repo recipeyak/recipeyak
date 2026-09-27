@@ -116,7 +116,4 @@ where
             description=f"Recipe Yak Schedule for Team {team_name}",
             events=events,
         )
-        response = HttpResponse()
-        response["Content-Type"] = "text/calendar"
-        response.content = cal
-    return response
+        return HttpResponse(cal, content_type="text/calendar")

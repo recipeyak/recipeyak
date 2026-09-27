@@ -28,13 +28,13 @@ def test_get_recipe_timeline(
     assert res.status_code == 404
 
     res = client.get(url)
-    assert (
-        ScheduledRecipe.objects.filter(recipe=recipe).exists() is False
-    ), "We should start off without ScheduledRecipes"
+    assert ScheduledRecipe.objects.filter(recipe=recipe).exists() is False, (
+        "We should start off without ScheduledRecipes"
+    )
     assert res.status_code == 200
-    assert (
-        not res.json()
-    ), "Should have an empty array since we haven't scheduled a recipe yet."
+    assert not res.json(), (
+        "Should have an empty array since we haven't scheduled a recipe yet."
+    )
 
     user.schedule_team = empty_team
     user.save()

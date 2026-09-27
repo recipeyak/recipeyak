@@ -94,7 +94,7 @@ def serialize_reactions(reactions: Iterable[Reaction]) -> list[ReactionSerialize
     return [
         ReactionSerializer(
             id=str(reaction.id),
-            type=cast(Literal["❤️", "😆", "🤮"], reaction.emoji),
+            type=cast("Literal['❤️', '😆', '🤮']", reaction.emoji),
             note_id=reaction.note_id,
             user=serialize_public_user(reaction.created_by),
             created=reaction.created,
@@ -321,15 +321,7 @@ def serialize_timeline_event(
         type="recipe",
         id=timeline_event.id,
         action=cast(
-            Literal[
-                "created",
-                "archived",
-                "unarchived",
-                "deleted",
-                "scheduled",
-                "remove_primary_image",
-                "set_primary_image",
-            ],
+            "Literal['created', 'archived', 'unarchived', 'deleted', 'scheduled', 'remove_primary_image', 'set_primary_image']",
             timeline_event.action,
         ),
         created_by=created_by,

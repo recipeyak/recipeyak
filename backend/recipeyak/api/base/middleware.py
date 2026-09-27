@@ -29,7 +29,7 @@ class NoCacheMiddleware:
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
         response = self.get_response(request)
-        if "Cache-Control" not in response:
+        if not response.has_header("Cache-Control"):
             response["Cache-Control"] = "no-store, no-cache, must-revalidate"
             response["Pragma"] = "no-cache"
             response["Expires"] = "0"

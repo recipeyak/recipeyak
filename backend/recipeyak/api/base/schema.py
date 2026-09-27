@@ -1,4 +1,4 @@
-# ruff: noqa: ERA001 T201
+# ruff: noqa: T201
 from __future__ import annotations
 
 import filecmp
@@ -36,8 +36,8 @@ class _Endpoint:
     url: str
     method: Literal["get", "post", "put", "patch", "delete", "head"]
     name: str
-    request: dict[str, Any]
-    response: dict[str, object]
+    request: dict[str, Any] | None
+    response: dict[str, object] | None
     description: str | None = None
     view_name: str
     view_param_type_name: str
@@ -171,9 +171,9 @@ def _schema_from_endpoint(endpoint: _Endpoint) -> tuple[str, _MethodDict]:
         method_dict["responses"]["204"] = {"description": "No content"}
 
     if endpoint.method == "get":
-        assert not method_dict.get(
-            "requestBody"
-        ), f"shouldn't have a request body for get requests, use params instead. {endpoint.url}"
+        assert not method_dict.get("requestBody"), (
+            f"shouldn't have a request body for get requests, use params instead. {endpoint.url}"
+        )
 
     return (
         path,
@@ -187,6 +187,7 @@ def _normalize_params_and_schema(
     """
     Remove the dupes from the overlap between path params and request body params
     """
+    assert endpoint.request is not None
     for param_name, param_type in path_params.items():
         param_types = endpoint.request["properties"].get(param_name)
         if param_types is None:
@@ -277,7 +278,7 @@ def _django_route_to_open_api(route: str) -> tuple[str, dict[str, type]]:
     return "".join(parts), converters
 
 
-def _cleanup_schema(data: dict[str, Any]) -> dict[str, Any]:
+def _cleanup_schema(data: dict[str, Any] | None) -> dict[str, Any] | None:
     """
     inline all the refs
 
