@@ -54,6 +54,10 @@ class Recipe(CommonInfo):
 
     class Meta:
         db_table = "core_recipe"
+        indexes = [  # noqa: RUF012
+            # recently created recipes for a team
+            models.Index(fields=["team", "-created"], name="recipe_team_created"),
+        ]
 
     def schedule(self, *, on: date, user: User, team: Team) -> ScheduledRecipe:
         calendar = user.pinned_calendar

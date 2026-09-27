@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+from urllib.parse import quote
 
 from django.db import models
-from yarl import URL
 
 from recipeyak import config
 from recipeyak.models.base import CommonInfo
@@ -12,8 +12,17 @@ if TYPE_CHECKING:
     from recipeyak.models import Note, Recipe, User  # noqa: F401
 
 
+# characters that are left unescaped in a URL path
+_PATH_SAFE_CHARS = "/!$&'()*+,;=:@~"
+
+
 def public_url(key: str) -> str:
-    return str(URL(f"https://{config.STORAGE_HOSTNAME}").with_path(key))
+    # Equivalent to `yarl.URL(...).with_path(key)` but ~15x faster, which adds
+    # up when serializing lists of recipes.
+    if not key:
+        return f"https://{config.STORAGE_HOSTNAME}"
+    path = key if key.startswith("/") else "/" + key
+    return f"https://{config.STORAGE_HOSTNAME}{quote(path, safe=_PATH_SAFE_CHARS)}"
 
 
 class Upload(CommonInfo):
