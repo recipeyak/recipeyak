@@ -53,7 +53,7 @@ def _validate_url(url: str) -> None:
     URLValidator(schemes=["https", "http"])(url)
 
 
-def _parse_url(url: str | None) -> None | str:
+def _parse_url(url: str | None) -> str | None:
     if url is None:
         return None
     try:

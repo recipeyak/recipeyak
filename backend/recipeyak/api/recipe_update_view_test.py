@@ -24,9 +24,9 @@ def ingredient(recipe: Recipe) -> Ingredient:
 def test_step_create(client: Client, recipe: Recipe, user: User, team: Team) -> None:
     recipe.team = team
     recipe.save()
-    assert (
-        RecipeChange.objects.count() == 0
-    ), "We shouldn't have any changes recorded yet."
+    assert RecipeChange.objects.count() == 0, (
+        "We shouldn't have any changes recorded yet."
+    )
     data = {"text": "Combine ingredients and mix well.", "position": "b"}
     client.force_login(user)
     res = client.post(
@@ -50,9 +50,9 @@ def test_step_update(
 ) -> None:
     recipe.team = team
     recipe.save()
-    assert (
-        RecipeChange.objects.count() == 0
-    ), "We shouldn't have any changes recorded yet."
+    assert RecipeChange.objects.count() == 0, (
+        "We shouldn't have any changes recorded yet."
+    )
     data = {"text": "Combine ingredients and mix well."}
     assert data["text"] != step.text, "Ensure we are changing the step with our update."
     client.force_login(user)
@@ -79,9 +79,9 @@ def test_step_delete(
 ) -> None:
     recipe.team = team
     recipe.save()
-    assert (
-        RecipeChange.objects.count() == 0
-    ), "We shouldn't have any changes recorded yet."
+    assert RecipeChange.objects.count() == 0, (
+        "We shouldn't have any changes recorded yet."
+    )
     client.force_login(user)
     res = client.delete(f"/api/v1/steps/{step.id}/")
     assert res.status_code == 204
@@ -101,9 +101,9 @@ def test_recipe_name_update(
 ) -> None:
     recipe.team = team
     recipe.save()
-    assert (
-        RecipeChange.objects.count() == 0
-    ), "We shouldn't have any changes recorded yet."
+    assert RecipeChange.objects.count() == 0, (
+        "We shouldn't have any changes recorded yet."
+    )
     data = {"name": "A different title."}
     assert data["name"] != recipe.name, "Ensure we are changing the title."
     client.force_login(user)
@@ -128,9 +128,9 @@ def test_recipe_source_update(
 ) -> None:
     recipe.team = team
     recipe.save()
-    assert (
-        RecipeChange.objects.count() == 0
-    ), "We shouldn't have any changes recorded yet."
+    assert RecipeChange.objects.count() == 0, (
+        "We shouldn't have any changes recorded yet."
+    )
     data = {"source": "A different title."}
     assert data["source"] != recipe.source, "Ensure we are changing the title."
     client.force_login(user)
@@ -155,9 +155,9 @@ def test_recipe_servings_update(
 ) -> None:
     recipe.team = team
     recipe.save()
-    assert (
-        RecipeChange.objects.count() == 0
-    ), "We shouldn't have any changes recorded yet."
+    assert RecipeChange.objects.count() == 0, (
+        "We shouldn't have any changes recorded yet."
+    )
     data = {"servings": "A different title."}
     assert data["servings"] != recipe.servings, "Ensure we are changing the title."
     client.force_login(user)
@@ -182,9 +182,9 @@ def test_recipe_time_update(
 ) -> None:
     recipe.team = team
     recipe.save()
-    assert (
-        RecipeChange.objects.count() == 0
-    ), "We shouldn't have any changes recorded yet."
+    assert RecipeChange.objects.count() == 0, (
+        "We shouldn't have any changes recorded yet."
+    )
     data = {"time": "A different title."}
     assert data["time"] != recipe.time, "Ensure we are changing the title."
     client.force_login(user)
@@ -209,9 +209,9 @@ def test_ingredient_create(
 ) -> None:
     recipe.team = team
     recipe.save()
-    assert (
-        RecipeChange.objects.count() == 0
-    ), "We shouldn't have any changes recorded yet."
+    assert RecipeChange.objects.count() == 0, (
+        "We shouldn't have any changes recorded yet."
+    )
     ingredient_data = {
         "quantity": "1 tablespoon",
         "name": "black pepper",
@@ -241,9 +241,9 @@ def test_ingredient_update(
 ) -> None:
     recipe.team = team
     recipe.save()
-    assert (
-        RecipeChange.objects.count() == 0
-    ), "We shouldn't have any changes recorded yet."
+    assert RecipeChange.objects.count() == 0, (
+        "We shouldn't have any changes recorded yet."
+    )
     ingredient_data = {"quantity": "3 cups", "optional": True}
     client.force_login(user)
     res = client.patch(
@@ -269,9 +269,9 @@ def test_ingredient_delete(
 ) -> None:
     recipe.team = team
     recipe.save()
-    assert (
-        RecipeChange.objects.count() == 0
-    ), "We shouldn't have any changes recorded yet."
+    assert RecipeChange.objects.count() == 0, (
+        "We shouldn't have any changes recorded yet."
+    )
 
     client.force_login(user)
     res = client.delete(f"/api/v1/ingredients/{ingredient.id}/")

@@ -61,9 +61,9 @@ def test_ical_ids_consistent(
     res_second = client.get(url)
     assert res_second.status_code == 200
 
-    assert (
-        res.content == res_second.content
-    ), "Ensure we don't have ids being regenerated and changing on each request"
+    assert res.content == res_second.content, (
+        "Ensure we don't have ids being regenerated and changing on each request"
+    )
 
 
 def test_ical_view_with_correct_id(
@@ -199,9 +199,9 @@ def test_get_ical_view_with_schedule_endpoint(
     membership.save()
 
     res = client.get(relative_url, HTTP_ACCEPT="text/calendar")
-    assert (
-        res.status_code == 200
-    ), "API returned a valid URL for retrieving calendar info."
+    assert res.status_code == 200, (
+        "API returned a valid URL for retrieving calendar info."
+    )
 
 
 def test_get_ical_view_404_when_disabled(

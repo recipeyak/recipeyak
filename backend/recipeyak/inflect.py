@@ -578,10 +578,8 @@ def pluralize(
     # (e.g., Postmasters General, mothers-in-law, Roman deities).
     wor = word.replace("-", " ").split(" ")
     if len(wor) > 1:
-        if (
-            wor[1] == "general"
-            or wor[1] == "General"
-            and wor[0] not in plural_categories["general-generals"]
+        if wor[1] == "general" or (
+            wor[1] == "General" and wor[0] not in plural_categories["general-generals"]
         ):
             return word.replace(wor[0], pluralize(wor[0], pos, custom, classical))
         if wor[1] in plural_prepositions:

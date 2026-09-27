@@ -41,7 +41,7 @@ def get_scheduled_recipes(
             .filter(on__lte=params.end)
             .filter(calendar=calendar_id)
         )
-    except (ValueError, ValidationError):
+    except ValueError, ValidationError:
         return None
 
 

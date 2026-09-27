@@ -95,9 +95,9 @@ def test_logout(client: Client) -> None:
     assert res.status_code == 200
 
     res = client.get("/api/v1/user/")
-    assert (
-        res.status_code == 403
-    ), "logged out user was able to access login required info"
+    assert res.status_code == 403, (
+        "logged out user was able to access login required info"
+    )
 
     assert (
         res.json()["error"]["message"]

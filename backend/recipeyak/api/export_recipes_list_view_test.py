@@ -55,9 +55,9 @@ def test_single_export_yaml(
     assert res.status_code == 302
     c.force_login(user)
     res = c.get(url)
-    assert "!!python/" not in res.content.decode(
-        "utf-8"
-    ), "we don't want python objects to be serialized"
+    assert "!!python/" not in res.content.decode("utf-8"), (
+        "we don't want python objects to be serialized"
+    )
     assert res.status_code == 200
     parsed = yaml_loads(res.content)
     assert parsed["name"] == recipe.name

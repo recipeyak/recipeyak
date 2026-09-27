@@ -31,9 +31,9 @@ def test_fetch_checklist(
     assert res.status_code == 200
 
     for ingredient_id in recipe.ingredient_set.values_list("id", flat=True):
-        assert isinstance(
-            res.json()[str(ingredient_id)], bool
-        ), "shape should be str -> bool"
+        assert isinstance(res.json()[str(ingredient_id)], bool), (
+            "shape should be str -> bool"
+        )
 
 
 def test_update_checklist(

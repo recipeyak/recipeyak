@@ -28,9 +28,9 @@ class RequestValidationError(Exception):
                 and "error" in error["ctx"]
                 and isinstance(error["ctx"]["error"], ValueError)
             ):
-                assert (
-                    len(error["ctx"]["error"].args) == 1
-                ), "Should only have one error message for a given value error."
+                assert len(error["ctx"]["error"].args) == 1, (
+                    "Should only have one error message for a given value error."
+                )
                 msg = error["ctx"]["error"].args[0]
             else:
                 msg = error["msg"]
