@@ -152,7 +152,7 @@ export function CommandPalette({
   useEffect(() => {
     // Based on: https://github.com/jamiebuilds/tinykeys/blob/9223df7d34505386f8650e03d979cd6e89c9b242/src/tinykeys.ts#L107
     let possibleMatches = new Map<string[], string[]>()
-    let timer: number | NodeJS.Timeout | null = null
+    let timer: ReturnType<typeof setTimeout> | null = null
     function handleKeyDown(ev: KeyboardEvent) {
       if (isInputFocused()) {
         return

@@ -1,6 +1,6 @@
 /// <reference types="vitest" />
 import { defineConfig } from "vite"
-import react from "@vitejs/plugin-react-swc"
+import react from "@vitejs/plugin-react"
 import path from "path"
 import { faviconsPlugin } from "@darkobits/vite-plugin-favicons"
 import { visualizer } from "rollup-plugin-visualizer"
@@ -29,7 +29,7 @@ export default defineConfig({
     alias: [
       {
         find: "@",
-        replacement: path.resolve(__dirname, "./src"),
+        replacement: path.resolve(import.meta.dirname, "./src"),
       },
     ],
   },
