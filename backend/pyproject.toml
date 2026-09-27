@@ -18,7 +18,7 @@ dependencies = [
     "orjson==3.8.1",
     "psycopg2-binary~=2.9.3",
     "boto3~=1.42.63",
-    "yarl~=1.8.1",
+    "yarl~=1.25.1",
     "advocate~=1.0.0",
     "pillow~=9.3.0",
     "httpx~=0.23.1",
