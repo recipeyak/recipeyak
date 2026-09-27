@@ -35,6 +35,13 @@ class RecipeView(CommonInfo):
     class Meta:
         ordering = ["-last_visited_at"]  # noqa: RUF012
         db_table = "recipe_view"
+        indexes = [  # noqa: RUF012
+            # recently viewed recipes for a user
+            models.Index(
+                fields=["user", "-last_visited_at"],
+                name="recipe_view_user_last_visited",
+            ),
+        ]
         constraints = [  # noqa: RUF012
             models.UniqueConstraint(
                 fields=("recipe", "user"),
