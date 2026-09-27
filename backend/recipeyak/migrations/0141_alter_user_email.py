@@ -7,7 +7,7 @@ import recipeyak.models.user
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("recipeyak", "0139_create_default_calendar_pins"),
+        ("recipeyak", "0140_add_home_page_indexes"),
     ]
 
     operations = [

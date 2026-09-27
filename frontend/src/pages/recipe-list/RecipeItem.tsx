@@ -2,6 +2,7 @@ import {
   HitAttributeHighlightResult,
   HitHighlightResult,
 } from "instantsearch.js"
+import { memo } from "react"
 import { Link } from "react-router-dom"
 
 import { clx } from "@/classnames"
@@ -41,7 +42,8 @@ function HighlightIngredients({ hit }: { hit: Hit }) {
 
 type Hit = NonNullable<ResponseFromUse<typeof useSearchRecipes>>["hits"][number]
 
-export function RecipeListItem({
+// Memoized so re-renders of the list (e.g. toggling filters) skip unchanged cards.
+export const RecipeListItem = memo(function RecipeListItem({
   index,
   hit,
 }: {
@@ -92,4 +94,4 @@ export function RecipeListItem({
       </div>
     </Link>
   )
-}
+})

@@ -77,6 +77,7 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
 
 MIDDLEWARE = [
+    "recipeyak.api.base.middleware.RequestQueueTimingMiddleware",
     "recipeyak.api.base.middleware.HealthCheckMiddleware",
     "recipeyak.api.base.middleware.CurrentRequestMiddleware",
     "django.middleware.security.SecurityMiddleware",

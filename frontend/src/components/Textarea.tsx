@@ -50,6 +50,11 @@ export function Textarea({
     <TextareaAutosize
       // Without explicit hints iOS Safari guesses the field type and can offer
       // credit card AutoFill instead of normal prose typing behavior.
+      //
+      // Safari ignores autocomplete="off". Putting "search" in the name is a
+      // reported workaround for Safari AutoFill (tested for address fields):
+      // https://bytes.grubhub.com/disabling-safari-autofill-for-a-single-line-address-input-b83137b5b1c7
+      name="search"
       autoComplete="off"
       autoCorrect="on"
       autoCapitalize="sentences"

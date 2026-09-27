@@ -19,12 +19,8 @@ def get_scheduled_recipes(team_id: int, calendar_id: int) -> QuerySet[ScheduledR
     return ScheduledRecipe.objects.filter(
         team_id=team_id, calendar_id=calendar_id
     ).select_related(
-        "recipe",
-        "created_by",
+        # only what `serialize_scheduled_recipe` needs
         "recipe__primary_image",
-        "recipe__primary_image__created_by",
-        "recipe__primary_image__created_by__profile_upload",
-        "recipe__primary_image__recipe",
         "created_by__profile_upload",
     )
 

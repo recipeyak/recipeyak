@@ -69,6 +69,36 @@ class ServerTimingMiddleware:
         return response
 
 
+class RequestQueueTimingMiddleware:
+    """
+    Report how long the request waited for a gunicorn worker, using the
+    X-Request-Start header set by nginx.
+    """
+
+    def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]) -> None:
+        self.get_response = get_response
+
+    def __call__(self, request: HttpRequest) -> HttpResponse:
+        start = time.time()
+        response = self.get_response(request)
+        end = time.time()
+
+        timings = [f"app;dur={(end - start) * MSEC_CONVERT_FACTOR:.1f}"]
+        request_start = request.headers.get("X-Request-Start", "").removeprefix("t=")
+        try:
+            queue_time = (start - float(request_start)) * MSEC_CONVERT_FACTOR
+        except ValueError:
+            pass
+        else:
+            timings.insert(0, f"queue;dur={max(queue_time, 0):.1f}")
+
+        existing = response.get("Server-Timing")
+        response["Server-Timing"] = ", ".join(
+            [*timings, existing] if existing else timings
+        )
+        return response
+
+
 class XForwardedForMiddleware:
     """
     Point REMOTE_ADDR to X-Forwarded-For so django-user-session logs the correct IP.

@@ -50,3 +50,9 @@ class ScheduledRecipe(CommonInfo):
     class Meta:
         db_table = "core_scheduledrecipe"
         ordering = ["-on"]  # noqa: RUF012
+        indexes = [  # noqa: RUF012
+            # calendar views query a date range of a given calendar
+            models.Index(
+                fields=["calendar", "on"], name="scheduled_recipe_calendar_on"
+            ),
+        ]
