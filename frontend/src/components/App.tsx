@@ -71,7 +71,6 @@ import {
   pathTeamList,
   pathTeamSettings,
 } from "@/paths"
-import { useUserFetch } from "@/queries/useUserFetch"
 import { API_GIT_TREE_SHA, GIT_SHA, SENTRY_DSN } from "@/settings"
 import { themeSet } from "@/theme"
 import { Toaster } from "@/toast"
@@ -319,20 +318,11 @@ function AppRouter() {
     themeSet(theme)
   }, [theme])
   const isRestoring = useIsRestoring()
-  const isLoggedIn = useIsLoggedIn()
-  const user = useUserFetch()
   if (isRestoring) {
     // NOTE: we don't render the site until react-query finishes hydrating from cache
     // some sites like linear show a loader, but they must guarentee it shows
     // for $N milliseconds or something because when it's really quick, < $N
     // milliseconds it looks like a glitchy flash
-    return null
-  }
-  if (isLoggedIn && user.isPending && user.failureCount === 0) {
-    // Most queries are keyed by the user's team, so wait for the user to load
-    // instead of fetching everything with a placeholder team and then again
-    // with the real one. If the request fails, render anyway rather than
-    // showing a blank page while it retries.
     return null
   }
   return (
