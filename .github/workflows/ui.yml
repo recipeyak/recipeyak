@@ -125,3 +125,6 @@ jobs:
       - name: Build bundle
         working-directory: "frontend"
         run: ./s/build
+      - name: Check bundle size
+        working-directory: "frontend"
+        run: ./s/size
