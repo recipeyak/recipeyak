@@ -14,9 +14,6 @@ export function useUserFetch() {
       void login(res, queryClient)
       return res
     },
-    // The app waits for the user to load before rendering, so without this
-    // every component that mounts afterwards would immediately refetch it.
-    staleTime: 60 * 1000,
   })
 }
 
