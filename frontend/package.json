@@ -3,9 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "scripts": {
+    "build": "vite build"
+  },
   "devDependencies": {
     "@darkobits/vite-plugin-favicons": "^0.3.0",
     "@sanity/diff-match-patch": "^3.1.1",
+    "@size-limit/file": "14.0.0",
     "@tanstack/eslint-plugin-query": "^5.8.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^14.3.0",
@@ -27,6 +31,7 @@
     "prettier-plugin-tailwindcss": "^0.5.7",
     "remark-breaks": "^4.0.0",
     "rollup-plugin-visualizer": "^7.1.1",
+    "size-limit": "14.0.0",
     "tailwindcss": "^3.3.5",
     "typescript": "5.2.2",
     "vite": "^8.3.0",
@@ -87,5 +92,15 @@
     "@darkobits/vite-plugin-favicons": {
       "vite": "$vite"
     }
-  }
+  },
+  "size-limit": [
+    {
+      "name": "js",
+      "path": "dist/assets/*.js"
+    },
+    {
+      "name": "css",
+      "path": "dist/assets/*.css"
+    }
+  ]
 }
