@@ -74,13 +74,15 @@ function Ingredients({
           )
         }
         const i = ingredientOrSection.item
-        const isDone = checkedIngredients[i.id]
+        const isDone = checkedIngredients[i.id] ?? false
         return (
-          <div
+          // Whole row is the label so the touch target spans the full width
+          <label
             key={`ingredient-${i.id}`}
+            htmlFor={`ingredient-${i.id}`}
             // eslint-disable-next-line no-restricted-syntax
             style={{ fontSize: "18px" }}
-            className="flex items-start"
+            className="flex min-h-[44px] w-full cursor-pointer items-start gap-2 py-1"
           >
             {/* eslint-disable-next-line react/forbid-elements */}
             <input
@@ -93,17 +95,12 @@ function Ingredients({
                   ingredientId: i.id,
                 })
               }}
-              // eslint-disable-next-line no-restricted-syntax
-              style={{ marginTop: "0.5rem" }}
+              className="mt-1 h-5 w-5 shrink-0 accent-[--color-primary]"
             />
-            <label
-              htmlFor={`ingredient-${i.id}`}
-              className="cursor-auto select-text"
+            <span
+              className="select-text"
               // eslint-disable-next-line no-restricted-syntax
               style={{
-                paddingLeft: "0.5rem",
-                paddingBottom: "0.5rem",
-                width: "100%",
                 textDecoration: isDone ? "line-through" : undefined,
               }}
             >
@@ -113,8 +110,8 @@ function Ingredients({
                 name={i.name}
                 optional={i.optional}
               />
-            </label>
-          </div>
+            </span>
+          </label>
         )
       })}
     </div>
