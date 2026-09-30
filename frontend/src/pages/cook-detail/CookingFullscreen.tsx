@@ -236,7 +236,7 @@ export function CookingFullscreen({
     { avatarUrl, active: true },
   )
   return (
-    <div className="fixed inset-0 z-20 items-center justify-center bg-[--color-background]">
+    <div className="fixed inset-x-0 bottom-[3.5rem] top-0 z-20 items-center justify-center bg-[--color-background] sm:bottom-0">
       <div
         className="px-5"
         // eslint-disable-next-line no-restricted-syntax
