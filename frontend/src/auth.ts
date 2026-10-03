@@ -22,20 +22,35 @@ export function logout(queryClient: QueryClient) {
   removeItem(LOGGED_IN_CACHE_KEY)
 }
 
-export async function login(
-  user: {
-    readonly id: number
-    readonly name: string
-    readonly avatar_url: string
-    readonly email: string
-    readonly theme_day: Theme
-    readonly theme_night: Theme
-    readonly theme_mode: ThemeMode
-    readonly schedule_team: number | null
-    readonly calendar_id: number | null
-  },
-  queryClient: QueryClient,
-) {
+type User = {
+  readonly id: number
+  readonly name: string
+  readonly avatar_url: string
+  readonly email: string
+  readonly theme_day: Theme
+  readonly theme_night: Theme
+  readonly theme_mode: ThemeMode
+  readonly schedule_team: number | null
+  readonly calendar_id: number | null
+}
+
+// Ably tokens are scoped to the user's teams, so call this whenever the
+// session user or their team memberships change.
+export async function authorizeAbly() {
+  try {
+    await ablyClient.auth.authorize()
+  } catch {
+    // eslint-disable-next-line no-console
+    console.error("Failed to initialize ably")
+  }
+}
+
+export async function login(user: User, queryClient: QueryClient) {
+  await authorizeAbly()
+  setUser(user, queryClient)
+}
+
+export function setUser(user: User, queryClient: QueryClient) {
   Sentry.setUser({
     email: user.email,
     id: user.id,
@@ -50,11 +65,5 @@ export async function login(
       return user
     },
   })
-  try {
-    await ablyClient.auth.authorize()
-  } catch {
-    // eslint-disable-next-line no-console
-    console.error("Failed to initialize ably")
-  }
   setItem(LOGGED_IN_CACHE_KEY, "1")
 }

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { userUpdate } from "@/api/userUpdate"
-import { login } from "@/auth"
+import { setUser } from "@/auth"
 import { Theme, ThemeMode } from "@/themeConstants"
 
 export function useUserUpdate() {
@@ -16,7 +16,7 @@ export function useUserUpdate() {
       readonly theme_mode?: ThemeMode
     }) => userUpdate(payload),
     onSuccess: (res) => {
-      void login(res, queryClient)
+      setUser(res, queryClient)
     },
   })
 }
