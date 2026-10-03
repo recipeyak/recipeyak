@@ -1,0 +1,243 @@
+//! Port of `recipeyak.api.calendar_list_view`.
+//!
+//! GET /api/v1/calendar/?start=YYYY-MM-DD&end=YYYY-MM-DD
+
+use axum::Json;
+use axum::extract::{RawQuery, State};
+use axum::http::StatusCode;
+use axum::response::{IntoResponse, Response};
+use chrono::{DateTime, NaiveDate, Utc};
+use serde::{Serialize, Serializer};
+
+use crate::AppState;
+use crate::error::ApiError;
+use crate::params::{parse_dates, query_dict};
+use crate::session::MaybeUser;
+use crate::urls::{avatar_url, public_url};
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CalendarListResponse {
+    scheduled_recipes: Vec<ScheduledRecipe>,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct ScheduledRecipe {
+    id: i32,
+    #[serde(serialize_with = "serialize_datetime")]
+    created: DateTime<Utc>,
+    created_by: Option<CreatedBy>,
+    team: Option<i32>,
+    user: Option<i32>,
+    recipe: RecipeMetadata,
+    on: NaiveDate,
+}
+
+#[derive(Serialize)]
+struct CreatedBy {
+    id: i32,
+    name: String,
+    avatar_url: String,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct RecipeMetadata {
+    id: i32,
+    name: String,
+    author: Option<String>,
+    #[serde(serialize_with = "serialize_opt_datetime")]
+    archived_at: Option<DateTime<Utc>>,
+    primary_image: Option<PrimaryImage>,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct PrimaryImage {
+    id: String,
+    url: String,
+    background_url: Option<String>,
+}
+
+#[derive(sqlx::FromRow)]
+struct Row {
+    id: i32,
+    created: DateTime<Utc>,
+    on: NaiveDate,
+    recipe_id: i32,
+    recipe_name: String,
+    recipe_author: Option<String>,
+    recipe_archived_at: Option<DateTime<Utc>>,
+    image_id: Option<i32>,
+    image_key: Option<String>,
+    image_background_url: Option<String>,
+    created_by_id: Option<i32>,
+    created_by_name: Option<String>,
+    created_by_email: Option<String>,
+    created_by_profile_key: Option<String>,
+}
+
+// Same joins as the view's `select_related("recipe__primary_image",
+// "created_by__profile_upload")`, and the model's `ordering = ["-on"]`.
+const SCHEDULED_RECIPES_SQL: &str = r#"
+SELECT
+    sr.id,
+    sr.created,
+    sr."on",
+    sr.recipe_id,
+    r.name AS recipe_name,
+    r.author AS recipe_author,
+    r.archived_at AS recipe_archived_at,
+    image.id AS image_id,
+    image.key AS image_key,
+    image.background_url AS image_background_url,
+    u.id AS created_by_id,
+    u.name AS created_by_name,
+    u.email::text AS created_by_email,
+    profile.key AS created_by_profile_key
+FROM core_scheduledrecipe sr
+JOIN core_recipe r ON r.id = sr.recipe_id
+LEFT JOIN core_upload image ON image.id = r.primary_image_id
+LEFT JOIN core_myuser u ON u.id = sr.created_by_id
+LEFT JOIN core_upload profile ON profile.id = u.profile_upload_id
+WHERE sr.team_id = $1
+  AND sr.calendar_id = $2
+  AND sr."on" >= $3
+  AND sr."on" <= $4
+ORDER BY sr."on" DESC
+"#;
+
+pub async fn calendar_list_view(
+    State(state): State<AppState>,
+    MaybeUser(user): MaybeUser,
+    RawQuery(query): RawQuery,
+) -> Result<Response, ApiError> {
+    let Some(user) = user else {
+        return Err(ApiError::not_authenticated());
+    };
+    let [start, end] = parse_dates(&query_dict(query.as_deref()), ["start", "end"])
+        .map_err(ApiError::Validation)?;
+
+    // get_team
+    let team_id = user
+        .schedule_team_id
+        .ok_or_else(|| ApiError::Internal("should always have a team selected".into()))?;
+    let is_member: bool = sqlx::query_scalar(
+        "SELECT EXISTS (SELECT 1 FROM core_team t JOIN core_membership m ON m.team_id = t.id WHERE t.id = $1 AND m.user_id = $2 AND m.is_active)",
+    )
+    .bind(team_id)
+    .bind(user.id)
+    .fetch_one(&state.pool)
+    .await?;
+    if !is_member {
+        return Err(ApiError::NotFound);
+    }
+
+    // get_pinned_calendar
+    let calendar_id = user.pinned_calendar_id.ok_or_else(|| {
+        ApiError::Internal("should always have a pinned calendar selected".into())
+    })?;
+    let calendar_exists: bool = sqlx::query_scalar(
+        "SELECT EXISTS (SELECT 1 FROM core_calendar WHERE id = $1 AND team_id = $2)",
+    )
+    .bind(calendar_id)
+    .bind(team_id)
+    .fetch_one(&state.pool)
+    .await?;
+    if !calendar_exists {
+        return Err(ApiError::Internal(
+            "Calendar matching query does not exist.".into(),
+        ));
+    }
+
+    let rows: Vec<Row> = sqlx::query_as(SCHEDULED_RECIPES_SQL)
+        .bind(team_id)
+        .bind(calendar_id)
+        .bind(start)
+        .bind(end)
+        .fetch_all(&state.pool)
+        .await?;
+
+    let hostname = &state.config.storage_hostname;
+    let scheduled_recipes = rows
+        .into_iter()
+        .map(|row| ScheduledRecipe {
+            id: row.id,
+            created: row.created,
+            created_by: row.created_by_id.map(|id| {
+                let email = row.created_by_email.unwrap_or_default();
+                CreatedBy {
+                    id,
+                    avatar_url: avatar_url(hostname, &email, row.created_by_profile_key.as_deref()),
+                    // User.get_display_name
+                    name: row
+                        .created_by_name
+                        .filter(|n| !n.is_empty())
+                        .unwrap_or(email),
+                }
+            }),
+            team: Some(team_id),
+            user: Some(user.id),
+            recipe: RecipeMetadata {
+                id: row.recipe_id,
+                name: row.recipe_name,
+                author: row.recipe_author,
+                archived_at: row.recipe_archived_at,
+                primary_image: row.image_id.map(|id| PrimaryImage {
+                    id: id.to_string(),
+                    url: public_url(hostname, row.image_key.as_deref().unwrap_or_default()),
+                    background_url: row.image_background_url,
+                }),
+            },
+            on: row.on,
+        })
+        .collect();
+
+    Ok((
+        StatusCode::OK,
+        Json(CalendarListResponse { scheduled_recipes }),
+    )
+        .into_response())
+}
+
+/// orjson's datetime format: `2024-01-15T12:34:56.123456+00:00`, with the
+/// fractional part omitted when it's zero.
+fn format_datetime(dt: &DateTime<Utc>) -> String {
+    if dt.timestamp_subsec_micros() == 0 {
+        dt.format("%Y-%m-%dT%H:%M:%S+00:00").to_string()
+    } else {
+        dt.format("%Y-%m-%dT%H:%M:%S%.6f+00:00").to_string()
+    }
+}
+
+fn serialize_datetime<S: Serializer>(dt: &DateTime<Utc>, s: S) -> Result<S::Ok, S::Error> {
+    s.serialize_str(&format_datetime(dt))
+}
+
+fn serialize_opt_datetime<S: Serializer>(
+    dt: &Option<DateTime<Utc>>,
+    s: S,
+) -> Result<S::Ok, S::Error> {
+    match dt {
+        Some(dt) => serialize_datetime(dt, s),
+        None => s.serialize_none(),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use chrono::TimeZone;
+
+    #[test]
+    fn formats_datetimes_like_orjson() {
+        let whole = Utc.with_ymd_and_hms(2024, 1, 15, 12, 34, 56).unwrap();
+        assert_eq!(format_datetime(&whole), "2024-01-15T12:34:56+00:00");
+        let fractional = whole + chrono::Duration::microseconds(1230);
+        assert_eq!(
+            format_datetime(&fractional),
+            "2024-01-15T12:34:56.001230+00:00"
+        );
+    }
+}
