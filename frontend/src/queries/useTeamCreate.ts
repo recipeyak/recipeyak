@@ -3,6 +3,7 @@ import { AxiosError } from "axios"
 import { useHistory } from "react-router"
 
 import { teamCreate } from "@/api/teamCreate"
+import { authorizeAbly } from "@/auth"
 import { pathTeamDetail } from "@/paths"
 import { cacheUpsertTeam } from "@/queries/useTeamFetch"
 import { toast } from "@/toast"
@@ -21,6 +22,7 @@ export function useTeamCreate() {
       level: "admin" | "contributor" | "read"
     }) => teamCreate({ name, emails, level }),
     onSuccess: (res) => {
+      void authorizeAbly()
       cacheUpsertTeam(queryClient, {
         teamId: res.id,
         updater: () => {
