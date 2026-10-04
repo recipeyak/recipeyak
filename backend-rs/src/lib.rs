@@ -24,8 +24,14 @@ pub struct AppState {
     pub config: Arc<Config>,
 }
 
+/// The OpenAPI spec for the routes served by [`app`].
+pub fn openapi() -> utoipa::openapi::OpenApi {
+    routes::router().into_openapi()
+}
+
 pub fn app(state: AppState) -> Router {
-    routes::router()
+    let (router, _) = routes::router().split_for_parts();
+    router
         .with_state(state)
         // Match Django's `NoCacheMiddleware`.
         .layer(SetResponseHeaderLayer::if_not_present(

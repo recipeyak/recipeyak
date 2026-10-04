@@ -35,6 +35,20 @@ cargo install sqlx-cli --version 0.9.0 --locked --no-default-features --features
 s/prepare
 ```
 
+## OpenAPI
+
+The spec is generated from the code with [utoipa](https://github.com/juhaku/utoipa):
+response types derive `ToSchema` and handlers are annotated with
+`#[utoipa::path]` and registered with `routes!`. Run `s/openapi` to regenerate
+`openapi.json` (CI checks it's up to date).
+
+`backend/api-schema.json` (generated from Django) is still the spec the
+frontend's API client is built from. `tests/openapi.rs` checks that every
+endpoint here matches its Django counterpart, so a ported endpoint can't drift.
+
+utoipa marks `Option` fields as not required, but serde always serializes them
+(as `null`), so add `#[schema(required = true)]` to them.
+
 Logging is configured with `RUST_LOG`, e.g. `RUST_LOG=recipeyak=debug,tower_http=debug`.
 
 ## porting an endpoint
@@ -43,8 +57,9 @@ Logging is configured with `RUST_LOG`, e.g. `RUST_LOG=recipeyak=debug,tower_http
    Take an `AuthUser` argument to require authentication.
 2. Match the Django response exactly, including the error shape (`ApiError`)
    and datetime format (`json::serialize_option_datetime`).
+   Annotate it with `#[utoipa::path]` using the same `operation_id` as Django.
 3. Add integration tests in `tests/`.
-4. Run `s/prepare` and commit the `.sqlx` changes.
+4. Run `s/prepare` and `s/openapi` and commit the `.sqlx` and `openapi.json` changes.
 5. Route the endpoint to `localhost:8001` in `../infra/nginx/recipeyak.conf`
    and to `127.0.0.1:8001` in `../frontend/vite.config.ts`.
 6. Once it has been running in production for a while, delete the Django view.

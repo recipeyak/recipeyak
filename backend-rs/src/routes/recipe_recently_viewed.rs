@@ -4,31 +4,44 @@ use axum::Json;
 use axum::extract::State;
 use chrono::{DateTime, Utc};
 use serde::Serialize;
+use utoipa::ToSchema;
 
 use crate::AppState;
 use crate::auth::AuthUser;
 use crate::error::ApiError;
 use crate::{json, storage, team};
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct PrimaryImage {
     id: i32,
     url: String,
+    #[schema(required = true)]
     background_url: Option<String>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct RecipeRecentlyViewedItem {
     id: i32,
     name: String,
+    #[schema(required = true)]
     author: Option<String>,
     #[serde(serialize_with = "json::serialize_option_datetime")]
+    #[schema(required = true)]
     archived_at: Option<DateTime<Utc>>,
+    #[schema(required = true)]
     primary_image: Option<PrimaryImage>,
 }
 
+#[utoipa::path(
+    get,
+    path = "/api/v1/recipes/recently_viewed",
+    operation_id = "RecipeRecentlyViewed",
+    responses(
+        (status = 200, description = "Successful response.", body = Vec<RecipeRecentlyViewedItem>),
+    ),
+)]
 pub async fn recipe_recently_viewed(
     State(state): State<AppState>,
     user: AuthUser,

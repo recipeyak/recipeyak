@@ -1,0 +1,103 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "RecipeYak API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://recipeyak.com"
+    }
+  ],
+  "paths": {
+    "/api/v1/recipes/recently_viewed": {
+      "get": {
+        "operationId": "RecipeRecentlyViewed",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RecipeRecentlyViewedItem"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PrimaryImage": {
+        "type": "object",
+        "required": [
+          "id",
+          "url",
+          "backgroundUrl"
+        ],
+        "properties": {
+          "backgroundUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      },
+      "RecipeRecentlyViewedItem": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "author",
+          "archivedAt",
+          "primaryImage"
+        ],
+        "properties": {
+          "archivedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "author": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "primaryImage": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PrimaryImage"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

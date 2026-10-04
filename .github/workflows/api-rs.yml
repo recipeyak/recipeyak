@@ -24,7 +24,8 @@ jobs:
         uses: fkirc/skip-duplicate-actions@c449d86cf33a2a6c7a4193264cc2578e2c3266d4 # pin@v4
         with:
           # The schema is owned by the Django migrations, which our queries are checked against.
-          paths: '["backend-rs/**", "backend/recipeyak/migrations/**", ".github/workflows/**"]'
+          # Responses are checked against backend/api-schema.json.
+          paths: '["backend-rs/**", "backend/recipeyak/migrations/**", "backend/api-schema.json", ".github/workflows/**"]'
 
   format:
     needs: pre_job
@@ -55,6 +56,21 @@ jobs:
           workspaces: "backend-rs"
       - name: Lint with clippy
         run: cargo clippy --all-targets --locked -- -D warnings
+
+  check_missing_openapi_changes:
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
+        with:
+          persist-credentials: false
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        with:
+          workspaces: "backend-rs"
+      - name: Check for missing openapi.json changes
+        run: ./s/openapi --check
 
   test:
     needs: pre_job

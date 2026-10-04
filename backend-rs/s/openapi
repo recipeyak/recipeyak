@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -ex
+
+# Regenerate openapi.json, pass --check to verify it's up to date instead.
+main() {
+  SQLX_OFFLINE=true cargo run --locked --quiet --bin openapi -- "$@"
+}
+
+main "$@"
