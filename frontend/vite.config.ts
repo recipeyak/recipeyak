@@ -39,6 +39,9 @@ export default defineConfig({
         "default-src 'self' https://*.sentry.io  https://*.algolia.net https://recipeyak-production.s3.amazonaws.com https://recipeyak.imgix.net https://*.ably.io https://*.ably-realtime.com https://*.ably.net wss://*.ably.io wss://*.ably-realtime.com wss://*.ably.net https://images-cdn.recipeyak.com; img-src * 'self' data: blob:; script-src 'self' 'sha256-Z2/iFzh9VMlVkEOar1f/oSHWwQk3ve1qk/C2WdsC4Xk=' 'sha256-pJgk69XM8G5ckMe2LM23W3PiOkykA9VBYDdJu59aWJk='; style-src 'self' 'unsafe-inline'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; report-uri https://sentry.io/api/250295/csp-report/?sentry_key=3b11e5eed068478390e1e8f01e2190a9",
     },
     proxy: {
+      // Endpoints served by backend-rs, keep in sync with infra/nginx/recipeyak.conf.
+      // Must be listed before "/api" since the first match wins.
+      "/api/v1/recipes/recently_viewed": "http://127.0.0.1:8001",
       "/api": "http://127.0.0.1:8000/",
       "/avatar": "https://www.gravatar.com",
     },

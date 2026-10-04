@@ -1,0 +1,24 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT EXISTS (\n            SELECT 1\n            FROM core_membership\n            WHERE user_id = $1\n              AND team_id = $2\n              AND is_active\n        ) AS \"exists!\"\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "exists!",
+        "type_info": "Bool",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int4"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "6ba8b3af504a93c9de54c7d950d853bd6a05d2fc8f715a3668f4d5362dcd4c38"
+}

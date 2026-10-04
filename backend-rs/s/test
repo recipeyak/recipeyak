@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -ex
+
+# Requires a database with the Django migrations applied, see README.md
+main() {
+  export DATABASE_URL="${DATABASE_URL:-postgres://postgres:postgres@127.0.0.1:5432/postgres}"
+  cargo test --locked "$@"
+}
+
+main "$@"

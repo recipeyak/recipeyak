@@ -1,0 +1,28 @@
+[package]
+name = "recipeyak"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+axum = "0.8.9"
+axum-extra = { version = "0.12.6", features = ["cookie"] }
+base64 = "0.23.1"
+chrono = { version = "0.4.45", features = ["serde"] }
+flate2 = "1.1.10"
+hex = "0.4.3"
+hmac = "0.13.0"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.151"
+sha2 = "0.11.0"
+sqlx = { version = "0.9.0", default-features = false, features = ["runtime-tokio", "tls-rustls", "postgres", "macros", "chrono"] }
+thiserror = "2.0.21"
+tokio = { version = "1.53.2", features = ["full"] }
+tower-http = { version = "0.7.1", features = ["trace", "set-header", "request-id"] }
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
+url = "2.5.8"
+
+[dev-dependencies]
+http-body-util = "0.1.5"
+tower = { version = "0.5.3", features = ["util"] }
+uuid = { version = "1.27.0", features = ["v4"] }

@@ -1,0 +1,108 @@
+name: API (Rust)
+
+on:
+  pull_request:
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: "backend-rs"
+
+jobs:
+  pre_job:
+    runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+      paths_result: ${{ steps.skip_check.outputs.paths_result }}
+    steps:
+      - id: skip_check
+        uses: fkirc/skip-duplicate-actions@c449d86cf33a2a6c7a4193264cc2578e2c3266d4 # pin@v4
+        with:
+          # The schema is owned by the Django migrations, which our queries are checked against.
+          paths: '["backend-rs/**", "backend/recipeyak/migrations/**", ".github/workflows/**"]'
+
+  format:
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
+        with:
+          persist-credentials: false
+      # The toolchain is installed by rustup from rust-toolchain.toml
+      - name: Check formatting
+        run: cargo fmt --check
+
+  clippy:
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
+
+    runs-on: ubuntu-latest
+    env:
+      SQLX_OFFLINE: "true"
+    steps:
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
+        with:
+          persist-credentials: false
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        with:
+          workspaces: "backend-rs"
+      - name: Lint with clippy
+        run: cargo clippy --all-targets --locked -- -D warnings
+
+  test:
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
+
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgres://postgres:postgres@127.0.0.1:5432/postgres
+    services:
+      postgres:
+        image: postgres:16
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version-file: "./backend/.python-version"
+      - name: Install uv
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: "0.12.5"
+          enable-cache: true
+          cache-dependency-glob: "backend/uv.lock"
+      - name: Install python dependencies
+        working-directory: "backend"
+        run: uv sync --locked
+      - name: Apply Django migrations
+        working-directory: "backend"
+        run: DEBUG=1 ./.venv/bin/python ./manage.py migrate --noinput
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        with:
+          workspaces: "backend-rs"
+      - name: Install sqlx-cli
+        # update Cargo.toml if you change this version
+        run: cargo install sqlx-cli --version 0.9.0 --locked --no-default-features --features rustls,postgres
+      - name: Check for missing sqlx query metadata
+        run: ./s/prepare --check
+      - name: Run tests
+        run: ./s/test

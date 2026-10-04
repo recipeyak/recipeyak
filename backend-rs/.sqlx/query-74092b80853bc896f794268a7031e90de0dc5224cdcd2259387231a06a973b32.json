@@ -1,0 +1,101 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT\n            r.id,\n            r.name,\n            r.author,\n            r.archived_at,\n            u.id AS \"primary_image_id?\",\n            u.key AS \"primary_image_key?\",\n            u.background_url AS \"primary_image_background_url?\"\n        FROM recipe_view rv\n        JOIN core_recipe r ON r.id = rv.recipe_id\n        LEFT JOIN core_upload u ON u.id = r.primary_image_id\n        WHERE rv.user_id = $1\n          AND r.team_id = $2\n        ORDER BY rv.last_visited_at DESC\n        LIMIT 6\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "core_recipe",
+            "name": "id"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "core_recipe",
+            "name": "name"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "author",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "core_recipe",
+            "name": "author"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "archived_at",
+        "type_info": "Timestamptz",
+        "origin": {
+          "Table": {
+            "table": "core_recipe",
+            "name": "archived_at"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "primary_image_id?",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "core_upload",
+            "name": "id"
+          }
+        }
+      },
+      {
+        "ordinal": 5,
+        "name": "primary_image_key?",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "core_upload",
+            "name": "key"
+          }
+        }
+      },
+      {
+        "ordinal": 6,
+        "name": "primary_image_background_url?",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "core_upload",
+            "name": "background_url"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int4"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      true
+    ]
+  },
+  "hash": "74092b80853bc896f794268a7031e90de0dc5224cdcd2259387231a06a973b32"
+}

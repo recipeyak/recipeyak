@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -ex
+
+# Regenerate the offline query metadata in .sqlx, run after changing any
+# `sqlx::query!` calls or the database schema.
+main() {
+  export DATABASE_URL="${DATABASE_URL:-postgres://postgres:postgres@127.0.0.1:5432/postgres}"
+  cargo sqlx prepare "$@" -- --all-targets
+}
+
+main "$@"

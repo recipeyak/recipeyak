@@ -1,0 +1,4 @@
+# Update the image in rust.Dockerfile when changing this.
+[toolchain]
+channel = "1.97"
+components = ["rustfmt", "clippy"]
