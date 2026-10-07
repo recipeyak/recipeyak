@@ -11,10 +11,10 @@ use std::time::{Instant, SystemTime, UNIX_EPOCH};
 
 use axum::Router;
 use axum::extract::{Request, State};
-use axum::http::{HeaderValue, StatusCode, Uri, header};
+use axum::http::{HeaderValue, StatusCode, header};
 use axum::middleware::{self, Next};
 use axum::response::{IntoResponse, Response};
-use axum::routing::{any, get};
+use axum::routing::get;
 use sqlx::PgPool;
 use sqlx::postgres::PgPoolOptions;
 use tracing_subscriber::EnvFilter;
@@ -57,21 +57,11 @@ async fn main() {
 pub fn app(state: AppState) -> Router {
     Router::new()
         .route("/api/v1/calendar/", get(calendar::calendar_list_view))
-        .route("/api/v1/calendar", any(append_slash))
         .route("/healthz", get(|| async { "OK" }))
         .route("/readiness", get(readiness))
         .fallback(|| async { error::not_found() })
         .layer(middleware::from_fn(response_headers))
         .with_state(state)
-}
-
-/// Django's `APPEND_SLASH`.
-async fn append_slash(uri: Uri) -> Response {
-    let target = match uri.query() {
-        Some(q) => format!("{}/?{q}", uri.path()),
-        None => format!("{}/", uri.path()),
-    };
-    (StatusCode::MOVED_PERMANENTLY, [(header::LOCATION, target)]).into_response()
 }
 
 async fn readiness(State(state): State<AppState>) -> Response {
