@@ -4,8 +4,6 @@
 
 use axum::Json;
 use axum::extract::State;
-use axum::http::StatusCode;
-use axum::response::{IntoResponse, Response};
 use chrono::{DateTime, NaiveDate, Utc};
 use serde::{Deserialize, Serialize};
 
@@ -35,8 +33,8 @@ struct ScheduledRecipe {
     id: i32,
     created: DateTime<Utc>,
     created_by: Option<CreatedBy>,
-    team: Option<i32>,
-    user: Option<i32>,
+    team: i32,
+    user: i32,
     recipe: RecipeMetadata,
     on: NaiveDate,
 }
@@ -67,7 +65,7 @@ struct PrimaryImage {
 }
 
 #[derive(sqlx::FromRow)]
-struct Row {
+struct ScheduledRecipeRow {
     id: i32,
     created: DateTime<Utc>,
     on: NaiveDate,
@@ -119,8 +117,8 @@ pub async fn calendar_list_view(
     user: User,
     Params(CalendarListParams { start, end }): Params<CalendarListParams>,
     calendar: Calendar,
-) -> Result<Response, ApiError> {
-    let rows: Vec<Row> = sqlx::query_as(SCHEDULED_RECIPES_SQL)
+) -> Result<Json<CalendarListResponse>, ApiError> {
+    let rows: Vec<ScheduledRecipeRow> = sqlx::query_as(SCHEDULED_RECIPES_SQL)
         .bind(calendar.team_id)
         .bind(calendar.id)
         .bind(start)
@@ -146,8 +144,8 @@ pub async fn calendar_list_view(
                         .unwrap_or(email),
                 }
             }),
-            team: Some(calendar.team_id),
-            user: Some(user.id),
+            team: calendar.team_id,
+            user: user.id,
             recipe: RecipeMetadata {
                 id: row.recipe_id,
                 name: row.recipe_name,
@@ -163,9 +161,5 @@ pub async fn calendar_list_view(
         })
         .collect();
 
-    Ok((
-        StatusCode::OK,
-        Json(CalendarListResponse { scheduled_recipes }),
-    )
-        .into_response())
+    Ok(Json(CalendarListResponse { scheduled_recipes }))
 }
