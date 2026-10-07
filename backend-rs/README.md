@@ -1,8 +1,7 @@
 # backend-rs
 
-A Rust (axum + sqlx) port of `GET /api/v1/calendar/?start=YYYY-MM-DD&end=YYYY-MM-DD`
-from `backend/recipeyak/api/calendar_list_view.py`. It reads the same Postgres
-database and accepts the same Django `sessionid` cookie.
+A Rust reimplemention of the API.
+
 
 ```sh
 DEBUG=1 DATABASE_URL=postgres://postgres@localhost:5432/recipeyak STORAGE_HOSTNAME=images-cdn.recipeyak.com cargo run
@@ -11,7 +10,3 @@ curl -b sessionid=... 'localhost:8001/api/v1/calendar/?start=2026-09-06&end=2026
 
 Env vars: `DATABASE_URL`, `STORAGE_HOSTNAME`, `PORT` (default 8001), and
 `DJANGO_SECRET_KEY` unless `DEBUG=1`, in which case the Django dev key is used.
-
-Unlike Django, this service never writes sessions: an unknown cookie isn't
-replaced with a fresh session, and a session whose auth hash no longer matches
-the user's password is treated as anonymous rather than deleted.
