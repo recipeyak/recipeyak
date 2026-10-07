@@ -7,7 +7,7 @@
 
 use axum::extract::FromRequestParts;
 use axum::http::request::Parts;
-use axum::http::{HeaderMap, header};
+use axum_extra::extract::CookieJar;
 use base64::Engine;
 use base64::engine::general_purpose::URL_SAFE_NO_PAD;
 use flate2::read::ZlibDecoder;
@@ -57,30 +57,14 @@ impl FromRequestParts<AppState> for User {
         if let Some(user) = parts.extensions.get::<User>() {
             return Ok(user.clone());
         }
-        let session_key = session_cookie(&parts.headers);
-        let user = authenticate(
-            &state.pool,
-            &state.config.secret_key,
-            session_key.as_deref(),
-        )
-        .await?
-        .ok_or_else(ApiError::not_authenticated)?;
+        let jar = CookieJar::from_headers(&parts.headers);
+        let session_key = jar.get(SESSION_COOKIE_NAME).map(|c| c.value());
+        let user = authenticate(&state.pool, &state.config.secret_key, session_key)
+            .await?
+            .ok_or_else(ApiError::not_authenticated)?;
         parts.extensions.insert(user.clone());
         Ok(user)
     }
-}
-
-fn session_cookie(headers: &HeaderMap) -> Option<String> {
-    headers
-        .get_all(header::COOKIE)
-        .iter()
-        .filter_map(|v| v.to_str().ok())
-        .flat_map(|v| v.split(';'))
-        .filter_map(|pair| pair.trim().split_once('='))
-        // like Python's SimpleCookie, the last occurrence wins
-        .filter(|(name, _)| *name == SESSION_COOKIE_NAME)
-        .next_back()
-        .map(|(_, value)| value.trim_matches('"').to_string())
 }
 
 pub async fn authenticate(
