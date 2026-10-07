@@ -7,7 +7,7 @@ use axum::extract::{RawQuery, State};
 use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 use chrono::{DateTime, NaiveDate, Utc};
-use serde::{Serialize, Serializer};
+use serde::Serialize;
 
 use crate::AppState;
 use crate::error::ApiError;
@@ -25,7 +25,6 @@ pub struct CalendarListResponse {
 #[serde(rename_all = "camelCase")]
 struct ScheduledRecipe {
     id: i32,
-    #[serde(serialize_with = "serialize_datetime")]
     created: DateTime<Utc>,
     created_by: Option<CreatedBy>,
     team: Option<i32>,
@@ -47,7 +46,6 @@ struct RecipeMetadata {
     id: i32,
     name: String,
     author: Option<String>,
-    #[serde(serialize_with = "serialize_opt_datetime")]
     archived_at: Option<DateTime<Utc>>,
     primary_image: Option<PrimaryImage>,
 }
@@ -199,45 +197,4 @@ pub async fn calendar_list_view(
         Json(CalendarListResponse { scheduled_recipes }),
     )
         .into_response())
-}
-
-/// orjson's datetime format: `2024-01-15T12:34:56.123456+00:00`, with the
-/// fractional part omitted when it's zero.
-fn format_datetime(dt: &DateTime<Utc>) -> String {
-    if dt.timestamp_subsec_micros() == 0 {
-        dt.format("%Y-%m-%dT%H:%M:%S+00:00").to_string()
-    } else {
-        dt.format("%Y-%m-%dT%H:%M:%S%.6f+00:00").to_string()
-    }
-}
-
-fn serialize_datetime<S: Serializer>(dt: &DateTime<Utc>, s: S) -> Result<S::Ok, S::Error> {
-    s.serialize_str(&format_datetime(dt))
-}
-
-fn serialize_opt_datetime<S: Serializer>(
-    dt: &Option<DateTime<Utc>>,
-    s: S,
-) -> Result<S::Ok, S::Error> {
-    match dt {
-        Some(dt) => serialize_datetime(dt, s),
-        None => s.serialize_none(),
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use chrono::TimeZone;
-
-    #[test]
-    fn formats_datetimes_like_orjson() {
-        let whole = Utc.with_ymd_and_hms(2024, 1, 15, 12, 34, 56).unwrap();
-        assert_eq!(format_datetime(&whole), "2024-01-15T12:34:56+00:00");
-        let fractional = whole + chrono::Duration::microseconds(1230);
-        assert_eq!(
-            format_datetime(&fractional),
-            "2024-01-15T12:34:56.001230+00:00"
-        );
-    }
 }
