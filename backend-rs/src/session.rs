@@ -27,7 +27,7 @@ const SESSION_SALT: &str = "django.contrib.sessions.SessionStore";
 const AUTH_HASH_SALT: &str = "django.contrib.auth.models.AbstractBaseUser.get_session_auth_hash";
 const MODEL_BACKEND: &str = "django.contrib.auth.backends.ModelBackend";
 
-#[derive(Debug, sqlx::FromRow)]
+#[derive(Debug, Clone, sqlx::FromRow)]
 pub struct User {
     pub id: i32,
     pub password: String,
@@ -46,6 +46,7 @@ struct SessionData {
 }
 
 /// Extracting a `User` rejects anonymous requests with `not_authenticated`.
+/// The result is cached on the request so other extractors can reuse it.
 impl FromRequestParts<AppState> for User {
     type Rejection = ApiError;
 
@@ -53,14 +54,19 @@ impl FromRequestParts<AppState> for User {
         parts: &mut Parts,
         state: &AppState,
     ) -> Result<Self, Self::Rejection> {
+        if let Some(user) = parts.extensions.get::<User>() {
+            return Ok(user.clone());
+        }
         let session_key = session_cookie(&parts.headers);
-        authenticate(
+        let user = authenticate(
             &state.pool,
             &state.config.secret_key,
             session_key.as_deref(),
         )
         .await?
-        .ok_or_else(ApiError::not_authenticated)
+        .ok_or_else(ApiError::not_authenticated)?;
+        parts.extensions.insert(user.clone());
+        Ok(user)
     }
 }
 

@@ -12,6 +12,7 @@ use serde::{Deserialize, Serialize};
 use crate::AppState;
 use crate::error::ApiError;
 use crate::params::Params;
+use crate::pinned_calendar::Calendar;
 use crate::session::User;
 use crate::urls::{avatar_url, public_url};
 
@@ -117,42 +118,11 @@ pub async fn calendar_list_view(
     State(state): State<AppState>,
     user: User,
     Params(CalendarListParams { start, end }): Params<CalendarListParams>,
+    calendar: Calendar,
 ) -> Result<Response, ApiError> {
-    // get_team
-    let team_id = user
-        .schedule_team_id
-        .ok_or_else(|| ApiError::Internal("should always have a team selected".into()))?;
-    let is_member: bool = sqlx::query_scalar(
-        "SELECT EXISTS (SELECT 1 FROM core_team t JOIN core_membership m ON m.team_id = t.id WHERE t.id = $1 AND m.user_id = $2 AND m.is_active)",
-    )
-    .bind(team_id)
-    .bind(user.id)
-    .fetch_one(&state.pool)
-    .await?;
-    if !is_member {
-        return Err(ApiError::NotFound);
-    }
-
-    // get_pinned_calendar
-    let calendar_id = user.pinned_calendar_id.ok_or_else(|| {
-        ApiError::Internal("should always have a pinned calendar selected".into())
-    })?;
-    let calendar_exists: bool = sqlx::query_scalar(
-        "SELECT EXISTS (SELECT 1 FROM core_calendar WHERE id = $1 AND team_id = $2)",
-    )
-    .bind(calendar_id)
-    .bind(team_id)
-    .fetch_one(&state.pool)
-    .await?;
-    if !calendar_exists {
-        return Err(ApiError::Internal(
-            "Calendar matching query does not exist.".into(),
-        ));
-    }
-
     let rows: Vec<Row> = sqlx::query_as(SCHEDULED_RECIPES_SQL)
-        .bind(team_id)
-        .bind(calendar_id)
+        .bind(calendar.team_id)
+        .bind(calendar.id)
         .bind(start)
         .bind(end)
         .fetch_all(&state.pool)
@@ -176,7 +146,7 @@ pub async fn calendar_list_view(
                         .unwrap_or(email),
                 }
             }),
-            team: Some(team_id),
+            team: Some(calendar.team_id),
             user: Some(user.id),
             recipe: RecipeMetadata {
                 id: row.recipe_id,

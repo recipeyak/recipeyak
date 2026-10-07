@@ -2,6 +2,7 @@ mod calendar;
 mod config;
 mod error;
 mod params;
+mod pinned_calendar;
 mod session;
 mod urls;
 
