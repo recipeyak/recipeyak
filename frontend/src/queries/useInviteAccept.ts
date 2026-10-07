@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { inviteAccept } from "@/api/inviteAccept"
+import { authorizeAbly } from "@/auth"
 import { cacheUpsertInviteList } from "@/queries/useInviteList"
 
 export function useInviteAccept() {
@@ -9,6 +10,7 @@ export function useInviteAccept() {
     mutationFn: ({ inviteId }: { inviteId: number }) =>
       inviteAccept({ invite_id: inviteId }),
     onSuccess: (_response, vars) => {
+      void authorizeAbly()
       cacheUpsertInviteList(queryClient, {
         updater: (prev) => {
           return prev?.map((x) => {
