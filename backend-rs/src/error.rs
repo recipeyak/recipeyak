@@ -3,20 +3,11 @@
 
 use axum::http::{StatusCode, header};
 use axum::response::{IntoResponse, Response};
-use serde::Serialize;
 use serde_json::json;
-
-#[derive(Debug, Serialize, Clone, PartialEq)]
-pub struct ValidationError {
-    #[serde(rename = "type")]
-    pub kind: &'static str,
-    pub loc: Vec<String>,
-    pub msg: String,
-}
 
 #[derive(Debug)]
 pub enum ApiError {
-    Validation(Vec<ValidationError>),
+    Validation(String),
     Api {
         code: &'static str,
         message: &'static str,
@@ -61,11 +52,11 @@ fn html(status: StatusCode, body: &'static str) -> Response {
 impl IntoResponse for ApiError {
     fn into_response(self) -> Response {
         match self {
-            ApiError::Validation(errors) => (
+            ApiError::Validation(message) => (
                 StatusCode::BAD_REQUEST,
                 axum::Json(json!({
-                    "error": {"message": errors, "code": "validation_error"},
-                    "message": errors,
+                    "error": {"message": message, "code": "validation_error"},
+                    "message": message,
                 })),
             )
                 .into_response(),

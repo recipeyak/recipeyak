@@ -1113,7 +1113,6 @@ dependencies = [
  "base64",
  "chrono",
  "flate2",
- "form_urlencoded",
  "hmac",
  "md-5",
  "serde",

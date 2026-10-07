@@ -3,17 +3,24 @@
 //! GET /api/v1/calendar/?start=YYYY-MM-DD&end=YYYY-MM-DD
 
 use axum::Json;
-use axum::extract::{RawQuery, State};
+use axum::extract::State;
 use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 use chrono::{DateTime, NaiveDate, Utc};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::AppState;
 use crate::error::ApiError;
-use crate::params::{parse_dates, query_dict};
+use crate::params::Params;
 use crate::session::User;
 use crate::urls::{avatar_url, public_url};
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct CalendarListParams {
+    start: NaiveDate,
+    end: NaiveDate,
+}
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -109,11 +116,8 @@ ORDER BY sr."on" DESC
 pub async fn calendar_list_view(
     State(state): State<AppState>,
     user: User,
-    RawQuery(query): RawQuery,
+    Params(CalendarListParams { start, end }): Params<CalendarListParams>,
 ) -> Result<Response, ApiError> {
-    let [start, end] = parse_dates(&query_dict(query.as_deref()), ["start", "end"])
-        .map_err(ApiError::Validation)?;
-
     // get_team
     let team_id = user
         .schedule_team_id
