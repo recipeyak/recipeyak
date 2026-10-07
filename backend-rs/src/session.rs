@@ -45,10 +45,8 @@ struct SessionData {
     hash: Option<String>,
 }
 
-/// The authenticated user, or `None` for anonymous requests.
-pub struct MaybeUser(pub Option<User>);
-
-impl FromRequestParts<AppState> for MaybeUser {
+/// Extracting a `User` rejects anonymous requests with `not_authenticated`.
+impl FromRequestParts<AppState> for User {
     type Rejection = ApiError;
 
     async fn from_request_parts(
@@ -56,13 +54,13 @@ impl FromRequestParts<AppState> for MaybeUser {
         state: &AppState,
     ) -> Result<Self, Self::Rejection> {
         let session_key = session_cookie(&parts.headers);
-        let user = authenticate(
+        authenticate(
             &state.pool,
             &state.config.secret_key,
             session_key.as_deref(),
         )
-        .await?;
-        Ok(MaybeUser(user))
+        .await?
+        .ok_or_else(ApiError::not_authenticated)
     }
 }
 

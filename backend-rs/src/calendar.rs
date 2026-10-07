@@ -12,7 +12,7 @@ use serde::Serialize;
 use crate::AppState;
 use crate::error::ApiError;
 use crate::params::{parse_dates, query_dict};
-use crate::session::MaybeUser;
+use crate::session::User;
 use crate::urls::{avatar_url, public_url};
 
 #[derive(Serialize)]
@@ -108,12 +108,9 @@ ORDER BY sr."on" DESC
 
 pub async fn calendar_list_view(
     State(state): State<AppState>,
-    MaybeUser(user): MaybeUser,
+    user: User,
     RawQuery(query): RawQuery,
 ) -> Result<Response, ApiError> {
-    let Some(user) = user else {
-        return Err(ApiError::not_authenticated());
-    };
     let [start, end] = parse_dates(&query_dict(query.as_deref()), ["start", "end"])
         .map_err(ApiError::Validation)?;
 
