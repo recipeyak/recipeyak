@@ -15,9 +15,12 @@ use axum::http::{HeaderValue, StatusCode, header};
 use axum::middleware::{self, Next};
 use axum::response::{IntoResponse, Response};
 use axum::routing::get;
+use clap::{Parser, Subcommand};
 use sqlx::PgPool;
 use sqlx::postgres::PgPoolOptions;
 use tracing_subscriber::EnvFilter;
+use utoipa_axum::router::OpenApiRouter;
+use utoipa_axum::routes;
 
 use crate::config::Config;
 
@@ -29,13 +32,34 @@ pub struct AppState {
 
 #[tokio::main]
 async fn main() {
+    match Cli::parse().command.unwrap_or(Command::Serve) {
+        Command::Serve => serve().await,
+        Command::Schema => println!("{}", openapi().to_pretty_json().unwrap()),
+    }
+}
+
+#[derive(Parser)]
+struct Cli {
+    #[command(subcommand)]
+    command: Option<Command>,
+}
+
+#[derive(Subcommand)]
+enum Command {
+    /// Run the HTTP server (default)
+    Serve,
+    /// Print the OpenAPI schema used to generate the UI's API client
+    Schema,
+}
+
+async fn serve() {
     tracing_subscriber::fmt()
         .with_env_filter(EnvFilter::try_from_default_env().unwrap_or_else(|_| "info".into()))
         .init();
 
     let config = Config::from_env();
     let pool = PgPoolOptions::new()
-        .max_connections(10)
+        .max_connections(30)
         .connect_lazy(&config.database_url)
         .expect("invalid DATABASE_URL");
     let addr = format!("0.0.0.0:{}", config.port);
@@ -54,10 +78,20 @@ async fn main() {
         .unwrap();
 }
 
+/// Routes that are part of the UI's API and included in the OpenAPI schema.
+fn api_router() -> OpenApiRouter<AppState> {
+    OpenApiRouter::new().routes(routes!(calendar::calendar_list_view))
+}
+
+pub fn openapi() -> utoipa::openapi::OpenApi {
+    let (_, mut api) = api_router().split_for_parts();
+    api.info = utoipa::openapi::Info::new("RecipeYak API", "1.0.0");
+    api
+}
+
 pub fn app(state: AppState) -> Router {
-    Router::new()
-        .route("/api/v1/calendar/", get(calendar::calendar_list_view))
-        .route("/healthz", get(|| async { "OK" }))
+    let (api, _) = api_router().split_for_parts();
+    api.route("/healthz", get(|| async { "OK" }))
         .route("/readiness", get(readiness))
         .fallback(|| async { error::not_found() })
         .layer(middleware::from_fn(response_headers))

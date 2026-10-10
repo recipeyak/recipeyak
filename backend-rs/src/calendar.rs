@@ -6,6 +6,7 @@ use axum::Json;
 use axum::extract::State;
 use chrono::{DateTime, NaiveDate, Utc};
 use serde::{Deserialize, Serialize};
+use utoipa::{IntoParams, ToSchema};
 
 use crate::AppState;
 use crate::error::ApiError;
@@ -14,24 +15,26 @@ use crate::pinned_calendar::Calendar;
 use crate::session::User;
 use crate::urls::{avatar_url, public_url};
 
-#[derive(Deserialize)]
+#[derive(Deserialize, IntoParams)]
 #[serde(deny_unknown_fields)]
+#[into_params(parameter_in = Query)]
 pub struct CalendarListParams {
     start: NaiveDate,
     end: NaiveDate,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct CalendarListResponse {
     scheduled_recipes: Vec<ScheduledRecipe>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 struct ScheduledRecipe {
     id: i32,
     created: DateTime<Utc>,
+    #[schema(required)]
     created_by: Option<CreatedBy>,
     team: i32,
     user: i32,
@@ -39,28 +42,32 @@ struct ScheduledRecipe {
     on: NaiveDate,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, ToSchema)]
 struct CreatedBy {
     id: i32,
     name: String,
     avatar_url: String,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 struct RecipeMetadata {
     id: i32,
     name: String,
+    #[schema(required)]
     author: Option<String>,
+    #[schema(required)]
     archived_at: Option<DateTime<Utc>>,
+    #[schema(required)]
     primary_image: Option<PrimaryImage>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 struct PrimaryImage {
     id: String,
     url: String,
+    #[schema(required)]
     background_url: Option<String>,
 }
 
@@ -112,6 +119,13 @@ WHERE sr.team_id = $1
 ORDER BY sr."on" DESC
 "#;
 
+#[utoipa::path(
+    get,
+    path = "/api/v1/calendar/",
+    operation_id = "CalendarList",
+    params(CalendarListParams),
+    responses((status = 200, description = "Successful response.", body = CalendarListResponse)),
+)]
 pub async fn calendar_list_view(
     State(state): State<AppState>,
     user: User,

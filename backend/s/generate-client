@@ -2,4 +2,5 @@
 set -ex
 
 ./.venv/bin/python3 -m recipeyak.api.base.schema
+(cd ../backend-rs && cargo run -q -- schema > api-schema.json)
 ./.venv/bin/python3 -m recipeyak.api.base.codegen

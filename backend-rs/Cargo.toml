@@ -9,6 +9,7 @@ axum = "0.8"
 axum-extra = { version = "0.12.6", features = ["cookie"] }
 base64 = "0.22"
 chrono = { version = "0.4", features = ["serde"] }
+clap = { version = "4.6.7", features = ["derive"] }
 flate2 = "1"
 hmac = "0.12"
 md-5 = "0.10"
@@ -20,3 +21,5 @@ subtle = "2"
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "net", "signal"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+utoipa = { version = "6.0.0", features = ["axum_extras", "chrono", "preserve_order"] }
+utoipa-axum = "0.3.0"
