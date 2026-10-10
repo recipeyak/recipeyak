@@ -140,7 +140,7 @@ pub async fn calendar_list_view(
         .fetch_all(&state.pool)
         .await?;
 
-    let hostname = &state.config.storage_hostname;
+    let storage_url = &state.config.storage_url;
     let scheduled_recipes = rows
         .into_iter()
         .map(|row| ScheduledRecipe {
@@ -150,7 +150,11 @@ pub async fn calendar_list_view(
                 let email = row.created_by_email.unwrap_or_default();
                 CreatedBy {
                     id,
-                    avatar_url: avatar_url(hostname, &email, row.created_by_profile_key.as_deref()),
+                    avatar_url: avatar_url(
+                        storage_url,
+                        &email,
+                        row.created_by_profile_key.as_deref(),
+                    ),
                     // User.get_display_name
                     name: row
                         .created_by_name
@@ -167,7 +171,7 @@ pub async fn calendar_list_view(
                 archived_at: row.recipe_archived_at,
                 primary_image: row.image_id.map(|id| PrimaryImage {
                     id: id.to_string(),
-                    url: public_url(hostname, row.image_key.as_deref().unwrap_or_default()),
+                    url: public_url(storage_url, row.image_key.as_deref().unwrap_or_default()),
                     background_url: row.image_background_url,
                 }),
             },

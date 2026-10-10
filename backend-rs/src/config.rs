@@ -1,5 +1,7 @@
 use std::env;
 
+use url::Url;
+
 // Same dev key as backend/recipeyak/django/settings.py so local sessions
 // created by Django are accepted here.
 const DEBUG_SECRET_KEY: &str = "+p(5+wb+(l2$@iv!1*3=5xnrw2gvi+l$kuo9s7=u6*)ri4v6as";
@@ -9,7 +11,8 @@ pub struct Config {
     pub debug: bool,
     pub secret_key: String,
     pub database_url: String,
-    pub storage_hostname: String,
+    /// `https://{STORAGE_HOSTNAME}`, the base for upload URLs.
+    pub storage_url: Url,
     pub port: u16,
 }
 
@@ -25,7 +28,10 @@ impl Config {
             debug,
             secret_key,
             database_url: env::var("DATABASE_URL").expect("DATABASE_URL must be set"),
-            storage_hostname: env::var("STORAGE_HOSTNAME").unwrap_or_default(),
+            storage_url: env::var("STORAGE_HOSTNAME")
+                .ok()
+                .and_then(|host| Url::parse(&format!("https://{host}")).ok())
+                .expect("STORAGE_HOSTNAME must be set to a valid hostname"),
             port: env::var("PORT")
                 .ok()
                 .and_then(|p| p.parse().ok())
