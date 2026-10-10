@@ -1,0 +1,195 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "RecipeYak API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/v1/calendar/": {
+      "get": {
+        "operationId": "CalendarList",
+        "parameters": [
+          {
+            "name": "start",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CalendarListResponse": {
+        "type": "object",
+        "required": [
+          "scheduledRecipes"
+        ],
+        "properties": {
+          "scheduledRecipes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ScheduledRecipe"
+            }
+          }
+        }
+      },
+      "CreatedBy": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "avatar_url"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "avatar_url": {
+            "type": "string"
+          }
+        }
+      },
+      "PrimaryImage": {
+        "type": "object",
+        "required": [
+          "id",
+          "url",
+          "backgroundUrl"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "backgroundUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "RecipeMetadata": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "author",
+          "archivedAt",
+          "primaryImage"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "author": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "archivedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "primaryImage": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PrimaryImage"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "ScheduledRecipe": {
+        "type": "object",
+        "required": [
+          "id",
+          "created",
+          "createdBy",
+          "team",
+          "user",
+          "recipe",
+          "on"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CreatedBy"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "team": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "user": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "recipe": {
+            "$ref": "#/components/schemas/RecipeMetadata"
+          },
+          "on": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      }
+    }
+  }
+}
