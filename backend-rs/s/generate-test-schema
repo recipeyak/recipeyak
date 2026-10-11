@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Regenerate tests/schema/0001_schema.sql by running the Django migrations
+# against a scratch database and dumping its schema.
+#
+# PG_DUMP must match the server's major version, e.g.
+#   PG_DUMP=/Applications/Postgres.app/Contents/Versions/16/bin/pg_dump
+set -euo pipefail
+
+main() {
+  cd "$(dirname "$0")/.."
+  server="${PG_URL:-postgres://postgres@localhost:5432}"
+  db=recipeyak_rs_test_schema
+
+  psql "$server/postgres" -q -c "DROP DATABASE IF EXISTS $db" -c "CREATE DATABASE $db"
+  trap 'psql "$server/postgres" -q -c "DROP DATABASE IF EXISTS $db"' EXIT
+
+  (cd ../backend && DEBUG=1 DATABASE_URL="$server/$db" uv run python manage.py migrate --no-input > /dev/null)
+
+  # Drop psql meta-commands, the empty search_path pg_dump sets (sqlx would
+  # leave it on the connection), and comments.
+  "${PG_DUMP:-pg_dump}" --schema-only --no-owner --no-privileges --no-comments "$server/$db" \
+    | sed -e '/^\\/d' -e "/set_config('search_path'/d" -e '/^--/d' \
+    | cat -s > tests/schema/0001_schema.sql
+}
+
+main "$@"

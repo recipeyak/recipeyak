@@ -1,4 +1,4 @@
-//! Read Django database-backed sessions and the auth data
+//! Read and write Django database-backed sessions and the auth data
 //! `django.contrib.auth.login()` stores in them.
 //!
 //! Loading the session row and the user is left to the caller; this crate
@@ -7,7 +7,7 @@
 pub mod signing;
 
 use hmac::Mac;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
 use subtle::ConstantTimeEq;
 
@@ -27,8 +27,13 @@ pub fn decode(secret: &str, session_data: &str) -> Option<Map<String, Value>> {
     signing::loads(secret, SESSION_SALT, session_data)
 }
 
+/// `SessionStore.encode`
+pub fn encode(secret: &str, session: &Map<String, Value>) -> String {
+    signing::dumps(secret, SESSION_SALT, session)
+}
+
 /// The `_auth_user_*` keys `django.contrib.auth.login()` writes.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct AuthSession {
     #[serde(rename = "_auth_user_id")]
     pub user_id: String,
@@ -77,6 +82,22 @@ mod tests {
         assert_eq!(auth.user_id, "1");
         assert_eq!(auth.backend, MODEL_BACKEND);
         assert_eq!(auth.hash, "abc");
+    }
+
+    #[test]
+    fn decodes_encoded_session() {
+        let auth = AuthSession {
+            user_id: "42".into(),
+            backend: MODEL_BACKEND.into(),
+            hash: "def".into(),
+        };
+        let Value::Object(session) = serde_json::to_value(&auth).unwrap() else {
+            unreachable!()
+        };
+        let decoded = auth_session(SECRET, &encode(SECRET, &session)).expect("valid session");
+        assert_eq!(decoded.user_id, "42");
+        assert_eq!(decoded.backend, MODEL_BACKEND);
+        assert_eq!(decoded.hash, "def");
     }
 
     #[test]

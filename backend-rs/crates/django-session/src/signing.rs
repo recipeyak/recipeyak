@@ -2,11 +2,15 @@
 
 use base64::Engine;
 use base64::engine::general_purpose::URL_SAFE_NO_PAD;
+use flate2::Compression;
 use flate2::read::ZlibDecoder;
+use flate2::write::ZlibEncoder;
 use hmac::{Hmac, Mac};
+use serde::Serialize;
 use serde::de::DeserializeOwned;
 use sha2::{Digest, Sha256};
-use std::io::Read;
+use std::io::{Read, Write};
+use std::time::{SystemTime, UNIX_EPOCH};
 use subtle::ConstantTimeEq;
 
 /// `django.utils.crypto.salted_hmac` with sha256.
@@ -18,6 +22,46 @@ pub fn salted_hmac(key_salt: &str, value: &[u8], secret: &str) -> Hmac<Sha256> {
     let mut mac = Hmac::<Sha256>::new_from_slice(&key).expect("hmac accepts any key length");
     mac.update(value);
     mac
+}
+
+/// `django.core.signing.dumps(obj, key=secret, salt=salt, compress=True)`
+pub fn dumps(secret: &str, salt: &str, obj: &impl Serialize) -> String {
+    let data = serde_json::to_vec(obj).expect("serializing to JSON can't fail");
+    let mut encoder = ZlibEncoder::new(Vec::new(), Compression::default());
+    encoder
+        .write_all(&data)
+        .expect("writing to a Vec can't fail");
+    let compressed = encoder.finish().expect("writing to a Vec can't fail");
+    // only use the compressed form when it saves more than the `.` prefix
+    let payload = if compressed.len() < data.len() - 1 {
+        format!(".{}", URL_SAFE_NO_PAD.encode(compressed))
+    } else {
+        URL_SAFE_NO_PAD.encode(data)
+    };
+    let timestamp = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .expect("clock is after the epoch")
+        .as_secs();
+    let value = format!("{payload}:{}", b62_encode(timestamp));
+    let signature = salted_hmac(&format!("{salt}signer"), value.as_bytes(), secret)
+        .finalize()
+        .into_bytes();
+    format!("{value}:{}", URL_SAFE_NO_PAD.encode(signature))
+}
+
+/// `django.core.signing.b62_encode`
+fn b62_encode(mut n: u64) -> String {
+    const ALPHABET: &[u8] = b"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    let mut out = Vec::new();
+    loop {
+        out.push(ALPHABET[(n % 62) as usize]);
+        n /= 62;
+        if n == 0 {
+            break;
+        }
+    }
+    out.reverse();
+    String::from_utf8(out).expect("alphabet is ascii")
 }
 
 /// `django.core.signing.loads(s, key=secret, salt=salt)` without a `max_age`.

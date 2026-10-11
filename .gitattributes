@@ -2,3 +2,4 @@ frontend/src/api/* linguist-generated=true
 backend/recipeyak/scraper/test_data/* linguist-generated=true
 backend/api-schema.json linguist-generated=true
 backend-rs/api-schema.json linguist-generated=true
+backend-rs/tests/schema/0001_schema.sql linguist-generated=true
