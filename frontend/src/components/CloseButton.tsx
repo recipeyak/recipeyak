@@ -8,6 +8,7 @@ export function CloseButton({ onClose }: { onClose?: () => void }) {
     //
     // eslint-disable-next-line react/forbid-elements
     <button
+      type="button"
       onClick={onClose}
       data-testid="close modal"
       className="cursor-pointer !border-none bg-[unset] p-0 !shadow-none"
