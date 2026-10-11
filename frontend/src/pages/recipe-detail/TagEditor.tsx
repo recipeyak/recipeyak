@@ -16,8 +16,13 @@ export function TagEditor({
     if (e.key !== "Enter") {
       return
     }
-
-    onChange([...tags, newTag])
+    // Prevent the enclosing form from submitting.
+    e.preventDefault()
+    const tag = newTag.trim()
+    if (tag === "" || tags.includes(tag)) {
+      return
+    }
+    onChange([...tags, tag])
     setNewTag("")
   }
   return (
