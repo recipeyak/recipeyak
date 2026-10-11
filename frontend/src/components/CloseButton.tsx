@@ -20,8 +20,7 @@ export function CloseButton({ onClose }: { onClose?: () => void }) {
 }
 
 /**
- * iOS-style close button for sheets/modals: a filled circle with an xmark,
- * sized to Apple's 44x44pt minimum hit target.
+ * Larger click target button
  */
 export function ModalCloseButton({ onClose }: { onClose?: () => void }) {
   return (
@@ -32,13 +31,9 @@ export function ModalCloseButton({ onClose }: { onClose?: () => void }) {
       onClick={onClose}
       data-testid="close modal"
       aria-label="Close"
-      // 44x44 hit area with the visible 30px circle centered; negative margin
-      // keeps the circle's edge aligned with the modal's content.
-      className="my-[-7px] mr-[-7px] flex size-11 shrink-0 cursor-pointer items-center justify-center !border-none bg-[unset] p-0 !shadow-none"
+      className="relative flex size-[30px] shrink-0 cursor-pointer items-center justify-center rounded-full border-none bg-[--color-normal-hover-bg] p-0 text-[--color-text-muted] before:absolute before:inset-[-7px] before:content-[''] hover:bg-[--color-normal-active-bg] hover:text-[--color-text]"
     >
-      <span className="flex size-[30px] items-center justify-center rounded-full bg-[--color-normal-hover-bg] text-[--color-text-muted] transition-colors hover:bg-[--color-normal-active-bg] hover:text-[--color-text]">
-        <X size={16} strokeWidth={2.5} />
-      </span>
+      <X size={16} strokeWidth={2.5} />
     </button>
   )
 }
