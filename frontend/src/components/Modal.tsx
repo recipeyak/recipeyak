@@ -2,7 +2,7 @@ import React from "react"
 import { Dialog, Modal as AriaModal, ModalOverlay } from "react-aria-components"
 
 import { clx } from "@/classnames"
-import { CloseButton } from "@/components/CloseButton"
+import { ModalCloseButton } from "@/components/CloseButton"
 
 export function Modal({
   isOpen,
@@ -40,9 +40,9 @@ export function Modal({
               }}
               className="flex h-full flex-col"
             >
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-2">
                 <div>{title}</div>
-                <CloseButton
+                <ModalCloseButton
                   onClose={() => {
                     close()
                   }}
