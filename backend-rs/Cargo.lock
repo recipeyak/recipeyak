@@ -423,6 +423,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "django-session"
+version = "0.1.0"
+dependencies = [
+ "base64",
+ "flate2",
+ "hmac",
+ "serde",
+ "serde_json",
+ "sha2",
+ "subtle",
+]
+
+[[package]]
 name = "dotenvy"
 version = "0.15.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1278,17 +1291,13 @@ version = "0.1.0"
 dependencies = [
  "axum",
  "axum-extra",
- "base64",
  "chrono",
  "clap",
- "flate2",
- "hmac",
+ "django-session",
  "md-5",
  "serde",
  "serde_json",
- "sha2",
  "sqlx",
- "subtle",
  "tokio",
  "tracing",
  "tracing-subscriber",

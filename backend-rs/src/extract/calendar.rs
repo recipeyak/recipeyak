@@ -5,7 +5,7 @@ use axum::http::request::Parts;
 
 use crate::AppState;
 use crate::error::ApiError;
-use crate::session::User;
+use crate::extract::user::User;
 
 pub struct Calendar {
     pub id: i32,

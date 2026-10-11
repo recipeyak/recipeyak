@@ -10,9 +10,9 @@ use utoipa::{IntoParams, ToSchema};
 
 use crate::AppState;
 use crate::error::ApiError;
-use crate::params::Params;
-use crate::pinned_calendar::Calendar;
-use crate::session::User;
+use crate::extract::calendar::Calendar;
+use crate::extract::params::Params;
+use crate::extract::user::User;
 use crate::urls::{avatar_url, public_url};
 
 #[derive(Deserialize, IntoParams)]
