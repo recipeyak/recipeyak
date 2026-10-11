@@ -1,28 +1,28 @@
 import {
   addDays,
   addWeeks,
-  differenceInCalendarDays,
   format,
   isSameDay,
   isSameYear,
+  max,
   parseISO,
 } from "date-fns"
-import { Trash2 } from "lucide-react"
+import { CalendarDays, Trash2 } from "lucide-react"
 import React from "react"
-import { DialogTrigger } from "react-aria-components"
 import { Link } from "react-router-dom"
 
 import { clx } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
-import { Badge } from "@/components/Badge"
 import { Button } from "@/components/Buttons"
 import { DateInput } from "@/components/DateInput"
 import { Image } from "@/components/Image"
 import { Modal } from "@/components/Modal"
 import { toISODateString } from "@/date"
 import { NoteTimeStamp } from "@/pages/recipe-detail/NoteTimestamp"
+import { useScheduleRecipeCreate } from "@/queries/useScheduledRecipeCreate"
 import { useScheduledRecipeDelete } from "@/queries/useScheduledRecipeDelete"
 import { useScheduledRecipeUpdate } from "@/queries/useScheduledRecipeUpdate"
+import { toast } from "@/toast"
 import { recipeURL } from "@/urls"
 
 function formatScheduleDate(date: Date): string {
@@ -32,27 +32,14 @@ function formatScheduleDate(date: Date): string {
   )
 }
 
-function formatRelativeDays(date: Date): string {
-  const days = differenceInCalendarDays(date, new Date())
-  if (days === 0) {
-    return "Today"
-  }
-  if (days === 1) {
-    return "Tomorrow"
-  }
-  if (days === -1) {
-    return "Yesterday"
-  }
-  return days < 0 ? `${-days} days ago` : `in ${days} days`
-}
-
 function RecipeItem({
   sources,
   name,
   author,
   archived,
   to,
-  date,
+  createdAt,
+  createdBy,
 }: {
   sources: {
     url: string
@@ -62,9 +49,13 @@ function RecipeItem({
   author: string | null
   archived: boolean
   to: string
-  date: Date
+  createdAt: string
+  createdBy: {
+    readonly id: number | string
+    readonly name: string
+    readonly avatar_url: string
+  } | null
 }) {
-  const isOverdue = differenceInCalendarDays(date, new Date()) < 0
   return (
     <Link to={to} className="flex cursor-pointer items-center gap-3">
       <Image
@@ -78,7 +69,7 @@ function RecipeItem({
       <div className="min-w-0">
         <div
           className={clx(
-            "line-clamp-2 text-lg font-medium leading-tight",
+            "line-clamp-2 text-lg leading-tight",
             archived && "line-through",
           )}
         >
@@ -87,12 +78,14 @@ function RecipeItem({
         <div className="line-clamp-1 text-ellipsis text-sm text-[--color-text-muted]">
           {author}
         </div>
-        <div className="mt-1 flex flex-wrap items-center gap-2 text-sm">
-          {isOverdue && <Badge status="error">Overdue</Badge>}
-          <span>
-            {formatScheduleDate(date)} · {formatRelativeDays(date)}
-          </span>
-        </div>
+        {createdBy != null && (
+          <div className="mt-1.5 flex items-center gap-1.5 text-sm text-[--color-text-muted]">
+            <Avatar avatarURL={createdBy.avatar_url} size={20} />
+            <span>
+              {createdBy.name} · <NoteTimeStamp created={createdAt} />
+            </span>
+          </div>
+        )}
       </div>
     </Link>
   )
@@ -138,33 +131,18 @@ export function ScheduledRecipeEditModal({
       onOpenChange={(change) => {
         onClose(change)
       }}
-      title={
-        Scheduled recipe
-      }
+      title={formatScheduleDate(date)}
     >
-      <div className="mt-2 flex flex-col gap-3">
+      <div className="mt-4 flex flex-col gap-6">
         <RecipeItem
           to={to}
           sources={primaryImage}
           archived={archived}
           name={recipeName}
           author={recipeAuthor}
-          date={date}
+          createdAt={createdAt}
+          createdBy={createdBy}
         />
-        {createdBy != null && (
-          <div className="flex items-center gap-2 text-xs text-[--color-text-muted]">
-            <Avatar avatarURL={createdBy.avatar_url} size={20} />
-            <span>
-              Added by{" "}
-              <span className="font-medium text-[--color-text]">
-                {createdBy.name}
-              </span>{" "}
-              · <NoteTimeStamp created={createdAt} />
-            </span>
-          </div>
-        )}
-
-        <hr className="my-1 border-[--color-border]" />
 
         <RescheduleSection
           onClose={() => {
@@ -174,17 +152,19 @@ export function ScheduledRecipeEditModal({
           scheduledId={scheduledId}
         />
 
-        <div className="mt-3 flex items-center justify-between gap-2">
+        <div className="flex flex-col items-center gap-2">
+          <Button size="normal" variant="primary" to={to} className="w-full">
+            View Recipe
+          </Button>
           <RemoveButton
             scheduledId={scheduledId}
+            recipeId={recipeId}
             recipeName={recipeName}
+            date={date}
             onClose={() => {
               onClose(false)
             }}
           />
-          <Button size="normal" variant="primary" to={to}>
-            View recipe →
-          </Button>
         </div>
       </div>
     </Modal>
@@ -198,8 +178,8 @@ function DateOption({
   active,
   disabled,
 }: {
-  label: string
-  detail: string
+  label: React.ReactNode
+  detail?: string
   onClick: () => void
   active?: boolean
   disabled?: boolean
@@ -209,12 +189,20 @@ function DateOption({
       onClick={onClick}
       active={active}
       disabled={disabled}
-      className="flex-col !py-2"
+      className={clx(
+        "flex-col !border-transparent !py-2 !font-normal",
+        !disabled &&
+          (active
+            ? "!bg-[--color-normal-active-bg]"
+            : "!bg-[--color-normal-hover-bg] hover:!bg-[--color-normal-active-bg]"),
+      )}
     >
-      <span>{label}</span>
-      <span className="text-xs font-normal text-[--color-text-muted]">
-        {detail}
+      <span className="flex items-center gap-1.5 text-[--color-text]">
+        {label}
       </span>
+      {detail != null && (
+        <span className="text-sm text-[--color-text-muted]">{detail}</span>
+      )}
     </Button>
   )
 }
@@ -229,7 +217,9 @@ function RescheduleSection({
   scheduledId: number
 }) {
   const today = new Date()
-  const [localDate, setLocalDate] = React.useState(toISODateString(date))
+  const [localDate, setLocalDate] = React.useState(
+    toISODateString(max([date, today])),
+  )
   const [showCustom, setShowCustom] = React.useState(false)
   const scheduledRecipeUpdate = useScheduledRecipeUpdate()
   const handleSave = ({ on }: { on: Date }) => {
@@ -245,13 +235,11 @@ function RescheduleSection({
   const options = [
     { label: "Today", on: today },
     { label: "Tomorrow", on: addDays(today, 1) },
-    { label: "Next week", on: addWeeks(today, 1) },
+    { label: "Next Week", on: addWeeks(today, 1) },
   ]
   return (
     <div className="flex flex-col gap-2">
-      <div className="text-xs font-semibold uppercase tracking-wide text-[--color-text-muted]">
-        Move to
-      </div>
+      <div className="text-sm text-[--color-text-muted]">Move to</div>
       <div className="grid grid-cols-2 gap-2">
         {options.map(({ label, on }) => {
           return (
@@ -270,8 +258,12 @@ function RescheduleSection({
           )
         })}
         <DateOption
-          label="Pick a date…"
-          detail="Calendar"
+          label={
+            <>
+              <CalendarDays size={16} />
+              Pick a Date…
+            </>
+          }
           active={showCustom}
           disabled={scheduledRecipeUpdate.isPending}
           onClick={() => {
@@ -308,50 +300,76 @@ function RescheduleSection({
   )
 }
 
+function UndoRemoveToast({
+  toastId,
+  recipeId,
+  recipeName,
+  date,
+}: {
+  toastId: string
+  recipeId: number | string
+  recipeName: string
+  date: Date
+}) {
+  // Rendered by the app's Toaster so it outlives the modal.
+  const scheduledRecipeCreate = useScheduleRecipeCreate()
+  return (
+    <div className="flex items-center gap-3">
+      <span className="line-clamp-2 min-w-0">Removed {recipeName}</span>
+      <Button
+        size="small"
+        className="shrink-0"
+        onClick={() => {
+          toast.dismiss(toastId)
+          scheduledRecipeCreate.mutate({
+            recipeID: Number(recipeId),
+            recipeName,
+            on: toISODateString(date),
+          })
+        }}
+      >
+        Undo
+      </Button>
+    </div>
+  )
+}
+
 function RemoveButton({
   scheduledId,
+  recipeId,
   recipeName,
+  date,
   onClose,
 }: {
   scheduledId: number
+  recipeId: number | string
   recipeName: string
+  date: Date
   onClose: () => void
 }) {
   const scheduledRecipeDelete = useScheduledRecipeDelete()
   return (
-    <DialogTrigger>
-      <Button className="gap-1 !border-transparent !bg-transparent !text-[--color-danger] hover:!bg-[--color-normal-hover-bg]">
-        <Trash2 size={16} />
-        Remove
-      </Button>
-      <Modal title="Remove from schedule">
-        <div className="flex flex-col gap-2">
-          <div>Remove '{recipeName}' from the schedule?</div>
-          <div className="flex gap-2">
-            <Button>Cancel</Button>
-            <Button
-              variant="danger"
-              loading={scheduledRecipeDelete.isPending}
-              onClick={() => {
-                scheduledRecipeDelete.mutate(
-                  {
-                    scheduledRecipeId: scheduledId,
-                  },
-                  {
-                    onSuccess: () => {
-                      onClose()
-                    },
-                  },
-                )
-              }}
-            >
-              {!scheduledRecipeDelete.isPending
-                ? "Remove from schedule"
-                : "Removing from schedule..."}
-            </Button>
-          </div>
-        </div>
-      </Modal>
-    </DialogTrigger>
+    <Button
+      size="normal"
+      className="gap-1 !border-transparent !bg-transparent !text-sm !font-normal !text-[--color-text-muted] hover:!text-[--color-danger]"
+      onClick={() => {
+        scheduledRecipeDelete.mutate({ scheduledRecipeId: scheduledId })
+        onClose()
+        toast(
+          (t) => (
+            <UndoRemoveToast
+              toastId={t.id}
+              recipeId={recipeId}
+              recipeName={recipeName}
+              date={date}
+            />
+          ),
+          { duration: 6000 },
+        )
+      }}
+    >
+      <Trash2 size={14} />
+      Remove from Schedule
+    </Button>
   )
 }
