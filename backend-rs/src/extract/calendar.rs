@@ -5,6 +5,7 @@ use axum::http::request::Parts;
 
 use crate::AppState;
 use crate::error::ApiError;
+use crate::extract::team::Team;
 use crate::extract::user::User;
 
 pub struct Calendar {
@@ -20,21 +21,7 @@ impl FromRequestParts<AppState> for Calendar {
         state: &AppState,
     ) -> Result<Self, Self::Rejection> {
         let user = User::from_request_parts(parts, state).await?;
-
-        // get_team
-        let team_id = user
-            .schedule_team_id
-            .ok_or_else(|| ApiError::Internal("should always have a team selected".into()))?;
-        let is_member: bool = sqlx::query_scalar(
-            "SELECT EXISTS (SELECT 1 FROM core_team t JOIN core_membership m ON m.team_id = t.id WHERE t.id = $1 AND m.user_id = $2 AND m.is_active)",
-        )
-        .bind(team_id)
-        .bind(user.id)
-        .fetch_one(&state.pool)
-        .await?;
-        if !is_member {
-            return Err(ApiError::NotFound);
-        }
+        let team_id = Team::from_request_parts(parts, state).await?.id;
 
         // get_pinned_calendar
         let id = user.pinned_calendar_id.ok_or_else(|| {
