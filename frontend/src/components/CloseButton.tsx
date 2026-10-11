@@ -19,3 +19,22 @@ export function CloseButton({ onClose }: { onClose?: () => void }) {
     </button>
   )
 }
+
+/**
+ * Larger click target button
+ */
+export function ModalCloseButton({ onClose }: { onClose?: () => void }) {
+  return (
+    // See CloseButton for why this isn't a react-aria button.
+    //
+    // eslint-disable-next-line react/forbid-elements
+    <button
+      onClick={onClose}
+      data-testid="close modal"
+      aria-label="Close"
+      className="relative flex size-[30px] shrink-0 cursor-pointer items-center justify-center rounded-full border-none bg-[--color-normal-hover-bg] p-0 text-[--color-text-muted] before:absolute before:inset-[-7px] before:content-[''] hover:bg-[--color-normal-active-bg] hover:text-[--color-text]"
+    >
+      <X size={16} strokeWidth={2.5} />
+    </button>
+  )
+}
