@@ -12,13 +12,13 @@ Env vars: `DATABASE_URL`, `STORAGE_HOSTNAME`, and `PORT` (default 8001).
 ## Tests
 
 Integration tests in `tests/` run the app against a fresh Postgres database
-per test, created from `DATABASE_URL` and loaded with `tests/schema/`:
+per test, created on the `DATABASE_URL` server (default
+`postgres://postgres@localhost:5432/postgres`) from a template loaded with
+`tests/schema/`:
 
 ```sh
 ./s/test
 ```
-
-To run `cargo test` directly, copy `.env-example` to `.env`; sqlx reads it.
 
 `tests/schema/0001_schema.sql` is generated from the Django migrations. After
 adding a migration, regenerate it with a `pg_dump` matching the server version:

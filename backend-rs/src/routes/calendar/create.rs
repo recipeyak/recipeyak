@@ -37,13 +37,16 @@ pub async fn calendar_create_view(
 ) -> Result<Json<CalendarCreateResponse>, ApiError> {
     // CommonInfo's `created` default and `modified` auto_now are set by
     // Django, not the database.
-    let id: i32 = sqlx::query_scalar(
-        "INSERT INTO core_calendar (name, team_id, created, modified) VALUES ($1, $2, now(), now()) RETURNING id",
-    )
-    .bind(&name)
-    .bind(team.id)
-    .fetch_one(&state.pool)
-    .await?;
+    let client = state.pool.get().await?;
+    let stmt = client
+        .prepare_cached(
+            "INSERT INTO core_calendar (name, team_id, created, modified) VALUES ($1, $2, now(), now()) RETURNING id",
+        )
+        .await?;
+    let id: i32 = client
+        .query_one(&stmt, &[&name, &team.id])
+        .await?
+        .try_get(0)?;
 
     Ok(Json(CalendarCreateResponse { id, name }))
 }

@@ -1,9 +1,10 @@
 use std::sync::Arc;
 
 use clap::{Parser, Subcommand};
+use deadpool_postgres::{Manager, ManagerConfig, Pool, RecyclingMethod};
 use recipeyak::config::Config;
 use recipeyak::{AppState, app, openapi};
-use sqlx::postgres::PgPoolOptions;
+use tokio_postgres::NoTls;
 use tracing_subscriber::EnvFilter;
 
 #[tokio::main]
@@ -34,10 +35,17 @@ async fn serve() {
         .init();
 
     let config = Config::from_env();
-    let pool = PgPoolOptions::new()
-        .max_connections(30)
-        .connect_lazy(&config.database_url)
-        .expect("invalid DATABASE_URL");
+    let pg_config = config.database_url.parse().expect("invalid DATABASE_URL");
+    // Postgres runs on the same host without SSL.
+    let manager = Manager::from_config(
+        pg_config,
+        NoTls,
+        ManagerConfig {
+            recycling_method: RecyclingMethod::Fast,
+        },
+    );
+    // Connections are opened on first use, like sqlx's `connect_lazy`.
+    let pool = Pool::builder(manager).max_size(30).build().unwrap();
     let addr = format!("0.0.0.0:{}", config.port);
     let state = AppState {
         pool,

@@ -23,13 +23,16 @@ impl FromRequestParts<AppState> for Team {
         let id = user
             .schedule_team_id
             .ok_or_else(|| ApiError::Internal("should always have a team selected".into()))?;
-        let is_member: bool = sqlx::query_scalar(
-            "SELECT EXISTS (SELECT 1 FROM core_team t JOIN core_membership m ON m.team_id = t.id WHERE t.id = $1 AND m.user_id = $2 AND m.is_active)",
-        )
-        .bind(id)
-        .bind(user.id)
-        .fetch_one(&state.pool)
-        .await?;
+        let client = state.pool.get().await?;
+        let stmt = client
+            .prepare_cached(
+                "SELECT EXISTS (SELECT 1 FROM core_team t JOIN core_membership m ON m.team_id = t.id WHERE t.id = $1 AND m.user_id = $2 AND m.is_active)",
+            )
+            .await?;
+        let is_member: bool = client
+            .query_one(&stmt, &[&id, &user.id])
+            .await?
+            .try_get(0)?;
         if !is_member {
             return Err(ApiError::NotFound);
         }

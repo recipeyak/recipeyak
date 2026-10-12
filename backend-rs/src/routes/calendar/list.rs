@@ -5,6 +5,7 @@
 use axum::Json;
 use axum::extract::State;
 use chrono::{DateTime, NaiveDate, Utc};
+use postgres_from_row::FromRow;
 use serde::{Deserialize, Serialize};
 use utoipa::{IntoParams, ToSchema};
 
@@ -71,7 +72,7 @@ struct PrimaryImage {
     background_url: Option<String>,
 }
 
-#[derive(sqlx::FromRow)]
+#[derive(FromRow)]
 struct ScheduledRecipeRow {
     id: i32,
     created: DateTime<Utc>,
@@ -132,13 +133,14 @@ pub async fn calendar_list_view(
     Params(CalendarListParams { start, end }): Params<CalendarListParams>,
     calendar: Calendar,
 ) -> Result<Json<CalendarListResponse>, ApiError> {
-    let rows: Vec<ScheduledRecipeRow> = sqlx::query_as(SCHEDULED_RECIPES_SQL)
-        .bind(calendar.team_id)
-        .bind(calendar.id)
-        .bind(start)
-        .bind(end)
-        .fetch_all(&state.pool)
-        .await?;
+    let client = state.pool.get().await?;
+    let stmt = client.prepare_cached(SCHEDULED_RECIPES_SQL).await?;
+    let rows = client
+        .query(&stmt, &[&calendar.team_id, &calendar.id, &start, &end])
+        .await?
+        .iter()
+        .map(ScheduledRecipeRow::try_from_row)
+        .collect::<Result<Vec<_>, _>>()?;
 
     let storage_url = &state.config.storage_url;
     let scheduled_recipes = rows

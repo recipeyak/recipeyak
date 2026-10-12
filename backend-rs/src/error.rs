@@ -27,8 +27,14 @@ impl ApiError {
     }
 }
 
-impl From<sqlx::Error> for ApiError {
-    fn from(err: sqlx::Error) -> Self {
+impl From<tokio_postgres::Error> for ApiError {
+    fn from(err: tokio_postgres::Error) -> Self {
+        ApiError::Internal(err.to_string())
+    }
+}
+
+impl From<deadpool_postgres::PoolError> for ApiError {
+    fn from(err: deadpool_postgres::PoolError) -> Self {
         ApiError::Internal(err.to_string())
     }
 }

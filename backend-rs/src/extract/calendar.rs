@@ -27,13 +27,16 @@ impl FromRequestParts<AppState> for Calendar {
         let id = user.pinned_calendar_id.ok_or_else(|| {
             ApiError::Internal("should always have a pinned calendar selected".into())
         })?;
-        let exists: bool = sqlx::query_scalar(
-            "SELECT EXISTS (SELECT 1 FROM core_calendar WHERE id = $1 AND team_id = $2)",
-        )
-        .bind(id)
-        .bind(team_id)
-        .fetch_one(&state.pool)
-        .await?;
+        let client = state.pool.get().await?;
+        let stmt = client
+            .prepare_cached(
+                "SELECT EXISTS (SELECT 1 FROM core_calendar WHERE id = $1 AND team_id = $2)",
+            )
+            .await?;
+        let exists: bool = client
+            .query_one(&stmt, &[&id, &team_id])
+            .await?
+            .try_get(0)?;
         if !exists {
             return Err(ApiError::Internal(
                 "Calendar matching query does not exist.".into(),

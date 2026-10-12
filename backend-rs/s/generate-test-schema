@@ -16,8 +16,8 @@ main() {
 
   (cd ../backend && DEBUG=1 DATABASE_URL="$server/$db" uv run python manage.py migrate --no-input > /dev/null)
 
-  # Drop psql meta-commands, the empty search_path pg_dump sets (sqlx would
-  # leave it on the connection), and comments.
+  # Drop psql meta-commands, the empty search_path pg_dump sets (it would
+  # stay set on the connection that loads the schema), and comments.
   "${PG_DUMP:-pg_dump}" --schema-only --no-owner --no-privileges --no-comments "$server/$db" \
     | sed -e '/^\\/d' -e "/set_config('search_path'/d" -e '/^--/d' \
     | cat -s > tests/schema/0001_schema.sql

@@ -5,24 +5,24 @@ mod common;
 use axum::http::StatusCode;
 use chrono::NaiveDate;
 use common::{
-    Account, TestApp, create_account, create_calendar, create_recipe, login, schedule_recipe,
-    set_primary_image,
+    Account, TestApp, TestDb, create_account, create_calendar, create_recipe, execute, login,
+    schedule_recipe, set_primary_image,
 };
 use serde_json::json;
-use sqlx::PgPool;
 
 fn date(s: &str) -> NaiveDate {
     s.parse().unwrap()
 }
 
-#[sqlx::test(migrations = "tests/schema")]
-async fn returns_scheduled_recipe_with_recipe_and_creator(pool: PgPool) {
-    let account = create_account(&pool, "alice@example.com").await;
-    let recipe_id = create_recipe(&pool, account.team_id, "Pancakes").await;
-    let image_id = set_primary_image(&pool, recipe_id, "recipes/pancakes.jpg").await;
-    let scheduled_id = schedule_recipe(&pool, &account, recipe_id, date("2026-10-05")).await;
-    let session_key = login(&pool, account.user_id).await;
-    let app = TestApp::new(pool);
+#[tokio::test]
+async fn returns_scheduled_recipe_with_recipe_and_creator() {
+    let db = TestDb::new().await;
+    let account = create_account(&db, "alice@example.com").await;
+    let recipe_id = create_recipe(&db, account.team_id, "Pancakes").await;
+    let image_id = set_primary_image(&db, recipe_id, "recipes/pancakes.jpg").await;
+    let scheduled_id = schedule_recipe(&db, &account, recipe_id, date("2026-10-05")).await;
+    let session_key = login(&db, account.user_id).await;
+    let app = TestApp::new(&db);
 
     let response = app
         .get(
@@ -62,21 +62,22 @@ async fn returns_scheduled_recipe_with_recipe_and_creator(pool: PgPool) {
     );
 }
 
-#[sqlx::test(migrations = "tests/schema")]
-async fn returns_only_pinned_calendar_within_dates_newest_first(pool: PgPool) {
-    let account = create_account(&pool, "alice@example.com").await;
+#[tokio::test]
+async fn returns_only_pinned_calendar_within_dates_newest_first() {
+    let db = TestDb::new().await;
+    let account = create_account(&db, "alice@example.com").await;
     let other_calendar = Account {
-        calendar_id: create_calendar(&pool, account.team_id, "Lunches").await,
+        calendar_id: create_calendar(&db, account.team_id, "Lunches").await,
         ..account
     };
-    let recipe_id = create_recipe(&pool, account.team_id, "Pancakes").await;
-    schedule_recipe(&pool, &account, recipe_id, date("2026-10-02")).await;
-    let on_start = schedule_recipe(&pool, &account, recipe_id, date("2026-10-03")).await;
-    let on_end = schedule_recipe(&pool, &account, recipe_id, date("2026-10-07")).await;
-    schedule_recipe(&pool, &account, recipe_id, date("2026-10-08")).await;
-    schedule_recipe(&pool, &other_calendar, recipe_id, date("2026-10-05")).await;
-    let session_key = login(&pool, account.user_id).await;
-    let app = TestApp::new(pool);
+    let recipe_id = create_recipe(&db, account.team_id, "Pancakes").await;
+    schedule_recipe(&db, &account, recipe_id, date("2026-10-02")).await;
+    let on_start = schedule_recipe(&db, &account, recipe_id, date("2026-10-03")).await;
+    let on_end = schedule_recipe(&db, &account, recipe_id, date("2026-10-07")).await;
+    schedule_recipe(&db, &account, recipe_id, date("2026-10-08")).await;
+    schedule_recipe(&db, &other_calendar, recipe_id, date("2026-10-05")).await;
+    let session_key = login(&db, account.user_id).await;
+    let app = TestApp::new(&db);
 
     let response = app
         .get(
@@ -95,16 +96,18 @@ async fn returns_only_pinned_calendar_within_dates_newest_first(pool: PgPool) {
     assert_eq!(ids, [i64::from(on_end), i64::from(on_start)]);
 }
 
-#[sqlx::test(migrations = "tests/schema")]
-async fn user_no_longer_on_selected_team_gets_not_found(pool: PgPool) {
-    let account = create_account(&pool, "alice@example.com").await;
-    sqlx::query("UPDATE core_membership SET is_active = false WHERE user_id = $1")
-        .bind(account.user_id)
-        .execute(&pool)
-        .await
-        .unwrap();
-    let session_key = login(&pool, account.user_id).await;
-    let app = TestApp::new(pool);
+#[tokio::test]
+async fn user_no_longer_on_selected_team_gets_not_found() {
+    let db = TestDb::new().await;
+    let account = create_account(&db, "alice@example.com").await;
+    execute(
+        &db,
+        "UPDATE core_membership SET is_active = false WHERE user_id = $1",
+        &[&account.user_id],
+    )
+    .await;
+    let session_key = login(&db, account.user_id).await;
+    let app = TestApp::new(&db);
 
     let response = app
         .get(
@@ -116,11 +119,12 @@ async fn user_no_longer_on_selected_team_gets_not_found(pool: PgPool) {
     assert_eq!(response.status, StatusCode::NOT_FOUND);
 }
 
-#[sqlx::test(migrations = "tests/schema")]
-async fn missing_dates_is_validation_error(pool: PgPool) {
-    let account = create_account(&pool, "alice@example.com").await;
-    let session_key = login(&pool, account.user_id).await;
-    let app = TestApp::new(pool);
+#[tokio::test]
+async fn missing_dates_is_validation_error() {
+    let db = TestDb::new().await;
+    let account = create_account(&db, "alice@example.com").await;
+    let session_key = login(&db, account.user_id).await;
+    let app = TestApp::new(&db);
 
     let response = app.get("/api/v1/calendar/", Some(&session_key)).await;
 

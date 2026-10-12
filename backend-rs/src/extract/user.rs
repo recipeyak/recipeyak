@@ -8,14 +8,15 @@
 use axum::extract::FromRequestParts;
 use axum::http::request::Parts;
 use axum_extra::extract::CookieJar;
-use sqlx::PgPool;
+use deadpool_postgres::Pool;
+use postgres_from_row::FromRow;
 
 use crate::AppState;
 use crate::error::ApiError;
 
 pub const SESSION_COOKIE_NAME: &str = "sessionid";
 
-#[derive(Debug, Clone, sqlx::FromRow)]
+#[derive(Debug, Clone, FromRow)]
 pub struct User {
     pub id: i32,
     pub schedule_team_id: Option<i32>,
@@ -45,20 +46,23 @@ impl FromRequestParts<AppState> for User {
 }
 
 pub async fn authenticate(
-    pool: &PgPool,
+    pool: &Pool,
     session_key: Option<&str>,
 ) -> Result<Option<User>, ApiError> {
     let Some(session_key) = session_key else {
         return Ok(None);
     };
-    let user = sqlx::query_as(
-        "SELECT u.id, u.schedule_team_id, u.pinned_calendar_id
-         FROM user_sessions_session s
-         JOIN core_myuser u ON u.id = s.user_id
-         WHERE s.session_key = $1 AND s.expire_date > now()",
-    )
-    .bind(session_key)
-    .fetch_optional(pool)
-    .await?;
-    Ok(user)
+    let client = pool.get().await?;
+    let stmt = client
+        .prepare_cached(
+            "SELECT u.id, u.schedule_team_id, u.pinned_calendar_id
+             FROM user_sessions_session s
+             JOIN core_myuser u ON u.id = s.user_id
+             WHERE s.session_key = $1 AND s.expire_date > now()",
+        )
+        .await?;
+    let Some(row) = client.query_opt(&stmt, &[&session_key]).await? else {
+        return Ok(None);
+    };
+    Ok(Some(User::try_from_row(&row)?))
 }

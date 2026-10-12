@@ -12,7 +12,7 @@ use axum::extract::State;
 use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 use axum::routing::get;
-use sqlx::PgPool;
+use deadpool_postgres::Pool;
 use tower_http::trace::{DefaultMakeSpan, DefaultOnResponse, TraceLayer};
 use tracing::Level;
 
@@ -20,7 +20,7 @@ use crate::config::Config;
 
 #[derive(Clone)]
 pub struct AppState {
-    pub pool: PgPool,
+    pub pool: Pool,
     pub config: Arc<Config>,
 }
 
@@ -48,10 +48,12 @@ pub fn app(state: AppState) -> Router {
 }
 
 async fn readiness(State(state): State<AppState>) -> Response {
-    match sqlx::query_scalar::<_, i32>("SELECT 1")
-        .fetch_one(&state.pool)
-        .await
-    {
+    let result = async {
+        let client = state.pool.get().await?;
+        client.query_one("SELECT 1", &[]).await?;
+        Ok::<_, Box<dyn std::error::Error>>(())
+    };
+    match result.await {
         Ok(_) => "OK".into_response(),
         Err(err) => {
             tracing::error!(error = %err, "could not connect to postgres");
