@@ -8,8 +8,9 @@ use flate2::write::ZlibEncoder;
 use hmac::{Hmac, Mac};
 use serde::Serialize;
 use serde::de::DeserializeOwned;
+use serde_json::ser::Formatter;
 use sha2::{Digest, Sha256};
-use std::io::{Read, Write};
+use std::io::{self, Read, Write};
 use std::time::{SystemTime, UNIX_EPOCH};
 use subtle::ConstantTimeEq;
 
@@ -24,9 +25,47 @@ pub fn salted_hmac(key_salt: &str, value: &[u8], secret: &str) -> Hmac<Sha256> {
     mac
 }
 
+/// Compact JSON with everything outside printable ASCII escaped, like
+/// Python's `json.dumps` default `ensure_ascii=True`. Django's
+/// `JSONSerializer` decodes the payload as latin-1, so raw UTF-8 would be
+/// misread.
+struct AsciiFormatter;
+
+impl Formatter for AsciiFormatter {
+    fn write_string_fragment<W: ?Sized + Write>(
+        &mut self,
+        writer: &mut W,
+        fragment: &str,
+    ) -> io::Result<()> {
+        let mut rest = fragment;
+        while let Some(i) = rest.find(|c: char| !(' '..='~').contains(&c)) {
+            writer.write_all(&rest.as_bytes()[..i])?;
+            let c = rest[i..]
+                .chars()
+                .next()
+                .expect("find returned a char boundary");
+            for unit in c.encode_utf16(&mut [0; 2]) {
+                write!(writer, "\\u{unit:04x}")?;
+            }
+            rest = &rest[i + c.len_utf8()..];
+        }
+        writer.write_all(rest.as_bytes())
+    }
+}
+
+/// `django.core.signing.JSONSerializer.dumps`
+fn to_json(obj: &impl Serialize) -> serde_json::Result<Vec<u8>> {
+    let mut data = Vec::new();
+    obj.serialize(&mut serde_json::Serializer::with_formatter(
+        &mut data,
+        AsciiFormatter,
+    ))?;
+    Ok(data)
+}
+
 /// `django.core.signing.dumps(obj, key=secret, salt=salt, compress=True)`
 pub fn dumps(secret: &str, salt: &str, obj: &impl Serialize) -> String {
-    let data = serde_json::to_vec(obj).expect("serializing to JSON can't fail");
+    let data = to_json(obj).expect("serializing to JSON can't fail");
     let mut encoder = ZlibEncoder::new(Vec::new(), Compression::default());
     encoder
         .write_all(&data)
@@ -83,6 +122,26 @@ pub fn loads<T: DeserializeOwned>(secret: &str, salt: &str, s: &str) -> Option<T
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+
+    #[test]
+    fn json_matches_django() {
+        let obj = serde_json::json!({
+            "naïve": "café 🍰 \u{7f}\u{0}\u{1f}\u{8}\u{c}\n\r\t\"\\/<>&\u{2028}",
+        });
+        // Generated with Python: json.dumps(obj, separators=(",", ":"))
+        let expected = include_str!("../testdata/ascii_json.txt");
+        assert_eq!(String::from_utf8(to_json(&obj).unwrap()).unwrap(), expected);
+    }
+
+    #[test]
+    fn round_trips_non_ascii() {
+        let obj = serde_json::json!({"name": "café 🍰"});
+        let loaded: serde_json::Value =
+            loads("secret", "salt", &dumps("secret", "salt", &obj)).expect("valid signature");
+        assert_eq!(loaded, obj);
+    }
+
     #[test]
     fn base62_matches_django() {
         // django.core.signing.b62_encode(0), (61), (62), (1760000000)
