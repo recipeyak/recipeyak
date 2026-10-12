@@ -4,7 +4,7 @@
 //! Loading the session row and the user is left to the caller; this crate
 //! only handles Django's formats.
 
-pub mod signing;
+mod signing;
 
 use hmac::Mac;
 use serde::{Deserialize, Serialize};
@@ -86,15 +86,13 @@ mod tests {
 
     #[test]
     fn decodes_encoded_session() {
-        let auth = AuthSession {
-            user_id: "42".into(),
-            backend: MODEL_BACKEND.into(),
-            hash: "def".into(),
-        };
-        let Value::Object(session) = serde_json::to_value(&auth).unwrap() else {
-            unreachable!()
-        };
-        let decoded = auth_session(SECRET, &encode(SECRET, &session)).expect("valid session");
+        let session = serde_json::json!({
+            "_auth_user_id": "42",
+            "_auth_user_backend": MODEL_BACKEND,
+            "_auth_user_hash": "def",
+        });
+        let session = session.as_object().unwrap();
+        let decoded = auth_session(SECRET, &encode(SECRET, session)).expect("valid session");
         assert_eq!(decoded.user_id, "42");
         assert_eq!(decoded.backend, MODEL_BACKEND);
         assert_eq!(decoded.hash, "def");
