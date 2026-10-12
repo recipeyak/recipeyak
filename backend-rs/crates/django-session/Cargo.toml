@@ -5,6 +5,7 @@ edition = "2024"
 publish = false
 
 [dependencies]
+base62 = "2"
 base64 = "0.22"
 flate2 = "1"
 hmac = "0.12"

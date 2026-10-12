@@ -42,26 +42,12 @@ pub fn dumps(secret: &str, salt: &str, obj: &impl Serialize) -> String {
         .duration_since(UNIX_EPOCH)
         .expect("clock is after the epoch")
         .as_secs();
-    let value = format!("{payload}:{}", b62_encode(timestamp));
+    // same alphabet as `django.core.signing.b62_encode`
+    let value = format!("{payload}:{}", base62::encode(timestamp));
     let signature = salted_hmac(&format!("{salt}signer"), value.as_bytes(), secret)
         .finalize()
         .into_bytes();
     format!("{value}:{}", URL_SAFE_NO_PAD.encode(signature))
-}
-
-/// `django.core.signing.b62_encode`
-fn b62_encode(mut n: u64) -> String {
-    const ALPHABET: &[u8] = b"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    let mut out = Vec::new();
-    loop {
-        out.push(ALPHABET[(n % 62) as usize]);
-        n /= 62;
-        if n == 0 {
-            break;
-        }
-    }
-    out.reverse();
-    String::from_utf8(out).expect("alphabet is ascii")
 }
 
 /// `django.core.signing.loads(s, key=secret, salt=salt)` without a `max_age`.
@@ -93,4 +79,16 @@ pub fn loads<T: DeserializeOwned>(secret: &str, salt: &str, s: &str) -> Option<T
         bytes = out;
     }
     serde_json::from_slice(&bytes).ok()
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn base62_matches_django() {
+        // django.core.signing.b62_encode(0), (61), (62), (1760000000)
+        assert_eq!(base62::encode(0u64), "0");
+        assert_eq!(base62::encode(61u64), "z");
+        assert_eq!(base62::encode(62u64), "10");
+        assert_eq!(base62::encode(1760000000u64), "1v6mOm");
+    }
 }
