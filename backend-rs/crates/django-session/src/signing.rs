@@ -65,6 +65,14 @@ fn to_json(obj: &impl Serialize) -> serde_json::Result<Vec<u8>> {
 
 /// `django.core.signing.dumps(obj, key=secret, salt=salt, compress=True)`
 pub fn dumps(secret: &str, salt: &str, obj: &impl Serialize) -> String {
+    let timestamp = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .expect("clock is after the epoch")
+        .as_secs();
+    dumps_at(secret, salt, obj, timestamp)
+}
+
+fn dumps_at(secret: &str, salt: &str, obj: &impl Serialize, timestamp: u64) -> String {
     let data = to_json(obj).expect("serializing to JSON can't fail");
     let mut encoder = ZlibEncoder::new(Vec::new(), Compression::default());
     encoder
@@ -77,10 +85,6 @@ pub fn dumps(secret: &str, salt: &str, obj: &impl Serialize) -> String {
     } else {
         URL_SAFE_NO_PAD.encode(data)
     };
-    let timestamp = SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .expect("clock is after the epoch")
-        .as_secs();
     // same alphabet as `django.core.signing.b62_encode`
     let value = format!("{payload}:{}", base62::encode(timestamp));
     let signature = salted_hmac(&format!("{salt}signer"), value.as_bytes(), secret)
@@ -132,6 +136,26 @@ mod tests {
         // Generated with Python: json.dumps(obj, separators=(",", ":"))
         let expected = include_str!("../testdata/ascii_json.txt");
         assert_eq!(String::from_utf8(to_json(&obj).unwrap()).unwrap(), expected);
+    }
+
+    // Generated with Django 5.2 at time.time() == 1760000000 (too short to compress):
+    //   signing.dumps({"name": "café 🍰"}, key="secret", salt="salt", compress=True)
+    const UNCOMPRESSED_SIGNED: &str = include_str!("../testdata/uncompressed_signed.txt");
+
+    #[test]
+    fn dumps_matches_django() {
+        let obj = serde_json::json!({"name": "café 🍰"});
+        assert_eq!(
+            dumps_at("secret", "salt", &obj, 1_760_000_000),
+            UNCOMPRESSED_SIGNED
+        );
+    }
+
+    #[test]
+    fn loads_uncompressed_django_payload() {
+        let loaded: serde_json::Value =
+            loads("secret", "salt", UNCOMPRESSED_SIGNED).expect("valid signature");
+        assert_eq!(loaded, serde_json::json!({"name": "café 🍰"}));
     }
 
     #[test]

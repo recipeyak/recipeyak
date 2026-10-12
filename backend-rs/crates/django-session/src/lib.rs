@@ -9,6 +9,7 @@ mod signing;
 use hmac::Mac;
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
+use std::fmt::{self, Write};
 use subtle::ConstantTimeEq;
 
 pub const SESSION_COOKIE_NAME: &str = "sessionid";
@@ -33,7 +34,7 @@ pub fn encode(secret: &str, session: &Map<String, Value>) -> String {
 }
 
 /// The `_auth_user_*` keys `django.contrib.auth.login()` writes.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, PartialEq, Eq)]
 pub struct AuthSession {
     #[serde(rename = "_auth_user_id")]
     pub user_id: String,
@@ -41,6 +42,16 @@ pub struct AuthSession {
     pub backend: String,
     #[serde(rename = "_auth_user_hash")]
     pub hash: String,
+}
+
+// `hash` is derived from the password hash, so keep it out of logs.
+impl fmt::Debug for AuthSession {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("AuthSession")
+            .field("user_id", &self.user_id)
+            .field("backend", &self.backend)
+            .finish_non_exhaustive()
+    }
 }
 
 /// Decode the session and return its auth data, or `None` if the session is
@@ -54,7 +65,11 @@ pub fn session_auth_hash(secret: &str, password: &str) -> String {
     let digest = signing::salted_hmac(AUTH_HASH_SALT, password.as_bytes(), secret)
         .finalize()
         .into_bytes();
-    digest.iter().map(|b| format!("{b:02x}")).collect()
+    let mut hex = String::with_capacity(digest.len() * 2);
+    for b in digest {
+        write!(hex, "{b:02x}").expect("writing to a String can't fail");
+    }
+    hex
 }
 
 /// Check a session's stored auth hash against the user's current password
@@ -78,10 +93,14 @@ mod tests {
 
     #[test]
     fn decodes_django_signed_session() {
-        let auth = auth_session(SECRET, SESSION_DATA.trim()).expect("valid session");
-        assert_eq!(auth.user_id, "1");
-        assert_eq!(auth.backend, MODEL_BACKEND);
-        assert_eq!(auth.hash, "abc");
+        assert_eq!(
+            auth_session(SECRET, SESSION_DATA),
+            Some(AuthSession {
+                user_id: "1".into(),
+                backend: MODEL_BACKEND.into(),
+                hash: "abc".into(),
+            })
+        );
     }
 
     #[test]
@@ -92,20 +111,24 @@ mod tests {
             "_auth_user_hash": "def",
         });
         let session = session.as_object().unwrap();
-        let decoded = auth_session(SECRET, &encode(SECRET, session)).expect("valid session");
-        assert_eq!(decoded.user_id, "42");
-        assert_eq!(decoded.backend, MODEL_BACKEND);
-        assert_eq!(decoded.hash, "def");
+        assert_eq!(
+            auth_session(SECRET, &encode(SECRET, session)),
+            Some(AuthSession {
+                user_id: "42".into(),
+                backend: MODEL_BACKEND.into(),
+                hash: "def".into(),
+            })
+        );
     }
 
     #[test]
     fn rejects_session_signed_with_another_key() {
-        assert!(decode("other-secret", SESSION_DATA.trim()).is_none());
+        assert!(decode("other-secret", SESSION_DATA).is_none());
     }
 
     #[test]
     fn rejects_tampered_session() {
-        let tampered = format!("x{}", SESSION_DATA.trim());
+        let tampered = format!("x{}", SESSION_DATA);
         assert!(decode(SECRET, &tampered).is_none());
     }
 
@@ -113,7 +136,7 @@ mod tests {
     fn matches_django_session_auth_hash() {
         assert_eq!(
             session_auth_hash(SECRET, "pbkdf2_sha256$1$salt$hash"),
-            AUTH_HASH.trim()
+            AUTH_HASH
         );
     }
 }
