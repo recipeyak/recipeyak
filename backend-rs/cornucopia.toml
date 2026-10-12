@@ -1,0 +1,4 @@
+# Generates `cornucopia/` from `queries/`, see `s/generate-queries`.
+
+[types.mapping]
+"pg_catalog.timestamptz" = "chrono::DateTime<chrono::Utc>"

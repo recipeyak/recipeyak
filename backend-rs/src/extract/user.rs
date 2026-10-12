@@ -8,15 +8,15 @@
 use axum::extract::FromRequestParts;
 use axum::http::request::Parts;
 use axum_extra::extract::CookieJar;
+use cornucopia::queries::user::session_user;
 use deadpool_postgres::Pool;
-use postgres_from_row::FromRow;
 
 use crate::AppState;
 use crate::error::ApiError;
 
 pub const SESSION_COOKIE_NAME: &str = "sessionid";
 
-#[derive(Debug, Clone, FromRow)]
+#[derive(Debug, Clone)]
 pub struct User {
     pub id: i32,
     pub schedule_team_id: Option<i32>,
@@ -53,16 +53,14 @@ pub async fn authenticate(
         return Ok(None);
     };
     let client = pool.get().await?;
-    let stmt = client
-        .prepare_cached(
-            "SELECT u.id, u.schedule_team_id, u.pinned_calendar_id
-             FROM user_sessions_session s
-             JOIN core_myuser u ON u.id = s.user_id
-             WHERE s.session_key = $1 AND s.expire_date > now()",
-        )
+    let user = session_user()
+        .bind(&client, &session_key)
+        .map(|row| User {
+            id: row.id,
+            schedule_team_id: row.schedule_team_id,
+            pinned_calendar_id: row.pinned_calendar_id,
+        })
+        .opt()
         .await?;
-    let Some(row) = client.query_opt(&stmt, &[&session_key]).await? else {
-        return Ok(None);
-    };
-    Ok(Some(User::try_from_row(&row)?))
+    Ok(user)
 }

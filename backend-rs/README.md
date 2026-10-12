@@ -9,6 +9,19 @@ curl -b sessionid=... 'localhost:8001/api/v1/calendar/?start=2026-09-06&end=2026
 ```
 
 Env vars: `DATABASE_URL`, `STORAGE_HOSTNAME`, and `PORT` (default 8001).
+
+## Queries
+
+SQL lives in `queries/`. [Cornucopia](https://github.com/cornucopia-rs/cornucopia)
+type-checks it against `tests/schema/` and generates the `cornucopia/` crate.
+Nullable result columns must be marked with `?` in the `--!` annotation.
+After changing a query or the schema, regenerate it:
+
+```sh
+cargo install cornucopia --version 1.0.1 --locked
+./s/generate-queries
+```
+
 ## Tests
 
 Integration tests in `tests/` run the app against a fresh Postgres database
@@ -25,4 +38,5 @@ adding a migration, regenerate it with a `pg_dump` matching the server version:
 
 ```sh
 PG_DUMP=/Applications/Postgres.app/Contents/Versions/16/bin/pg_dump ./s/generate-test-schema
+./s/generate-queries
 ```

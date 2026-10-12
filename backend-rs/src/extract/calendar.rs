@@ -2,6 +2,7 @@
 
 use axum::extract::FromRequestParts;
 use axum::http::request::Parts;
+use cornucopia::queries::calendar::calendar_exists;
 
 use crate::AppState;
 use crate::error::ApiError;
@@ -28,15 +29,7 @@ impl FromRequestParts<AppState> for Calendar {
             ApiError::Internal("should always have a pinned calendar selected".into())
         })?;
         let client = state.pool.get().await?;
-        let stmt = client
-            .prepare_cached(
-                "SELECT EXISTS (SELECT 1 FROM core_calendar WHERE id = $1 AND team_id = $2)",
-            )
-            .await?;
-        let exists: bool = client
-            .query_one(&stmt, &[&id, &team_id])
-            .await?
-            .try_get(0)?;
+        let exists = calendar_exists().bind(&client, &id, &team_id).one().await?;
         if !exists {
             return Err(ApiError::Internal(
                 "Calendar matching query does not exist.".into(),

@@ -5,7 +5,7 @@
 use axum::Json;
 use axum::extract::State;
 use chrono::{DateTime, NaiveDate, Utc};
-use postgres_from_row::FromRow;
+use cornucopia::queries::scheduled_recipe::scheduled_recipes;
 use serde::{Deserialize, Serialize};
 use utoipa::{IntoParams, ToSchema};
 
@@ -72,54 +72,6 @@ struct PrimaryImage {
     background_url: Option<String>,
 }
 
-#[derive(FromRow)]
-struct ScheduledRecipeRow {
-    id: i32,
-    created: DateTime<Utc>,
-    on: NaiveDate,
-    recipe_id: i32,
-    recipe_name: String,
-    recipe_author: Option<String>,
-    recipe_archived_at: Option<DateTime<Utc>>,
-    image_id: Option<i32>,
-    image_key: Option<String>,
-    image_background_url: Option<String>,
-    created_by_id: Option<i32>,
-    created_by_name: Option<String>,
-    created_by_email: Option<String>,
-    created_by_profile_key: Option<String>,
-}
-
-// Same joins as the view's `select_related("recipe__primary_image",
-// "created_by__profile_upload")`, and the model's `ordering = ["-on"]`.
-const SCHEDULED_RECIPES_SQL: &str = r#"
-SELECT
-    sr.id,
-    sr.created,
-    sr."on",
-    sr.recipe_id,
-    r.name AS recipe_name,
-    r.author AS recipe_author,
-    r.archived_at AS recipe_archived_at,
-    image.id AS image_id,
-    image.key AS image_key,
-    image.background_url AS image_background_url,
-    u.id AS created_by_id,
-    u.name AS created_by_name,
-    u.email::text AS created_by_email,
-    profile.key AS created_by_profile_key
-FROM core_scheduledrecipe sr
-JOIN core_recipe r ON r.id = sr.recipe_id
-LEFT JOIN core_upload image ON image.id = r.primary_image_id
-LEFT JOIN core_myuser u ON u.id = sr.created_by_id
-LEFT JOIN core_upload profile ON profile.id = u.profile_upload_id
-WHERE sr.team_id = $1
-  AND sr.calendar_id = $2
-  AND sr."on" >= $3
-  AND sr."on" <= $4
-ORDER BY sr."on" DESC
-"#;
-
 #[utoipa::path(
     get,
     path = "/api/v1/calendar/",
@@ -134,13 +86,10 @@ pub async fn calendar_list_view(
     calendar: Calendar,
 ) -> Result<Json<CalendarListResponse>, ApiError> {
     let client = state.pool.get().await?;
-    let stmt = client.prepare_cached(SCHEDULED_RECIPES_SQL).await?;
-    let rows = client
-        .query(&stmt, &[&calendar.team_id, &calendar.id, &start, &end])
-        .await?
-        .iter()
-        .map(ScheduledRecipeRow::try_from_row)
-        .collect::<Result<Vec<_>, _>>()?;
+    let rows = scheduled_recipes()
+        .bind(&client, &calendar.team_id, &calendar.id, &start, &end)
+        .all()
+        .await?;
 
     let storage_url = &state.config.storage_url;
     let scheduled_recipes = rows

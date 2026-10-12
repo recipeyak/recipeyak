@@ -4,6 +4,7 @@
 
 use axum::Json;
 use axum::extract::State;
+use cornucopia::queries::calendar::insert_calendar;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
@@ -35,18 +36,11 @@ pub async fn calendar_create_view(
     team: Team,
     Json(CalendarCreateParams { name }): Json<CalendarCreateParams>,
 ) -> Result<Json<CalendarCreateResponse>, ApiError> {
-    // CommonInfo's `created` default and `modified` auto_now are set by
-    // Django, not the database.
     let client = state.pool.get().await?;
-    let stmt = client
-        .prepare_cached(
-            "INSERT INTO core_calendar (name, team_id, created, modified) VALUES ($1, $2, now(), now()) RETURNING id",
-        )
+    let id = insert_calendar()
+        .bind(&client, &name, &team.id)
+        .one()
         .await?;
-    let id: i32 = client
-        .query_one(&stmt, &[&name, &team.id])
-        .await?
-        .try_get(0)?;
 
     Ok(Json(CalendarCreateResponse { id, name }))
 }

@@ -69,3 +69,13 @@ jobs:
       - name: Run tests
         working-directory: backend-rs
         run: cargo test --locked
+      - name: Install cornucopia
+        run: cargo install cornucopia --version 1.0.1 --locked
+      - name: Check generated queries are up to date
+        working-directory: backend-rs
+        env:
+          PG_URL: postgres://postgres:postgres@localhost:5432
+        run: |
+          ./s/generate-queries
+          git status --porcelain -- cornucopia
+          test -z "$(git status --porcelain -- cornucopia)"
