@@ -1,16 +1,15 @@
 pub mod config;
 mod error;
 mod extract;
+mod middleware;
 mod routes;
 mod urls;
 
 use std::sync::Arc;
-use std::time::{Instant, SystemTime, UNIX_EPOCH};
 
 use axum::Router;
-use axum::extract::{Request, State};
-use axum::http::{HeaderValue, StatusCode, header};
-use axum::middleware::{self, Next};
+use axum::extract::State;
+use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 use axum::routing::get;
 use sqlx::PgPool;
@@ -36,7 +35,10 @@ pub fn app(state: AppState) -> Router {
     api.route("/healthz", get(|| async { "OK" }))
         .route("/readiness", get(readiness))
         .fallback(|| async { error::not_found() })
-        .layer(middleware::from_fn(response_headers))
+        .layer(axum::middleware::from_fn(middleware::vary_cookie))
+        .layer(axum::middleware::from_fn(middleware::security))
+        .layer(axum::middleware::from_fn(middleware::no_cache))
+        .layer(axum::middleware::from_fn(middleware::server_timing))
         .layer(
             TraceLayer::new_for_http()
                 .make_span_with(DefaultMakeSpan::new().level(Level::INFO))
@@ -57,57 +59,4 @@ async fn readiness(State(state): State<AppState>) -> Response {
             (StatusCode::INTERNAL_SERVER_ERROR, "2").into_response()
         }
     }
-}
-
-/// Headers Django's middleware stack adds: NoCacheMiddleware,
-/// SecurityMiddleware, XFrameOptionsMiddleware, the session middleware's
-/// `Vary: Cookie`, and RequestQueueTimingMiddleware's Server-Timing.
-async fn response_headers(request: Request, next: Next) -> Response {
-    let start_wall = SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .map(|d| d.as_secs_f64())
-        .unwrap_or_default();
-    let queue_ms = request
-        .headers()
-        .get("x-request-start")
-        .and_then(|v| v.to_str().ok())
-        .and_then(|v| v.trim_start_matches("t=").parse::<f64>().ok())
-        .map(|request_start| ((start_wall - request_start) * 1000.0).max(0.0));
-    let start = Instant::now();
-
-    let mut response = next.run(request).await;
-
-    let app_ms = start.elapsed().as_secs_f64() * 1000.0;
-    let mut timing = format!("app;dur={app_ms:.1}");
-    if let Some(queue_ms) = queue_ms {
-        timing = format!("queue;dur={queue_ms:.1}, {timing}");
-    }
-
-    let headers = response.headers_mut();
-    if !headers.contains_key(header::CACHE_CONTROL) {
-        headers.insert(
-            header::CACHE_CONTROL,
-            HeaderValue::from_static("no-store, no-cache, must-revalidate"),
-        );
-        headers.insert(header::PRAGMA, HeaderValue::from_static("no-cache"));
-        headers.insert(header::EXPIRES, HeaderValue::from_static("0"));
-    }
-    headers.insert(header::X_FRAME_OPTIONS, HeaderValue::from_static("DENY"));
-    headers.insert(
-        header::X_CONTENT_TYPE_OPTIONS,
-        HeaderValue::from_static("nosniff"),
-    );
-    headers.insert(
-        header::REFERRER_POLICY,
-        HeaderValue::from_static("same-origin"),
-    );
-    headers.insert(
-        "cross-origin-opener-policy",
-        HeaderValue::from_static("same-origin"),
-    );
-    headers.append(header::VARY, HeaderValue::from_static("Cookie"));
-    if let Ok(value) = HeaderValue::from_str(&timing) {
-        headers.insert("server-timing", value);
-    }
-    response
 }
