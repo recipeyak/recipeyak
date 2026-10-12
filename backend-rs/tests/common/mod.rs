@@ -14,11 +14,10 @@ use axum::http::{Request, StatusCode, header};
 use chrono::NaiveDate;
 use recipeyak::AppState;
 use recipeyak::config::Config;
-use serde_json::{Value, json};
+use serde_json::Value;
 use sqlx::PgPool;
 use tower::ServiceExt;
 
-pub const SECRET_KEY: &str = "test-secret-key";
 const PASSWORD: &str = "pbkdf2_sha256$1$salt$hash";
 
 pub struct TestApp {
@@ -44,8 +43,6 @@ impl TestResponse {
 impl TestApp {
     pub fn new(pool: PgPool) -> Self {
         let config = Config {
-            debug: true,
-            secret_key: SECRET_KEY.into(),
             database_url: String::new(),
             storage_url: "https://images.test".parse().unwrap(),
             port: 0,
@@ -62,10 +59,7 @@ impl TestApp {
     pub async fn get(&self, uri: &str, session_key: Option<&str>) -> TestResponse {
         let mut request = Request::get(uri);
         if let Some(key) = session_key {
-            request = request.header(
-                header::COOKIE,
-                format!("{}={key}", django_session::SESSION_COOKIE_NAME),
-            );
+            request = request.header(header::COOKIE, format!("sessionid={key}"));
         }
         let response = self
             .router
@@ -191,28 +185,14 @@ pub async fn schedule_recipe(
     .unwrap()
 }
 
-/// Store a session the way `django.contrib.auth.login()` would and return
-/// its key for the cookie.
+/// Store a session for the user and return its key for the cookie.
 pub async fn login(pool: &PgPool, user_id: i32) -> String {
-    let password: String = sqlx::query_scalar("SELECT password FROM core_myuser WHERE id = $1")
-        .bind(user_id)
-        .fetch_one(pool)
-        .await
-        .unwrap();
-    let Value::Object(session) = json!({
-        "_auth_user_id": user_id.to_string(),
-        "_auth_user_backend": django_session::MODEL_BACKEND,
-        "_auth_user_hash": django_session::session_auth_hash(SECRET_KEY, &password),
-    }) else {
-        unreachable!()
-    };
     let session_key = format!("testsession{user_id:021}");
     sqlx::query(
         "INSERT INTO user_sessions_session (session_key, session_data, expire_date, last_activity, user_id)
-         VALUES ($1, $2, now() + interval '1 day', now(), $3)",
+         VALUES ($1, '', now() + interval '1 day', now(), $2)",
     )
     .bind(&session_key)
-    .bind(django_session::encode(SECRET_KEY, &session))
     .bind(user_id)
     .execute(pool)
     .await

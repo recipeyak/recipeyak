@@ -44,5 +44,8 @@ def user_password_update_view(
     user.set_password(params.new_password1)
     user.save()
     update_session_auth_hash(request, user)
+    # backend-rs authenticates by the session row's user id alone, so stale
+    # sessions must be removed rather than left to fail Django's hash check.
+    user.session_set.exclude(pk=request.session.session_key).delete()
 
     return UserPasswordUpdateResponse(detail="New password has been saved.")

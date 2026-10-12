@@ -55,17 +55,19 @@ async fn request_with_expired_session_is_not_authenticated(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = "tests/schema")]
-async fn session_is_invalidated_when_password_changes(pool: PgPool) {
-    let account = create_account(&pool, "alice@example.com").await;
-    let session_key = login(&pool, account.user_id).await;
-    sqlx::query("UPDATE core_myuser SET password = 'pbkdf2_sha256$1$salt$newhash' WHERE id = $1")
-        .bind(account.user_id)
-        .execute(&pool)
-        .await
-        .unwrap();
+async fn request_with_anonymous_session_is_not_authenticated(pool: PgPool) {
+    let session_key = "anonymoussession12345";
+    sqlx::query(
+        "INSERT INTO user_sessions_session (session_key, session_data, expire_date, last_activity)
+         VALUES ($1, '', now() + interval '1 day', now())",
+    )
+    .bind(session_key)
+    .execute(&pool)
+    .await
+    .unwrap();
     let app = TestApp::new(pool);
 
-    let response = app.get(URI, Some(&session_key)).await;
+    let response = app.get(URI, Some(session_key)).await;
 
     assert_eq!(response.status, StatusCode::FORBIDDEN);
 }
