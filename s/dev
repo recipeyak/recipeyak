@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -eu
+
+# Run the Django API, Rust API, and frontend dev servers from the Procfile.
+# Requires mprocs: brew install mprocs
+
+cd "$(dirname "$0")/.."
+
+if ! command -v mprocs >/dev/null; then
+  echo "error: mprocs not found, install it with: brew install mprocs" >&2
+  exit 1
+fi
+
+exec mprocs --procfile Procfile --on-init '{c: restart-all}'
