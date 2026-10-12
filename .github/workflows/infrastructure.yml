@@ -156,7 +156,7 @@ jobs:
           fi
 
   deploy:
-    needs: [build_api_container, build_ui_container]
+    needs: [build_api_container, build_api_rs_container, build_ui_container]
     if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     env:
