@@ -24,6 +24,7 @@ tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 url = "2.5.8"
 utoipa = { version = "6.0.0", features = ["axum_extras", "chrono", "preserve_order"] }
 utoipa-axum = "0.3.0"
+tower-http = { version = "0.7.1", features = ["trace"] }
 
 [dev-dependencies]
 tower = { version = "0.5", features = ["util"] }

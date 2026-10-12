@@ -1300,6 +1300,7 @@ dependencies = [
  "sqlx",
  "tokio",
  "tower",
+ "tower-http",
  "tracing",
  "tracing-subscriber",
  "url",
@@ -1999,6 +2000,23 @@ dependencies = [
  "pin-project-lite",
  "sync_wrapper",
  "tokio",
+ "tower-layer",
+ "tower-service",
+ "tracing",
+]
+
+[[package]]
+name = "tower-http"
+version = "0.7.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "08a05a66a4fdd61cbbe0a1d755ffe0ca6aba159dd4820936a0ff8a8278245b9c"
+dependencies = [
+ "bitflags",
+ "bytes",
+ "http",
+ "http-body",
+ "percent-encoding",
+ "pin-project-lite",
  "tower-layer",
  "tower-service",
  "tracing",

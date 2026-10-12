@@ -14,6 +14,8 @@ use axum::middleware::{self, Next};
 use axum::response::{IntoResponse, Response};
 use axum::routing::get;
 use sqlx::PgPool;
+use tower_http::trace::{DefaultMakeSpan, DefaultOnResponse, TraceLayer};
+use tracing::Level;
 
 use crate::config::Config;
 
@@ -35,6 +37,11 @@ pub fn app(state: AppState) -> Router {
         .route("/readiness", get(readiness))
         .fallback(|| async { error::not_found() })
         .layer(middleware::from_fn(response_headers))
+        .layer(
+            TraceLayer::new_for_http()
+                .make_span_with(DefaultMakeSpan::new().level(Level::INFO))
+                .on_response(DefaultOnResponse::new().level(Level::INFO)),
+        )
         .with_state(state)
 }
 
