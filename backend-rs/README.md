@@ -4,7 +4,7 @@ A Rust reimplemention of the API.
 
 
 ```sh
-DEBUG=1 DATABASE_URL=postgres://postgres@localhost:5432/recipeyak STORAGE_HOSTNAME=images-cdn.recipeyak.com cargo run
+./s/dev  # loads env vars from ../backend/.env
 curl -b sessionid=... 'localhost:8001/api/v1/calendar/?start=2026-09-06&end=2026-10-24'
 ```
 
