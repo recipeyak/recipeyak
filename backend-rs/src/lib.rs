@@ -6,6 +6,7 @@ mod routes;
 mod urls;
 
 use std::sync::Arc;
+use std::time::Duration;
 
 use axum::Router;
 use axum::extract::State;
@@ -13,6 +14,7 @@ use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 use axum::routing::get;
 use deadpool_postgres::Pool;
+use tower_http::timeout::TimeoutLayer;
 use tower_http::trace::{DefaultMakeSpan, DefaultOnResponse, TraceLayer};
 use tracing::Level;
 
@@ -35,6 +37,13 @@ pub fn app(state: AppState) -> Router {
     api.route("/healthz", get(|| async { "OK" }))
         .route("/readiness", get(readiness))
         .fallback(|| async { error::not_found() })
+        // Innermost so the timeout response still gets the headers and
+        // tracing below. Dropping the handler doesn't cancel its in-flight
+        // Postgres query.
+        .layer(TimeoutLayer::with_status_code(
+            StatusCode::SERVICE_UNAVAILABLE,
+            Duration::from_secs(30),
+        ))
         .layer(axum::middleware::from_fn(middleware::vary_cookie))
         .layer(axum::middleware::from_fn(middleware::security))
         .layer(axum::middleware::from_fn(middleware::no_cache))
