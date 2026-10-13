@@ -13,7 +13,7 @@ import recipeyak.models.membership
 
 class PgStatStatements(CreateExtension):
     def __init__(self) -> None:
-        self.name = "pg_stat_statements"
+        super().__init__("pg_stat_statements")
 
 
 class Migration(migrations.Migration):

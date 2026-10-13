@@ -21,7 +21,7 @@ const hints = [
   },
   {
     title: "Delete a recipe",
-    description: "Click calendar recipe > Reschedule > Remove from Schedule.",
+    description: "Click calendar recipe > Remove.",
   },
 ]
 

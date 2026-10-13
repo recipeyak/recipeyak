@@ -4,22 +4,33 @@ import {
   format,
   isSameDay,
   isSameYear,
+  max,
   parseISO,
 } from "date-fns"
+import { CalendarDays, Trash2 } from "lucide-react"
 import React from "react"
-import { DialogTrigger } from "react-aria-components"
 import { Link } from "react-router-dom"
 
 import { clx } from "@/classnames"
 import { Avatar } from "@/components/Avatar"
 import { Button } from "@/components/Buttons"
+import { DateInput } from "@/components/DateInput"
 import { Image } from "@/components/Image"
 import { Modal } from "@/components/Modal"
-import { formatAbsoluteDate, toISODateString } from "@/date"
+import { toISODateString } from "@/date"
 import { NoteTimeStamp } from "@/pages/recipe-detail/NoteTimestamp"
+import { useScheduleRecipeCreate } from "@/queries/useScheduledRecipeCreate"
 import { useScheduledRecipeDelete } from "@/queries/useScheduledRecipeDelete"
 import { useScheduledRecipeUpdate } from "@/queries/useScheduledRecipeUpdate"
+import { toast } from "@/toast"
 import { recipeURL } from "@/urls"
+
+function formatScheduleDate(date: Date): string {
+  return format(
+    date,
+    isSameYear(date, new Date()) ? "EEE, MMM d" : "EEE, MMM d, yyyy",
+  )
+}
 
 function RecipeItem({
   sources,
@@ -38,39 +49,43 @@ function RecipeItem({
   author: string | null
   archived: boolean
   to: string
+  createdAt: string
   createdBy: {
     readonly id: number | string
     readonly name: string
     readonly avatar_url: string
   } | null
-  createdAt: string
 }) {
   return (
-    <Link to={to} className="flex cursor-pointer items-center gap-2">
+    <Link to={to} className="flex cursor-pointer items-center gap-3">
       <Image
         sources={sources}
-        width={60}
-        height={60}
+        width={80}
+        height={80}
         rounded
         grayscale={archived}
         size="small"
       />
-      <div>
+      <div className="min-w-0">
         <div
           className={clx(
-            "line-clamp-1 text-ellipsis",
+            "line-clamp-2 text-lg leading-tight",
             archived && "line-through",
           )}
         >
           {name}
         </div>
-        <div className="line-clamp-1 text-ellipsis text-sm">{author}</div>
-        <div className="flex items-center gap-1">
-          <Avatar avatarURL={createdBy?.avatar_url ?? null} size={20} />
-          <div>
-            {createdBy?.name} · <NoteTimeStamp created={createdAt} />
-          </div>
+        <div className="line-clamp-1 text-ellipsis text-sm text-[--color-text-muted]">
+          {author}
         </div>
+        {createdBy != null && (
+          <div className="mt-1.5 flex items-center gap-1.5 text-sm text-[--color-text-muted]">
+            <Avatar avatarURL={createdBy.avatar_url} size={20} />
+            <span>
+              {createdBy.name} · <NoteTimeStamp created={createdAt} />
+            </span>
+          </div>
+        )}
       </div>
     </Link>
   )
@@ -109,104 +124,104 @@ export function ScheduledRecipeEditModal({
   } | null
 }) {
   const to = recipeURL(recipeId, recipeName)
-  const [reschedulerOpen, setReschedulerOpen] = React.useState(false)
 
-  const prettyDate = formatAbsoluteDate(date, { includeYear: true })
   return (
     <Modal
       isOpen={isOpen}
       onOpenChange={(change) => {
         onClose(change)
       }}
-      title={prettyDate}
+      title={formatScheduleDate(date)}
     >
-      <div className="flex flex-col gap-2">
-        <div className="flex flex-col gap-1">
-          <RecipeItem
-            to={to}
-            sources={primaryImage}
-            archived={archived}
-            name={recipeName}
-            author={recipeAuthor}
-            createdAt={createdAt}
-            createdBy={createdBy}
-          />
-        </div>
+      <div className="mt-4 flex flex-col gap-6">
+        <RecipeItem
+          to={to}
+          sources={primaryImage}
+          archived={archived}
+          name={recipeName}
+          author={recipeAuthor}
+          createdAt={createdAt}
+          createdBy={createdBy}
+        />
 
-        <div className="flex flex-col gap-2">
-          <Button
-            size="normal"
-            active={reschedulerOpen}
-            onClick={() => {
-              setReschedulerOpen((val) => !val)
-            }}
-          >
-            Reschedule
-          </Button>
-          {reschedulerOpen && (
-            <RescheduleSection
-              onClose={() => {
-                onClose(false)
-              }}
-              date={date}
-              scheduledId={scheduledId}
-              recipeName={recipeName}
-            />
-          )}
-          <Button size="normal" variant="primary" to={to}>
+        <RescheduleSection
+          onClose={() => {
+            onClose(false)
+          }}
+          date={date}
+          scheduledId={scheduledId}
+        />
+
+        <div className="flex flex-col items-center gap-2">
+          <Button size="normal" variant="primary" to={to} className="w-full">
             View Recipe
           </Button>
+          <RemoveButton
+            scheduledId={scheduledId}
+            recipeId={recipeId}
+            recipeName={recipeName}
+            date={date}
+            onClose={() => {
+              onClose(false)
+            }}
+          />
         </div>
       </div>
     </Modal>
   )
 }
 
-function getDateOption(
-  label: string,
-  on: Date,
-  handleSave: (args: { on: Date }) => void,
-) {
-  let formatStr = "EEE MMM d"
-  if (!isSameYear(on, new Date())) {
-    formatStr += ", yyyy"
-  }
-  return [
-    label + " · " + format(on, formatStr),
-    () => {
-      handleSave({ on })
-    },
-  ] as const
-}
-
-function getNextDayOption(
-  date: Date,
-  handleSave: (args: { on: Date }) => void,
-) {
-  const nextDay = addDays(date, 1)
-  const tomorrow = addDays(new Date(), 1)
-  const label = isSameDay(nextDay, tomorrow) ? "Tomorrow" : "Next Day"
-  return getDateOption(label, nextDay, handleSave)
+function DateOption({
+  label,
+  detail,
+  onClick,
+  active,
+  disabled,
+}: {
+  label: React.ReactNode
+  detail?: string
+  onClick: () => void
+  active?: boolean
+  disabled?: boolean
+}) {
+  return (
+    <Button
+      onClick={onClick}
+      active={active}
+      disabled={disabled}
+      className={clx(
+        "flex-col !border-transparent !py-2 !font-normal",
+        !disabled &&
+          (active
+            ? "!bg-[--color-normal-active-bg]"
+            : "!bg-[--color-normal-hover-bg] hover:!bg-[--color-normal-active-bg]"),
+      )}
+    >
+      <span className="flex items-center gap-1.5 text-[--color-text]">
+        {label}
+      </span>
+      {detail != null && (
+        <span className="text-sm text-[--color-text-muted]">{detail}</span>
+      )}
+    </Button>
+  )
 }
 
 function RescheduleSection({
   onClose,
   date,
   scheduledId,
-  recipeName,
 }: {
   onClose: () => void
   date: Date
   scheduledId: number
-  recipeName: string
 }) {
-  const [localDate, setLocalDate] = React.useState(toISODateString(date))
+  const today = new Date()
+  const [localDate, setLocalDate] = React.useState(
+    toISODateString(max([date, today])),
+  )
   const [showCustom, setShowCustom] = React.useState(false)
-  const scheduledRecipeDelete = useScheduledRecipeDelete()
   const scheduledRecipeUpdate = useScheduledRecipeUpdate()
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLocalDate(e.target.value)
-  }
   const handleSave = ({ on }: { on: Date }) => {
     scheduledRecipeUpdate.mutate({
       scheduledRecipeId: scheduledId,
@@ -217,96 +232,144 @@ function RescheduleSection({
     // assume it will work
     onClose()
   }
+  const options = [
+    { label: "Today", on: today },
+    { label: "Tomorrow", on: addDays(today, 1) },
+    { label: "Next Week", on: addWeeks(today, 1) },
+  ]
   return (
     <div className="flex flex-col gap-2">
-      <div className="my-2 flex flex-col gap-4">
-        <div className="flex flex-col gap-2">
-          <div className="flex flex-col flex-wrap justify-between gap-3">
-            <div className="flex flex-col items-center gap-2">
-              {(
-                [
-                  getDateOption("Today", new Date(), handleSave),
-                  getNextDayOption(date, handleSave),
-                  getDateOption("Next Week", addWeeks(date, 1), handleSave),
-                  [
-                    "Custom",
-                    () => {
-                      setShowCustom((s) => !s)
-                    },
-                  ],
-                ] as const
-              ).map(([label, onClick]) => {
-                return (
-                  <Button
-                    key={label}
-                    onClick={onClick}
-                    className="w-full grow"
-                    active={label === "Custom" && showCustom}
-                    disabled={scheduledRecipeUpdate.isPending}
-                  >
-                    {!scheduledRecipeUpdate.isPending ? label : "Updating..."}
-                  </Button>
-                )
-              })}
-              {showCustom && (
-                <>
-                  {/* eslint-disable-next-line react/forbid-elements */}
-                  <input
-                    value={toISODateString(localDate)}
-                    onChange={handleDateChange}
-                    type="date"
-                    className="w-full rounded-md border border-solid border-[--color-border] p-1 text-base"
-                  />
-                  <Button
-                    variant="primary"
-                    onClick={() => {
-                      handleSave({ on: parseISO(localDate) })
-                    }}
-                    className="w-full grow"
-                    disabled={scheduledRecipeUpdate.isPending}
-                  >
-                    {!scheduledRecipeUpdate.isPending
-                      ? "Update Schedule"
-                      : "Updating Schedule..."}
-                  </Button>
-                </>
+      <div className="text-sm text-[--color-text-muted]">Move to</div>
+      <div className="grid grid-cols-2 gap-2">
+        {options.map(({ label, on }) => {
+          return (
+            <DateOption
+              key={label}
+              label={label}
+              detail={format(
+                on,
+                isSameYear(on, today) ? "EEE MMM d" : "EEE MMM d, yyyy",
               )}
-            </div>
-
-            <DialogTrigger>
-              <Button>Remove from Schedule</Button>
-              <Modal title="Delete Recipe">
-                <div className="flex flex-col gap-2">
-                  <div>Are you sure you want to delete '{recipeName}'?</div>
-                  <div className="flex gap-2">
-                    <Button>Cancel</Button>
-                    <Button
-                      variant="danger"
-                      loading={scheduledRecipeDelete.isPending}
-                      onClick={() => {
-                        scheduledRecipeDelete.mutate(
-                          {
-                            scheduledRecipeId: scheduledId,
-                          },
-                          {
-                            onSuccess: () => {
-                              onClose()
-                            },
-                          },
-                        )
-                      }}
-                    >
-                      {!scheduledRecipeDelete.isPending
-                        ? "Remove from Schedule"
-                        : "Removing from Schedule..."}
-                    </Button>
-                  </div>
-                </div>
-              </Modal>
-            </DialogTrigger>
-          </div>
-        </div>
+              disabled={scheduledRecipeUpdate.isPending || isSameDay(on, date)}
+              onClick={() => {
+                handleSave({ on })
+              }}
+            />
+          )
+        })}
+        <DateOption
+          label={
+            <>
+              <CalendarDays size={16} />
+              Pick a Date…
+            </>
+          }
+          active={showCustom}
+          disabled={scheduledRecipeUpdate.isPending}
+          onClick={() => {
+            setShowCustom((s) => !s)
+          }}
+        />
       </div>
+      {showCustom && (
+        <div className="flex gap-2">
+          <DateInput
+            value={localDate}
+            min={toISODateString(today)}
+            autoFocus
+            onChange={(e) => {
+              setLocalDate(e.target.value)
+            }}
+          />
+          <Button
+            variant="primary"
+            disabled={
+              scheduledRecipeUpdate.isPending ||
+              localDate === "" ||
+              isSameDay(parseISO(localDate), date)
+            }
+            onClick={() => {
+              handleSave({ on: parseISO(localDate) })
+            }}
+          >
+            Move
+          </Button>
+        </div>
+      )}
     </div>
+  )
+}
+
+function UndoRemoveToast({
+  toastId,
+  recipeId,
+  recipeName,
+  date,
+}: {
+  toastId: string
+  recipeId: number | string
+  recipeName: string
+  date: Date
+}) {
+  // Rendered by the app's Toaster so it outlives the modal.
+  const scheduledRecipeCreate = useScheduleRecipeCreate()
+  return (
+    <div className="flex items-center gap-3">
+      <span className="line-clamp-2 min-w-0">Removed {recipeName}</span>
+      <Button
+        size="small"
+        className="shrink-0"
+        onClick={() => {
+          toast.dismiss(toastId)
+          scheduledRecipeCreate.mutate({
+            recipeID: Number(recipeId),
+            recipeName,
+            on: toISODateString(date),
+          })
+        }}
+      >
+        Undo
+      </Button>
+    </div>
+  )
+}
+
+function RemoveButton({
+  scheduledId,
+  recipeId,
+  recipeName,
+  date,
+  onClose,
+}: {
+  scheduledId: number
+  recipeId: number | string
+  recipeName: string
+  date: Date
+  onClose: () => void
+}) {
+  const scheduledRecipeDelete = useScheduledRecipeDelete()
+  return (
+    <Button
+      size="normal"
+      className="gap-1 !border-transparent !bg-transparent !text-sm !font-normal !text-[--color-text-muted] hover:!text-[--color-danger]"
+      onClick={() => {
+        scheduledRecipeDelete.mutate({ scheduledRecipeId: scheduledId })
+        onClose()
+        toast(
+          (t) => (
+            <UndoRemoveToast
+              toastId={t.id}
+              recipeId={recipeId}
+              recipeName={recipeName}
+              date={date}
+            />
+          ),
+          { duration: 6000 },
+        )
+      }}
+    >
+      <Trash2 size={14} />
+      Remove from Schedule
+    </Button>
   )
 }

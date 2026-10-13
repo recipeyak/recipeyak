@@ -1,4 +1,5 @@
 import format from "date-fns/format"
+import parseISO from "date-fns/parseISO"
 import { Link } from "react-router-dom"
 
 import { formatHumanDate } from "@/date"
@@ -10,8 +11,9 @@ interface ITimeProps {
   readonly dateTime: Date | string
 }
 function Time({ dateTime }: ITimeProps) {
-  const date = new Date(dateTime)
-  const dateFormat = format(date, "yyyy-M-d")
+  // parseISO treats date-only strings as local time, unlike `new Date`
+  const date = typeof dateTime === "string" ? parseISO(dateTime) : dateTime
+  const dateFormat = format(date, "yyyy-MM-dd")
   const prettyDate = formatHumanDate(date)
   return (
     <time title={prettyDate} dateTime={dateFormat}>
@@ -67,7 +69,7 @@ export function RecipeTimeline({ createdAt, recipeId }: IRecipeTimelineProps) {
                       search: `week=${e.date}`,
                     }}
                   >
-                    <Time dateTime={new Date(e.date)} />
+                    <Time dateTime={e.date} />
                   </Link>
                 </TimelineItem>
               )
@@ -76,7 +78,7 @@ export function RecipeTimeline({ createdAt, recipeId }: IRecipeTimelineProps) {
           }
         })}
         <TimelineItem>
-          🎉 Recipe created on <Time dateTime={new Date(createdAt)} />
+          🎉 Recipe created on <Time dateTime={createdAt} />
         </TimelineItem>
       </TimelineList>
     </div>

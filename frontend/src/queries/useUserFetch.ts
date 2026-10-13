@@ -1,7 +1,7 @@
 import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { userRetrieve } from "@/api/userRetrieve"
-import { login } from "@/auth"
+import { setUser } from "@/auth"
 import { ResponseFromUse } from "@/queries/useQueryUtilTypes"
 
 export function useUserFetch() {
@@ -11,7 +11,7 @@ export function useUserFetch() {
     queryKey: getQueryKey(),
     queryFn: async () => {
       const res = await userRetrieve()
-      void login(res, queryClient)
+      setUser(res, queryClient)
       return res
     },
   })
