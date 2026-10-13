@@ -36,10 +36,9 @@ pub fn app(state: AppState) -> Router {
     let (api, _) = routes::router().split_for_parts();
     api.route("/healthz", get(|| async { "OK" }))
         .route("/readiness", get(readiness))
-        .fallback(|| async { error::not_found() })
+        .fallback(|| async { StatusCode::NOT_FOUND })
         // Innermost so the timeout response still gets the headers and
-        // tracing below. Dropping the handler doesn't cancel its in-flight
-        // Postgres query.
+        // tracing below.
         .layer(TimeoutLayer::with_status_code(
             StatusCode::SERVICE_UNAVAILABLE,
             Duration::from_secs(30),

@@ -1,7 +1,6 @@
-//! Error responses matching `recipeyak.api.base.middleware.ExceptionMiddleware`
-//! and Django's default 404/500 handlers.
+//! Error responses matching `recipeyak.api.base.middleware.ExceptionMiddleware`.
 
-use axum::http::{StatusCode, header};
+use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 use serde_json::json;
 
@@ -39,22 +38,6 @@ impl From<deadpool_postgres::PoolError> for ApiError {
     }
 }
 
-const NOT_FOUND_HTML: &str = "<!doctype html>\n<html lang=\"en\">\n<head>\n  <title>Not Found</title>\n</head>\n<body>\n  <h1>Not Found</h1><p>The requested resource was not found on this server.</p>\n</body>\n</html>\n";
-const SERVER_ERROR_HTML: &str = "<!doctype html>\n<html lang=\"en\">\n<head>\n  <title>Server Error (500)</title>\n</head>\n<body>\n  <h1>Server Error (500)</h1><p></p>\n</body>\n</html>\n";
-
-pub fn not_found() -> Response {
-    html(StatusCode::NOT_FOUND, NOT_FOUND_HTML)
-}
-
-fn html(status: StatusCode, body: &'static str) -> Response {
-    (
-        status,
-        [(header::CONTENT_TYPE, "text/html; charset=utf-8")],
-        body,
-    )
-        .into_response()
-}
-
 impl IntoResponse for ApiError {
     fn into_response(self) -> Response {
         match self {
@@ -79,10 +62,10 @@ impl IntoResponse for ApiError {
                 })),
             )
                 .into_response(),
-            ApiError::NotFound => not_found(),
+            ApiError::NotFound => StatusCode::NOT_FOUND.into_response(),
             ApiError::Internal(err) => {
                 tracing::error!(error = %err, "internal server error");
-                html(StatusCode::INTERNAL_SERVER_ERROR, SERVER_ERROR_HTML)
+                StatusCode::INTERNAL_SERVER_ERROR.into_response()
             }
         }
     }
