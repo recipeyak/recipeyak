@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Regenerate the `cornucopia/` crate from `queries/` by preparing them against
+# a temporary database loaded with tests/schema/0001_schema.sql.
+set -euo pipefail
+
+main() {
+  cd "$(dirname "$0")/.."
+  cornucopia fresh tests/schema/0001_schema.sql --url "${PG_URL:-postgres://postgres@localhost:5432}"
+}
+
+main "$@"

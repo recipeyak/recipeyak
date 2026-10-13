@@ -56,6 +56,7 @@ def user_password_reset_confirm_view(
         )
     user.set_password(params.new_password1)
     user.save()
+    user.session_set.all().delete()
     login(request, user)
 
     return serialize_user(user)

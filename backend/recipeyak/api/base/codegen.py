@@ -11,6 +11,7 @@ from pathlib import Path
 from textwrap import dedent, indent
 from typing import Any, NotRequired, TypedDict
 
+import jsonref
 import typer
 
 
@@ -89,13 +90,21 @@ def _parameter_type(method: _MethodDict) -> str | None:
 def _json_schema_to_typescript_type(
     schema: dict[str, Any], *, op: str, is_input_type: bool
 ) -> str:
-    if anyOf := schema.get("anyOf"):
+    if anyOf := schema.get("anyOf") or schema.get("oneOf"):
         out = ""
         for variant in anyOf:
             out += " | " + _json_schema_to_typescript_type(
                 variant, op=op, is_input_type=is_input_type
             )
         return out
+    if isinstance(schema["type"], list):
+        # 3.1 nullable, e.g. {"type": ["string", "null"]}
+        return " | ".join(
+            _json_schema_to_typescript_type(
+                {**schema, "type": t}, op=op, is_input_type=is_input_type
+            )
+            for t in schema["type"]
+        )
     if const := schema.get("const"):
         return f'"{const}"'
     if schema["type"] == "array":
@@ -242,8 +251,16 @@ def _compare_directories(src_dir: str, dest_dir: str) -> DirDiff | None:
 def main(check: bool = False) -> None:
     print("generating client...")
     schema = json.loads(Path("./api-schema.json").read_text())
+    rust_schema = jsonref.replace_refs(
+        json.loads(Path("../backend-rs/api-schema.json").read_text()),
+        lazy_load=False,
+        proxies=False,
+    )
 
     paths = schema["paths"]
+    # endpoints ported to rust take precedence over their python versions
+    for path, methods in rust_schema["paths"].items():
+        paths.setdefault(path, {}).update(methods)
 
     out_functions = []
     for path, methods in paths.items():

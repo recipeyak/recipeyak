@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -ex
+
+main() {
+  if [ "$CI" ]; then
+    cargo fmt --check
+  else
+    cargo fmt
+  fi
+
+  cargo clippy --locked --all-targets -- -D warnings
+}
+
+main "$@"

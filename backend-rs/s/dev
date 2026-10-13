@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -ex
+
+# share Django's database so its sessions work here
+set -a
+# shellcheck source=/dev/null
+source ../backend/.env
+set +a
+
+cargo run "$@"

@@ -1,6 +1,7 @@
 /// <reference types="vitest" />
-import { defineConfig } from "vite"
+import { defineConfig, type Plugin } from "vite"
 import react from "@vitejs/plugin-react"
+import http from "http"
 import path from "path"
 import { faviconsPlugin } from "@darkobits/vite-plugin-favicons"
 import { visualizer } from "rollup-plugin-visualizer"
@@ -9,10 +10,72 @@ const logoSrc = {
   source: "./src/static/images/logo/recipeyak-logo.svg",
 }
 
+// Mirrors infra/nginx/recipeyak.conf: backend-rs serves these routes and
+// Django is the backup, so they still work if backend-rs isn't running. Vite's
+// proxy can't route on method, so this runs ahead of it.
+// Keep in sync with the $api_upstream map in infra/nginx/recipeyak.conf.
+const backendRsRoutes = [
+  { method: "GET", path: "/api/v1/calendar/" },
+  { method: "POST", path: "/api/v1/calendars/" },
+]
+
+function forward(
+  target: string,
+  req: http.IncomingMessage,
+  res: http.ServerResponse,
+  body: Buffer,
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const proxyReq = http.request(
+      `${target}${req.url}`,
+      { method: req.method, headers: req.headers },
+      (proxyRes) => {
+        res.writeHead(proxyRes.statusCode ?? 502, proxyRes.headers)
+        proxyRes.pipe(res)
+        resolve()
+      },
+    )
+    proxyReq.on("error", reject)
+    proxyReq.end(body)
+  })
+}
+
+function backendRsProxy(): Plugin {
+  return {
+    name: "backend-rs-proxy",
+    configureServer(server) {
+      server.middlewares.use(async (req, res, next) => {
+        const path = req.url?.split("?")[0]
+        if (
+          !backendRsRoutes.some(
+            (route) => route.method === req.method && route.path === path,
+          )
+        ) {
+          next()
+          return
+        }
+        // buffer the body so it can be replayed to Django
+        const chunks: Buffer[] = []
+        for await (const chunk of req) {
+          chunks.push(chunk as Buffer)
+        }
+        const body = Buffer.concat(chunks)
+        try {
+          await forward("http://127.0.0.1:8001", req, res, body)
+        } catch {
+          // backend-rs isn't running
+          await forward("http://127.0.0.1:8000", req, res, body).catch(next)
+        }
+      })
+    },
+  }
+}
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react({}),
+    backendRsProxy(),
     faviconsPlugin({
       icons: {
         favicons: logoSrc,

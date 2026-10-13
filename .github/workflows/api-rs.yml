@@ -1,0 +1,81 @@
+name: API (Rust)
+
+on:
+  pull_request:
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  pre_job:
+    runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+    steps:
+      - id: skip_check
+        uses: fkirc/skip-duplicate-actions@b974a9395958c231af965b70070979a577efa578 # v5.3.2
+        with:
+          paths: '["backend-rs/**", ".github/workflows/api-rs.yml"]'
+
+  lint:
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@686976e191b89faba57d3206551f0f330d8cb249 # stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        with:
+          workspaces: backend-rs
+      - name: Lint
+        working-directory: backend-rs
+        run: ./s/lint
+
+  test:
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
+
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@686976e191b89faba57d3206551f0f330d8cb249 # stable
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        with:
+          workspaces: backend-rs
+      - name: Run tests
+        working-directory: backend-rs
+        run: cargo test --locked
+      - name: Install cornucopia
+        run: cargo install cornucopia --version 1.0.1 --locked
+      - name: Check generated queries are up to date
+        working-directory: backend-rs
+        env:
+          PG_URL: postgres://postgres:postgres@localhost:5432
+        run: |
+          ./s/generate-queries
+          git status --porcelain -- cornucopia
+          test -z "$(git status --porcelain -- cornucopia)"
