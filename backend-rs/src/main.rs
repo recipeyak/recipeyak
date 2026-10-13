@@ -1,7 +1,8 @@
 use std::sync::Arc;
+use std::time::Duration;
 
 use clap::{Parser, Subcommand};
-use deadpool_postgres::{Manager, ManagerConfig, Pool, RecyclingMethod};
+use deadpool_postgres::{Manager, ManagerConfig, Pool, RecyclingMethod, Runtime};
 use recipeyak::config::Config;
 use recipeyak::{AppState, app, openapi};
 use tokio_postgres::NoTls;
@@ -44,8 +45,17 @@ async fn serve() {
             recycling_method: RecyclingMethod::Fast,
         },
     );
-    // Connections are opened on first use, like sqlx's `connect_lazy`.
-    let pool = Pool::builder(manager).max_size(30).build().unwrap();
+    // Connections are opened on first use, like sqlx's `connect_lazy`. The
+    // timeouts match sqlx's default `acquire_timeout`; deadpool has none.
+    let timeout = Some(Duration::from_secs(30));
+    let pool = Pool::builder(manager)
+        .max_size(30)
+        .runtime(Runtime::Tokio1)
+        .wait_timeout(timeout)
+        .create_timeout(timeout)
+        .recycle_timeout(timeout)
+        .build()
+        .unwrap();
     let addr = format!("0.0.0.0:{}", config.port);
     let state = AppState {
         pool,
