@@ -7,12 +7,13 @@
 
 use std::hash::{DefaultHasher, Hash, Hasher};
 use std::ops::Deref;
-use std::sync::Arc;
 use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::{Arc, Mutex};
 
 use axum::Router;
-use axum::body::{Body, to_bytes};
-use axum::http::{Request, StatusCode, header};
+use axum::body::{Body, Bytes, to_bytes};
+use axum::extract::{OriginalUri, State};
+use axum::http::{HeaderMap, Method, Request, StatusCode, header};
 use chrono::NaiveDate;
 use deadpool_postgres::{Manager, Pool};
 use recipeyak::AppState;
@@ -20,7 +21,7 @@ use recipeyak::config::Config;
 use serde_json::Value;
 use tokio::sync::OnceCell;
 use tokio_postgres::types::ToSql;
-use tokio_postgres::{Client, NoTls};
+use tokio_postgres::{Client, NoTls, Row};
 use tower::ServiceExt;
 
 const PASSWORD: &str = "pbkdf2_sha256$1$salt$hash";
@@ -156,14 +157,22 @@ pub async fn execute(pool: &Pool, sql: &str, params: &[&(dyn ToSql + Sync)]) {
     client.execute(sql, params).await.unwrap();
 }
 
+pub async fn query_one(pool: &Pool, sql: &str, params: &[&(dyn ToSql + Sync)]) -> Row {
+    let client = pool.get().await.unwrap();
+    client.query_one(sql, params).await.unwrap()
+}
+
 /// Run an `INSERT ... RETURNING id`.
 async fn insert(pool: &Pool, sql: &str, params: &[&(dyn ToSql + Sync)]) -> i32 {
     let client = pool.get().await.unwrap();
     client.query_one(sql, params).await.unwrap().get(0)
 }
 
+pub const HOST: &str = "recipeyak.test";
+
 pub struct TestApp {
     router: Router,
+    pub ably: FakeAbly,
 }
 
 pub struct TestResponse {
@@ -184,29 +193,68 @@ impl TestResponse {
 
 impl TestApp {
     pub fn new(pool: &Pool) -> Self {
+        let ably = FakeAbly::start();
         let config = Config {
             database_url: String::new(),
             storage_url: "https://images.test".parse().unwrap(),
             port: 0,
+            ably_api_key: Some("app.key:secret".into()),
+            ably_url: ably.url.parse().unwrap(),
         };
         let state = AppState {
             pool: pool.clone(),
             config: Arc::new(config),
+            http: reqwest::Client::new(),
         };
         Self {
             router: recipeyak::app(state),
+            ably,
         }
     }
 
     pub async fn get(&self, uri: &str, session_key: Option<&str>) -> TestResponse {
-        let mut request = Request::get(uri);
+        self.request(Method::GET, uri, session_key, None).await
+    }
+
+    pub async fn post(&self, uri: &str, session_key: Option<&str>, body: Value) -> TestResponse {
+        self.request(Method::POST, uri, session_key, Some(body))
+            .await
+    }
+
+    pub async fn patch(&self, uri: &str, session_key: Option<&str>, body: Value) -> TestResponse {
+        self.request(Method::PATCH, uri, session_key, Some(body))
+            .await
+    }
+
+    pub async fn delete(&self, uri: &str, session_key: Option<&str>) -> TestResponse {
+        self.request(Method::DELETE, uri, session_key, None).await
+    }
+
+    async fn request(
+        &self,
+        method: Method,
+        uri: &str,
+        session_key: Option<&str>,
+        body: Option<Value>,
+    ) -> TestResponse {
+        let mut request = Request::builder()
+            .method(method)
+            .uri(uri)
+            .header(header::HOST, HOST);
         if let Some(key) = session_key {
             request = request.header(header::COOKIE, format!("sessionid={key}"));
         }
+        let body = match body {
+            Some(body) => {
+                request = request.header(header::CONTENT_TYPE, "application/json");
+                Body::from(body.to_string())
+            }
+            None => Body::empty(),
+        };
         let response = self
             .router
             .clone()
-            .oneshot(request.body(Body::empty()).unwrap())
+            .oneshot(request.body(body).unwrap())
             .await
             .unwrap();
         let status = response.status();
@@ -216,6 +264,57 @@ impl TestApp {
             .to_vec();
         TestResponse { status, body }
     }
+}
+
+/// A message published to Ably's REST API.
+#[derive(Debug, Clone)]
+pub struct Published {
+    pub path: String,
+    pub authorization: String,
+    pub name: String,
+    /// The message's `data`, decoded from its JSON string.
+    pub data: Value,
+}
+
+/// Records what the app publishes to Ably.
+pub struct FakeAbly {
+    url: String,
+    published: Arc<Mutex<Vec<Published>>>,
+}
+
+impl FakeAbly {
+    fn start() -> Self {
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        listener.set_nonblocking(true).unwrap();
+        let url = format!("http://{}", listener.local_addr().unwrap());
+        let listener = tokio::net::TcpListener::from_std(listener).unwrap();
+        let published = Arc::new(Mutex::new(Vec::new()));
+        let router = Router::new()
+            .fallback(record_publish)
+            .with_state(published.clone());
+        tokio::spawn(async move { axum::serve(listener, router).await });
+        Self { url, published }
+    }
+
+    pub fn published(&self) -> Vec<Published> {
+        self.published.lock().unwrap().clone()
+    }
+}
+
+async fn record_publish(
+    State(published): State<Arc<Mutex<Vec<Published>>>>,
+    OriginalUri(uri): OriginalUri,
+    headers: HeaderMap,
+    body: Bytes,
+) -> StatusCode {
+    let message: Value = serde_json::from_slice(&body).unwrap();
+    published.lock().unwrap().push(Published {
+        path: uri.path().to_string(),
+        authorization: headers[header::AUTHORIZATION].to_str().unwrap().to_string(),
+        name: message["name"].as_str().unwrap().to_string(),
+        data: serde_json::from_str(message["data"].as_str().unwrap()).unwrap(),
+    });
+    StatusCode::CREATED
 }
 
 pub async fn create_user(pool: &Pool, email: &str) -> i32 {

@@ -2,6 +2,7 @@ pub mod config;
 mod error;
 mod extract;
 mod middleware;
+mod realtime;
 mod routes;
 mod urls;
 
@@ -24,6 +25,7 @@ use crate::config::Config;
 pub struct AppState {
     pub pool: Pool,
     pub config: Arc<Config>,
+    pub http: reqwest::Client,
 }
 
 pub fn openapi() -> utoipa::openapi::OpenApi {

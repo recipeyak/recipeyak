@@ -60,6 +60,10 @@ async fn serve() {
     let state = AppState {
         pool,
         config: Arc::new(config),
+        http: reqwest::Client::builder()
+            .timeout(Duration::from_secs(10))
+            .build()
+            .unwrap(),
     };
 
     let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();

@@ -20,6 +20,7 @@ function toCalRecipe(
   },
   tempId: number,
   on: string | Date,
+  teamId: number,
   user: {
     id: number | null
     name: string
@@ -36,8 +37,8 @@ function toCalRecipe(
       archivedAt: null,
       primaryImage: null,
     },
-    team: null,
-    user: null,
+    team: teamId,
+    user: user.id ?? -1,
     on: toISODateString(on),
     createdBy: {
       // TODO: we should preload user so it isn't possible for it to be null
@@ -72,6 +73,7 @@ export function useScheduleRecipeCreate() {
         },
         tempId,
         vars.on,
+        teamId,
         user,
       )
       const weekId = startOfWeek(parseISO(vars.on))

@@ -40,9 +40,165 @@
             }
           }
         }
+      },
+      "post": {
+        "operationId": "ScheduledRecipeCreate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScheduledRecipeCreateParams"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduledRecipe"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/calendar/generate_link/": {
+      "post": {
+        "operationId": "CalendarGenerateLink",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarSettingsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/calendar/settings/": {
+      "get": {
+        "operationId": "CalendarSettingsRetrieve",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarSettingsResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "CalendarUpdateSettings",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarUpdateSettingsParams"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarSettingsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/calendar/{scheduled_recipe_id}/": {
+      "delete": {
+        "operationId": "CalendarEventDelete",
+        "parameters": [
+          {
+            "name": "scheduled_recipe_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        }
+      },
+      "patch": {
+        "operationId": "CalendarUpdate",
+        "parameters": [
+          {
+            "name": "scheduled_recipe_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarUpdateParams"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduledRecipe"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/v1/calendars/": {
+      "get": {
+        "operationId": "CalendarsList",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarsListResponse"
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "operationId": "CalendarCreate",
         "requestBody": {
@@ -65,6 +221,55 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/v1/calendars/{calendar_id}/": {
+      "delete": {
+        "operationId": "CalendarDelete",
+        "parameters": [
+          {
+            "name": "calendar_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarDeleteResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/calendars/{calendar_id}/pin/": {
+      "post": {
+        "operationId": "CalendarPinCreate",
+        "parameters": [
+          {
+            "name": "calendar_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
           }
         }
       }
@@ -100,6 +305,22 @@
           }
         }
       },
+      "CalendarDeleteResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
       "CalendarListResponse": {
         "type": "object",
         "required": [
@@ -110,6 +331,80 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ScheduledRecipe"
+            }
+          }
+        }
+      },
+      "CalendarSettingsResponse": {
+        "type": "object",
+        "required": [
+          "syncEnabled",
+          "calendarLink"
+        ],
+        "properties": {
+          "syncEnabled": {
+            "type": "boolean"
+          },
+          "calendarLink": {
+            "type": "string"
+          }
+        }
+      },
+      "CalendarUpdateParams": {
+        "type": "object",
+        "required": [
+          "on"
+        ],
+        "properties": {
+          "on": {
+            "type": "string",
+            "format": "date"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CalendarUpdateSettingsParams": {
+        "type": "object",
+        "required": [
+          "syncEnabled"
+        ],
+        "properties": {
+          "syncEnabled": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CalendarsListCalendar": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "pinned"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "pinned": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CalendarsListResponse": {
+        "type": "object",
+        "required": [
+          "calendars"
+        ],
+        "properties": {
+          "calendars": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CalendarsListCalendar"
             }
           }
         }
@@ -244,6 +539,24 @@
             "format": "date"
           }
         }
+      },
+      "ScheduledRecipeCreateParams": {
+        "type": "object",
+        "required": [
+          "recipe",
+          "on"
+        ],
+        "properties": {
+          "recipe": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "on": {
+            "type": "string",
+            "format": "date"
+          }
+        },
+        "additionalProperties": false
       }
     }
   }

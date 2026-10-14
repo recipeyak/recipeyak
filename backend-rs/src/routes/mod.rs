@@ -1,6 +1,6 @@
 //! Routes that are part of the UI's API and included in the OpenAPI schema.
 
-mod calendar;
+pub mod calendar;
 
 use utoipa_axum::router::OpenApiRouter;
 
