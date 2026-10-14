@@ -51,7 +51,10 @@ pub async fn calendar_update_view(
         .await?
         // Django 500s with ScheduledRecipe.DoesNotExist.
         .ok_or(ApiError::NotFound)?;
-    let row = scheduled_recipe().bind(&client, &id).one().await?;
+    let row = scheduled_recipe()
+        .bind(&client, &id, &calendar.team_id)
+        .one()
+        .await?;
     let res = serialize_scheduled_recipe(row, &state.config.storage_url, user.id, calendar.team_id);
 
     publish_calendar_event(&state, &res, calendar.team_id, calendar.id).await;

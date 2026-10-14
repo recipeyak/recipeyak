@@ -8,6 +8,11 @@ pub struct ScheduledRecipesParams {
     pub end: chrono::NaiveDate,
 }
 #[derive(Clone, Copy, Debug)]
+pub struct ScheduledRecipeParams {
+    pub id: i32,
+    pub team_id: i32,
+}
+#[derive(Clone, Copy, Debug)]
 pub struct InsertScheduledRecipeParams {
     pub on: chrono::NaiveDate,
     pub team_id: i32,
@@ -313,7 +318,7 @@ impl<'c, 'a, 's, C: GenericClient>
 pub struct ScheduledRecipeStmt(&'static str, Option<tokio_postgres::Statement>);
 pub fn scheduled_recipe() -> ScheduledRecipeStmt {
     ScheduledRecipeStmt(
-        "SELECT sr.id, sr.created, sr.\"on\", sr.recipe_id, r.name AS recipe_name, r.author AS recipe_author, r.archived_at AS recipe_archived_at, image.id AS image_id, image.key AS image_key, image.background_url AS image_background_url, u.id AS created_by_id, u.name AS created_by_name, u.email::text AS created_by_email, profile.key AS created_by_profile_key FROM core_scheduledrecipe sr JOIN core_recipe r ON r.id = sr.recipe_id LEFT JOIN core_upload image ON image.id = r.primary_image_id LEFT JOIN core_myuser u ON u.id = sr.created_by_id LEFT JOIN core_upload profile ON profile.id = u.profile_upload_id WHERE sr.id = $1",
+        "SELECT sr.id, sr.created, sr.\"on\", sr.recipe_id, r.name AS recipe_name, r.author AS recipe_author, r.archived_at AS recipe_archived_at, image.id AS image_id, image.key AS image_key, image.background_url AS image_background_url, u.id AS created_by_id, u.name AS created_by_name, u.email::text AS created_by_email, profile.key AS created_by_profile_key FROM core_scheduledrecipe sr JOIN core_recipe r ON r.id = sr.recipe_id LEFT JOIN core_upload image ON image.id = r.primary_image_id LEFT JOIN core_myuser u ON u.id = sr.created_by_id LEFT JOIN core_upload profile ON profile.id = u.profile_upload_id WHERE sr.id = $1 AND sr.team_id = $2",
         None,
     )
 }
@@ -329,10 +334,11 @@ impl ScheduledRecipeStmt {
         &'s self,
         client: &'c C,
         id: &'a i32,
-    ) -> ScheduledRecipeQuery<'c, 'a, 's, C, ScheduledRecipe, 1> {
+        team_id: &'a i32,
+    ) -> ScheduledRecipeQuery<'c, 'a, 's, C, ScheduledRecipe, 2> {
         ScheduledRecipeQuery {
             client,
-            params: [id],
+            params: [id, team_id],
             query: self.0,
             cached: self.1.as_ref(),
             extractor: |
@@ -357,6 +363,24 @@ impl ScheduledRecipeStmt {
             },
             mapper: |it| ScheduledRecipe::from(it),
         }
+    }
+}
+impl<'c, 'a, 's, C: GenericClient>
+    crate::client::async_::Params<
+        'c,
+        'a,
+        's,
+        ScheduledRecipeParams,
+        ScheduledRecipeQuery<'c, 'a, 's, C, ScheduledRecipe, 2>,
+        C,
+    > for ScheduledRecipeStmt
+{
+    fn params(
+        &'s self,
+        client: &'c C,
+        params: &'a ScheduledRecipeParams,
+    ) -> ScheduledRecipeQuery<'c, 'a, 's, C, ScheduledRecipe, 2> {
+        self.bind(client, &params.id, &params.team_id)
     }
 }
 pub struct InsertScheduledRecipeStmt(&'static str, Option<tokio_postgres::Statement>);

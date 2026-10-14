@@ -50,7 +50,7 @@ JOIN core_recipe r ON r.id = sr.recipe_id
 LEFT JOIN core_upload image ON image.id = r.primary_image_id
 LEFT JOIN core_myuser u ON u.id = sr.created_by_id
 LEFT JOIN core_upload profile ON profile.id = u.profile_upload_id
-WHERE sr.id = :id;
+WHERE sr.id = :id AND sr.team_id = :team_id;
 
 --! insert_scheduled_recipe
 --- Only schedules recipes that belong to the team, like
