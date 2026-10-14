@@ -35,24 +35,26 @@ pub struct CalendarUpdateSettingsParams {
     sync_enabled: bool,
 }
 
-/// `get_cal_settings`
-fn serialize_settings(
-    headers: &HeaderMap,
-    team_id: i32,
-    membership: CalendarSettings,
-) -> Result<Json<CalendarSettingsResponse>, ApiError> {
-    // request.get_host()
-    let host = headers
-        .get(HOST)
-        .and_then(|h| h.to_str().ok())
-        .ok_or_else(|| ApiError::Validation("missing Host header".into()))?;
-    Ok(Json(CalendarSettingsResponse {
-        sync_enabled: membership.calendar_sync_enabled,
-        calendar_link: format!(
-            "webcal://{host}/t/{team_id}/ical/{}/schedule.ics",
-            membership.calendar_secret_key
-        ),
-    }))
+impl CalendarSettingsResponse {
+    /// `get_cal_settings`
+    fn from_membership(
+        headers: &HeaderMap,
+        team_id: i32,
+        membership: CalendarSettings,
+    ) -> Result<Json<Self>, ApiError> {
+        // request.get_host()
+        let host = headers
+            .get(HOST)
+            .and_then(|h| h.to_str().ok())
+            .ok_or_else(|| ApiError::Validation("missing Host header".into()))?;
+        Ok(Json(Self {
+            sync_enabled: membership.calendar_sync_enabled,
+            calendar_link: format!(
+                "webcal://{host}/t/{team_id}/ical/{}/schedule.ics",
+                membership.calendar_secret_key
+            ),
+        }))
+    }
 }
 
 #[utoipa::path(
@@ -61,7 +63,7 @@ fn serialize_settings(
     operation_id = "CalendarSettingsRetrieve",
     responses((status = 200, description = "Successful response.", body = CalendarSettingsResponse)),
 )]
-pub async fn calendar_settings_retrieve_view(
+pub async fn settings_retrieve_view(
     State(state): State<AppState>,
     headers: HeaderMap,
     user: User,
@@ -73,7 +75,7 @@ pub async fn calendar_settings_retrieve_view(
         .opt()
         .await?
         .ok_or(ApiError::NotFound)?;
-    serialize_settings(&headers, team.id, membership)
+    CalendarSettingsResponse::from_membership(&headers, team.id, membership)
 }
 
 #[utoipa::path(
@@ -83,7 +85,7 @@ pub async fn calendar_settings_retrieve_view(
     request_body = CalendarUpdateSettingsParams,
     responses((status = 200, description = "Successful response.", body = CalendarSettingsResponse)),
 )]
-pub async fn calendar_update_settings_view(
+pub async fn update_settings_view(
     State(state): State<AppState>,
     headers: HeaderMap,
     user: User,
@@ -96,7 +98,7 @@ pub async fn calendar_update_settings_view(
         .opt()
         .await?
         .ok_or(ApiError::NotFound)?;
-    serialize_settings(&headers, team.id, membership)
+    CalendarSettingsResponse::from_membership(&headers, team.id, membership)
 }
 
 #[utoipa::path(
@@ -105,7 +107,7 @@ pub async fn calendar_update_settings_view(
     operation_id = "CalendarGenerateLink",
     responses((status = 200, description = "Successful response.", body = CalendarSettingsResponse)),
 )]
-pub async fn calendar_generate_link_view(
+pub async fn generate_link_view(
     State(state): State<AppState>,
     headers: HeaderMap,
     user: User,
@@ -123,5 +125,5 @@ pub async fn calendar_generate_link_view(
         .opt()
         .await?
         .ok_or(ApiError::NotFound)?;
-    serialize_settings(&headers, team.id, membership)
+    CalendarSettingsResponse::from_membership(&headers, team.id, membership)
 }

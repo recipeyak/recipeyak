@@ -18,7 +18,7 @@ use crate::extract::user::User;
     params(("calendar_id" = i32, Path)),
     responses((status = 204, description = "No content")),
 )]
-pub async fn calendar_pin_create_view(
+pub async fn pin_create_view(
     State(state): State<AppState>,
     user: User,
     team: Team,

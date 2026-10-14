@@ -18,7 +18,7 @@ use crate::realtime::publish_calendar_event_deleted;
     params(("scheduled_recipe_id" = i32, Path)),
     responses((status = 204, description = "No content")),
 )]
-pub async fn calendar_event_delete_view(
+pub async fn event_delete_view(
     State(state): State<AppState>,
     calendar: Calendar,
     Path(scheduled_recipe_id): Path<i32>,

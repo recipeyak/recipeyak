@@ -14,7 +14,7 @@ use crate::error::ApiError;
 use crate::extract::calendar::Calendar;
 use crate::extract::user::User;
 use crate::realtime::publish_calendar_event;
-use crate::routes::calendar::serialization::{ScheduledRecipe, serialize_scheduled_recipe};
+use crate::routes::calendar::scheduled_recipe::ScheduledRecipe;
 
 #[derive(Deserialize, ToSchema)]
 #[serde(deny_unknown_fields)]
@@ -30,7 +30,7 @@ pub struct CalendarUpdateParams {
     request_body = CalendarUpdateParams,
     responses((status = 200, description = "Successful response.", body = ScheduledRecipe)),
 )]
-pub async fn calendar_update_view(
+pub async fn update_view(
     State(state): State<AppState>,
     user: User,
     calendar: Calendar,
@@ -55,7 +55,7 @@ pub async fn calendar_update_view(
         .bind(&client, &id, &calendar.team_id)
         .one()
         .await?;
-    let res = serialize_scheduled_recipe(row, &state.config.storage_url, user.id, calendar.team_id);
+    let res = ScheduledRecipe::from_row(row, &state.config.storage_url, user.id, calendar.team_id);
 
     publish_calendar_event(&state, &res, calendar.team_id, calendar.id).await;
     Ok(Json(res))

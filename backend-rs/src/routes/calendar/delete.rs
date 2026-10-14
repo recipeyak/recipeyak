@@ -24,7 +24,7 @@ pub struct CalendarDeleteResponse {
     params(("calendar_id" = i32, Path)),
     responses((status = 200, description = "Successful response.", body = CalendarDeleteResponse)),
 )]
-pub async fn calendar_delete_view(
+pub async fn delete_view(
     _user: User,
     Path(_calendar_id): Path<i32>,
 ) -> Result<Json<CalendarDeleteResponse>, ApiError> {

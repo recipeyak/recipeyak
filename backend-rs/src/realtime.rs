@@ -8,7 +8,7 @@ use serde::Serialize;
 use serde_json::json;
 
 use crate::AppState;
-use crate::routes::calendar::serialization::ScheduledRecipe;
+use crate::routes::calendar::scheduled_recipe::ScheduledRecipe;
 
 pub async fn publish_calendar_event(
     state: &AppState,

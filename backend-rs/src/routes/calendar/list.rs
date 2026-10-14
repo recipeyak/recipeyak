@@ -14,7 +14,7 @@ use crate::error::ApiError;
 use crate::extract::calendar::Calendar;
 use crate::extract::params::Params;
 use crate::extract::user::User;
-use crate::routes::calendar::serialization::{ScheduledRecipe, serialize_scheduled_recipe};
+use crate::routes::calendar::scheduled_recipe::ScheduledRecipe;
 
 #[derive(Deserialize, IntoParams)]
 #[serde(deny_unknown_fields)]
@@ -37,7 +37,7 @@ pub struct CalendarListResponse {
     params(CalendarListParams),
     responses((status = 200, description = "Successful response.", body = CalendarListResponse)),
 )]
-pub async fn calendar_list_view(
+pub async fn list_view(
     State(state): State<AppState>,
     user: User,
     Params(CalendarListParams { start, end }): Params<CalendarListParams>,
@@ -52,7 +52,7 @@ pub async fn calendar_list_view(
     let scheduled_recipes = rows
         .into_iter()
         .map(|row| {
-            serialize_scheduled_recipe(row, &state.config.storage_url, user.id, calendar.team_id)
+            ScheduledRecipe::from_row(row, &state.config.storage_url, user.id, calendar.team_id)
         })
         .collect();
 
