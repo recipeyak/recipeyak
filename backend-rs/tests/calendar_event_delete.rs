@@ -80,28 +80,6 @@ async fn publishes_deletion_to_calendar_channel() {
 }
 
 #[tokio::test]
-async fn publishes_with_ably_api_key_as_basic_auth() {
-    let db = TestDb::new().await;
-    let account = create_account(&db, "alice@example.com").await;
-    let recipe_id = create_recipe(&db, account.team_id, "Pancakes").await;
-    let scheduled_id = schedule_recipe(&db, &account, recipe_id, date("2026-10-05")).await;
-    let session_key = login(&db, account.user_id).await;
-    let app = TestApp::new(&db);
-
-    app.delete(
-        &format!("/api/v1/calendar/{scheduled_id}/"),
-        Some(&session_key),
-    )
-    .await;
-
-    // TestApp's key is "app.key:secret"
-    assert_eq!(
-        app.ably.published()[0].authorization,
-        "Basic YXBwLmtleTpzZWNyZXQ="
-    );
-}
-
-#[tokio::test]
 async fn other_teams_scheduled_recipe_is_kept() {
     let db = TestDb::new().await;
     let account = create_account(&db, "alice@example.com").await;

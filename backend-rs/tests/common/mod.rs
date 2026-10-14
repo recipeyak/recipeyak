@@ -14,6 +14,8 @@ use axum::Router;
 use axum::body::{Body, Bytes, to_bytes};
 use axum::extract::{OriginalUri, State};
 use axum::http::{HeaderMap, Method, Request, StatusCode, header};
+use base64::Engine;
+use base64::engine::general_purpose::STANDARD;
 use chrono::NaiveDate;
 use deadpool_postgres::{Manager, Pool};
 use recipeyak::AppState;
@@ -170,6 +172,8 @@ async fn insert(pool: &Pool, sql: &str, params: &[&(dyn ToSql + Sync)]) -> i32 {
 
 pub const HOST: &str = "recipeyak.test";
 
+const ABLY_API_KEY: &str = "app.key:secret";
+
 pub struct TestApp {
     router: Router,
     pub ably: FakeAbly,
@@ -198,7 +202,7 @@ impl TestApp {
             database_url: String::new(),
             storage_url: "https://images.test".parse().unwrap(),
             port: 0,
-            ably_api_key: Some("app.key:secret".into()),
+            ably_api_key: Some(ABLY_API_KEY.into()),
             ably_url: ably.url.parse().unwrap(),
         };
         let state = AppState {
@@ -270,13 +274,13 @@ impl TestApp {
 #[derive(Debug, Clone)]
 pub struct Published {
     pub path: String,
-    pub authorization: String,
     pub name: String,
     /// The message's `data`, decoded from its JSON string.
     pub data: Value,
 }
 
-/// Records what the app publishes to Ably.
+/// Records what the app publishes to Ably, rejecting requests that aren't
+/// authenticated with `ABLY_API_KEY` like Ably does.
 pub struct FakeAbly {
     url: String,
     published: Arc<Mutex<Vec<Published>>>,
@@ -307,10 +311,18 @@ async fn record_publish(
     headers: HeaderMap,
     body: Bytes,
 ) -> StatusCode {
+    // Ably uses the API key as basic auth credentials.
+    let credentials = headers
+        .get(header::AUTHORIZATION)
+        .and_then(|h| h.to_str().ok())
+        .and_then(|h| h.strip_prefix("Basic "))
+        .and_then(|h| STANDARD.decode(h).ok());
+    if credentials.as_deref() != Some(ABLY_API_KEY.as_bytes()) {
+        return StatusCode::UNAUTHORIZED;
+    }
     let message: Value = serde_json::from_slice(&body).unwrap();
     published.lock().unwrap().push(Published {
         path: uri.path().to_string(),
-        authorization: headers[header::AUTHORIZATION].to_str().unwrap().to_string(),
         name: message["name"].as_str().unwrap().to_string(),
         data: serde_json::from_str(message["data"].as_str().unwrap()).unwrap(),
     });
