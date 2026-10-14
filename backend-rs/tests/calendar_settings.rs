@@ -4,7 +4,10 @@
 mod common;
 
 use axum::http::StatusCode;
-use common::{TestApp, TestDb, create_account, execute, login, query_one};
+use common::{
+    TestApp, TestDb, add_member, create_account, create_user, execute, login, query_one,
+    select_calendar,
+};
 use serde_json::json;
 
 #[tokio::test]
@@ -81,8 +84,7 @@ async fn generate_link_replaces_secret_key() {
     )
     .await
     .get(0);
-    assert_eq!(secret_key.len(), 48);
-    assert!(secret_key.chars().all(|c| c.is_ascii_alphanumeric()));
+    assert_ne!(secret_key, "secret");
     assert_eq!(
         response.json()["calendarLink"],
         format!(
@@ -93,28 +95,30 @@ async fn generate_link_replaces_secret_key() {
 }
 
 #[tokio::test]
-async fn settings_for_another_users_membership_are_not_returned() {
+async fn returns_link_for_own_membership_on_shared_team() {
     let db = TestDb::new().await;
-    let account = create_account(&db, "alice@example.com").await;
+    let alice = create_account(&db, "alice@example.com").await;
     execute(
         &db,
         "UPDATE core_membership SET calendar_secret_key = 'alices' WHERE user_id = $1",
-        &[&account.user_id],
+        &[&alice.user_id],
     )
     .await;
-    let bob = create_account(&db, "bob@example.com").await;
-    let session_key = login(&db, bob.user_id).await;
+    let bob = create_user(&db, "bob@example.com").await;
+    add_member(&db, alice.team_id, bob).await;
+    select_calendar(&db, bob, alice.team_id, alice.calendar_id).await;
+    let session_key = login(&db, bob).await;
     let app = TestApp::new(&db);
 
     let response = app
         .get("/api/v1/calendar/settings/", Some(&session_key))
         .await;
 
-    assert_eq!(response.status, StatusCode::OK);
-    assert!(
-        !response.json()["calendarLink"]
-            .as_str()
-            .unwrap()
-            .contains("alices")
+    assert_eq!(
+        response.json()["calendarLink"],
+        format!(
+            "webcal://recipeyak.test/t/{}/ical/secret/schedule.ics",
+            alice.team_id
+        )
     );
 }

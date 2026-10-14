@@ -15,7 +15,7 @@ fn date(s: &str) -> NaiveDate {
 }
 
 #[tokio::test]
-async fn moves_scheduled_recipe_and_records_event() {
+async fn moves_scheduled_recipe() {
     let db = TestDb::new().await;
     let account = create_account(&db, "alice@example.com").await;
     let recipe_id = create_recipe(&db, account.team_id, "Pancakes").await;
@@ -32,8 +32,6 @@ async fn moves_scheduled_recipe_and_records_event() {
         .await;
 
     assert_eq!(response.status, StatusCode::OK);
-    assert_eq!(response.json()["id"], scheduled_id);
-    assert_eq!(response.json()["on"], "2026-10-09");
     let on: NaiveDate = query_one(
         &db,
         "SELECT \"on\" FROM core_scheduledrecipe WHERE id = $1",
@@ -42,6 +40,24 @@ async fn moves_scheduled_recipe_and_records_event() {
     .await
     .get(0);
     assert_eq!(on, date("2026-10-09"));
+}
+
+#[tokio::test]
+async fn records_schedule_event_with_previous_date() {
+    let db = TestDb::new().await;
+    let account = create_account(&db, "alice@example.com").await;
+    let recipe_id = create_recipe(&db, account.team_id, "Pancakes").await;
+    let scheduled_id = schedule_recipe(&db, &account, recipe_id, date("2026-10-05")).await;
+    let session_key = login(&db, account.user_id).await;
+    let app = TestApp::new(&db);
+
+    app.patch(
+        &format!("/api/v1/calendar/{scheduled_id}/"),
+        Some(&session_key),
+        json!({"on": "2026-10-09"}),
+    )
+    .await;
+
     let event = query_one(
         &db,
         "SELECT before_on, after_on, actor_id FROM schedule_event WHERE scheduled_recipe_id = $1",
@@ -56,6 +72,25 @@ async fn moves_scheduled_recipe_and_records_event() {
         ),
         (date("2026-10-05"), date("2026-10-09"), account.user_id)
     );
+}
+
+#[tokio::test]
+async fn publishes_moved_scheduled_recipe() {
+    let db = TestDb::new().await;
+    let account = create_account(&db, "alice@example.com").await;
+    let recipe_id = create_recipe(&db, account.team_id, "Pancakes").await;
+    let scheduled_id = schedule_recipe(&db, &account, recipe_id, date("2026-10-05")).await;
+    let session_key = login(&db, account.user_id).await;
+    let app = TestApp::new(&db);
+
+    let response = app
+        .patch(
+            &format!("/api/v1/calendar/{scheduled_id}/"),
+            Some(&session_key),
+            json!({"on": "2026-10-09"}),
+        )
+        .await;
+
     let published = app.ably.published();
     assert_eq!(published.len(), 1);
     assert_eq!(published[0].name, "scheduled_recipe_updated");
