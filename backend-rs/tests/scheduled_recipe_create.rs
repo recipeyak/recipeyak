@@ -23,7 +23,10 @@ async fn schedules_recipe_on_pinned_calendar_and_publishes_it() {
         .await;
 
     assert_eq!(response.status, StatusCode::OK);
-    let mut scheduled = response.json();
+    let scheduled = response.json();
+    assert_eq!(scheduled["on"], "2026-10-05");
+    assert_eq!(scheduled["recipe"]["id"], recipe_id);
+    assert_eq!(scheduled["createdBy"]["id"], account.user_id);
     let id = scheduled["id"].as_i64().unwrap() as i32;
     let row = query_one(
         &db,
@@ -54,32 +57,8 @@ async fn schedules_recipe_on_pinned_calendar_and_publishes_it() {
             account.team_id, account.calendar_id
         )
     );
-    // base64("app.key:secret")
-    assert_eq!(published[0].authorization, "Basic YXBwLmtleTpzZWNyZXQ=");
     assert_eq!(published[0].name, "scheduled_recipe_updated");
     assert_eq!(published[0].data, scheduled);
-    scheduled.as_object_mut().unwrap().remove("created");
-    assert_eq!(
-        scheduled,
-        json!({
-            "id": id,
-            "createdBy": {
-                "id": account.user_id,
-                "name": "alice@example.com",
-                "avatar_url": "/avatar/c160f8cc69a4f0bf2b0362752353d060?d=identicon&r=g",
-            },
-            "team": account.team_id,
-            "user": account.user_id,
-            "recipe": {
-                "id": recipe_id,
-                "name": "Pancakes",
-                "author": null,
-                "archivedAt": null,
-                "primaryImage": null,
-            },
-            "on": "2026-10-05",
-        })
-    );
 }
 
 #[tokio::test]

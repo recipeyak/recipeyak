@@ -57,6 +57,8 @@ async fn deletes_rescheduled_recipe_and_publishes_it() {
             account.team_id, account.calendar_id
         )
     );
+    // base64("app.key:secret")
+    assert_eq!(published[0].authorization, "Basic YXBwLmtleTpzZWNyZXQ=");
     assert_eq!(published[0].name, "scheduled_recipe_delete");
     assert_eq!(published[0].data, json!({"recipeId": scheduled_id}));
 }
