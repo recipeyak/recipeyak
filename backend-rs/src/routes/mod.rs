@@ -1,11 +1,28 @@
 //! Routes that are part of the UI's API and included in the OpenAPI schema.
 
-mod calendar;
+pub mod calendar;
 
 use utoipa_axum::router::OpenApiRouter;
+use utoipa_axum::routes;
 
 use crate::AppState;
 
 pub fn router() -> OpenApiRouter<AppState> {
-    OpenApiRouter::new().merge(calendar::router())
+    OpenApiRouter::new()
+        .routes(routes!(
+            calendar::list_view,
+            calendar::scheduled_recipe_create_view
+        ))
+        .routes(routes!(
+            calendar::calendars_list_view,
+            calendar::create_view
+        ))
+        .routes(routes!(calendar::delete_view))
+        .routes(routes!(calendar::pin_create_view))
+        .routes(routes!(
+            calendar::settings_retrieve_view,
+            calendar::update_settings_view
+        ))
+        .routes(routes!(calendar::generate_link_view))
+        .routes(routes!(calendar::update_view, calendar::event_delete_view))
 }

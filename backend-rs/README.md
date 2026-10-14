@@ -8,7 +8,8 @@ A Rust reimplemention of the API.
 curl -b sessionid=... 'localhost:8001/api/v1/calendar/?start=2026-09-06&end=2026-10-24'
 ```
 
-Env vars: `DATABASE_URL`, `STORAGE_HOSTNAME`, and `PORT` (default 8001).
+Env vars: `DATABASE_URL`, `STORAGE_HOSTNAME`, `ABLY_API_KEY` (realtime updates
+are skipped when unset), and `PORT` (default 8001).
 
 ## Queries
 

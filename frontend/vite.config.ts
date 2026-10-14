@@ -14,9 +14,18 @@ const logoSrc = {
 // Django is the backup, so they still work if backend-rs isn't running. Vite's
 // proxy can't route on method, so this runs ahead of it.
 // Keep in sync with the $api_upstream map in infra/nginx/recipeyak.conf.
-const backendRsRoutes = [
+const backendRsRoutes: Array<{ method: string; path: string | RegExp }> = [
   { method: "GET", path: "/api/v1/calendar/" },
+  { method: "POST", path: "/api/v1/calendar/" },
+  { method: "GET", path: "/api/v1/calendar/settings/" },
+  { method: "PATCH", path: "/api/v1/calendar/settings/" },
+  { method: "POST", path: "/api/v1/calendar/generate_link/" },
+  { method: "PATCH", path: /^\/api\/v1\/calendar\/\d+\/$/ },
+  { method: "DELETE", path: /^\/api\/v1\/calendar\/\d+\/$/ },
+  { method: "GET", path: "/api/v1/calendars/" },
   { method: "POST", path: "/api/v1/calendars/" },
+  { method: "DELETE", path: /^\/api\/v1\/calendars\/\d+\/$/ },
+  { method: "POST", path: /^\/api\/v1\/calendars\/\d+\/pin\/$/ },
 ]
 
 function forward(
@@ -45,10 +54,14 @@ function backendRsProxy(): Plugin {
     name: "backend-rs-proxy",
     configureServer(server) {
       server.middlewares.use(async (req, res, next) => {
-        const path = req.url?.split("?")[0]
+        const path = req.url?.split("?")[0] ?? ""
         if (
           !backendRsRoutes.some(
-            (route) => route.method === req.method && route.path === path,
+            (route) =>
+              route.method === req.method &&
+              (typeof route.path === "string"
+                ? route.path === path
+                : route.path.test(path)),
           )
         ) {
           next()

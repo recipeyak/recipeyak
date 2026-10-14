@@ -31,7 +31,7 @@ pub struct CalendarCreateResponse {
     request_body = CalendarCreateParams,
     responses((status = 200, description = "Successful response.", body = CalendarCreateResponse)),
 )]
-pub async fn calendar_create_view(
+pub async fn create_view(
     State(state): State<AppState>,
     team: Team,
     Json(CalendarCreateParams { name }): Json<CalendarCreateParams>,

@@ -13,8 +13,8 @@ export function calendarUpdate(params: {
       name: string
       avatar_url: string
     } | null
-    team: number | null
-    user: number | null
+    team: number
+    user: number
     recipe: {
       id: number
       name: string

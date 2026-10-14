@@ -25,7 +25,10 @@ utoipa-axum = "0.3.0"
 tower-http = { version = "0.7.1", features = ["timeout", "trace"] }
 tokio-postgres = { version = "0.7.18", features = ["with-chrono-0_4"] }
 deadpool-postgres = "0.14.2"
+reqwest = { version = "0.13", default-features = false, features = ["rustls", "json"] }
+rand = "0.10"
 
 [dev-dependencies]
+base64 = "0.22"
 tokio = { version = "1", features = ["sync"] }
 tower = { version = "0.5", features = ["util"] }
