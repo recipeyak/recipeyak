@@ -17,7 +17,7 @@ use axum::routing::get;
 use deadpool_postgres::Pool;
 use sentry::integrations::tower::{NewSentryLayer, SentryHttpLayer};
 use tower_http::timeout::TimeoutLayer;
-use tower_http::trace::{DefaultMakeSpan, DefaultOnResponse, TraceLayer};
+use tower_http::trace::{DefaultMakeSpan, DefaultOnFailure, DefaultOnResponse, TraceLayer};
 use tracing::Level;
 
 use crate::config::Config;
@@ -46,6 +46,14 @@ pub fn app(state: AppState) -> Router {
             StatusCode::SERVICE_UNAVAILABLE,
             Duration::from_secs(30),
         ))
+        // TimeoutLayer doesn't log, and nothing else returns a 503, so this
+        // is what reports timeouts to Sentry.
+        .layer(axum::middleware::map_response(|response: Response| async {
+            if response.status() == StatusCode::SERVICE_UNAVAILABLE {
+                tracing::error!("request timed out");
+            }
+            response
+        }))
         .layer(axum::middleware::from_fn(middleware::vary_cookie))
         .layer(axum::middleware::from_fn(middleware::security))
         .layer(axum::middleware::from_fn(middleware::no_cache))
@@ -53,7 +61,10 @@ pub fn app(state: AppState) -> Router {
         .layer(
             TraceLayer::new_for_http()
                 .make_span_with(DefaultMakeSpan::new().level(Level::INFO))
-                .on_response(DefaultOnResponse::new().level(Level::INFO)),
+                .on_response(DefaultOnResponse::new().level(Level::INFO))
+                // Errors are logged where they happen, so a failure here would
+                // be a duplicate Sentry issue. WARN keeps it as a breadcrumb.
+                .on_failure(DefaultOnFailure::new().level(Level::WARN)),
         )
         // Outermost so the request spans above are children of the Sentry
         // transaction. Layers apply bottom-up: bind a hub per request, then
