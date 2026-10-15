@@ -15,6 +15,7 @@ use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 use axum::routing::get;
 use deadpool_postgres::Pool;
+use sentry::integrations::tower::{NewSentryLayer, SentryHttpLayer};
 use tower_http::timeout::TimeoutLayer;
 use tower_http::trace::{DefaultMakeSpan, DefaultOnResponse, TraceLayer};
 use tracing::Level;
@@ -54,6 +55,11 @@ pub fn app(state: AppState) -> Router {
                 .make_span_with(DefaultMakeSpan::new().level(Level::INFO))
                 .on_response(DefaultOnResponse::new().level(Level::INFO)),
         )
+        // Outermost so the request spans above are children of the Sentry
+        // transaction. Layers apply bottom-up: bind a hub per request, then
+        // start the transaction.
+        .layer(SentryHttpLayer::new().enable_transaction())
+        .layer(NewSentryLayer::new_from_top())
         .with_state(state)
 }
 

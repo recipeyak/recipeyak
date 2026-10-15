@@ -1,3 +1,4 @@
+use std::env;
 use std::sync::Arc;
 use std::time::Duration;
 
@@ -7,13 +8,41 @@ use recipeyak::config::Config;
 use recipeyak::{AppState, app, openapi};
 use tokio_postgres::NoTls;
 use tracing_subscriber::EnvFilter;
+use tracing_subscriber::prelude::*;
 
-#[tokio::main]
-async fn main() {
+fn main() {
     match Cli::parse().command.unwrap_or(Command::Serve) {
-        Command::Serve => serve().await,
+        Command::Serve => {
+            let _guard = init_sentry();
+            // Sentry has to be initialized before the runtime starts so its
+            // threads inherit the hub, which rules out `#[tokio::main]`.
+            tokio::runtime::Builder::new_multi_thread()
+                .enable_all()
+                .build()
+                .unwrap()
+                .block_on(serve());
+        }
         Command::Schema => println!("{}", openapi().to_pretty_json().unwrap()),
+        Command::SentryTest => {
+            let _guard = init_sentry().expect("RECIPEYAK_RS_SENTRY_DSN must be set");
+            panic!("Everything is on fire!");
+        }
     }
+}
+
+/// The guard flushes pending events when dropped, so it must outlive the app.
+fn init_sentry() -> Option<sentry::ClientInitGuard> {
+    // Skip init entirely when unset, otherwise the SDK falls back to
+    // SENTRY_DSN, which belongs to the Django backend.
+    let dsn = env::var("RECIPEYAK_RS_SENTRY_DSN").ok()?;
+    let mut options = sentry::ClientOptions::new()
+        .send_default_pii(true)
+        .traces_sample_rate(1.0);
+    options.release = env::var("RECIPEYAK_RS_SENTRY_RELEASE").ok().map(Into::into);
+    options.environment = env::var("RECIPEYAK_RS_SENTRY_ENVIRONMENT")
+        .ok()
+        .map(Into::into);
+    Some(sentry::init((dsn, options)))
 }
 
 #[derive(Parser)]
@@ -28,15 +57,22 @@ enum Command {
     Serve,
     /// Print the OpenAPI schema used to generate the UI's API client
     Schema,
+    /// Panic to check that errors reach Sentry
+    SentryTest,
 }
 
 async fn serve() {
-    tracing_subscriber::fmt()
-        .with_env_filter(EnvFilter::try_from_default_env().unwrap_or_else(|_| "info".into()))
+    tracing_subscriber::registry()
+        .with(EnvFilter::try_from_env("RECIPEYAK_RS_LOG").unwrap_or_else(|_| "info".into()))
+        .with(tracing_subscriber::fmt::layer())
+        .with(sentry::integrations::tracing::layer())
         .init();
 
     let config = Config::from_env();
-    let pg_config = config.database_url.parse().expect("invalid DATABASE_URL");
+    let pg_config = config
+        .database_url
+        .parse()
+        .expect("invalid RECIPEYAK_RS_DATABASE_URL");
     // Postgres runs on the same host without SSL.
     let manager = Manager::from_config(
         pg_config,

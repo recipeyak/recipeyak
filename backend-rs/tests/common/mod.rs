@@ -32,7 +32,7 @@ const SCHEMA: &str = include_str!("../schema/0001_schema.sql");
 
 /// Server to create the per-test databases on.
 fn database_url() -> String {
-    std::env::var("DATABASE_URL")
+    std::env::var("RECIPEYAK_RS_DATABASE_URL")
         .unwrap_or_else(|_| "postgres://postgres@localhost:5432/postgres".into())
 }
 

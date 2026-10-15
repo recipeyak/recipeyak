@@ -5,7 +5,7 @@ use url::Url;
 #[derive(Clone, Debug)]
 pub struct Config {
     pub database_url: String,
-    /// `https://{STORAGE_HOSTNAME}`, the base for upload URLs.
+    /// `https://{RECIPEYAK_RS_STORAGE_HOSTNAME}`, the base for upload URLs.
     pub storage_url: Url,
     pub port: u16,
     /// Realtime updates aren't published when unset.
@@ -17,16 +17,17 @@ pub struct Config {
 impl Config {
     pub fn from_env() -> Self {
         Self {
-            database_url: env::var("DATABASE_URL").expect("DATABASE_URL must be set"),
-            storage_url: env::var("STORAGE_HOSTNAME")
+            database_url: env::var("RECIPEYAK_RS_DATABASE_URL")
+                .expect("RECIPEYAK_RS_DATABASE_URL must be set"),
+            storage_url: env::var("RECIPEYAK_RS_STORAGE_HOSTNAME")
                 .ok()
                 .and_then(|host| Url::parse(&format!("https://{host}")).ok())
-                .expect("STORAGE_HOSTNAME must be set to a valid hostname"),
-            port: env::var("PORT")
+                .expect("RECIPEYAK_RS_STORAGE_HOSTNAME must be set to a valid hostname"),
+            port: env::var("RECIPEYAK_RS_PORT")
                 .ok()
                 .and_then(|p| p.parse().ok())
                 .unwrap_or(8001),
-            ably_api_key: env::var("ABLY_API_KEY").ok(),
+            ably_api_key: env::var("RECIPEYAK_RS_ABLY_API_KEY").ok(),
             ably_url: Url::parse("https://rest.ably.io").unwrap(),
         }
     }
