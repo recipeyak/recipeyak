@@ -1,5 +1,5 @@
 pub mod config;
-mod db;
+pub mod db;
 mod error;
 mod extract;
 mod middleware;
@@ -10,12 +10,12 @@ mod urls;
 use std::sync::Arc;
 use std::time::Duration;
 
+use crate::db::DbPool;
 use axum::Router;
 use axum::extract::State;
 use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 use axum::routing::get;
-use deadpool_postgres::Pool;
 use sentry::integrations::tower::{NewSentryLayer, SentryHttpLayer};
 use tower_http::timeout::TimeoutLayer;
 use tower_http::trace::{DefaultOnFailure, DefaultOnResponse, TraceLayer};
@@ -25,7 +25,7 @@ use crate::config::Config;
 
 #[derive(Clone)]
 pub struct AppState {
-    pub pool: Pool,
+    pub pool: DbPool,
     pub config: Arc<Config>,
     pub http: reqwest::Client,
 }
@@ -91,7 +91,7 @@ pub fn app(state: AppState) -> Router {
 
 async fn readiness(State(state): State<AppState>) -> Response {
     let result = async {
-        let client = state.pool.get().await?;
+        let client = state.pool.untraced().get().await?;
         client.query_one("SELECT 1", &[]).await?;
         Ok::<_, Box<dyn std::error::Error>>(())
     };

@@ -10,7 +10,6 @@ use serde::Deserialize;
 use utoipa::ToSchema;
 
 use crate::AppState;
-use crate::db::Db;
 use crate::error::ApiError;
 use crate::extract::calendar::Calendar;
 use crate::extract::user::User;
@@ -38,7 +37,7 @@ pub async fn update_view(
     Path(scheduled_recipe_id): Path<i32>,
     Json(CalendarUpdateParams { on }): Json<CalendarUpdateParams>,
 ) -> Result<Json<ScheduledRecipe>, ApiError> {
-    let client = Db::get(&state.pool).await?;
+    let client = state.pool.get().await?;
     let id = reschedule_recipe()
         .bind(
             &client,

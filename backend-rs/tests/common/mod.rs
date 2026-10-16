@@ -20,6 +20,7 @@ use chrono::NaiveDate;
 use deadpool_postgres::{Manager, Pool};
 use recipeyak::AppState;
 use recipeyak::config::Config;
+use recipeyak::db::DbPool;
 use serde_json::Value;
 use tokio::sync::OnceCell;
 use tokio_postgres::types::ToSql;
@@ -206,7 +207,7 @@ impl TestApp {
             ably_url: ably.url.parse().unwrap(),
         };
         let state = AppState {
-            pool: pool.clone(),
+            pool: DbPool::new(pool.clone()),
             config: Arc::new(config),
             http: reqwest::Client::new(),
         };

@@ -7,7 +7,6 @@ use axum::http::StatusCode;
 use cornucopia::queries::calendar::pin_calendar;
 
 use crate::AppState;
-use crate::db::Db;
 use crate::error::ApiError;
 use crate::extract::team::Team;
 use crate::extract::user::User;
@@ -25,7 +24,7 @@ pub async fn pin_create_view(
     team: Team,
     Path(calendar_id): Path<i32>,
 ) -> Result<StatusCode, ApiError> {
-    let client = Db::get(&state.pool).await?;
+    let client = state.pool.get().await?;
     pin_calendar()
         .bind(&client, &user.id, &calendar_id, &team.id)
         .opt()

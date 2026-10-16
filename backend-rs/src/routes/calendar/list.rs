@@ -10,7 +10,6 @@ use serde::{Deserialize, Serialize};
 use utoipa::{IntoParams, ToSchema};
 
 use crate::AppState;
-use crate::db::Db;
 use crate::error::ApiError;
 use crate::extract::calendar::Calendar;
 use crate::extract::params::Params;
@@ -44,7 +43,7 @@ pub async fn list_view(
     Params(CalendarListParams { start, end }): Params<CalendarListParams>,
     calendar: Calendar,
 ) -> Result<Json<CalendarListResponse>, ApiError> {
-    let client = Db::get(&state.pool).await?;
+    let client = state.pool.get().await?;
     let rows = scheduled_recipes()
         .bind(&client, &calendar.team_id, &calendar.id, &start, &end)
         .all()

@@ -10,7 +10,6 @@ use serde::Deserialize;
 use utoipa::ToSchema;
 
 use crate::AppState;
-use crate::db::Db;
 use crate::error::ApiError;
 use crate::extract::calendar::Calendar;
 use crate::extract::user::User;
@@ -37,7 +36,7 @@ pub async fn scheduled_recipe_create_view(
     calendar: Calendar,
     Json(ScheduledRecipeCreateParams { recipe, on }): Json<ScheduledRecipeCreateParams>,
 ) -> Result<Json<ScheduledRecipe>, ApiError> {
-    let client = Db::get(&state.pool).await?;
+    let client = state.pool.get().await?;
     let id = insert_scheduled_recipe()
         .bind(
             &client,

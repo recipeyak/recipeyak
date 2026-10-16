@@ -9,7 +9,6 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 use crate::AppState;
-use crate::db::Db;
 use crate::error::ApiError;
 use crate::extract::team::Team;
 
@@ -37,7 +36,7 @@ pub async fn create_view(
     team: Team,
     Json(CalendarCreateParams { name }): Json<CalendarCreateParams>,
 ) -> Result<Json<CalendarCreateResponse>, ApiError> {
-    let client = Db::get(&state.pool).await?;
+    let client = state.pool.get().await?;
     let id = insert_calendar()
         .bind(&client, &name, &team.id)
         .one()

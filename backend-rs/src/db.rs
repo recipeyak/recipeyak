@@ -10,20 +10,27 @@ use sentry::protocol::SpanStatus;
 use tokio_postgres::types::{BorrowToSql, ToSql};
 use tokio_postgres::{Client as PgClient, Error, Row, RowStream, Statement, ToStatement};
 
-pub struct Db {
-    client: Client,
-    /// `Statement` doesn't expose its SQL, so `prepare`, which the generated
-    /// queries call right before executing, keeps it for the `db` span.
-    sql: Mutex<Option<String>>,
-}
+/// Hands out [`Db`] clients so handlers keep calling `state.pool.get()`.
+#[derive(Clone)]
+pub struct DbPool(Pool);
 
-impl Db {
+impl DbPool {
+    pub fn new(pool: Pool) -> Self {
+        Self(pool)
+    }
+
+    /// The underlying pool, for checks like `/readiness` that shouldn't add
+    /// spans.
+    pub fn untraced(&self) -> &Pool {
+        &self.0
+    }
+
     /// Spans the checkout so time spent waiting on the pool or opening a
     /// connection isn't hidden in the parent span.
-    pub async fn get(pool: &Pool) -> Result<Self, PoolError> {
+    pub async fn get(&self) -> Result<Db, PoolError> {
         let span = sentry::configure_scope(|scope| scope.get_span())
             .map(|parent| parent.start_child("db.connection", "pool.get"));
-        let result = pool.get().await;
+        let result = self.0.get().await;
         if let Some(span) = span {
             match &result {
                 Ok(client) => {
@@ -37,12 +44,21 @@ impl Db {
             }
             span.finish();
         }
-        Ok(Self {
+        Ok(Db {
             client: result?,
             sql: Mutex::new(None),
         })
     }
+}
 
+pub struct Db {
+    client: Client,
+    /// `Statement` doesn't expose its SQL, so `prepare`, which the generated
+    /// queries call right before executing, keeps it for the `db` span.
+    sql: Mutex<Option<String>>,
+}
+
+impl Db {
     fn start_span(op: &str, sql: &str) -> Option<sentry::Span> {
         let parent = sentry::configure_scope(|scope| scope.get_span())?;
         let span = parent.start_child(op, sql);

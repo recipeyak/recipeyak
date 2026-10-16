@@ -9,10 +9,9 @@ use axum::extract::FromRequestParts;
 use axum::http::request::Parts;
 use axum_extra::extract::CookieJar;
 use cornucopia::queries::user::session_user;
-use deadpool_postgres::Pool;
 
 use crate::AppState;
-use crate::db::Db;
+use crate::db::DbPool;
 use crate::error::ApiError;
 
 pub const SESSION_COOKIE_NAME: &str = "sessionid";
@@ -49,13 +48,13 @@ impl FromRequestParts<AppState> for User {
 /// Instrumented here rather than on the extractor so cache hits don't add spans.
 #[tracing::instrument(name = "User", skip_all, fields(sentry.op = "extract"))]
 pub async fn authenticate(
-    pool: &Pool,
+    pool: &DbPool,
     session_key: Option<&str>,
 ) -> Result<Option<User>, ApiError> {
     let Some(session_key) = session_key else {
         return Ok(None);
     };
-    let client = Db::get(pool).await?;
+    let client = pool.get().await?;
     let user = session_user()
         .bind(&client, &session_key)
         .map(|row| User {

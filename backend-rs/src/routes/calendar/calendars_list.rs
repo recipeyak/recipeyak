@@ -9,7 +9,6 @@ use serde::Serialize;
 use utoipa::ToSchema;
 
 use crate::AppState;
-use crate::db::Db;
 use crate::error::ApiError;
 use crate::extract::team::Team;
 use crate::extract::user::User;
@@ -37,7 +36,7 @@ pub async fn calendars_list_view(
     user: User,
     team: Team,
 ) -> Result<Json<CalendarsListResponse>, ApiError> {
-    let client = Db::get(&state.pool).await?;
+    let client = state.pool.get().await?;
     let calendars = team_calendars()
         .bind(&client, &team.id)
         .all()

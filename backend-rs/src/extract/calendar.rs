@@ -5,7 +5,6 @@ use axum::http::request::Parts;
 use cornucopia::queries::calendar::calendar_exists;
 
 use crate::AppState;
-use crate::db::Db;
 use crate::error::ApiError;
 use crate::extract::team::Team;
 use crate::extract::user::User;
@@ -30,7 +29,7 @@ impl FromRequestParts<AppState> for Calendar {
         let id = user.pinned_calendar_id.ok_or_else(|| {
             ApiError::Internal("should always have a pinned calendar selected".into())
         })?;
-        let client = Db::get(&state.pool).await?;
+        let client = state.pool.get().await?;
         let exists = calendar_exists().bind(&client, &id, &team_id).one().await?;
         if !exists {
             return Err(ApiError::Internal(

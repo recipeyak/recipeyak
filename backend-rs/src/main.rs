@@ -5,6 +5,7 @@ use std::time::Duration;
 use clap::{Parser, Subcommand};
 use deadpool_postgres::{Manager, ManagerConfig, Pool, RecyclingMethod, Runtime};
 use recipeyak::config::Config;
+use recipeyak::db::DbPool;
 use recipeyak::{AppState, app, openapi};
 use tokio_postgres::NoTls;
 use tracing_subscriber::EnvFilter;
@@ -103,7 +104,7 @@ async fn serve() {
         .unwrap();
     let addr = format!("0.0.0.0:{}", config.port);
     let state = AppState {
-        pool,
+        pool: DbPool::new(pool),
         config: Arc::new(config),
         http: reqwest::Client::builder()
             .timeout(Duration::from_secs(10))

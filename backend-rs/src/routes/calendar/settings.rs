@@ -18,7 +18,6 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 use crate::AppState;
-use crate::db::Db;
 use crate::error::ApiError;
 use crate::extract::team::Team;
 use crate::extract::user::User;
@@ -70,7 +69,7 @@ pub async fn settings_retrieve_view(
     user: User,
     team: Team,
 ) -> Result<Json<CalendarSettingsResponse>, ApiError> {
-    let client = Db::get(&state.pool).await?;
+    let client = state.pool.get().await?;
     let membership = calendar_settings()
         .bind(&client, &team.id, &user.id)
         .opt()
@@ -93,7 +92,7 @@ pub async fn update_settings_view(
     team: Team,
     Json(CalendarUpdateSettingsParams { sync_enabled }): Json<CalendarUpdateSettingsParams>,
 ) -> Result<Json<CalendarSettingsResponse>, ApiError> {
-    let client = Db::get(&state.pool).await?;
+    let client = state.pool.get().await?;
     let membership = update_calendar_sync_enabled()
         .bind(&client, &sync_enabled, &team.id, &user.id)
         .opt()
@@ -120,7 +119,7 @@ pub async fn generate_link_view(
         .take(48)
         .map(char::from)
         .collect();
-    let client = Db::get(&state.pool).await?;
+    let client = state.pool.get().await?;
     let membership = update_calendar_secret_key()
         .bind(&client, &secret_key, &team.id, &user.id)
         .opt()
