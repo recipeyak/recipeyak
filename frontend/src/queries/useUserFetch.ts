@@ -2,15 +2,15 @@ import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { userRetrieve } from "@/api/userRetrieve"
 import { setUser } from "@/auth"
+import { takeBootstrapUser } from "@/bootstrap"
 import { ResponseFromUse } from "@/queries/useQueryUtilTypes"
 
 export function useUserFetch() {
-  // TODO: this api call could be removed with a preload
   const queryClient = useQueryClient()
   return useQuery({
     queryKey: getQueryKey(),
     queryFn: async () => {
-      const res = await userRetrieve()
+      const res = takeBootstrapUser() ?? (await userRetrieve())
       setUser(res, queryClient)
       return res
     },

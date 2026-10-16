@@ -205,6 +205,7 @@ impl TestApp {
             port: 0,
             ably_api_key: Some(ABLY_API_KEY.into()),
             ably_url: ably.url.parse().unwrap(),
+            index_html: concat!(env!("CARGO_MANIFEST_DIR"), "/tests/fixtures/index.html").into(),
         };
         let state = AppState {
             pool: DbPool::new(pool.clone()),

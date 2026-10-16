@@ -43,6 +43,19 @@ pub async fn list_view(
     Params(CalendarListParams { start, end }): Params<CalendarListParams>,
     calendar: Calendar,
 ) -> Result<Json<CalendarListResponse>, ApiError> {
+    Ok(Json(
+        list_scheduled_recipes(&state, &user, &calendar, start, end).await?,
+    ))
+}
+
+/// Shared with the bootstrap data in `index.html`.
+pub async fn list_scheduled_recipes(
+    state: &AppState,
+    user: &User,
+    calendar: &Calendar,
+    start: NaiveDate,
+    end: NaiveDate,
+) -> Result<CalendarListResponse, ApiError> {
     let client = state.pool.get().await?;
     let rows = scheduled_recipes()
         .bind(&client, &calendar.team_id, &calendar.id, &start, &end)
@@ -56,5 +69,5 @@ pub async fn list_view(
         })
         .collect();
 
-    Ok(Json(CalendarListResponse { scheduled_recipes }))
+    Ok(CalendarListResponse { scheduled_recipes })
 }

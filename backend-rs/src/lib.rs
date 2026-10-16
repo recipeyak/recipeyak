@@ -2,6 +2,7 @@ pub mod config;
 pub mod db;
 mod error;
 mod extract;
+mod index;
 mod middleware;
 mod realtime;
 mod routes;
@@ -39,6 +40,8 @@ pub fn openapi() -> utoipa::openapi::OpenApi {
 pub fn app(state: AppState) -> Router {
     let (api, _) = routes::router().split_for_parts();
     api.route("/healthz", get(|| async { "OK" }))
+        // nginx rewrites UI pages to this path.
+        .route("/index.html", get(index::index_view))
         .route("/readiness", get(readiness))
         .fallback(|| async { StatusCode::NOT_FOUND })
         // Innermost so the timeout response still gets the headers and

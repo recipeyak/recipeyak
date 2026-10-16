@@ -1,4 +1,5 @@
 use std::env;
+use std::path::PathBuf;
 
 use url::Url;
 
@@ -12,6 +13,8 @@ pub struct Config {
     pub ably_api_key: Option<String>,
     /// Ably's REST API, pointed at a fake in tests.
     pub ably_url: Url,
+    /// The UI's built `index.html`, served with the bootstrap data.
+    pub index_html: PathBuf,
 }
 
 impl Config {
@@ -29,6 +32,9 @@ impl Config {
                 .unwrap_or(8001),
             ably_api_key: env::var("RECIPEYAK_RS_ABLY_API_KEY").ok(),
             ably_url: Url::parse("https://rest.ably.io").unwrap(),
+            index_html: env::var("RECIPEYAK_RS_INDEX_HTML")
+                .unwrap_or_else(|_| "/var/app/dist/index.html".into())
+                .into(),
         }
     }
 }

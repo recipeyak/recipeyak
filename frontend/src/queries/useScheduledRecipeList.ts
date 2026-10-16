@@ -8,6 +8,7 @@ import { addWeeks, endOfWeek, startOfWeek, subWeeks } from "date-fns"
 import parseISO from "date-fns/parseISO"
 
 import { calendarList } from "@/api/calendarList"
+import { takeBootstrapCalendar } from "@/bootstrap"
 import { toISODateString } from "@/date"
 import {
   cacheUpsertScheduledRecipesWeek,
@@ -69,10 +70,12 @@ export function useScheduledRecipeList({
       // We want to avoid dupes with our fetches
       const start = toISODateString(startOfWeek(subWeeks(startOfWeekMs, 3)))
       const end = toISODateString(endOfWeek(addWeeks(startOfWeekMs, 3)))
-      const response = await calendarList({
-        start,
-        end,
-      })
+      const response =
+        takeBootstrapCalendar({ teamId, start, end }) ??
+        (await calendarList({
+          start,
+          end,
+        }))
 
       // Iterate through and populate each based on week
       const weekIds = new Set<Date>()
