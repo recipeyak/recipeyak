@@ -17,3 +17,9 @@ export const DOMAIN = DEBUG ? "http://localhost" : "https://recipeyak.com"
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 export const IMAGE_TRANSFORM_FORMAT: string =
   import.meta.env.FRONTEND_IMAGE_TRANSFORM_FORMAT || "twicpics"
+
+// Cloudflare's always-passing test sitekey in dev, pairs with the test secret
+// in backend/.env-example
+export const TURNSTILE_SITE_KEY = DEBUG
+  ? "1x00000000000000000000AA"
+  : "0x4AAAAAAFY10wsIbA1EcWIE"

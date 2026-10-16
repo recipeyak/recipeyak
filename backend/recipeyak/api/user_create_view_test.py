@@ -1,5 +1,9 @@
+from unittest.mock import patch
+
 import pytest
 from django.test.client import Client
+
+from recipeyak.models.user import User
 
 pytestmark = pytest.mark.django_db
 
@@ -20,7 +24,12 @@ def test_signup(client: Client) -> None:
 
     password = "password123"
 
-    data = {"email": email, "password1": password, "password2": password}
+    data = {
+        "email": email,
+        "password1": password,
+        "password2": password,
+        "turnstile_token": "token",
+    }
 
     res = client.post(
         "/api/v1/auth/registration/", data, content_type="application/json"
@@ -43,7 +52,12 @@ def test_signup_case_insensitive(client: Client) -> None:
 
     password = "password123"
 
-    data = {"email": email, "password1": password, "password2": password}
+    data = {
+        "email": email,
+        "password1": password,
+        "password2": password,
+        "turnstile_token": "token",
+    }
 
     res = client.post(
         "/api/v1/auth/registration/", data, content_type="application/json"
@@ -63,3 +77,18 @@ def test_signup_case_insensitive(client: Client) -> None:
         401,
         400,
     )
+
+
+def test_signup_rejects_failed_captcha(client: Client) -> None:
+    data = {
+        "email": "testing@gmail.com",
+        "password1": "password123",
+        "password2": "password123",
+        "turnstile_token": "bad-token",
+    }
+    with patch("recipeyak.api.user_create_view.verify_token", return_value=False):
+        res = client.post(
+            "/api/v1/auth/registration/", data, content_type="application/json"
+        )
+    assert res.status_code == 400
+    assert not User.objects.filter(email="testing@gmail.com").exists()

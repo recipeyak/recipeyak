@@ -578,9 +578,17 @@
                   },
                   "password2": {
                     "type": "string"
+                  },
+                  "turnstile_token": {
+                    "type": "string"
                   }
                 },
-                "required": ["email", "password1", "password2"],
+                "required": [
+                  "email",
+                  "password1",
+                  "password2",
+                  "turnstile_token"
+                ],
                 "type": "object"
               }
             }
