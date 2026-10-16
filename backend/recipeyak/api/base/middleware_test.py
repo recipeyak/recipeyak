@@ -1,6 +1,7 @@
 import time
 
 import pytest
+import sentry_sdk
 from django.http import HttpResponse
 from django.test.client import Client, RequestFactory
 
@@ -28,6 +29,18 @@ def test_request_queue_timing_middleware(client: Client) -> None:
     )
     assert float(timings["queue"]) >= 500
     assert "app" in timings
+
+
+def test_request_queue_timing_middleware_records_queue_time_in_sentry() -> None:
+    middleware = RequestQueueTimingMiddleware(lambda request: HttpResponse())
+    request = RequestFactory().get(
+        "/", HTTP_X_REQUEST_START=f"t={time.time() - 0.5:.3f}"
+    )
+
+    with sentry_sdk.start_transaction(name="test") as transaction:
+        middleware(request)
+
+    assert transaction.to_json()["data"]["http.server.request.time_in_queue"] >= 500
 
 
 def test_request_queue_timing_middleware_without_header() -> None:
