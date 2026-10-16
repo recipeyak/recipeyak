@@ -15,7 +15,7 @@ dependencies = [
     "django-user-sessions~=2.0",
     # django-user-sessions imports pkg_resources, which python no longer
     # bundles and setuptools dropped in 81
-    "setuptools<81",
+    "setuptools<85",
     "python-dotenv==1.2.4",
     "djangorestframework-types~=0.9.0",
     "orjson==3.12.0",
