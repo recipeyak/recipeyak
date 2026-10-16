@@ -24,7 +24,12 @@ def test_signup(client: Client) -> None:
 
     password = "password123"
 
-    data = {"email": email, "password1": password, "password2": password}
+    data = {
+        "email": email,
+        "password1": password,
+        "password2": password,
+        "turnstile_token": "token",
+    }
 
     res = client.post(
         "/api/v1/auth/registration/", data, content_type="application/json"
@@ -155,7 +160,12 @@ def test_signup_case_insensitive(client: Client) -> None:
 
     password = "password123"
 
-    data = {"email": email, "password1": password, "password2": password}
+    data = {
+        "email": email,
+        "password1": password,
+        "password2": password,
+        "turnstile_token": "token",
+    }
 
     res = client.post(
         "/api/v1/auth/registration/", data, content_type="application/json"

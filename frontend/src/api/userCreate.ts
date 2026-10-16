@@ -5,6 +5,7 @@ export function userCreate(params: {
   email: string
   password1: string
   password2: string
+  turnstile_token: string
 }) {
   return http<{
     user: {

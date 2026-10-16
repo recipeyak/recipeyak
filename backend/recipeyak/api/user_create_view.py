@@ -15,6 +15,7 @@ from recipeyak.api.user_retrieve_view import UserSerializer, serialize_user
 from recipeyak.models.calendar import Calendar
 from recipeyak.models.team import Team
 from recipeyak.models.user import User
+from recipeyak.turnstile import verify_token
 
 
 def _validate_email(email: str) -> str:
@@ -29,10 +30,17 @@ def _validate_password(password: str) -> str:
     return password
 
 
+def _validate_turnstile_token(token: str) -> str:
+    if not verify_token(token):
+        raise ValueError("Captcha verification failed. Please try again.")
+    return token
+
+
 class UserCreateParams(Params):
     email: Annotated[str, AfterValidator(_validate_email)]
     password1: Annotated[str, AfterValidator(_validate_password)]
     password2: str
+    turnstile_token: Annotated[str, AfterValidator(_validate_turnstile_token)]
 
     @model_validator(mode="after")
     def check_passwords_match(self) -> UserCreateParams:

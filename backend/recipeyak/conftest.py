@@ -225,3 +225,9 @@ def patch_publish_cook_checklist() -> Iterator[None]:
 def patch_publish_recipe_modified() -> Iterator[None]:
     with patch("recipeyak.realtime.publish_recipe", return_value=None):
         yield
+
+
+@pytest.fixture(scope="session", autouse=True)
+def patch_turnstile_verify_token() -> Iterator[None]:
+    with patch("recipeyak.api.user_create_view.verify_token", return_value=True):
+        yield

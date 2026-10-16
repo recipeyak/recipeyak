@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
-import React, { useState } from "react"
+import React, { useRef, useState } from "react"
 import { Link, useHistory } from "react-router-dom"
 
 import { login } from "@/auth"
@@ -11,6 +11,7 @@ import { Label } from "@/components/Label"
 import { AuthPage } from "@/components/Page"
 import { PasswordInput } from "@/components/PasswordInput"
 import { Tab, Tabs } from "@/components/Tabs"
+import { Turnstile, TurnstileHandle } from "@/components/Turnstile"
 import {
   pathLogin,
   pathPasswordReset,
@@ -46,6 +47,8 @@ export function SignupPage() {
   const [email, setEmail] = useState("")
   const [password1, setPassword1] = useState("")
   const [password2, setPassword2] = useState("")
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
+  const turnstile = useRef<TurnstileHandle>(null)
 
   const signup = useAuthSignup()
   const history = useHistory()
@@ -53,13 +56,21 @@ export function SignupPage() {
 
   const handleSignup = (e: React.FormEvent) => {
     e.preventDefault()
+    if (turnstileToken == null) {
+      return
+    }
     signup.mutate(
       {
         email,
         password1,
         password2,
+        turnstile_token: turnstileToken,
       },
       {
+        onError: () => {
+          // tokens are single use
+          turnstile.current?.reset()
+        },
         onSuccess: (res) => {
           void login(res.user, queryClient).then(() => {
             history.push(pathRecipeAdd({}))
@@ -124,10 +135,17 @@ export function SignupPage() {
             />
           </div>
 
+          <Turnstile ref={turnstile} onToken={setTurnstileToken} />
+
           <FormErrorHandler error={errors != null ? [errors] : null} />
 
           <div className="flex items-center justify-between">
-            <Button variant="primary" type="submit" loading={signup.isPending}>
+            <Button
+              variant="primary"
+              type="submit"
+              loading={signup.isPending}
+              disabled={turnstileToken == null}
+            >
               Create Account
             </Button>
 
