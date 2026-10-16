@@ -5,6 +5,7 @@ use axum::http::request::Parts;
 use cornucopia::queries::calendar::calendar_exists;
 
 use crate::AppState;
+use crate::db::Db;
 use crate::error::ApiError;
 use crate::extract::team::Team;
 use crate::extract::user::User;
@@ -17,6 +18,7 @@ pub struct Calendar {
 impl FromRequestParts<AppState> for Calendar {
     type Rejection = ApiError;
 
+    #[tracing::instrument(name = "Calendar", skip_all, fields(sentry.op = "extract"))]
     async fn from_request_parts(
         parts: &mut Parts,
         state: &AppState,
@@ -28,7 +30,7 @@ impl FromRequestParts<AppState> for Calendar {
         let id = user.pinned_calendar_id.ok_or_else(|| {
             ApiError::Internal("should always have a pinned calendar selected".into())
         })?;
-        let client = state.pool.get().await?;
+        let client = Db::get(&state.pool).await?;
         let exists = calendar_exists().bind(&client, &id, &team_id).one().await?;
         if !exists {
             return Err(ApiError::Internal(

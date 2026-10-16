@@ -65,7 +65,16 @@ async fn serve() {
     tracing_subscriber::registry()
         .with(EnvFilter::try_from_env("RECIPEYAK_RS_LOG").unwrap_or_else(|_| "info".into()))
         .with(tracing_subscriber::fmt::layer())
-        .with(sentry::integrations::tracing::layer())
+        .with(
+            sentry::integrations::tracing::layer().span_filter(|metadata| {
+                // TraceLayer's request span lives until the response body is
+                // done, after the Sentry transaction is sent, so it'd never arrive
+                // and spans under it would be orphaned. The transaction already
+                // covers the request.
+                sentry::integrations::tracing::default_span_filter(metadata)
+                    && !(metadata.target() == "recipeyak" && metadata.name() == "request")
+            }),
+        )
         .init();
 
     let config = Config::from_env();

@@ -1,4 +1,5 @@
 pub mod config;
+mod db;
 mod error;
 mod extract;
 mod middleware;
@@ -17,7 +18,7 @@ use axum::routing::get;
 use deadpool_postgres::Pool;
 use sentry::integrations::tower::{NewSentryLayer, SentryHttpLayer};
 use tower_http::timeout::TimeoutLayer;
-use tower_http::trace::{DefaultMakeSpan, DefaultOnFailure, DefaultOnResponse, TraceLayer};
+use tower_http::trace::{DefaultOnFailure, DefaultOnResponse, TraceLayer};
 use tracing::Level;
 
 use crate::config::Config;
@@ -58,9 +59,23 @@ pub fn app(state: AppState) -> Router {
         .layer(axum::middleware::from_fn(middleware::security))
         .layer(axum::middleware::from_fn(middleware::no_cache))
         .layer(axum::middleware::from_fn(middleware::server_timing))
+        .layer(axum::middleware::from_fn(middleware::trace_id))
         .layer(
             TraceLayer::new_for_http()
-                .make_span_with(DefaultMakeSpan::new().level(Level::INFO))
+                .make_span_with(|request: &axum::extract::Request| {
+                    let request_id = request
+                        .headers()
+                        .get("x-request-id")
+                        .and_then(|v| v.to_str().ok());
+                    tracing::info_span!(
+                        "request",
+                        method = %request.method(),
+                        uri = %request.uri(),
+                        version = ?request.version(),
+                        request_id,
+                        trace_id = tracing::field::Empty,
+                    )
+                })
                 .on_response(DefaultOnResponse::new().level(Level::INFO))
                 // Errors are logged where they happen, so a failure here would
                 // be a duplicate Sentry issue. WARN keeps it as a breadcrumb.

@@ -7,6 +7,7 @@ use axum::http::StatusCode;
 use cornucopia::queries::scheduled_recipe::delete_scheduled_recipe;
 
 use crate::AppState;
+use crate::db::Db;
 use crate::error::ApiError;
 use crate::extract::calendar::Calendar;
 use crate::realtime::publish_calendar_event_deleted;
@@ -23,7 +24,7 @@ pub async fn event_delete_view(
     calendar: Calendar,
     Path(scheduled_recipe_id): Path<i32>,
 ) -> Result<StatusCode, ApiError> {
-    let client = state.pool.get().await?;
+    let client = Db::get(&state.pool).await?;
     delete_scheduled_recipe()
         .bind(
             &client,
