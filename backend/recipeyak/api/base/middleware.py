@@ -90,7 +90,14 @@ class RequestQueueTimingMiddleware:
         except ValueError:
             pass
         else:
-            timings.insert(0, f"queue;dur={max(queue_time, 0):.1f}")
+            queue_time = max(queue_time, 0)
+            timings.insert(0, f"queue;dur={queue_time:.1f}")
+            if (span := sentry_sdk.get_current_span()) is not None:
+                transaction = span.containing_transaction
+                if transaction is not None:
+                    transaction.set_data(
+                        "http.server.request.time_in_queue", queue_time
+                    )
 
         existing = response.get("Server-Timing")
         response["Server-Timing"] = ", ".join(

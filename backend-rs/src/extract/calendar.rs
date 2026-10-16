@@ -17,6 +17,7 @@ pub struct Calendar {
 impl FromRequestParts<AppState> for Calendar {
     type Rejection = ApiError;
 
+    #[tracing::instrument(name = "Calendar", skip_all, fields(sentry.op = "extract"))]
     async fn from_request_parts(
         parts: &mut Parts,
         state: &AppState,

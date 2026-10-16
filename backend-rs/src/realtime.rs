@@ -42,7 +42,11 @@ pub async fn publish_calendar_event_deleted(
 
 async fn publish(state: &AppState, channel: &str, name: &str, data: &impl Serialize) {
     let Some(api_key) = &state.config.ably_api_key else {
-        tracing::warn!(channel, name, "ABLY_API_KEY not set, skipping publish");
+        tracing::warn!(
+            channel,
+            name,
+            "RECIPEYAK_RS_ABLY_API_KEY not set, skipping publish"
+        );
         return;
     };
     if let Err(err) = try_publish(state, api_key, channel, name, data).await {
@@ -58,7 +62,9 @@ async fn try_publish(
     data: &impl Serialize,
 ) -> Result<(), Box<dyn std::error::Error>> {
     // Ably API keys are `{key name}:{key secret}`, used as basic auth.
-    let (username, password) = api_key.split_once(':').ok_or("invalid ABLY_API_KEY")?;
+    let (username, password) = api_key
+        .split_once(':')
+        .ok_or("invalid RECIPEYAK_RS_ABLY_API_KEY")?;
     let mut url = state.config.ably_url.clone();
     url.path_segments_mut()
         .map_err(|_| "invalid ably url")?

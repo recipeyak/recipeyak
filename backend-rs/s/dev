@@ -6,5 +6,8 @@ set -a
 # shellcheck source=/dev/null
 source ../backend/.env
 set +a
+export RECIPEYAK_RS_DATABASE_URL="$DATABASE_URL"
+export RECIPEYAK_RS_STORAGE_HOSTNAME="$STORAGE_HOSTNAME"
+export RECIPEYAK_RS_ABLY_API_KEY="${ABLY_API_KEY:-}"
 
 cargo run "$@"

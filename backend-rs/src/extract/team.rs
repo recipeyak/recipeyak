@@ -15,6 +15,7 @@ pub struct Team {
 impl FromRequestParts<AppState> for Team {
     type Rejection = ApiError;
 
+    #[tracing::instrument(name = "Team", skip_all, fields(sentry.op = "extract"))]
     async fn from_request_parts(
         parts: &mut Parts,
         state: &AppState,

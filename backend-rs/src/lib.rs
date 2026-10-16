@@ -1,4 +1,5 @@
 pub mod config;
+pub mod db;
 mod error;
 mod extract;
 mod middleware;
@@ -9,21 +10,22 @@ mod urls;
 use std::sync::Arc;
 use std::time::Duration;
 
+use crate::db::DbPool;
 use axum::Router;
 use axum::extract::State;
 use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 use axum::routing::get;
-use deadpool_postgres::Pool;
+use sentry::integrations::tower::{NewSentryLayer, SentryHttpLayer};
 use tower_http::timeout::TimeoutLayer;
-use tower_http::trace::{DefaultMakeSpan, DefaultOnResponse, TraceLayer};
+use tower_http::trace::{DefaultOnFailure, DefaultOnResponse, TraceLayer};
 use tracing::Level;
 
 use crate::config::Config;
 
 #[derive(Clone)]
 pub struct AppState {
-    pub pool: Pool,
+    pub pool: DbPool,
     pub config: Arc<Config>,
     pub http: reqwest::Client,
 }
@@ -45,21 +47,51 @@ pub fn app(state: AppState) -> Router {
             StatusCode::SERVICE_UNAVAILABLE,
             Duration::from_secs(30),
         ))
+        // TimeoutLayer doesn't log, and nothing else returns a 503, so this
+        // is what reports timeouts to Sentry.
+        .layer(axum::middleware::map_response(|response: Response| async {
+            if response.status() == StatusCode::SERVICE_UNAVAILABLE {
+                tracing::error!("request timed out");
+            }
+            response
+        }))
         .layer(axum::middleware::from_fn(middleware::vary_cookie))
         .layer(axum::middleware::from_fn(middleware::security))
         .layer(axum::middleware::from_fn(middleware::no_cache))
         .layer(axum::middleware::from_fn(middleware::server_timing))
+        .layer(axum::middleware::from_fn(middleware::trace_id))
         .layer(
             TraceLayer::new_for_http()
-                .make_span_with(DefaultMakeSpan::new().level(Level::INFO))
-                .on_response(DefaultOnResponse::new().level(Level::INFO)),
+                .make_span_with(|request: &axum::extract::Request| {
+                    let request_id = request
+                        .headers()
+                        .get("x-request-id")
+                        .and_then(|v| v.to_str().ok());
+                    tracing::info_span!(
+                        "request",
+                        method = %request.method(),
+                        uri = %request.uri(),
+                        version = ?request.version(),
+                        request_id,
+                        trace_id = tracing::field::Empty,
+                    )
+                })
+                .on_response(DefaultOnResponse::new().level(Level::INFO))
+                // Errors are logged where they happen, so a failure here would
+                // be a duplicate Sentry issue. WARN keeps it as a breadcrumb.
+                .on_failure(DefaultOnFailure::new().level(Level::WARN)),
         )
+        // Outermost so the request spans above are children of the Sentry
+        // transaction. Layers apply bottom-up: bind a hub per request, then
+        // start the transaction.
+        .layer(SentryHttpLayer::new().enable_transaction())
+        .layer(NewSentryLayer::new_from_top())
         .with_state(state)
 }
 
 async fn readiness(State(state): State<AppState>) -> Response {
     let result = async {
-        let client = state.pool.get().await?;
+        let client = state.pool.untraced().get().await?;
         client.query_one("SELECT 1", &[]).await?;
         Ok::<_, Box<dyn std::error::Error>>(())
     };
