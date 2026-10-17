@@ -5,6 +5,7 @@ mod extract;
 mod middleware;
 mod realtime;
 mod routes;
+pub mod storage;
 mod urls;
 
 use std::sync::Arc;

@@ -1,6 +1,7 @@
 //! Routes that are part of the UI's API and included in the OpenAPI schema.
 
 pub mod calendar;
+pub mod upload;
 
 use utoipa_axum::router::OpenApiRouter;
 use utoipa_axum::routes;
@@ -25,4 +26,6 @@ pub fn router() -> OpenApiRouter<AppState> {
         ))
         .routes(routes!(calendar::generate_link_view))
         .routes(routes!(calendar::update_view, calendar::event_delete_view))
+        .routes(routes!(upload::start_view))
+        .routes(routes!(upload::complete_view))
 }

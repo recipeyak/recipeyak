@@ -26,6 +26,8 @@ const backendRsRoutes: Array<{ method: string; path: string | RegExp }> = [
   { method: "POST", path: "/api/v1/calendars/" },
   { method: "DELETE", path: /^\/api\/v1\/calendars\/\d+\/$/ },
   { method: "POST", path: /^\/api\/v1\/calendars\/\d+\/pin\/$/ },
+  { method: "POST", path: "/api/v1/upload/" },
+  { method: "POST", path: /^\/api\/v1\/upload\/\d+\/complete$/ },
 ]
 
 function forward(
