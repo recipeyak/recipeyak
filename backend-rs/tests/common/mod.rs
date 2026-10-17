@@ -21,6 +21,7 @@ use deadpool_postgres::{Manager, Pool};
 use recipeyak::AppState;
 use recipeyak::config::Config;
 use recipeyak::db::DbPool;
+use recipeyak::storage::S3;
 use serde_json::Value;
 use tokio::sync::OnceCell;
 use tokio_postgres::types::ToSql;
@@ -202,6 +203,7 @@ impl TestApp {
         let config = Config {
             database_url: String::new(),
             storage_url: "https://images.test".parse().unwrap(),
+            s3: S3::new("test-bucket".into(), "AKIDEXAMPLE", "secret"),
             port: 0,
             ably_api_key: Some(ABLY_API_KEY.into()),
             ably_url: ably.url.parse().unwrap(),

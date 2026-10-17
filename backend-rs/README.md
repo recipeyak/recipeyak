@@ -9,6 +9,7 @@ curl -b sessionid=... 'localhost:8001/api/v1/calendar/?start=2026-09-06&end=2026
 ```
 
 Env vars, all prefixed with `RECIPEYAK_RS_`: `DATABASE_URL`, `STORAGE_HOSTNAME`,
+`STORAGE_BUCKET_NAME`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`,
 `ABLY_API_KEY` (realtime updates are skipped when unset), `PORT` (default
 8001), `LOG` (a `tracing` filter, default `info`), and `SENTRY_DSN`,
 `SENTRY_RELEASE`, `SENTRY_ENVIRONMENT` (Sentry is disabled when `SENTRY_DSN` is
