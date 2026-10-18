@@ -7,6 +7,7 @@ use deadpool_postgres::{Manager, ManagerConfig, Pool, RecyclingMethod, Runtime};
 use recipeyak::config::Config;
 use recipeyak::db::DbPool;
 use recipeyak::{AppState, app, openapi};
+use tokio::signal::unix::{SignalKind, signal};
 use tokio_postgres::NoTls;
 use tracing_subscriber::EnvFilter;
 use tracing_subscriber::prelude::*;
@@ -114,9 +115,15 @@ async fn serve() {
 
     let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
     tracing::info!("listening on {addr}");
+    // `docker stop` sends SIGTERM, which PID 1 ignores unless it's handled, so
+    // without this docker waits 10s and SIGKILLs us mid-request.
+    let mut sigterm = signal(SignalKind::terminate()).unwrap();
     axum::serve(listener, app(state))
-        .with_graceful_shutdown(async {
-            tokio::signal::ctrl_c().await.ok();
+        .with_graceful_shutdown(async move {
+            tokio::select! {
+                _ = tokio::signal::ctrl_c() => {}
+                _ = sigterm.recv() => {}
+            }
         })
         .await
         .unwrap();
