@@ -448,3 +448,24 @@ pub async fn set_primary_image(pool: &Pool, recipe_id: i32, key: &str) -> i32 {
     .await;
     upload_id
 }
+
+pub async fn create_note(pool: &Pool, recipe_id: i32, user_id: i32, text: &str) -> i32 {
+    insert(
+        pool,
+        "INSERT INTO core_note (text, created_by_id, recipe_id, created, modified)
+         VALUES ($1, $2, $3, now(), now()) RETURNING id",
+        &[&text, &user_id, &recipe_id],
+    )
+    .await
+}
+
+/// A completed upload by the user that isn't attached to anything.
+pub async fn create_upload(pool: &Pool, user_id: i32, key: &str) -> i32 {
+    insert(
+        pool,
+        "INSERT INTO core_upload (bucket, key, content_type, completed, created_by_id, created, modified)
+         VALUES ('test-bucket', $1, 'image/jpeg', true, $2, now(), now()) RETURNING id",
+        &[&key, &user_id],
+    )
+    .await
+}
