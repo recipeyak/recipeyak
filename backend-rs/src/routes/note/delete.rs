@@ -4,7 +4,9 @@
 
 use axum::extract::{Path, State};
 use axum::http::StatusCode;
-use cornucopia::queries::note::delete_note;
+use cornucopia::queries::note::{
+    delete_note, delete_note_reactions, delete_note_versions, detach_uploads, team_note,
+};
 
 use crate::AppState;
 use crate::error::ApiError;
@@ -25,14 +27,20 @@ pub async fn delete_view(
     team: Team,
     Path(note_id): Path<i32>,
 ) -> Result<StatusCode, ApiError> {
-    let client = state.pool.get().await?;
+    let mut client = state.pool.get().await?;
+    let note = team_note().bind(&client, &note_id, &team.id).opt().await?;
     // Deleting a missing note, or someone else's, is a no-op like Django.
-    if let Some(recipe_id) = delete_note()
-        .bind(&client, &note_id, &user.id, &team.id)
-        .opt()
-        .await?
-    {
-        publish_recipe(&state, recipe_id, team.id).await;
-    }
+    let Some(note) = note.filter(|n| n.created_by_id == user.id) else {
+        return Ok(StatusCode::NO_CONTENT);
+    };
+
+    let tx = client.transaction().await?;
+    delete_note_reactions().bind(&tx, &note_id).await?;
+    delete_note_versions().bind(&tx, &note_id).await?;
+    detach_uploads().bind(&tx, &note_id).await?;
+    delete_note().bind(&tx, &note_id).await?;
+    tx.commit().await?;
+
+    publish_recipe(&state, note.recipe_id, team.id).await;
     Ok(StatusCode::NO_CONTENT)
 }

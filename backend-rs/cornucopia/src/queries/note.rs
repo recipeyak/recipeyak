@@ -6,25 +6,27 @@ pub struct TeamNoteParams {
     pub team_id: i32,
 }
 #[derive(Debug)]
-pub struct InsertNoteParams<T1: crate::StringSql, T2: crate::ArraySql<Item = i32>> {
+pub struct InsertNoteParams<T1: crate::StringSql> {
     pub text: T1,
     pub user_id: i32,
     pub recipe_id: i32,
     pub team_id: i32,
-    pub upload_ids: T2,
 }
 #[derive(Debug)]
-pub struct UpdateNoteParams<T1: crate::ArraySql<Item = i32>, T2: crate::StringSql> {
-    pub user_id: i32,
+pub struct UpdateNoteParams<T1: crate::StringSql> {
+    pub text: Option<T1>,
     pub id: i32,
-    pub upload_ids: Option<T1>,
-    pub text: Option<T2>,
 }
 #[derive(Clone, Copy, Debug)]
-pub struct DeleteNoteParams {
-    pub id: i32,
+pub struct InsertNoteVersionParams {
+    pub actor_id: i32,
+    pub note_id: i32,
+}
+#[derive(Debug)]
+pub struct AttachUploadsParams<T1: crate::ArraySql<Item = i32>> {
+    pub note_id: i32,
+    pub upload_ids: T1,
     pub user_id: i32,
-    pub team_id: i32,
 }
 #[derive(Debug)]
 pub struct InsertReactionParams<T1: crate::StringSql> {
@@ -788,11 +790,10 @@ impl<'c, 'a, 's, C: GenericClient>
 }
 pub struct InsertNoteStmt(&'static str, Option<tokio_postgres::Statement>);
 /// Only adds notes to recipes that belong to the team, like
-/// `get_object_or_404(filter_recipes(team=team), ...)`. Like Django's
-/// `QuerySet.update`, attaching uploads doesn't touch their `modified`.
+/// `get_object_or_404(filter_recipes(team=team), ...)`.
 pub fn insert_note() -> InsertNoteStmt {
     InsertNoteStmt(
-        "WITH note AS ( INSERT INTO core_note (text, created_by_id, last_modified_by_id, recipe_id, created, modified) SELECT $1, $2, $2, r.id, now(), now() FROM core_recipe r WHERE r.id = $3 AND r.team_id = $4 RETURNING id ), uploads AS ( UPDATE core_upload SET note_id = note.id FROM note WHERE core_upload.id = ANY($5) AND core_upload.created_by_id = $2 ) SELECT id FROM note",
+        "INSERT INTO core_note (text, created_by_id, last_modified_by_id, recipe_id, created, modified) SELECT $1, $2, $2, r.id, now(), now() FROM core_recipe r WHERE r.id = $3 AND r.team_id = $4 RETURNING id",
         None,
     )
 }
@@ -804,25 +805,17 @@ impl InsertNoteStmt {
         self.1 = Some(client.prepare(self.0).await?);
         Ok(self)
     }
-    pub fn bind<
-        'c,
-        'a,
-        's,
-        C: GenericClient,
-        T1: crate::StringSql,
-        T2: crate::ArraySql<Item = i32>,
-    >(
+    pub fn bind<'c, 'a, 's, C: GenericClient, T1: crate::StringSql>(
         &'s self,
         client: &'c C,
         text: &'a T1,
         user_id: &'a i32,
         recipe_id: &'a i32,
         team_id: &'a i32,
-        upload_ids: &'a T2,
-    ) -> I32Query<'c, 'a, 's, C, i32, 5> {
+    ) -> I32Query<'c, 'a, 's, C, i32, 4> {
         I32Query {
             client,
-            params: [text, user_id, recipe_id, team_id, upload_ids],
+            params: [text, user_id, recipe_id, team_id],
             query: self.0,
             cached: self.1.as_ref(),
             extractor: |row| Ok(row.try_get(0)?),
@@ -830,38 +823,34 @@ impl InsertNoteStmt {
         }
     }
 }
-impl<'c, 'a, 's, C: GenericClient, T1: crate::StringSql, T2: crate::ArraySql<Item = i32>>
+impl<'c, 'a, 's, C: GenericClient, T1: crate::StringSql>
     crate::client::async_::Params<
         'c,
         'a,
         's,
-        InsertNoteParams<T1, T2>,
-        I32Query<'c, 'a, 's, C, i32, 5>,
+        InsertNoteParams<T1>,
+        I32Query<'c, 'a, 's, C, i32, 4>,
         C,
     > for InsertNoteStmt
 {
     fn params(
         &'s self,
         client: &'c C,
-        params: &'a InsertNoteParams<T1, T2>,
-    ) -> I32Query<'c, 'a, 's, C, i32, 5> {
+        params: &'a InsertNoteParams<T1>,
+    ) -> I32Query<'c, 'a, 's, C, i32, 4> {
         self.bind(
             client,
             &params.text,
             &params.user_id,
             &params.recipe_id,
             &params.team_id,
-            &params.upload_ids,
         )
     }
 }
 pub struct UpdateNoteStmt(&'static str, Option<tokio_postgres::Statement>);
-/// Records the note's current state like `save_note_version`, then replaces
-/// its uploads when `upload_ids` is set. A statement can't update a row
-/// twice, so uploads that stay attached are skipped when detaching.
 pub fn update_note() -> UpdateNoteStmt {
     UpdateNoteStmt(
-        "WITH version AS ( INSERT INTO note_historical (note_id, actor_id, text, upload_ids, created, modified) SELECT n.id, $1, n.text, ARRAY(SELECT id FROM core_upload WHERE note_id = n.id), now(), now() FROM core_note n WHERE n.id = $2 ), detached AS ( UPDATE core_upload SET note_id = NULL WHERE note_id = $2 AND $3::int[] IS NOT NULL AND NOT (id = ANY($3) AND created_by_id IS NOT DISTINCT FROM $1) ), attached AS ( UPDATE core_upload SET note_id = $2 WHERE id = ANY($3) AND created_by_id = $1 ) UPDATE core_note SET text = COALESCE($4, text), modified = now() WHERE id = $2",
+        "UPDATE core_note SET text = COALESCE($1, text), modified = now() WHERE id = $2",
         None,
     )
 }
@@ -873,32 +862,21 @@ impl UpdateNoteStmt {
         self.1 = Some(client.prepare(self.0).await?);
         Ok(self)
     }
-    pub async fn bind<
-        'c,
-        'a,
-        's,
-        C: GenericClient,
-        T1: crate::ArraySql<Item = i32>,
-        T2: crate::StringSql,
-    >(
+    pub async fn bind<'c, 'a, 's, C: GenericClient, T1: crate::StringSql>(
         &'s self,
         client: &'c C,
-        user_id: &'a i32,
+        text: &'a Option<T1>,
         id: &'a i32,
-        upload_ids: &'a Option<T1>,
-        text: &'a Option<T2>,
     ) -> Result<u64, tokio_postgres::Error> {
-        client
-            .execute(self.0, &[user_id, id, upload_ids, text])
-            .await
+        client.execute(self.0, &[text, id]).await
     }
 }
-impl<'a, C: GenericClient + Send + Sync, T1: crate::ArraySql<Item = i32>, T2: crate::StringSql>
+impl<'a, C: GenericClient + Send + Sync, T1: crate::StringSql>
     crate::client::async_::Params<
         'a,
         'a,
         'a,
-        UpdateNoteParams<T1, T2>,
+        UpdateNoteParams<T1>,
         std::pin::Pin<
             Box<dyn futures::Future<Output = Result<u64, tokio_postgres::Error>> + Send + 'a>,
         >,
@@ -908,27 +886,176 @@ impl<'a, C: GenericClient + Send + Sync, T1: crate::ArraySql<Item = i32>, T2: cr
     fn params(
         &'a self,
         client: &'a C,
-        params: &'a UpdateNoteParams<T1, T2>,
+        params: &'a UpdateNoteParams<T1>,
     ) -> std::pin::Pin<
         Box<dyn futures::Future<Output = Result<u64, tokio_postgres::Error>> + Send + 'a>,
     > {
-        Box::pin(self.bind(
-            client,
-            &params.user_id,
-            &params.id,
-            &params.upload_ids,
-            &params.text,
-        ))
+        Box::pin(self.bind(client, &params.text, &params.id))
+    }
+}
+pub struct InsertNoteVersionStmt(&'static str, Option<tokio_postgres::Statement>);
+/// `save_note_version`, which records the note before it's changed.
+pub fn insert_note_version() -> InsertNoteVersionStmt {
+    InsertNoteVersionStmt(
+        "INSERT INTO note_historical (note_id, actor_id, text, upload_ids, created, modified) SELECT n.id, $1, n.text, ARRAY(SELECT id FROM core_upload WHERE note_id = n.id), now(), now() FROM core_note n WHERE n.id = $2",
+        None,
+    )
+}
+impl InsertNoteVersionStmt {
+    pub async fn prepare<'a, C: GenericClient>(
+        mut self,
+        client: &'a C,
+    ) -> Result<Self, tokio_postgres::Error> {
+        self.1 = Some(client.prepare(self.0).await?);
+        Ok(self)
+    }
+    pub async fn bind<'c, 'a, 's, C: GenericClient>(
+        &'s self,
+        client: &'c C,
+        actor_id: &'a i32,
+        note_id: &'a i32,
+    ) -> Result<u64, tokio_postgres::Error> {
+        client.execute(self.0, &[actor_id, note_id]).await
+    }
+}
+impl<'a, C: GenericClient + Send + Sync>
+    crate::client::async_::Params<
+        'a,
+        'a,
+        'a,
+        InsertNoteVersionParams,
+        std::pin::Pin<
+            Box<dyn futures::Future<Output = Result<u64, tokio_postgres::Error>> + Send + 'a>,
+        >,
+        C,
+    > for InsertNoteVersionStmt
+{
+    fn params(
+        &'a self,
+        client: &'a C,
+        params: &'a InsertNoteVersionParams,
+    ) -> std::pin::Pin<
+        Box<dyn futures::Future<Output = Result<u64, tokio_postgres::Error>> + Send + 'a>,
+    > {
+        Box::pin(self.bind(client, &params.actor_id, &params.note_id))
+    }
+}
+pub struct AttachUploadsStmt(&'static str, Option<tokio_postgres::Statement>);
+/// Like Django's `QuerySet.update`, this doesn't touch `modified`.
+pub fn attach_uploads() -> AttachUploadsStmt {
+    AttachUploadsStmt(
+        "UPDATE core_upload SET note_id = $1 WHERE id = ANY($2) AND created_by_id = $3",
+        None,
+    )
+}
+impl AttachUploadsStmt {
+    pub async fn prepare<'a, C: GenericClient>(
+        mut self,
+        client: &'a C,
+    ) -> Result<Self, tokio_postgres::Error> {
+        self.1 = Some(client.prepare(self.0).await?);
+        Ok(self)
+    }
+    pub async fn bind<'c, 'a, 's, C: GenericClient, T1: crate::ArraySql<Item = i32>>(
+        &'s self,
+        client: &'c C,
+        note_id: &'a i32,
+        upload_ids: &'a T1,
+        user_id: &'a i32,
+    ) -> Result<u64, tokio_postgres::Error> {
+        client
+            .execute(self.0, &[note_id, upload_ids, user_id])
+            .await
+    }
+}
+impl<'a, C: GenericClient + Send + Sync, T1: crate::ArraySql<Item = i32>>
+    crate::client::async_::Params<
+        'a,
+        'a,
+        'a,
+        AttachUploadsParams<T1>,
+        std::pin::Pin<
+            Box<dyn futures::Future<Output = Result<u64, tokio_postgres::Error>> + Send + 'a>,
+        >,
+        C,
+    > for AttachUploadsStmt
+{
+    fn params(
+        &'a self,
+        client: &'a C,
+        params: &'a AttachUploadsParams<T1>,
+    ) -> std::pin::Pin<
+        Box<dyn futures::Future<Output = Result<u64, tokio_postgres::Error>> + Send + 'a>,
+    > {
+        Box::pin(self.bind(client, &params.note_id, &params.upload_ids, &params.user_id))
+    }
+}
+pub struct DetachUploadsStmt(&'static str, Option<tokio_postgres::Statement>);
+pub fn detach_uploads() -> DetachUploadsStmt {
+    DetachUploadsStmt(
+        "UPDATE core_upload SET note_id = NULL WHERE note_id = $1",
+        None,
+    )
+}
+impl DetachUploadsStmt {
+    pub async fn prepare<'a, C: GenericClient>(
+        mut self,
+        client: &'a C,
+    ) -> Result<Self, tokio_postgres::Error> {
+        self.1 = Some(client.prepare(self.0).await?);
+        Ok(self)
+    }
+    pub async fn bind<'c, 'a, 's, C: GenericClient>(
+        &'s self,
+        client: &'c C,
+        note_id: &'a i32,
+    ) -> Result<u64, tokio_postgres::Error> {
+        client.execute(self.0, &[note_id]).await
+    }
+}
+pub struct DeleteNoteReactionsStmt(&'static str, Option<tokio_postgres::Statement>);
+pub fn delete_note_reactions() -> DeleteNoteReactionsStmt {
+    DeleteNoteReactionsStmt("DELETE FROM core_reaction WHERE note_id = $1", None)
+}
+impl DeleteNoteReactionsStmt {
+    pub async fn prepare<'a, C: GenericClient>(
+        mut self,
+        client: &'a C,
+    ) -> Result<Self, tokio_postgres::Error> {
+        self.1 = Some(client.prepare(self.0).await?);
+        Ok(self)
+    }
+    pub async fn bind<'c, 'a, 's, C: GenericClient>(
+        &'s self,
+        client: &'c C,
+        note_id: &'a i32,
+    ) -> Result<u64, tokio_postgres::Error> {
+        client.execute(self.0, &[note_id]).await
+    }
+}
+pub struct DeleteNoteVersionsStmt(&'static str, Option<tokio_postgres::Statement>);
+pub fn delete_note_versions() -> DeleteNoteVersionsStmt {
+    DeleteNoteVersionsStmt("DELETE FROM note_historical WHERE note_id = $1", None)
+}
+impl DeleteNoteVersionsStmt {
+    pub async fn prepare<'a, C: GenericClient>(
+        mut self,
+        client: &'a C,
+    ) -> Result<Self, tokio_postgres::Error> {
+        self.1 = Some(client.prepare(self.0).await?);
+        Ok(self)
+    }
+    pub async fn bind<'c, 'a, 's, C: GenericClient>(
+        &'s self,
+        client: &'c C,
+        note_id: &'a i32,
+    ) -> Result<u64, tokio_postgres::Error> {
+        client.execute(self.0, &[note_id]).await
     }
 }
 pub struct DeleteNoteStmt(&'static str, Option<tokio_postgres::Statement>);
-/// The foreign keys don't cascade in the database, Django deletes the
-/// reactions and versions, and unsets the uploads' note itself.
 pub fn delete_note() -> DeleteNoteStmt {
-    DeleteNoteStmt(
-        "WITH note AS ( SELECT n.id FROM core_note n JOIN core_recipe r ON r.id = n.recipe_id WHERE n.id = $1 AND n.created_by_id = $2 AND r.team_id = $3 ), reactions AS ( DELETE FROM core_reaction WHERE note_id IN (SELECT id FROM note) ), versions AS ( DELETE FROM note_historical WHERE note_id IN (SELECT id FROM note) ), uploads AS ( UPDATE core_upload SET note_id = NULL WHERE note_id IN (SELECT id FROM note) ) DELETE FROM core_note WHERE id IN (SELECT id FROM note) RETURNING recipe_id",
-        None,
-    )
+    DeleteNoteStmt("DELETE FROM core_note WHERE id = $1", None)
 }
 impl DeleteNoteStmt {
     pub async fn prepare<'a, C: GenericClient>(
@@ -938,33 +1065,12 @@ impl DeleteNoteStmt {
         self.1 = Some(client.prepare(self.0).await?);
         Ok(self)
     }
-    pub fn bind<'c, 'a, 's, C: GenericClient>(
+    pub async fn bind<'c, 'a, 's, C: GenericClient>(
         &'s self,
         client: &'c C,
         id: &'a i32,
-        user_id: &'a i32,
-        team_id: &'a i32,
-    ) -> I32Query<'c, 'a, 's, C, i32, 3> {
-        I32Query {
-            client,
-            params: [id, user_id, team_id],
-            query: self.0,
-            cached: self.1.as_ref(),
-            extractor: |row| Ok(row.try_get(0)?),
-            mapper: |it| it,
-        }
-    }
-}
-impl<'c, 'a, 's, C: GenericClient>
-    crate::client::async_::Params<'c, 'a, 's, DeleteNoteParams, I32Query<'c, 'a, 's, C, i32, 3>, C>
-    for DeleteNoteStmt
-{
-    fn params(
-        &'s self,
-        client: &'c C,
-        params: &'a DeleteNoteParams,
-    ) -> I32Query<'c, 'a, 's, C, i32, 3> {
-        self.bind(client, &params.id, &params.user_id, &params.team_id)
+    ) -> Result<u64, tokio_postgres::Error> {
+        client.execute(self.0, &[id]).await
     }
 }
 pub struct InsertReactionStmt(&'static str, Option<tokio_postgres::Statement>);

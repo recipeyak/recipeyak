@@ -4,7 +4,7 @@
 
 use axum::Json;
 use axum::extract::{Path, State};
-use cornucopia::queries::note::insert_note;
+use cornucopia::queries::note::{attach_uploads, insert_note};
 use serde::Deserialize;
 use utoipa::ToSchema;
 
@@ -39,19 +39,17 @@ pub async fn create_view(
 ) -> Result<Json<Note>, ApiError> {
     let upload_ids = parse_upload_ids(&params.attachment_upload_ids)?;
 
-    let client = state.pool.get().await?;
+    let mut client = state.pool.get().await?;
+    let tx = client.transaction().await?;
     let note_id = insert_note()
-        .bind(
-            &client,
-            &params.text,
-            &user.id,
-            &recipe_id,
-            &team.id,
-            &upload_ids,
-        )
+        .bind(&tx, &params.text, &user.id, &recipe_id, &team.id)
         .opt()
         .await?
         .ok_or(ApiError::NotFound)?;
+    attach_uploads()
+        .bind(&tx, &note_id, &upload_ids, &user.id)
+        .await?;
+    tx.commit().await?;
 
     publish_recipe(&state, recipe_id, team.id).await;
 

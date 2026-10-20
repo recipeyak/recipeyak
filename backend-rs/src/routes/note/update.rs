@@ -5,7 +5,9 @@
 use axum::Json;
 use axum::extract::{Path, State};
 use axum::http::StatusCode;
-use cornucopia::queries::note::{team_note, update_note};
+use cornucopia::queries::note::{
+    attach_uploads, detach_uploads, insert_note_version, team_note, update_note,
+};
 use serde::Deserialize;
 use utoipa::ToSchema;
 
@@ -50,7 +52,7 @@ pub async fn update_view(
         .map(|ids| parse_upload_ids(&ids))
         .transpose()?;
 
-    let client = state.pool.get().await?;
+    let mut client = state.pool.get().await?;
     let note = team_note()
         .bind(&client, &note_id, &team.id)
         .opt()
@@ -64,9 +66,16 @@ pub async fn update_view(
         });
     }
 
-    update_note()
-        .bind(&client, &user.id, &note_id, &upload_ids, &text)
-        .await?;
+    let tx = client.transaction().await?;
+    insert_note_version().bind(&tx, &user.id, &note_id).await?;
+    if let Some(upload_ids) = upload_ids {
+        detach_uploads().bind(&tx, &note_id).await?;
+        attach_uploads()
+            .bind(&tx, &note_id, &upload_ids, &user.id)
+            .await?;
+    }
+    update_note().bind(&tx, &text, &note_id).await?;
+    tx.commit().await?;
 
     publish_recipe(&state, note.recipe_id, team.id).await;
 
