@@ -47,7 +47,10 @@ pub async fn create_view(
         .bind(&client, &params.kind.as_str(), &user.id, &note_id)
         .one()
         .await?;
-    let row = reaction().bind(&client, &reaction_id).one().await?;
+    let row = reaction()
+        .bind(&client, &reaction_id, &team.id)
+        .one()
+        .await?;
 
     publish_recipe(&state, note.recipe_id, team.id).await;
     Ok(Json(Reaction::from_row(row, &state.config.storage_url)))

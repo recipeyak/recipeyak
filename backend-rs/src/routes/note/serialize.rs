@@ -130,8 +130,13 @@ impl Note {
         client: &impl GenericClient,
         storage_url: &Url,
         note_id: i32,
+        team_id: i32,
     ) -> Result<Self, ApiError> {
-        let row = note().bind(client, &note_id).one().await?;
+        let row = note()
+            .bind(client, &note_id, &team_id)
+            .opt()
+            .await?
+            .ok_or(ApiError::NotFound)?;
         let attachments = note_attachments().bind(client, &note_id).all().await?;
         let reactions = note_reactions().bind(client, &note_id).all().await?;
 

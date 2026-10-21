@@ -17,7 +17,7 @@ FROM core_note n
 JOIN core_recipe r ON r.id = n.recipe_id
 JOIN core_myuser u ON u.id = n.created_by_id
 LEFT JOIN core_upload profile ON profile.id = u.profile_upload_id
-WHERE n.id = :id;
+WHERE n.id = :id AND r.team_id = :team_id;
 
 --! note_attachments : NoteAttachment
 SELECT id, key, content_type, background_url
@@ -53,9 +53,11 @@ SELECT
     u.email::text AS user_email,
     profile.key AS user_profile_key
 FROM core_reaction re
+JOIN core_note n ON n.id = re.note_id
+JOIN core_recipe r ON r.id = n.recipe_id
 JOIN core_myuser u ON u.id = re.created_by_id
 LEFT JOIN core_upload profile ON profile.id = u.profile_upload_id
-WHERE re.id = :id;
+WHERE re.id = :id AND r.team_id = :team_id;
 
 --! team_note
 --- `filter_notes(team=team).get(pk=...)`

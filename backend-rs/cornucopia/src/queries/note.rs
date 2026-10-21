@@ -1,6 +1,16 @@
 // This file was generated with `cornucopia`. Do not modify.
 
 #[derive(Clone, Copy, Debug)]
+pub struct NoteParams {
+    pub id: i32,
+    pub team_id: i32,
+}
+#[derive(Clone, Copy, Debug)]
+pub struct ReactionParams {
+    pub id: i32,
+    pub team_id: i32,
+}
+#[derive(Clone, Copy, Debug)]
 pub struct TeamNoteParams {
     pub id: i32,
     pub team_id: i32,
@@ -499,7 +509,7 @@ where
 pub struct NoteStmt(&'static str, Option<tokio_postgres::Statement>);
 pub fn note() -> NoteStmt {
     NoteStmt(
-        "SELECT n.id, n.text, n.created, n.modified, u.id AS created_by_id, u.name AS created_by_name, u.email::text AS created_by_email, profile.key AS created_by_profile_key, r.primary_image_id FROM core_note n JOIN core_recipe r ON r.id = n.recipe_id JOIN core_myuser u ON u.id = n.created_by_id LEFT JOIN core_upload profile ON profile.id = u.profile_upload_id WHERE n.id = $1",
+        "SELECT n.id, n.text, n.created, n.modified, u.id AS created_by_id, u.name AS created_by_name, u.email::text AS created_by_email, profile.key AS created_by_profile_key, r.primary_image_id FROM core_note n JOIN core_recipe r ON r.id = n.recipe_id JOIN core_myuser u ON u.id = n.created_by_id LEFT JOIN core_upload profile ON profile.id = u.profile_upload_id WHERE n.id = $1 AND r.team_id = $2",
         None,
     )
 }
@@ -515,10 +525,11 @@ impl NoteStmt {
         &'s self,
         client: &'c C,
         id: &'a i32,
-    ) -> NoteQuery<'c, 'a, 's, C, Note, 1> {
+        team_id: &'a i32,
+    ) -> NoteQuery<'c, 'a, 's, C, Note, 2> {
         NoteQuery {
             client,
-            params: [id],
+            params: [id, team_id],
             query: self.0,
             cached: self.1.as_ref(),
             extractor: |row: &tokio_postgres::Row| -> Result<NoteBorrowed, tokio_postgres::Error> {
@@ -536,6 +547,18 @@ impl NoteStmt {
             },
             mapper: |it| Note::from(it),
         }
+    }
+}
+impl<'c, 'a, 's, C: GenericClient>
+    crate::client::async_::Params<'c, 'a, 's, NoteParams, NoteQuery<'c, 'a, 's, C, Note, 2>, C>
+    for NoteStmt
+{
+    fn params(
+        &'s self,
+        client: &'c C,
+        params: &'a NoteParams,
+    ) -> NoteQuery<'c, 'a, 's, C, Note, 2> {
+        self.bind(client, &params.id, &params.team_id)
     }
 }
 pub struct NoteAttachmentsStmt(&'static str, Option<tokio_postgres::Statement>);
@@ -623,7 +646,7 @@ impl NoteReactionsStmt {
 pub struct ReactionStmt(&'static str, Option<tokio_postgres::Statement>);
 pub fn reaction() -> ReactionStmt {
     ReactionStmt(
-        "SELECT re.id, re.emoji, re.note_id, re.created, u.id AS user_id, u.name AS user_name, u.email::text AS user_email, profile.key AS user_profile_key FROM core_reaction re JOIN core_myuser u ON u.id = re.created_by_id LEFT JOIN core_upload profile ON profile.id = u.profile_upload_id WHERE re.id = $1",
+        "SELECT re.id, re.emoji, re.note_id, re.created, u.id AS user_id, u.name AS user_name, u.email::text AS user_email, profile.key AS user_profile_key FROM core_reaction re JOIN core_note n ON n.id = re.note_id JOIN core_recipe r ON r.id = n.recipe_id JOIN core_myuser u ON u.id = re.created_by_id LEFT JOIN core_upload profile ON profile.id = u.profile_upload_id WHERE re.id = $1 AND r.team_id = $2",
         None,
     )
 }
@@ -639,10 +662,11 @@ impl ReactionStmt {
         &'s self,
         client: &'c C,
         id: &'a i32,
-    ) -> ReactionQuery<'c, 'a, 's, C, Reaction, 1> {
+        team_id: &'a i32,
+    ) -> ReactionQuery<'c, 'a, 's, C, Reaction, 2> {
         ReactionQuery {
             client,
-            params: [id],
+            params: [id, team_id],
             query: self.0,
             cached: self.1.as_ref(),
             extractor:
@@ -660,6 +684,24 @@ impl ReactionStmt {
                 },
             mapper: |it| Reaction::from(it),
         }
+    }
+}
+impl<'c, 'a, 's, C: GenericClient>
+    crate::client::async_::Params<
+        'c,
+        'a,
+        's,
+        ReactionParams,
+        ReactionQuery<'c, 'a, 's, C, Reaction, 2>,
+        C,
+    > for ReactionStmt
+{
+    fn params(
+        &'s self,
+        client: &'c C,
+        params: &'a ReactionParams,
+    ) -> ReactionQuery<'c, 'a, 's, C, Reaction, 2> {
+        self.bind(client, &params.id, &params.team_id)
     }
 }
 pub struct TeamNoteStmt(&'static str, Option<tokio_postgres::Statement>);

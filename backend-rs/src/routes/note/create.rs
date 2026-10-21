@@ -53,6 +53,6 @@ pub async fn create_view(
 
     publish_recipe(&state, recipe_id, team.id).await;
 
-    let note = Note::load(&client, &state.config.storage_url, note_id).await?;
+    let note = Note::load(&client, &state.config.storage_url, note_id, team.id).await?;
     Ok(Json(note))
 }
