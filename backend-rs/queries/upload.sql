@@ -5,17 +5,13 @@ INSERT INTO core_upload (created_by_id, bucket, key, recipe_id, profile_id, cont
 VALUES (:created_by_id, :bucket, :key, :recipe_id, :profile_id, :content_type, false, now(), now())
 RETURNING id;
 
---! complete_upload
---- Also sets the upload as the user's avatar when it's for their profile.
-WITH upload AS (
-    UPDATE core_upload
-    SET completed = true, modified = now()
-    WHERE id = :id AND created_by_id = :user_id
-    RETURNING id, key, content_type, profile_id
-), profile AS (
-    UPDATE core_myuser u
-    SET profile_upload_id = upload.id, last_updated = current_date
-    FROM upload
-    WHERE u.id = upload.profile_id
-)
-SELECT id, key, content_type FROM upload;
+--! complete_upload : (profile_id?)
+UPDATE core_upload
+SET completed = true, modified = now()
+WHERE id = :id AND created_by_id = :user_id
+RETURNING id, key, content_type, profile_id;
+
+--! set_profile_upload
+UPDATE core_myuser
+SET profile_upload_id = :upload_id, last_updated = current_date
+WHERE id = :user_id;

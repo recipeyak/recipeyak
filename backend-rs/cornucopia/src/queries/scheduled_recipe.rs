@@ -21,11 +21,21 @@ pub struct InsertScheduledRecipeParams {
     pub recipe_id: i32,
 }
 #[derive(Clone, Copy, Debug)]
-pub struct RescheduleRecipeParams {
+pub struct ScheduledRecipeOnForUpdateParams {
     pub id: i32,
     pub team_id: i32,
     pub calendar_id: i32,
+}
+#[derive(Clone, Copy, Debug)]
+pub struct RescheduleRecipeParams {
     pub on: chrono::NaiveDate,
+    pub id: i32,
+}
+#[derive(Clone, Copy, Debug)]
+pub struct InsertScheduleEventParams {
+    pub scheduled_recipe_id: i32,
+    pub before_on: chrono::NaiveDate,
+    pub after_on: chrono::NaiveDate,
     pub actor_id: i32,
 }
 #[derive(Clone, Copy, Debug)]
@@ -187,6 +197,73 @@ where
 {
     pub fn map<R>(self, mapper: fn(i32) -> R) -> I32Query<'c, 'a, 's, C, R, N> {
         I32Query {
+            client: self.client,
+            params: self.params,
+            query: self.query,
+            cached: self.cached,
+            extractor: self.extractor,
+            mapper,
+        }
+    }
+    pub async fn one(self) -> Result<T, tokio_postgres::Error> {
+        let row =
+            crate::client::async_::one(self.client, self.query, &self.params, self.cached).await?;
+        Ok((self.mapper)((self.extractor)(&row)?))
+    }
+    pub async fn all(self) -> Result<Vec<T>, tokio_postgres::Error> {
+        self.iter().await?.try_collect().await
+    }
+    pub async fn opt(self) -> Result<Option<T>, tokio_postgres::Error> {
+        let opt_row =
+            crate::client::async_::opt(self.client, self.query, &self.params, self.cached).await?;
+        Ok(opt_row
+            .map(|row| {
+                let extracted = (self.extractor)(&row)?;
+                Ok((self.mapper)(extracted))
+            })
+            .transpose()?)
+    }
+    pub async fn iter(
+        self,
+    ) -> Result<
+        impl futures::Stream<Item = Result<T, tokio_postgres::Error>> + 'c,
+        tokio_postgres::Error,
+    > {
+        let stream = crate::client::async_::raw(
+            self.client,
+            self.query,
+            crate::slice_iter(&self.params),
+            self.cached,
+        )
+        .await?;
+        let mapped = stream
+            .map(move |res| {
+                res.and_then(|row| {
+                    let extracted = (self.extractor)(&row)?;
+                    Ok((self.mapper)(extracted))
+                })
+            })
+            .into_stream();
+        Ok(mapped)
+    }
+}
+pub struct ChronoNaiveDateQuery<'c, 'a, 's, C: GenericClient, T, const N: usize> {
+    client: &'c C,
+    params: [&'a (dyn postgres_types::ToSql + Sync); N],
+    query: &'static str,
+    cached: Option<&'s tokio_postgres::Statement>,
+    extractor: fn(&tokio_postgres::Row) -> Result<chrono::NaiveDate, tokio_postgres::Error>,
+    mapper: fn(chrono::NaiveDate) -> T,
+}
+impl<'c, 'a, 's, C, T: 'c, const N: usize> ChronoNaiveDateQuery<'c, 'a, 's, C, T, N>
+where
+    C: GenericClient,
+{
+    pub fn map<R>(
+        self,
+        mapper: fn(chrono::NaiveDate) -> R,
+    ) -> ChronoNaiveDateQuery<'c, 'a, 's, C, R, N> {
+        ChronoNaiveDateQuery {
             client: self.client,
             params: self.params,
             query: self.query,
@@ -444,15 +521,14 @@ impl<'c, 'a, 's, C: GenericClient>
         )
     }
 }
-pub struct RescheduleRecipeStmt(&'static str, Option<tokio_postgres::Statement>);
-/// Moves the scheduled recipe and records the change as a ScheduleEvent.
-pub fn reschedule_recipe() -> RescheduleRecipeStmt {
-    RescheduleRecipeStmt(
-        "WITH old AS ( SELECT id, \"on\" FROM core_scheduledrecipe WHERE id = $1 AND team_id = $2 AND calendar_id = $3 FOR UPDATE ), updated AS ( UPDATE core_scheduledrecipe sr SET \"on\" = $4, modified = now() FROM old WHERE sr.id = old.id RETURNING sr.id, old.\"on\" AS before_on ) INSERT INTO schedule_event (scheduled_recipe_id, before_on, after_on, actor_id, created, modified) SELECT id, before_on, $4, $5, now(), now() FROM updated RETURNING scheduled_recipe_id",
+pub struct ScheduledRecipeOnForUpdateStmt(&'static str, Option<tokio_postgres::Statement>);
+pub fn scheduled_recipe_on_for_update() -> ScheduledRecipeOnForUpdateStmt {
+    ScheduledRecipeOnForUpdateStmt(
+        "SELECT \"on\" FROM core_scheduledrecipe WHERE id = $1 AND team_id = $2 AND calendar_id = $3 FOR UPDATE",
         None,
     )
 }
-impl RescheduleRecipeStmt {
+impl ScheduledRecipeOnForUpdateStmt {
     pub async fn prepare<'a, C: GenericClient>(
         mut self,
         client: &'a C,
@@ -466,12 +542,10 @@ impl RescheduleRecipeStmt {
         id: &'a i32,
         team_id: &'a i32,
         calendar_id: &'a i32,
-        on: &'a chrono::NaiveDate,
-        actor_id: &'a i32,
-    ) -> I32Query<'c, 'a, 's, C, i32, 5> {
-        I32Query {
+    ) -> ChronoNaiveDateQuery<'c, 'a, 's, C, chrono::NaiveDate, 3> {
+        ChronoNaiveDateQuery {
             client,
-            params: [id, team_id, calendar_id, on, actor_id],
+            params: [id, team_id, calendar_id],
             query: self.0,
             cached: self.1.as_ref(),
             extractor: |row| Ok(row.try_get(0)?),
@@ -484,32 +558,153 @@ impl<'c, 'a, 's, C: GenericClient>
         'c,
         'a,
         's,
-        RescheduleRecipeParams,
-        I32Query<'c, 'a, 's, C, i32, 5>,
+        ScheduledRecipeOnForUpdateParams,
+        ChronoNaiveDateQuery<'c, 'a, 's, C, chrono::NaiveDate, 3>,
         C,
-    > for RescheduleRecipeStmt
+    > for ScheduledRecipeOnForUpdateStmt
 {
     fn params(
         &'s self,
         client: &'c C,
+        params: &'a ScheduledRecipeOnForUpdateParams,
+    ) -> ChronoNaiveDateQuery<'c, 'a, 's, C, chrono::NaiveDate, 3> {
+        self.bind(client, &params.id, &params.team_id, &params.calendar_id)
+    }
+}
+pub struct RescheduleRecipeStmt(&'static str, Option<tokio_postgres::Statement>);
+pub fn reschedule_recipe() -> RescheduleRecipeStmt {
+    RescheduleRecipeStmt(
+        "UPDATE core_scheduledrecipe SET \"on\" = $1, modified = now() WHERE id = $2",
+        None,
+    )
+}
+impl RescheduleRecipeStmt {
+    pub async fn prepare<'a, C: GenericClient>(
+        mut self,
+        client: &'a C,
+    ) -> Result<Self, tokio_postgres::Error> {
+        self.1 = Some(client.prepare(self.0).await?);
+        Ok(self)
+    }
+    pub async fn bind<'c, 'a, 's, C: GenericClient>(
+        &'s self,
+        client: &'c C,
+        on: &'a chrono::NaiveDate,
+        id: &'a i32,
+    ) -> Result<u64, tokio_postgres::Error> {
+        client.execute(self.0, &[on, id]).await
+    }
+}
+impl<'a, C: GenericClient + Send + Sync>
+    crate::client::async_::Params<
+        'a,
+        'a,
+        'a,
+        RescheduleRecipeParams,
+        std::pin::Pin<
+            Box<dyn futures::Future<Output = Result<u64, tokio_postgres::Error>> + Send + 'a>,
+        >,
+        C,
+    > for RescheduleRecipeStmt
+{
+    fn params(
+        &'a self,
+        client: &'a C,
         params: &'a RescheduleRecipeParams,
-    ) -> I32Query<'c, 'a, 's, C, i32, 5> {
-        self.bind(
+    ) -> std::pin::Pin<
+        Box<dyn futures::Future<Output = Result<u64, tokio_postgres::Error>> + Send + 'a>,
+    > {
+        Box::pin(self.bind(client, &params.on, &params.id))
+    }
+}
+pub struct InsertScheduleEventStmt(&'static str, Option<tokio_postgres::Statement>);
+pub fn insert_schedule_event() -> InsertScheduleEventStmt {
+    InsertScheduleEventStmt(
+        "INSERT INTO schedule_event (scheduled_recipe_id, before_on, after_on, actor_id, created, modified) VALUES ($1, $2, $3, $4, now(), now())",
+        None,
+    )
+}
+impl InsertScheduleEventStmt {
+    pub async fn prepare<'a, C: GenericClient>(
+        mut self,
+        client: &'a C,
+    ) -> Result<Self, tokio_postgres::Error> {
+        self.1 = Some(client.prepare(self.0).await?);
+        Ok(self)
+    }
+    pub async fn bind<'c, 'a, 's, C: GenericClient>(
+        &'s self,
+        client: &'c C,
+        scheduled_recipe_id: &'a i32,
+        before_on: &'a chrono::NaiveDate,
+        after_on: &'a chrono::NaiveDate,
+        actor_id: &'a i32,
+    ) -> Result<u64, tokio_postgres::Error> {
+        client
+            .execute(
+                self.0,
+                &[scheduled_recipe_id, before_on, after_on, actor_id],
+            )
+            .await
+    }
+}
+impl<'a, C: GenericClient + Send + Sync>
+    crate::client::async_::Params<
+        'a,
+        'a,
+        'a,
+        InsertScheduleEventParams,
+        std::pin::Pin<
+            Box<dyn futures::Future<Output = Result<u64, tokio_postgres::Error>> + Send + 'a>,
+        >,
+        C,
+    > for InsertScheduleEventStmt
+{
+    fn params(
+        &'a self,
+        client: &'a C,
+        params: &'a InsertScheduleEventParams,
+    ) -> std::pin::Pin<
+        Box<dyn futures::Future<Output = Result<u64, tokio_postgres::Error>> + Send + 'a>,
+    > {
+        Box::pin(self.bind(
             client,
-            &params.id,
-            &params.team_id,
-            &params.calendar_id,
-            &params.on,
+            &params.scheduled_recipe_id,
+            &params.before_on,
+            &params.after_on,
             &params.actor_id,
-        )
+        ))
+    }
+}
+pub struct DeleteScheduleEventsStmt(&'static str, Option<tokio_postgres::Statement>);
+/// The foreign keys don't cascade in the database, Django deletes the
+/// ScheduleEvents itself.
+pub fn delete_schedule_events() -> DeleteScheduleEventsStmt {
+    DeleteScheduleEventsStmt(
+        "DELETE FROM schedule_event WHERE scheduled_recipe_id = $1",
+        None,
+    )
+}
+impl DeleteScheduleEventsStmt {
+    pub async fn prepare<'a, C: GenericClient>(
+        mut self,
+        client: &'a C,
+    ) -> Result<Self, tokio_postgres::Error> {
+        self.1 = Some(client.prepare(self.0).await?);
+        Ok(self)
+    }
+    pub async fn bind<'c, 'a, 's, C: GenericClient>(
+        &'s self,
+        client: &'c C,
+        scheduled_recipe_id: &'a i32,
+    ) -> Result<u64, tokio_postgres::Error> {
+        client.execute(self.0, &[scheduled_recipe_id]).await
     }
 }
 pub struct DeleteScheduledRecipeStmt(&'static str, Option<tokio_postgres::Statement>);
-/// The foreign keys don't cascade in the database, Django deletes the
-/// ScheduleEvents itself.
 pub fn delete_scheduled_recipe() -> DeleteScheduledRecipeStmt {
     DeleteScheduledRecipeStmt(
-        "WITH sr AS ( SELECT id FROM core_scheduledrecipe WHERE id = $1 AND team_id = $2 AND calendar_id = $3 ), events AS ( DELETE FROM schedule_event WHERE scheduled_recipe_id IN (SELECT id FROM sr) ) DELETE FROM core_scheduledrecipe WHERE id IN (SELECT id FROM sr)",
+        "DELETE FROM core_scheduledrecipe WHERE id = $1 AND team_id = $2 AND calendar_id = $3 RETURNING id",
         None,
     )
 }
@@ -521,35 +716,38 @@ impl DeleteScheduledRecipeStmt {
         self.1 = Some(client.prepare(self.0).await?);
         Ok(self)
     }
-    pub async fn bind<'c, 'a, 's, C: GenericClient>(
+    pub fn bind<'c, 'a, 's, C: GenericClient>(
         &'s self,
         client: &'c C,
         id: &'a i32,
         team_id: &'a i32,
         calendar_id: &'a i32,
-    ) -> Result<u64, tokio_postgres::Error> {
-        client.execute(self.0, &[id, team_id, calendar_id]).await
+    ) -> I32Query<'c, 'a, 's, C, i32, 3> {
+        I32Query {
+            client,
+            params: [id, team_id, calendar_id],
+            query: self.0,
+            cached: self.1.as_ref(),
+            extractor: |row| Ok(row.try_get(0)?),
+            mapper: |it| it,
+        }
     }
 }
-impl<'a, C: GenericClient + Send + Sync>
+impl<'c, 'a, 's, C: GenericClient>
     crate::client::async_::Params<
+        'c,
         'a,
-        'a,
-        'a,
+        's,
         DeleteScheduledRecipeParams,
-        std::pin::Pin<
-            Box<dyn futures::Future<Output = Result<u64, tokio_postgres::Error>> + Send + 'a>,
-        >,
+        I32Query<'c, 'a, 's, C, i32, 3>,
         C,
     > for DeleteScheduledRecipeStmt
 {
     fn params(
-        &'a self,
-        client: &'a C,
+        &'s self,
+        client: &'c C,
         params: &'a DeleteScheduledRecipeParams,
-    ) -> std::pin::Pin<
-        Box<dyn futures::Future<Output = Result<u64, tokio_postgres::Error>> + Send + 'a>,
-    > {
-        Box::pin(self.bind(client, &params.id, &params.team_id, &params.calendar_id))
+    ) -> I32Query<'c, 'a, 's, C, i32, 3> {
+        self.bind(client, &params.id, &params.team_id, &params.calendar_id)
     }
 }
