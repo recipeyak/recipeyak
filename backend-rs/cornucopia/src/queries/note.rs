@@ -20,7 +20,6 @@ pub struct InsertNoteParams<T1: crate::StringSql> {
     pub text: T1,
     pub user_id: i32,
     pub recipe_id: i32,
-    pub team_id: i32,
 }
 #[derive(Debug)]
 pub struct UpdateNoteParams<T1: crate::StringSql> {
@@ -760,11 +759,9 @@ impl<'c, 'a, 's, C: GenericClient>
     }
 }
 pub struct InsertNoteStmt(&'static str, Option<tokio_postgres::Statement>);
-/// Only adds notes to recipes that belong to the team, like
-/// `get_object_or_404(filter_recipes(team=team), ...)`.
 pub fn insert_note() -> InsertNoteStmt {
     InsertNoteStmt(
-        "INSERT INTO core_note (text, created_by_id, last_modified_by_id, recipe_id, created, modified) SELECT $1, $2, $2, r.id, now(), now() FROM core_recipe r WHERE r.id = $3 AND r.team_id = $4 RETURNING id",
+        "INSERT INTO core_note (text, created_by_id, last_modified_by_id, recipe_id, created, modified) VALUES ($1, $2, $2, $3, now(), now()) RETURNING id",
         None,
     )
 }
@@ -782,11 +779,10 @@ impl InsertNoteStmt {
         text: &'a T1,
         user_id: &'a i32,
         recipe_id: &'a i32,
-        team_id: &'a i32,
-    ) -> I32Query<'c, 'a, 's, C, i32, 4> {
+    ) -> I32Query<'c, 'a, 's, C, i32, 3> {
         I32Query {
             client,
-            params: [text, user_id, recipe_id, team_id],
+            params: [text, user_id, recipe_id],
             query: self.0,
             cached: self.1.as_ref(),
             extractor: |row| Ok(row.try_get(0)?),
@@ -800,7 +796,7 @@ impl<'c, 'a, 's, C: GenericClient, T1: crate::StringSql>
         'a,
         's,
         InsertNoteParams<T1>,
-        I32Query<'c, 'a, 's, C, i32, 4>,
+        I32Query<'c, 'a, 's, C, i32, 3>,
         C,
     > for InsertNoteStmt
 {
@@ -808,14 +804,8 @@ impl<'c, 'a, 's, C: GenericClient, T1: crate::StringSql>
         &'s self,
         client: &'c C,
         params: &'a InsertNoteParams<T1>,
-    ) -> I32Query<'c, 'a, 's, C, i32, 4> {
-        self.bind(
-            client,
-            &params.text,
-            &params.user_id,
-            &params.recipe_id,
-            &params.team_id,
-        )
+    ) -> I32Query<'c, 'a, 's, C, i32, 3> {
+        self.bind(client, &params.text, &params.user_id, &params.recipe_id)
     }
 }
 pub struct UpdateNoteStmt(&'static str, Option<tokio_postgres::Statement>);

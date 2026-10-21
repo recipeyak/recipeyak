@@ -3,14 +3,14 @@
 //! POST /api/v1/recipes/{recipe_id}/notes/
 
 use axum::Json;
-use axum::extract::{Path, State};
+use axum::extract::State;
 use cornucopia::queries::note::{attach_uploads, insert_note};
 use serde::Deserialize;
 use utoipa::ToSchema;
 
 use crate::AppState;
 use crate::error::ApiError;
-use crate::extract::team::Team;
+use crate::extract::recipe::TeamRecipe;
 use crate::extract::user::User;
 use crate::realtime::publish_recipe;
 use crate::routes::note::serialize::{Note, parse_upload_ids};
@@ -33,8 +33,7 @@ pub struct NoteCreateParams {
 pub async fn create_view(
     State(state): State<AppState>,
     user: User,
-    team: Team,
-    Path(recipe_id): Path<i32>,
+    recipe: TeamRecipe,
     Json(params): Json<NoteCreateParams>,
 ) -> Result<Json<Note>, ApiError> {
     let upload_ids = parse_upload_ids(&params.attachment_upload_ids)?;
@@ -42,17 +41,16 @@ pub async fn create_view(
     let mut client = state.pool.get().await?;
     let tx = client.transaction().await?;
     let note_id = insert_note()
-        .bind(&tx, &params.text, &user.id, &recipe_id, &team.id)
-        .opt()
-        .await?
-        .ok_or(ApiError::NotFound)?;
+        .bind(&tx, &params.text, &user.id, &recipe.id)
+        .one()
+        .await?;
     attach_uploads()
         .bind(&tx, &note_id, &upload_ids, &user.id)
         .await?;
     tx.commit().await?;
 
-    publish_recipe(&state, recipe_id, team.id).await;
+    publish_recipe(&state, recipe.id, recipe.team_id).await;
 
-    let note = Note::load(&client, &state.config.storage_url, note_id, team.id).await?;
+    let note = Note::load(&client, &state.config.storage_url, note_id, recipe.team_id).await?;
     Ok(Json(note))
 }

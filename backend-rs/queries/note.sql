@@ -67,12 +67,8 @@ JOIN core_recipe r ON r.id = n.recipe_id
 WHERE n.id = :id AND r.team_id = :team_id;
 
 --! insert_note
---- Only adds notes to recipes that belong to the team, like
---- `get_object_or_404(filter_recipes(team=team), ...)`.
 INSERT INTO core_note (text, created_by_id, last_modified_by_id, recipe_id, created, modified)
-SELECT :text, :user_id, :user_id, r.id, now(), now()
-FROM core_recipe r
-WHERE r.id = :recipe_id AND r.team_id = :team_id
+VALUES (:text, :user_id, :user_id, :recipe_id, now(), now())
 RETURNING id;
 
 --! update_note (text?)
