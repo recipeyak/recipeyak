@@ -38,6 +38,7 @@ pub struct InsertReactionParams<T1: crate::StringSql> {
 pub struct DeleteReactionParams {
     pub id: i32,
     pub user_id: i32,
+    pub team_id: i32,
 }
 #[derive(Debug, Clone, PartialEq)]
 pub struct Note {
@@ -169,11 +170,6 @@ impl<'a> From<ReactionBorrowed<'a>> for Reaction {
 pub struct TeamNote {
     pub created_by_id: i32,
     pub recipe_id: i32,
-}
-#[derive(Debug, Clone, PartialEq, Copy)]
-pub struct DeleteReaction {
-    pub recipe_id: i32,
-    pub team_id: Option<i32>,
 }
 use crate::client::async_::GenericClient;
 use futures::{self, StreamExt, TryStreamExt};
@@ -450,73 +446,6 @@ where
 {
     pub fn map<R>(self, mapper: fn(i32) -> R) -> I32Query<'c, 'a, 's, C, R, N> {
         I32Query {
-            client: self.client,
-            params: self.params,
-            query: self.query,
-            cached: self.cached,
-            extractor: self.extractor,
-            mapper,
-        }
-    }
-    pub async fn one(self) -> Result<T, tokio_postgres::Error> {
-        let row =
-            crate::client::async_::one(self.client, self.query, &self.params, self.cached).await?;
-        Ok((self.mapper)((self.extractor)(&row)?))
-    }
-    pub async fn all(self) -> Result<Vec<T>, tokio_postgres::Error> {
-        self.iter().await?.try_collect().await
-    }
-    pub async fn opt(self) -> Result<Option<T>, tokio_postgres::Error> {
-        let opt_row =
-            crate::client::async_::opt(self.client, self.query, &self.params, self.cached).await?;
-        Ok(opt_row
-            .map(|row| {
-                let extracted = (self.extractor)(&row)?;
-                Ok((self.mapper)(extracted))
-            })
-            .transpose()?)
-    }
-    pub async fn iter(
-        self,
-    ) -> Result<
-        impl futures::Stream<Item = Result<T, tokio_postgres::Error>> + 'c,
-        tokio_postgres::Error,
-    > {
-        let stream = crate::client::async_::raw(
-            self.client,
-            self.query,
-            crate::slice_iter(&self.params),
-            self.cached,
-        )
-        .await?;
-        let mapped = stream
-            .map(move |res| {
-                res.and_then(|row| {
-                    let extracted = (self.extractor)(&row)?;
-                    Ok((self.mapper)(extracted))
-                })
-            })
-            .into_stream();
-        Ok(mapped)
-    }
-}
-pub struct DeleteReactionQuery<'c, 'a, 's, C: GenericClient, T, const N: usize> {
-    client: &'c C,
-    params: [&'a (dyn postgres_types::ToSql + Sync); N],
-    query: &'static str,
-    cached: Option<&'s tokio_postgres::Statement>,
-    extractor: fn(&tokio_postgres::Row) -> Result<DeleteReaction, tokio_postgres::Error>,
-    mapper: fn(DeleteReaction) -> T,
-}
-impl<'c, 'a, 's, C, T: 'c, const N: usize> DeleteReactionQuery<'c, 'a, 's, C, T, N>
-where
-    C: GenericClient,
-{
-    pub fn map<R>(
-        self,
-        mapper: fn(DeleteReaction) -> R,
-    ) -> DeleteReactionQuery<'c, 'a, 's, C, R, N> {
-        DeleteReactionQuery {
             client: self.client,
             params: self.params,
             query: self.query,
@@ -1128,7 +1057,7 @@ impl<'c, 'a, 's, C: GenericClient, T1: crate::StringSql>
 pub struct DeleteReactionStmt(&'static str, Option<tokio_postgres::Statement>);
 pub fn delete_reaction() -> DeleteReactionStmt {
     DeleteReactionStmt(
-        "DELETE FROM core_reaction re USING core_note n, core_recipe r WHERE re.id = $1 AND re.created_by_id = $2 AND n.id = re.note_id AND r.id = n.recipe_id RETURNING r.id AS recipe_id, r.team_id",
+        "DELETE FROM core_reaction re USING core_note n, core_recipe r WHERE re.id = $1 AND re.created_by_id = $2 AND n.id = re.note_id AND r.id = n.recipe_id AND r.team_id = $3 RETURNING r.id AS recipe_id",
         None,
     )
 }
@@ -1145,20 +1074,15 @@ impl DeleteReactionStmt {
         client: &'c C,
         id: &'a i32,
         user_id: &'a i32,
-    ) -> DeleteReactionQuery<'c, 'a, 's, C, DeleteReaction, 2> {
-        DeleteReactionQuery {
+        team_id: &'a i32,
+    ) -> I32Query<'c, 'a, 's, C, i32, 3> {
+        I32Query {
             client,
-            params: [id, user_id],
+            params: [id, user_id, team_id],
             query: self.0,
             cached: self.1.as_ref(),
-            extractor:
-                |row: &tokio_postgres::Row| -> Result<DeleteReaction, tokio_postgres::Error> {
-                    Ok(DeleteReaction {
-                        recipe_id: row.try_get(0)?,
-                        team_id: row.try_get(1)?,
-                    })
-                },
-            mapper: |it| DeleteReaction::from(it),
+            extractor: |row| Ok(row.try_get(0)?),
+            mapper: |it| it,
         }
     }
 }
@@ -1168,7 +1092,7 @@ impl<'c, 'a, 's, C: GenericClient>
         'a,
         's,
         DeleteReactionParams,
-        DeleteReactionQuery<'c, 'a, 's, C, DeleteReaction, 2>,
+        I32Query<'c, 'a, 's, C, i32, 3>,
         C,
     > for DeleteReactionStmt
 {
@@ -1176,7 +1100,7 @@ impl<'c, 'a, 's, C: GenericClient>
         &'s self,
         client: &'c C,
         params: &'a DeleteReactionParams,
-    ) -> DeleteReactionQuery<'c, 'a, 's, C, DeleteReaction, 2> {
-        self.bind(client, &params.id, &params.user_id)
+    ) -> I32Query<'c, 'a, 's, C, i32, 3> {
+        self.bind(client, &params.id, &params.user_id, &params.team_id)
     }
 }

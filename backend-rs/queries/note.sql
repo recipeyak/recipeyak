@@ -116,11 +116,12 @@ ON CONFLICT ON CONSTRAINT one_reaction_per_user
 DO UPDATE SET emoji = EXCLUDED.emoji
 RETURNING id;
 
---! delete_reaction : (team_id?)
+--! delete_reaction
 DELETE FROM core_reaction re
 USING core_note n, core_recipe r
 WHERE re.id = :id
   AND re.created_by_id = :user_id
   AND n.id = re.note_id
   AND r.id = n.recipe_id
-RETURNING r.id AS recipe_id, r.team_id;
+  AND r.team_id = :team_id
+RETURNING r.id AS recipe_id;

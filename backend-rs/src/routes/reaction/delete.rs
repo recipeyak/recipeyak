@@ -8,6 +8,7 @@ use cornucopia::queries::note::delete_reaction;
 
 use crate::AppState;
 use crate::error::ApiError;
+use crate::extract::team::Team;
 use crate::extract::user::User;
 use crate::realtime::publish_recipe;
 
@@ -21,19 +22,18 @@ use crate::realtime::publish_recipe;
 pub async fn delete_view(
     State(state): State<AppState>,
     user: User,
+    team: Team,
     Path(reaction_id): Path<i32>,
 ) -> Result<StatusCode, ApiError> {
     let client = state.pool.get().await?;
-    // Unlike the other note views, Django only checks the reaction is the
-    // user's, not that it's on their team's recipe.
-    let deleted = delete_reaction()
-        .bind(&client, &reaction_id, &user.id)
+    // Deleting a missing reaction, someone else's, or one on another team's
+    // recipe is a no-op.
+    if let Some(recipe_id) = delete_reaction()
+        .bind(&client, &reaction_id, &user.id, &team.id)
         .opt()
-        .await?;
-    if let Some(row) = deleted
-        && let Some(team_id) = row.team_id
+        .await?
     {
-        publish_recipe(&state, row.recipe_id, team_id).await;
+        publish_recipe(&state, recipe_id, team.id).await;
     }
     Ok(StatusCode::NO_CONTENT)
 }
