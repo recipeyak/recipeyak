@@ -20,4 +20,14 @@ from recipeyak.models.upload import public_url
     ],
 )
 def test_public_url(key: str, expected_path: str) -> None:
-    assert public_url(key) == f"https://{config.STORAGE_HOSTNAME}{expected_path}"
+    assert public_url(key) == f"{config.STORAGE_URL}{expected_path}"
+
+
+def test_public_url_with_path_prefix(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        config, "STORAGE_URL", "http://localhost:9090/recipeyak-production"
+    )
+    assert (
+        public_url("scraper/a b.jpg")
+        == "http://localhost:9090/recipeyak-production/scraper/a%20b.jpg"
+    )

@@ -13,7 +13,8 @@ if TYPE_CHECKING:
 
 
 def public_url(key: str) -> str:
-    return str(URL(f"https://{config.STORAGE_HOSTNAME}").with_path(key))
+    base = URL(config.STORAGE_URL)
+    return str(base.with_path(base.path.rstrip("/") + "/" + key.lstrip("/")))
 
 
 class Upload(CommonInfo):

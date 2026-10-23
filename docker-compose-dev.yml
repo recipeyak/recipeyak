@@ -1,4 +1,3 @@
-version: "3"
 services:
   db:
     image: postgres:16
@@ -11,10 +10,20 @@ services:
         "-c",
         "pg_stat_statements.track=all",
       ]
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_DB: recipeyak
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data/
+  # fake S3 for image uploads
+  s3:
+    image: adobe/s3mock:5.2.3
+    environment:
+      COM_ADOBE_TESTING_S3MOCK_STORE_INITIAL_BUCKETS: recipeyak-production
+    ports:
+      - "9090:9090"
 volumes:
   pgdata:
     driver: local

@@ -4,6 +4,9 @@ AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID", "")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY", "")
 STORAGE_BUCKET_NAME = os.getenv("STORAGE_BUCKET_NAME", "")
 STORAGE_HOSTNAME = os.getenv("STORAGE_HOSTNAME", "")
+# Base URL for uploaded files, e.g. http://localhost:9090/recipeyak-production
+# for a local S3. Defaults to the storage hostname over https.
+STORAGE_URL = os.getenv("STORAGE_URL") or f"https://{STORAGE_HOSTNAME}"
 ABLY_API_KEY = os.getenv("ABLY_API_KEY", "SOME:KEY")
 ALGOLIA_APPLICATION_ID = os.getenv("ALGOLIA_APPLICATION_ID", "")
 ALGOLIA_ADMIN_API_KEY = os.getenv("ALGOLIA_ADMIN_API_KEY", "")
