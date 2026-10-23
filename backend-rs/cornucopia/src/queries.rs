@@ -2,6 +2,7 @@
 
 pub mod calendar;
 pub mod membership;
+pub mod note;
 pub mod recipe;
 pub mod scheduled_recipe;
 pub mod team;
