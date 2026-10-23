@@ -4,7 +4,7 @@
     "node": "18.7.0"
   },
   "dependencies": {
-    "@redocly/cli": "^1.8.1",
-    "prettier": "3.1.0"
+    "@redocly/cli": "^2.62.1",
+    "prettier": "3.9.10"
   }
 }
