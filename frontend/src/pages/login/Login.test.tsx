@@ -80,11 +80,11 @@ test("login success", async () => {
   )
   // 1. fill out form
   await user.type(
-    screen.getByPlaceholderText("rick.sanchez@me.com"),
+    screen.getByLabelText("email"),
     "foo@example.com",
   )
   await user.type(
-    screen.getByPlaceholderText("Super secret password."),
+    screen.getByLabelText("password"),
     "password123",
   )
   // 2. submit form
@@ -133,11 +133,11 @@ test("login failure", async () => {
   )
   // 1. fill out form
   await user.type(
-    screen.getByPlaceholderText("rick.sanchez@me.com"),
+    screen.getByLabelText("email"),
     "foo@example.com",
   )
   await user.type(
-    screen.getByPlaceholderText("Super secret password."),
+    screen.getByLabelText("password"),
     "password123",
   )
   // 2. submit form

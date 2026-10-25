@@ -92,7 +92,6 @@ export function LoginPage() {
               autoFocus
               aria-label="email"
               name="email"
-              placeholder="rick.sanchez@me.com"
             />
             <FormErrorHandler error={errors?.email} />
           </div>
@@ -107,7 +106,6 @@ export function LoginPage() {
               error={errors?.password != null}
               aria-label="password"
               name="password"
-              placeholder="Super secret password."
             />
             <FormErrorHandler error={errors?.password} />
             <FormErrorHandler error={errors?.nonFieldErrors} />
