@@ -79,14 +79,8 @@ test("login success", async () => {
     </QueryClientProvider>,
   )
   // 1. fill out form
-  await user.type(
-    screen.getByLabelText("email"),
-    "foo@example.com",
-  )
-  await user.type(
-    screen.getByLabelText("password"),
-    "password123",
-  )
+  await user.type(screen.getByLabelText("email"), "foo@example.com")
+  await user.type(screen.getByLabelText("password"), "password123")
   // 2. submit form
   await user.click(screen.getByText("Sign In"))
 
@@ -132,14 +126,8 @@ test("login failure", async () => {
     </QueryClientProvider>,
   )
   // 1. fill out form
-  await user.type(
-    screen.getByLabelText("email"),
-    "foo@example.com",
-  )
-  await user.type(
-    screen.getByLabelText("password"),
-    "password123",
-  )
+  await user.type(screen.getByLabelText("email"), "foo@example.com")
+  await user.type(screen.getByLabelText("password"), "password123")
   // 2. submit form
   await user.click(screen.getByText("Sign In"))
 
