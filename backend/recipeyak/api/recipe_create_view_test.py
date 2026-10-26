@@ -4,9 +4,8 @@ from datetime import UTC, datetime
 from typing import Any
 from unittest.mock import patch
 
-import advocate
+import httpx
 import pytest
-import requests
 from django.core.exceptions import ValidationError
 from django.test.client import Client
 from django.utils.dateparse import parse_datetime
@@ -15,6 +14,7 @@ from recipe_scrapers._exceptions import RecipeScrapersExceptions
 from recipeyak import ordering
 from recipeyak.fixtures import create_recipe, create_team, create_user
 from recipeyak.models import Ingredient, Note, Recipe, Step, Team, TimelineEvent, User
+from recipeyak.scraper.safe_client import UnacceptableAddressError
 from recipeyak.scraper.scrape_recipe import ScrapeResult
 
 pytestmark = pytest.mark.django_db
@@ -581,7 +581,7 @@ def test_create_from_url_connection_error() -> None:
     with patch(
         "recipeyak.api.recipe_create_view.scrape_recipe",
     ) as mock_scrape:
-        mock_scrape.side_effect = requests.exceptions.ConnectionError()
+        mock_scrape.side_effect = httpx.ConnectError("connection refused")
         res = client.post(
             "/api/v1/recipes/",
             {
@@ -600,7 +600,7 @@ def test_create_from_url_connection_error() -> None:
 @pytest.mark.parametrize(
     "exception",
     [
-        advocate.exceptions.UnacceptableAddressException(),
+        UnacceptableAddressError(),
         ValidationError("invalid url"),
         RecipeScrapersExceptions("invalid url"),
     ],
