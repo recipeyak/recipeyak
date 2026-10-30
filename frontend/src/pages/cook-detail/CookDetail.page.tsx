@@ -6,6 +6,7 @@ import { Meta } from "@/components/Meta"
 import { NavPage } from "@/components/Page"
 import { CookingFullscreen } from "@/pages/cook-detail/CookingFullscreen"
 import { pathCookDetail } from "@/paths"
+import { useCookChecklistFetch } from "@/queries/useCookChecklistFetch"
 import { PickVariant } from "@/queries/useQueryUtilTypes"
 import {
   RecipeFetchResponse as Recipe,
@@ -25,6 +26,9 @@ function isNote(x: TimelineItem): x is Note {
 function CookDetailPageInner(props: RouteComponentProps<{ recipeId: string }>) {
   const recipeId = parseInt(props.match.params.recipeId, 10)
   const maybeRecipe = useRecipeFetch({ recipeId })
+  // Fetch in parallel with the recipe so the ingredients render with their
+  // checked state on first paint instead of popping in afterwards.
+  const checklist = useCookChecklistFetch({ recipeId })
   const myRecipe = maybeRecipe.isSuccess ? maybeRecipe.data : null
   const notes = myRecipe?.timelineItems.filter(isNote) ?? []
 
@@ -33,12 +37,16 @@ function CookDetailPageInner(props: RouteComponentProps<{ recipeId: string }>) {
     maybeRecipe.data?.name,
   )
 
-  if (maybeRecipe.isPending) {
+  if (maybeRecipe.isPending || checklist.isPending) {
     return <Loader />
   }
 
   if (maybeRecipe.isError) {
     return <div>recipe not found</div>
+  }
+
+  if (checklist.isError) {
+    throw checklist.error
   }
 
   const recipe = maybeRecipe.data
@@ -62,6 +70,7 @@ function CookDetailPageInner(props: RouteComponentProps<{ recipeId: string }>) {
         sections={recipe.sections}
         steps={recipe.steps}
         notes={notes}
+        checkedIngredients={checklist.data}
       />
     </NavPage>
   )

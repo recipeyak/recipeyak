@@ -7,7 +7,6 @@ import { IngredientViewContent } from "@/pages/recipe-detail/IngredientView"
 import { Note } from "@/pages/recipe-detail/Notes"
 import { RecipeSource } from "@/pages/recipe-detail/RecipeSource"
 import { StepView } from "@/pages/recipe-detail/Step"
-import { useCookChecklistFetch } from "@/queries/useCookChecklistFetch"
 import { useCookChecklistUpdate } from "@/queries/useCookChecklistUpdate"
 import { PickVariant } from "@/queries/useQueryUtilTypes"
 import { RecipeFetchResponse as Recipe } from "@/queries/useRecipeFetch"
@@ -20,44 +19,22 @@ type Ingredient = Recipe["ingredients"][number]
 type Step = Recipe["steps"][number]
 type Note = PickVariant<Recipe["timelineItems"][number], "note">
 
-function useIngredients(recipeId: number) {
-  const {
-    isPending,
-    isError,
-    data: checkedIngredients,
-    error,
-  } = useCookChecklistFetch({ recipeId })
-  const mutation = useCookChecklistUpdate({ recipeId })
-
-  if (isError) {
-    throw error
-  }
-  if (isPending) {
-    return { checkedIngredients, isPending, mutation } as const
-  }
-
-  return { checkedIngredients, isPending, mutation } as const
-}
-
 function Ingredients({
   ingredients,
   recipeId,
   sections,
+  checkedIngredients,
 }: {
   ingredients: readonly Ingredient[]
   recipeId: number
+  checkedIngredients: Readonly<Record<number, boolean>>
   readonly sections: readonly {
     readonly id: number
     readonly title: string
     readonly position: string
   }[]
 }) {
-  const { checkedIngredients, isPending, mutation } = useIngredients(recipeId)
-
-  if (isPending) {
-    return null
-  }
-
+  const mutation = useCookChecklistUpdate({ recipeId })
   const combined = getInitialIngredients({ sections, ingredients })
 
   return (
@@ -211,6 +188,7 @@ export function CookingFullscreen({
   sections,
   steps,
   notes,
+  checkedIngredients,
 }: {
   readonly recipeId: number
   readonly recipeName: string
@@ -223,6 +201,7 @@ export function CookingFullscreen({
   }[]
   readonly steps: readonly Step[]
   readonly notes: readonly Note[]
+  readonly checkedIngredients: Readonly<Record<number, boolean>>
 }) {
   const teamId = useTeamId()
   const user = useUser()
@@ -270,6 +249,7 @@ export function CookingFullscreen({
               ingredients={ingredients}
               sections={sections}
               recipeId={recipeId}
+              checkedIngredients={checkedIngredients}
             />
 
             <Steps steps={steps} />
