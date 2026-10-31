@@ -1,9 +1,7 @@
 import { UseQueryResult } from "@tanstack/react-query"
-import { addWeeks, parseISO, startOfToday } from "date-fns"
-import format from "date-fns/format"
+import { addWeeks, startOfToday } from "date-fns"
 import isAfter from "date-fns/isAfter"
 import isBefore from "date-fns/isBefore"
-import isValid from "date-fns/isValid"
 import { groupBy } from "lodash-es"
 import React, { useEffect, useRef, useState } from "react"
 import { useHistory } from "react-router"
@@ -11,7 +9,7 @@ import { Link } from "react-router-dom"
 
 import { clx } from "@/classnames"
 import { Button } from "@/components/Buttons"
-import { DateInput } from "@/components/DateInput"
+import { DatePicker } from "@/components/DatePicker"
 import { toISODateString } from "@/date"
 import {
   IGetShoppingListResponse,
@@ -42,13 +40,6 @@ const removeSelection = () => {
     return
   }
   sel.removeAllRanges()
-}
-
-function formatMonth(date: number | Date | null) {
-  if (date == null) {
-    return ""
-  }
-  return format(date, "yyyy-MM-dd")
 }
 
 function toQuantity(x: IQuantity): string {
@@ -218,22 +209,14 @@ function ShoppingList() {
     }
   }, [history, startDay, endDay])
 
-  const handleSetStartDay = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const date = parseISO(e.target.value)
-    if (!isValid(date)) {
-      return
-    }
+  const handleSetStartDay = (date: Date) => {
     setStartDay(date)
     if (isAfter(date, endDay)) {
       setEndDay(date)
     }
   }
 
-  const handleSetEndDay = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const date = parseISO(e.target.value)
-    if (!isValid(date)) {
-      return
-    }
+  const handleSetEndDay = (date: Date) => {
     setEndDay(date)
     if (isBefore(date, startDay)) {
       setStartDay(date)
@@ -257,16 +240,16 @@ function ShoppingList() {
     <div className="flex w-full flex-col gap-1">
       <div className="flex w-full flex-col gap-1">
         <div className="flex w-full items-center gap-2">
-          <DateInput
+          <DatePicker
+            aria-label="from"
             onChange={handleSetStartDay}
-            placeholder="from"
-            value={formatMonth(startDay)}
+            value={startDay}
           />
           <h2 className="text-base">→</h2>
-          <DateInput
+          <DatePicker
+            aria-label="to"
             onChange={handleSetEndDay}
-            placeholder="to"
-            value={formatMonth(endDay)}
+            value={endDay}
           />
         </div>
         <RecipeAccordian recipes={recipes} />

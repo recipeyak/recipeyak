@@ -39,6 +39,7 @@
     "vitest-dom": "^0.1.1"
   },
   "dependencies": {
+    "@internationalized/date": "^3.7.0",
     "@sentry/react": "^11.6.0",
     "@tanstack/query-sync-storage-persister": "^5.8.3",
     "@tanstack/react-query": "^5.8.4",
