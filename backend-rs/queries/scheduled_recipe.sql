@@ -61,33 +61,25 @@ FROM core_recipe r
 WHERE r.id = :recipe_id AND r.team_id = :team_id
 RETURNING id;
 
---! reschedule_recipe
---- Moves the scheduled recipe and records the change as a ScheduleEvent.
-WITH old AS (
-    SELECT id, "on"
-    FROM core_scheduledrecipe
-    WHERE id = :id AND team_id = :team_id AND calendar_id = :calendar_id
-    FOR UPDATE
-), updated AS (
-    UPDATE core_scheduledrecipe sr
-    SET "on" = :on, modified = now()
-    FROM old
-    WHERE sr.id = old.id
-    RETURNING sr.id, old."on" AS before_on
-)
-INSERT INTO schedule_event (scheduled_recipe_id, before_on, after_on, actor_id, created, modified)
-SELECT id, before_on, :on, :actor_id, now(), now()
-FROM updated
-RETURNING scheduled_recipe_id;
+--! scheduled_recipe_on_for_update
+SELECT "on"
+FROM core_scheduledrecipe
+WHERE id = :id AND team_id = :team_id AND calendar_id = :calendar_id
+FOR UPDATE;
 
---! delete_scheduled_recipe
+--! reschedule_recipe
+UPDATE core_scheduledrecipe SET "on" = :on, modified = now() WHERE id = :id;
+
+--! insert_schedule_event
+INSERT INTO schedule_event (scheduled_recipe_id, before_on, after_on, actor_id, created, modified)
+VALUES (:scheduled_recipe_id, :before_on, :after_on, :actor_id, now(), now());
+
+--! delete_schedule_events
 --- The foreign keys don't cascade in the database, Django deletes the
 --- ScheduleEvents itself.
-WITH sr AS (
-    SELECT id
-    FROM core_scheduledrecipe
-    WHERE id = :id AND team_id = :team_id AND calendar_id = :calendar_id
-), events AS (
-    DELETE FROM schedule_event WHERE scheduled_recipe_id IN (SELECT id FROM sr)
-)
-DELETE FROM core_scheduledrecipe WHERE id IN (SELECT id FROM sr);
+DELETE FROM schedule_event WHERE scheduled_recipe_id = :scheduled_recipe_id;
+
+--! delete_scheduled_recipe
+DELETE FROM core_scheduledrecipe
+WHERE id = :id AND team_id = :team_id AND calendar_id = :calendar_id
+RETURNING id;
