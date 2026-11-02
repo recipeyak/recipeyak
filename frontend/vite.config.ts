@@ -1,10 +1,26 @@
 /// <reference types="vitest" />
 import { defineConfig, type Plugin } from "vite"
 import react from "@vitejs/plugin-react"
+import fs from "fs"
 import http from "http"
 import path from "path"
 import { faviconsPlugin } from "@darkobits/vite-plugin-favicons"
 import { visualizer } from "rollup-plugin-visualizer"
+
+// Serve the production CSP in dev so CSP breakage shows up locally.
+function productionCsp(): string {
+  const conf = fs.readFileSync(
+    path.resolve(import.meta.dirname, "../infra/nginx/recipeyak_headers.conf"),
+    "utf8",
+  )
+  const match = conf.match(/^add_header Content-Security-Policy "([^"]+)";$/m)
+  if (match == null) {
+    throw new Error(
+      "Content-Security-Policy not found in infra/nginx/recipeyak_headers.conf",
+    )
+  }
+  return match[1]
+}
 
 const logoSrc = {
   source: "./src/static/images/logo/recipeyak-logo.svg",
@@ -113,8 +129,7 @@ export default defineConfig({
   },
   server: {
     headers: {
-      "Content-Security-Policy":
-        "default-src 'self' https://challenges.cloudflare.com https://*.sentry.io  https://*.algolia.net https://recipeyak-production.s3.amazonaws.com https://recipeyak.imgix.net https://*.ably.io https://*.ably-realtime.com https://*.ably.net wss://*.ably.io wss://*.ably-realtime.com wss://*.ably.net https://images-cdn.recipeyak.com; img-src * 'self' data: blob:; script-src 'self' https://challenges.cloudflare.com 'sha256-Z2/iFzh9VMlVkEOar1f/oSHWwQk3ve1qk/C2WdsC4Xk=' 'sha256-pJgk69XM8G5ckMe2LM23W3PiOkykA9VBYDdJu59aWJk='; style-src 'self' 'unsafe-inline'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; report-uri https://sentry.io/api/250295/csp-report/?sentry_key=3b11e5eed068478390e1e8f01e2190a9",
+      "Content-Security-Policy": productionCsp(),
     },
     proxy: {
       "/api": "http://127.0.0.1:8000/",
