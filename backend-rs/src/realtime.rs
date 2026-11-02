@@ -40,6 +40,16 @@ pub async fn publish_calendar_event_deleted(
     .await;
 }
 
+pub async fn publish_recipe(state: &AppState, recipe_id: i32, team_id: i32) {
+    publish(
+        state,
+        &format!("team:{team_id}:recipe:{recipe_id}"),
+        "recipe_modified",
+        &json!({"id": recipe_id}),
+    )
+    .await;
+}
+
 async fn publish(state: &AppState, channel: &str, name: &str, data: &impl Serialize) {
     let Some(api_key) = &state.config.ably_api_key else {
         tracing::warn!(
