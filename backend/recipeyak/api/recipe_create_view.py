@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from typing import Annotated
 
-import advocate
-import requests
+import httpx
 import structlog
 from django.core.exceptions import ValidationError
 from django.db import transaction
@@ -29,6 +28,7 @@ from recipeyak.models.section import Section
 from recipeyak.models.team import Team
 from recipeyak.models.upload import Upload
 from recipeyak.parsing import parse_ingredient
+from recipeyak.scraper.safe_client import UnacceptableAddressError
 from recipeyak.scraper.scrape_recipe import ScrapeResult, scrape_recipe
 from recipeyak.versioning import save_recipe_version
 
@@ -113,13 +113,13 @@ def recipe_create_view(
         try:
             scrape_result = scrape_recipe(url=params.from_url, user=request.user)
         except (
-            advocate.exceptions.UnacceptableAddressException,
+            UnacceptableAddressError,
             ValidationError,
             RecipeScrapersExceptions,
         ) as e:
             log.info("invalid url")
             raise APIError(code="invalid_url", message="Invalid url.") from e
-        except requests.exceptions.ConnectionError as e:
+        except httpx.TransportError as e:
             log.info("probably connecting to url")
             raise APIError(
                 code="connection_error", message="Problem connecting to url."
