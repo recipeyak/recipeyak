@@ -54,7 +54,6 @@ function useSearchResults(query: string) {
       archived_at: x.archivedAt,
       author: x.author,
       id: x.id,
-      ingredients: [],
       name: x.name,
       objectID: x.id.toString(),
       primary_image: x.primaryImage
@@ -63,7 +62,6 @@ function useSearchResults(query: string) {
             url: x.primaryImage.url,
           }
         : null,
-      favorite_by_user_id: [],
     })) ?? []
 
   const hitCount = !query
