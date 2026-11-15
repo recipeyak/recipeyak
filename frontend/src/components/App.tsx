@@ -1,7 +1,6 @@
 import "@/components/scss/main.scss"
 
 import * as Sentry from "@sentry/react"
-import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister"
 import { useIsRestoring } from "@tanstack/react-query"
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client"
 import { AblyProvider } from "ably/react"
@@ -27,6 +26,7 @@ import { AlgoliaProvider } from "@/components/AlgoliaProvider"
 import { ErrorBoundary } from "@/components/ErrorBoundary"
 import { Helmet } from "@/components/Helmet"
 import { queryClient } from "@/components/queryClient"
+import { persister, QUERY_CACHE_VERSION } from "@/components/queryPersister"
 import { ScrollRestore } from "@/components/ScrollRestore"
 import { NotFoundPage } from "@/pages/404/404.page"
 import { CookDetailPage } from "@/pages/cook-detail/CookDetail.page"
@@ -105,19 +105,6 @@ console.log(
   "\ntree sha:",
   API_GIT_TREE_SHA,
 )
-
-const persister = createSyncStoragePersister({
-  // eslint-disable-next-line no-restricted-globals
-  storage: localStorage,
-  retry: ({ error }) => {
-    Sentry.captureException(error)
-    // eslint-disable-next-line no-console
-    console.error("problem persisting")
-    // eslint-disable-next-line no-console
-    console.error(error)
-    return undefined
-  },
-})
 
 interface IAuthRouteProps extends Pick<RouteProps, "exact" | "path"> {
   readonly component: // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -345,7 +332,7 @@ function App() {
             // NOTE: Ideally we'd only bust the cache when the cache schema changes
             // in a backwards incompatible way but calculating that is annoying so
             // just break it on every deploy
-            buster: API_GIT_TREE_SHA,
+            buster: `${API_GIT_TREE_SHA}:${QUERY_CACHE_VERSION}`,
             persister,
             maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
             dehydrateOptions: {

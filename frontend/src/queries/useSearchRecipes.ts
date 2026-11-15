@@ -21,7 +21,10 @@ export function useSearchRecipes({
     placeholderData: keepPreviousData,
     queryKey: [teamId, "search", indexName, query, facetFilters, limit],
     meta: {
-      skipPersistence: true,
+      // Persist the "browse" queries (no search text) so pages like /recipes
+      // can render cached results immediately on load. Skip persisting
+      // free-text searches so we don't store a result set per keystroke.
+      skipPersistence: query.trim() !== "",
     },
     queryFn: () =>
       searchClient.search<{
@@ -29,12 +32,10 @@ export function useSearchRecipes({
         readonly name: string
         readonly archived_at: string | null
         readonly author: string | null
-        readonly ingredients: Array<{ name: string }>
         readonly primary_image: {
           readonly url: string
           readonly background_url: string | null
         } | null
-        readonly favorite_by_user_id: ReadonlyArray<number> | null
       }>([
         {
           indexName,
@@ -48,6 +49,20 @@ export function useSearchRecipes({
             maxValuesPerFacet: 5,
             query,
             facetFilters,
+            // Only fetch what the UI renders. Records also include the full
+            // ingredient list, which is by far the bulk of the payload.
+            attributesToRetrieve: [
+              "id",
+              "name",
+              "author",
+              "archived_at",
+              "primary_image.url",
+              "primary_image.background_url",
+            ],
+            // Highlights are only useful when there's search text. Ingredient
+            // highlights are how we show which ingredients matched.
+            attributesToHighlight:
+              query.trim() === "" ? [] : ["name", "author", "ingredients.name"],
           },
         },
         {
@@ -59,6 +74,8 @@ export function useSearchRecipes({
               facetFilters?.filter((x) => x !== "archived:false") ?? [],
             hitsPerPage: 0,
             page: 0,
+            attributesToRetrieve: [],
+            attributesToHighlight: [],
             query,
             maxValuesPerFacet: 5,
           },

@@ -13,9 +13,12 @@ import { useSearchRecipes } from "@/queries/useSearchRecipes"
 import { recipeURL } from "@/urls"
 
 function HighlightIngredients({ hit }: { hit: Hit }) {
+  // `ingredients` isn't retrieved (to keep the payload small), so it's only
+  // present in the highlight results.
   const ingredientHighlights =
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    (hit._highlightResult?.ingredients ?? []) as HitHighlightResult[]
+    ((hit._highlightResult as { ingredients?: unknown } | undefined)
+      ?.ingredients ?? []) as HitHighlightResult[]
   if ((ingredientHighlights.length ?? 0) === 0) {
     return null
   }
