@@ -13,11 +13,19 @@ export type CalendarResponse = {
   scheduledRecipes: ScheduledRecipe[]
 }
 
+type OptimisticRecipe = {
+  id: number
+  name: string
+  author?: string | null
+  archivedAt?: string | null
+  primaryImage?: {
+    url: string
+    backgroundUrl: string | null
+  } | null
+}
+
 function toCalRecipe(
-  recipe: {
-    id: number
-    name: string
-  },
+  recipe: OptimisticRecipe,
   tempId: number,
   on: string | Date,
   teamId: number,
@@ -33,9 +41,17 @@ function toCalRecipe(
     recipe: {
       id: recipe.id,
       name: recipe.name,
-      author: null,
-      archivedAt: null,
-      primaryImage: null,
+      author: recipe.author ?? null,
+      archivedAt: recipe.archivedAt ?? null,
+      primaryImage: recipe.primaryImage
+        ? {
+            // Placeholder until the server response replaces the optimistic
+            // entry. Only url/backgroundUrl are used for rendering.
+            id: "",
+            url: recipe.primaryImage.url,
+            backgroundUrl: recipe.primaryImage.backgroundUrl,
+          }
+        : null,
     },
     team: teamId,
     user: user.id ?? -1,
@@ -63,6 +79,11 @@ export function useScheduleRecipeCreate() {
       recipeID: number
       recipeName: string
       on: string
+      // Optional display data so the optimistic calendar entry renders the
+      // same as the server response (avoids an empty image flash).
+      recipeAuthor?: string | null
+      recipeArchivedAt?: string | null
+      recipePrimaryImage?: OptimisticRecipe["primaryImage"]
     }) => scheduledRecipeCreate({ recipe: recipeID, on }),
     onMutate: (vars) => {
       const tempId = random32Id()
@@ -70,6 +91,9 @@ export function useScheduleRecipeCreate() {
         {
           id: vars.recipeID,
           name: vars.recipeName,
+          author: vars.recipeAuthor,
+          archivedAt: vars.recipeArchivedAt,
+          primaryImage: vars.recipePrimaryImage,
         },
         tempId,
         vars.on,

@@ -115,12 +115,30 @@ export function CalendarDay({
     onDrop: (e: React.DragEvent<HTMLDivElement>) => {
       const recipe = e.dataTransfer.getData("recipeyak/recipe")
       if (recipe) {
+        // Shape matches the search hit set in SearchPalette's onDragStart.
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const parsedRecipe: { id: number; name: string } = JSON.parse(recipe)
+        const parsedRecipe: {
+          id: number
+          name: string
+          author?: string | null
+          archived_at?: string | null
+          primary_image?: {
+            url: string
+            background_url: string | null
+          } | null
+        } = JSON.parse(recipe)
         scheduledRecipeCreate.mutate({
           recipeID: parsedRecipe.id,
           on: toISODateString(date),
           recipeName: parsedRecipe.name,
+          recipeAuthor: parsedRecipe.author,
+          recipeArchivedAt: parsedRecipe.archived_at,
+          recipePrimaryImage: parsedRecipe.primary_image
+            ? {
+                url: parsedRecipe.primary_image.url,
+                backgroundUrl: parsedRecipe.primary_image.background_url,
+              }
+            : null,
         })
         return
       }
