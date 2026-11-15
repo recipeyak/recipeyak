@@ -90,6 +90,8 @@ export function ScheduleModal({
         recipeID: recipeId,
         recipeName,
         on: isoDate,
+        recipeAuthor,
+        recipePrimaryImage: recipeImageUrl,
       },
       {
         onSuccess: () => {

@@ -160,6 +160,8 @@ export function ScheduledRecipeEditModal({
             scheduledId={scheduledId}
             recipeId={recipeId}
             recipeName={recipeName}
+            recipeAuthor={recipeAuthor}
+            primaryImage={primaryImage}
             date={date}
             onClose={() => {
               onClose(false)
@@ -304,11 +306,18 @@ function UndoRemoveToast({
   toastId,
   recipeId,
   recipeName,
+  recipeAuthor,
+  primaryImage,
   date,
 }: {
   toastId: string
   recipeId: number | string
   recipeName: string
+  recipeAuthor: string | null
+  primaryImage: {
+    url: string
+    backgroundUrl: string | null
+  } | null
   date: Date
 }) {
   // Rendered by the app's Toaster so it outlives the modal.
@@ -325,6 +334,8 @@ function UndoRemoveToast({
             recipeID: Number(recipeId),
             recipeName,
             on: toISODateString(date),
+            recipeAuthor,
+            recipePrimaryImage: primaryImage,
           })
         }}
       >
@@ -338,12 +349,19 @@ function RemoveButton({
   scheduledId,
   recipeId,
   recipeName,
+  recipeAuthor,
+  primaryImage,
   date,
   onClose,
 }: {
   scheduledId: number
   recipeId: number | string
   recipeName: string
+  recipeAuthor: string | null
+  primaryImage: {
+    url: string
+    backgroundUrl: string | null
+  } | null
   date: Date
   onClose: () => void
 }) {
@@ -361,6 +379,8 @@ function RemoveButton({
               toastId={t.id}
               recipeId={recipeId}
               recipeName={recipeName}
+              recipeAuthor={recipeAuthor}
+              primaryImage={primaryImage}
               date={date}
             />
           ),
