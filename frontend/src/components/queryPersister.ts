@@ -11,8 +11,8 @@ import { createStore, del, get, set } from "idb-keyval"
 // queries like the recipe list.
 const CACHE_KEY = "REACT_QUERY_OFFLINE_CACHE"
 
-// Bump to discard every client's persisted query cache, including in dev where
-// API_GIT_TREE_SHA is always "dev" and wouldn't change between builds.
+// Bump to discard every client's persisted query cache for changes the API
+// schema hash doesn't capture, like a field changing meaning but not type.
 export const QUERY_CACHE_VERSION = 3
 
 // Matches the default throttle of TanStack's storage persisters.

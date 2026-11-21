@@ -8,6 +8,8 @@ export const GIT_SHA: string = DEBUG ? "dev" : import.meta.env.FRONTEND_GIT_SHA
 export const API_GIT_TREE_SHA: string = DEBUG
   ? "dev"
   : import.meta.env.FRONTEND_API_GIT_TREE_SHA
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+export const API_SCHEMA_HASH: string = import.meta.env.FRONTEND_API_SCHEMA_HASH
 
 export const SENTRY_DSN =
   "https://9168fb38e6d2ec1e1731d68867bb6d94@o64108.ingest.sentry.io/4506287122939904"

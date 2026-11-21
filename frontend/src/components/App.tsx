@@ -71,7 +71,12 @@ import {
   pathTeamList,
   pathTeamSettings,
 } from "@/paths"
-import { API_GIT_TREE_SHA, GIT_SHA, SENTRY_DSN } from "@/settings"
+import {
+  API_GIT_TREE_SHA,
+  API_SCHEMA_HASH,
+  GIT_SHA,
+  SENTRY_DSN,
+} from "@/settings"
 import { themeSet } from "@/theme"
 import { Toaster } from "@/toast"
 import { useUserTheme } from "@/useUserTheme"
@@ -329,10 +334,8 @@ function App() {
         <PersistQueryClientProvider
           client={queryClient}
           persistOptions={{
-            // NOTE: Ideally we'd only bust the cache when the cache schema changes
-            // in a backwards incompatible way but calculating that is annoying so
-            // just break it on every deploy
-            buster: `${API_GIT_TREE_SHA}:${QUERY_CACHE_VERSION}`,
+            // Bust when the generated API types change, or on a manual version bump
+            buster: `${API_SCHEMA_HASH}:${QUERY_CACHE_VERSION}`,
             persister,
             maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
             dehydrateOptions: {
