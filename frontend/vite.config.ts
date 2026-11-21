@@ -1,6 +1,7 @@
 /// <reference types="vitest" />
 import { defineConfig, type Plugin } from "vite"
 import react from "@vitejs/plugin-react"
+import { createHash } from "crypto"
 import fs from "fs"
 import http from "http"
 import path from "path"
@@ -102,6 +103,18 @@ function backendRsProxy(): Plugin {
   }
 }
 
+// Hash of the generated API types, used to bust the persisted query cache only
+// when a response shape changes.
+function apiSchemaHash(): string {
+  const dir = path.resolve(import.meta.dirname, "src/api")
+  const hash = createHash("sha256")
+  for (const name of fs.readdirSync(dir).sort()) {
+    hash.update(name)
+    hash.update(fs.readFileSync(path.join(dir, name)))
+  }
+  return hash.digest("hex").slice(0, 12)
+}
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -119,6 +132,9 @@ export default defineConfig({
     visualizer(),
   ],
   envPrefix: "FRONTEND_",
+  define: {
+    "import.meta.env.FRONTEND_API_SCHEMA_HASH": JSON.stringify(apiSchemaHash()),
+  },
   resolve: {
     alias: [
       {
