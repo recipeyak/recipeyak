@@ -75,11 +75,11 @@ function Ingredients({
               className="mt-1 h-5 w-5 shrink-0 accent-[--color-primary]"
             />
             <span
-              className="select-text"
-              // eslint-disable-next-line no-restricted-syntax
-              style={{
-                textDecoration: isDone ? "line-through" : undefined,
-              }}
+              className={
+                isDone
+                  ? "select-text text-[--color-text-muted] line-through"
+                  : "select-text"
+              }
             >
               <IngredientViewContent
                 quantity={i.quantity}
