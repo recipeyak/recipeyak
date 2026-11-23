@@ -42,6 +42,7 @@ from recipeyak.api.recipe_recently_viewed_view import recipe_recently_viewed_vie
 from recipeyak.api.recipe_retrieve_view import recipe_retrieve_view
 from recipeyak.api.recipe_timeline_view import recipe_timeline_view
 from recipeyak.api.recipe_update_view import recipe_update_view
+from recipeyak.api.recipe_view_create_view import recipe_view_create_view
 from recipeyak.api.scheduled_recipe_create_view import scheduled_recipe_create_view
 from recipeyak.api.section_create_view import section_create_view
 from recipeyak.api.section_delete_view import section_delete_view
@@ -215,6 +216,11 @@ routes = [
         "api/v1/recipes/<int:recipe_id>/",
         method="get",
         view=recipe_retrieve_view,
+    ),
+    route(
+        "api/v1/recipes/<int:recipe_id>/view",
+        method="post",
+        view=recipe_view_create_view,
     ),
     route(
         "api/v1/recipes/<int:recipe_id>/",

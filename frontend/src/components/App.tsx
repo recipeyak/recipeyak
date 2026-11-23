@@ -27,6 +27,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary"
 import { Helmet } from "@/components/Helmet"
 import { queryClient } from "@/components/queryClient"
 import { persister, QUERY_CACHE_VERSION } from "@/components/queryPersister"
+import { RecipeLinkPrefetch } from "@/components/RecipeLinkPrefetch"
 import { ScrollRestore } from "@/components/ScrollRestore"
 import { NotFoundPage } from "@/pages/404/404.page"
 import { CookDetailPage } from "@/pages/cook-detail/CookDetail.page"
@@ -188,9 +189,11 @@ const Route = ({
 
 function Routes() {
   let history = useHistory()
+  const isLoggedIn = useIsLoggedIn()
 
   return (
     <RouterProvider navigate={history.push}>
+      {isLoggedIn && <RecipeLinkPrefetch />}
       <Switch>
         <PublicOnlyRoute exact path={pathLogin.pattern} component={LoginPage} />
         <PublicOnlyRoute

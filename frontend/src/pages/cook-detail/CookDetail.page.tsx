@@ -12,6 +12,7 @@ import {
   RecipeFetchResponse as Recipe,
   useRecipeFetch,
 } from "@/queries/useRecipeFetch"
+import { useRecipeViewCreate } from "@/queries/useRecipeViewCreate"
 import { formatImgOpenGraph } from "@/url"
 import { useAddSlugToUrl } from "@/useAddSlugToUrl"
 import { useTeamId } from "@/useTeamId"
@@ -26,6 +27,7 @@ function isNote(x: TimelineItem): x is Note {
 function CookDetailPageInner(props: RouteComponentProps<{ recipeId: string }>) {
   const recipeId = parseInt(props.match.params.recipeId, 10)
   const maybeRecipe = useRecipeFetch({ recipeId })
+  useRecipeViewCreate({ recipeId })
   // Fetch in parallel with the recipe so the ingredients render with their
   // checked state on first paint instead of popping in afterwards.
   const checklist = useCookChecklistFetch({ recipeId })
