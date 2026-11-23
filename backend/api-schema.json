@@ -3941,6 +3941,27 @@
         }
       }
     },
+    "/api/v1/recipes/{recipe_id}/view": {
+      "post": {
+        "operationId": "RecipeViewCreate",
+        "parameters": [
+          {
+            "name": "recipe_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "description": "\nRecord that the user opened the recipe. Separate from the recipe GET so\nprefetching a recipe doesn't count as viewing it.\n",
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        }
+      }
+    },
     "/api/v1/recipes/{recipe_id}/ingredients/": {
       "post": {
         "operationId": "IngredientCreate",

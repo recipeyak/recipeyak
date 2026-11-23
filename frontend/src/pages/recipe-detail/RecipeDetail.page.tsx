@@ -43,6 +43,7 @@ import {
   useRecipeFetch,
 } from "@/queries/useRecipeFetch"
 import { useRecipeUpdate } from "@/queries/useRecipeUpdate"
+import { useRecipeViewCreate } from "@/queries/useRecipeViewCreate"
 import { useSectionUpdate } from "@/queries/useSectionUpdate"
 import { useUserFetch } from "@/queries/useUserFetch"
 import { notEmpty } from "@/text"
@@ -843,6 +844,7 @@ export function RecipeDetailPageInner(props: IRecipeProps) {
 
   const maybeRecipe = useRecipeFetch({ recipeId })
   const history = useHistory()
+  useRecipeViewCreate({ recipeId })
   const parsed = new URLSearchParams(props.location.search)
   const editingEnabled = parsed.get("edit") === "1"
 
