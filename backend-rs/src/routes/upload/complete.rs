@@ -4,7 +4,7 @@
 
 use axum::Json;
 use axum::extract::{Path, State};
-use cornucopia::queries::upload::complete_upload;
+use cornucopia::queries::upload::{complete_upload, set_profile_upload};
 use serde::Serialize;
 use utoipa::ToSchema;
 
@@ -33,12 +33,19 @@ pub async fn complete_view(
     user: User,
     Path(upload_id): Path<i32>,
 ) -> Result<Json<UploadCompleteResponse>, ApiError> {
-    let client = state.pool.get().await?;
+    let mut client = state.pool.get().await?;
+    let tx = client.transaction().await?;
     let upload = complete_upload()
-        .bind(&client, &upload_id, &user.id)
+        .bind(&tx, &upload_id, &user.id)
         .opt()
         .await?
         .ok_or(ApiError::NotFound)?;
+    if let Some(profile_id) = upload.profile_id {
+        set_profile_upload()
+            .bind(&tx, &upload.id, &profile_id)
+            .await?;
+    }
+    tx.commit().await?;
 
     Ok(Json(UploadCompleteResponse {
         id: upload.id.to_string(),

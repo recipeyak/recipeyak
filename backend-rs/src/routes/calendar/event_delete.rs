@@ -4,7 +4,7 @@
 
 use axum::extract::{Path, State};
 use axum::http::StatusCode;
-use cornucopia::queries::scheduled_recipe::delete_scheduled_recipe;
+use cornucopia::queries::scheduled_recipe::{delete_schedule_events, delete_scheduled_recipe};
 
 use crate::AppState;
 use crate::error::ApiError;
@@ -23,15 +23,18 @@ pub async fn event_delete_view(
     calendar: Calendar,
     Path(scheduled_recipe_id): Path<i32>,
 ) -> Result<StatusCode, ApiError> {
-    let client = state.pool.get().await?;
-    delete_scheduled_recipe()
-        .bind(
-            &client,
-            &scheduled_recipe_id,
-            &calendar.team_id,
-            &calendar.id,
-        )
+    let mut client = state.pool.get().await?;
+    let tx = client.transaction().await?;
+    let deleted = delete_scheduled_recipe()
+        .bind(&tx, &scheduled_recipe_id, &calendar.team_id, &calendar.id)
+        .opt()
         .await?;
+    if deleted.is_some() {
+        delete_schedule_events()
+            .bind(&tx, &scheduled_recipe_id)
+            .await?;
+    }
+    tx.commit().await?;
 
     // Published even if nothing was deleted, like Django.
     publish_calendar_event_deleted(&state, scheduled_recipe_id, calendar.team_id, calendar.id)

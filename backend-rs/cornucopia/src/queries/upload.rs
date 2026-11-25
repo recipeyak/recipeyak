@@ -14,16 +14,23 @@ pub struct CompleteUploadParams {
     pub id: i32,
     pub user_id: i32,
 }
+#[derive(Clone, Copy, Debug)]
+pub struct SetProfileUploadParams {
+    pub upload_id: i32,
+    pub user_id: i32,
+}
 #[derive(Debug, Clone, PartialEq)]
 pub struct CompleteUpload {
     pub id: i32,
     pub key: String,
     pub content_type: String,
+    pub profile_id: Option<i32>,
 }
 pub struct CompleteUploadBorrowed<'a> {
     pub id: i32,
     pub key: &'a str,
     pub content_type: &'a str,
+    pub profile_id: Option<i32>,
 }
 impl<'a> From<CompleteUploadBorrowed<'a>> for CompleteUpload {
     fn from(
@@ -31,12 +38,14 @@ impl<'a> From<CompleteUploadBorrowed<'a>> for CompleteUpload {
             id,
             key,
             content_type,
+            profile_id,
         }: CompleteUploadBorrowed<'a>,
     ) -> Self {
         Self {
             id,
             key: key.into(),
             content_type: content_type.into(),
+            profile_id,
         }
     }
 }
@@ -252,10 +261,9 @@ impl<'c, 'a, 's, C: GenericClient, T1: crate::StringSql, T2: crate::StringSql, T
     }
 }
 pub struct CompleteUploadStmt(&'static str, Option<tokio_postgres::Statement>);
-/// Also sets the upload as the user's avatar when it's for their profile.
 pub fn complete_upload() -> CompleteUploadStmt {
     CompleteUploadStmt(
-        "WITH upload AS ( UPDATE core_upload SET completed = true, modified = now() WHERE id = $1 AND created_by_id = $2 RETURNING id, key, content_type, profile_id ), profile AS ( UPDATE core_myuser u SET profile_upload_id = upload.id, last_updated = current_date FROM upload WHERE u.id = upload.profile_id ) SELECT id, key, content_type FROM upload",
+        "UPDATE core_upload SET completed = true, modified = now() WHERE id = $1 AND created_by_id = $2 RETURNING id, key, content_type, profile_id",
         None,
     )
 }
@@ -285,6 +293,7 @@ impl CompleteUploadStmt {
                     id: row.try_get(0)?,
                     key: row.try_get(1)?,
                     content_type: row.try_get(2)?,
+                    profile_id: row.try_get(3)?,
                 })
             },
             mapper: |it| CompleteUpload::from(it),
@@ -307,5 +316,51 @@ impl<'c, 'a, 's, C: GenericClient>
         params: &'a CompleteUploadParams,
     ) -> CompleteUploadQuery<'c, 'a, 's, C, CompleteUpload, 2> {
         self.bind(client, &params.id, &params.user_id)
+    }
+}
+pub struct SetProfileUploadStmt(&'static str, Option<tokio_postgres::Statement>);
+pub fn set_profile_upload() -> SetProfileUploadStmt {
+    SetProfileUploadStmt(
+        "UPDATE core_myuser SET profile_upload_id = $1, last_updated = current_date WHERE id = $2",
+        None,
+    )
+}
+impl SetProfileUploadStmt {
+    pub async fn prepare<'a, C: GenericClient>(
+        mut self,
+        client: &'a C,
+    ) -> Result<Self, tokio_postgres::Error> {
+        self.1 = Some(client.prepare(self.0).await?);
+        Ok(self)
+    }
+    pub async fn bind<'c, 'a, 's, C: GenericClient>(
+        &'s self,
+        client: &'c C,
+        upload_id: &'a i32,
+        user_id: &'a i32,
+    ) -> Result<u64, tokio_postgres::Error> {
+        client.execute(self.0, &[upload_id, user_id]).await
+    }
+}
+impl<'a, C: GenericClient + Send + Sync>
+    crate::client::async_::Params<
+        'a,
+        'a,
+        'a,
+        SetProfileUploadParams,
+        std::pin::Pin<
+            Box<dyn futures::Future<Output = Result<u64, tokio_postgres::Error>> + Send + 'a>,
+        >,
+        C,
+    > for SetProfileUploadStmt
+{
+    fn params(
+        &'a self,
+        client: &'a C,
+        params: &'a SetProfileUploadParams,
+    ) -> std::pin::Pin<
+        Box<dyn futures::Future<Output = Result<u64, tokio_postgres::Error>> + Send + 'a>,
+    > {
+        Box::pin(self.bind(client, &params.upload_id, &params.user_id))
     }
 }
