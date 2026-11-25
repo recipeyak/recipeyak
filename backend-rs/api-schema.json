@@ -274,6 +274,160 @@
         }
       }
     },
+    "/api/v1/notes/{note_id}/": {
+      "delete": {
+        "operationId": "NoteDelete",
+        "parameters": [
+          {
+            "name": "note_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        }
+      },
+      "patch": {
+        "operationId": "NoteUpdate",
+        "parameters": [
+          {
+            "name": "note_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteUpdateParams"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Note"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/notes/{note_id}/reactions/": {
+      "post": {
+        "operationId": "ReactionCreate",
+        "parameters": [
+          {
+            "name": "note_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReactionCreateParams"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Reaction"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reactions/{reaction_id}/": {
+      "delete": {
+        "operationId": "ReactionDelete",
+        "parameters": [
+          {
+            "name": "reaction_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        }
+      }
+    },
+    "/api/v1/recipes/{recipe_id}/notes/": {
+      "post": {
+        "operationId": "NoteCreate",
+        "parameters": [
+          {
+            "name": "recipe_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteCreateParams"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Note"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/upload/": {
       "post": {
         "operationId": "UploadStart",
@@ -332,6 +486,12 @@
   },
   "components": {
     "schemas": {
+      "AttachmentType": {
+        "type": "string",
+        "enum": [
+          "upload"
+        ]
+      },
       "CalendarCreateParams": {
         "type": "object",
         "required": [
@@ -484,6 +644,141 @@
           }
         }
       },
+      "Emoji": {
+        "type": "string",
+        "enum": [
+          "❤️",
+          "😆",
+          "🤮"
+        ]
+      },
+      "Note": {
+        "type": "object",
+        "required": [
+          "id",
+          "text",
+          "created_by",
+          "created",
+          "modified",
+          "attachments",
+          "reactions",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "created_by": {
+            "$ref": "#/components/schemas/PublicUser"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "modified": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NoteAttachment"
+            }
+          },
+          "reactions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Reaction"
+            }
+          },
+          "type": {
+            "$ref": "#/components/schemas/NoteType"
+          }
+        }
+      },
+      "NoteAttachment": {
+        "type": "object",
+        "required": [
+          "id",
+          "url",
+          "backgroundUrl",
+          "contentType",
+          "isPrimary",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "backgroundUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "contentType": {
+            "type": "string"
+          },
+          "isPrimary": {
+            "type": "boolean"
+          },
+          "type": {
+            "$ref": "#/components/schemas/AttachmentType"
+          }
+        }
+      },
+      "NoteCreateParams": {
+        "type": "object",
+        "required": [
+          "text",
+          "attachment_upload_ids"
+        ],
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "attachment_upload_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "NoteType": {
+        "type": "string",
+        "enum": [
+          "note"
+        ]
+      },
+      "NoteUpdateParams": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "attachment_upload_ids": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
       "PrimaryImage": {
         "type": "object",
         "required": [
@@ -505,6 +800,71 @@
             ]
           }
         }
+      },
+      "PublicUser": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "email",
+          "avatar_url"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "avatar_url": {
+            "type": "string"
+          }
+        }
+      },
+      "Reaction": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "note_id",
+          "user",
+          "created"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/Emoji"
+          },
+          "note_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "user": {
+            "$ref": "#/components/schemas/PublicUser"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ReactionCreateParams": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/Emoji"
+          }
+        },
+        "additionalProperties": false
       },
       "RecipeMetadata": {
         "type": "object",
