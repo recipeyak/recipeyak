@@ -5,7 +5,6 @@
 //! PATCH /api/v1/calendar/settings/
 //! POST /api/v1/calendar/generate_link/
 
-use axum::Json;
 use axum::extract::State;
 use axum::http::HeaderMap;
 use axum::http::header::HOST;
@@ -19,6 +18,7 @@ use utoipa::ToSchema;
 
 use crate::AppState;
 use crate::error::ApiError;
+use crate::extract::Json;
 use crate::extract::team::Team;
 use crate::extract::user::User;
 

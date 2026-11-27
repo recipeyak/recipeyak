@@ -2,12 +2,13 @@
 //!
 //! DELETE /api/v1/calendar/{scheduled_recipe_id}/
 
-use axum::extract::{Path, State};
+use axum::extract::State;
 use axum::http::StatusCode;
 use cornucopia::queries::scheduled_recipe::delete_scheduled_recipe;
 
 use crate::AppState;
 use crate::error::ApiError;
+use crate::extract::Path;
 use crate::extract::calendar::Calendar;
 use crate::realtime::publish_calendar_event_deleted;
 

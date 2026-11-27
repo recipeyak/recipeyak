@@ -2,7 +2,6 @@
 //!
 //! POST /api/v1/calendar/
 
-use axum::Json;
 use axum::extract::State;
 use chrono::NaiveDate;
 use cornucopia::queries::scheduled_recipe::{insert_scheduled_recipe, scheduled_recipe};
@@ -11,6 +10,7 @@ use utoipa::ToSchema;
 
 use crate::AppState;
 use crate::error::ApiError;
+use crate::extract::Json;
 use crate::extract::calendar::Calendar;
 use crate::extract::user::User;
 use crate::realtime::publish_calendar_event;

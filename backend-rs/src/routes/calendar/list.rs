@@ -2,7 +2,6 @@
 //!
 //! GET /api/v1/calendar/?start=YYYY-MM-DD&end=YYYY-MM-DD
 
-use axum::Json;
 use axum::extract::State;
 use chrono::NaiveDate;
 use cornucopia::queries::scheduled_recipe::scheduled_recipes;
@@ -12,8 +11,8 @@ use utoipa::{IntoParams, ToSchema};
 use crate::AppState;
 use crate::error::ApiError;
 use crate::extract::calendar::Calendar;
-use crate::extract::params::Params;
 use crate::extract::user::User;
+use crate::extract::{Json, Params};
 use crate::routes::calendar::scheduled_recipe::ScheduledRecipe;
 
 #[derive(Deserialize, IntoParams)]

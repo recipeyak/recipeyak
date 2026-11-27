@@ -2,8 +2,7 @@
 //!
 //! POST /api/v1/upload/{upload_id}/complete
 
-use axum::Json;
-use axum::extract::{Path, State};
+use axum::extract::State;
 use cornucopia::queries::upload::complete_upload;
 use serde::Serialize;
 use utoipa::ToSchema;
@@ -11,6 +10,7 @@ use utoipa::ToSchema;
 use crate::AppState;
 use crate::error::ApiError;
 use crate::extract::user::User;
+use crate::extract::{Json, Path};
 use crate::urls::public_url;
 
 #[derive(Serialize, ToSchema)]
