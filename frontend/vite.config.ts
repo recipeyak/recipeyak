@@ -29,23 +29,26 @@ const logoSrc = {
 
 // Mirrors infra/nginx/recipeyak.conf: backend-rs serves these routes and
 // Django is the backup, so they still work if backend-rs isn't running. Vite's
-// proxy can't route on method, so this runs ahead of it.
-// Keep in sync with the $api_upstream map in infra/nginx/recipeyak.conf.
-const backendRsRoutes: Array<{ method: string; path: string | RegExp }> = [
-  { method: "GET", path: "/api/v1/calendar/" },
-  { method: "POST", path: "/api/v1/calendar/" },
-  { method: "GET", path: "/api/v1/calendar/settings/" },
-  { method: "PATCH", path: "/api/v1/calendar/settings/" },
-  { method: "POST", path: "/api/v1/calendar/generate_link/" },
-  { method: "PATCH", path: /^\/api\/v1\/calendar\/\d+\/$/ },
-  { method: "DELETE", path: /^\/api\/v1\/calendar\/\d+\/$/ },
-  { method: "GET", path: "/api/v1/calendars/" },
-  { method: "POST", path: "/api/v1/calendars/" },
-  { method: "DELETE", path: /^\/api\/v1\/calendars\/\d+\/$/ },
-  { method: "POST", path: /^\/api\/v1\/calendars\/\d+\/pin\/$/ },
-  { method: "POST", path: "/api/v1/upload/" },
-  { method: "POST", path: /^\/api\/v1\/upload\/\d+\/complete$/ },
-]
+// proxy can't route on method, so this runs ahead of it. Read from
+// backend-rs's OpenAPI schema, which a backend-rs test checks against nginx.
+function backendRsRoutes(): Array<{ method: string; path: RegExp }> {
+  const schema = JSON.parse(
+    fs.readFileSync(
+      path.resolve(import.meta.dirname, "../backend-rs/api-schema.json"),
+      "utf8",
+    ),
+  ) as { paths: Record<string, Record<string, unknown>> }
+  return Object.entries(schema.paths).flatMap(([route, operations]) => {
+    const pattern = route
+      .split(/\{[^}]+\}/)
+      .map((part) => part.replace(/[.*+?^$()|[\]\\]/g, "\\$&"))
+      .join("[^/]+")
+    return Object.keys(operations).map((method) => ({
+      method: method.toUpperCase(),
+      path: new RegExp(`^${pattern}$`),
+    }))
+  })
+}
 
 function forward(
   target: string,
@@ -72,15 +75,12 @@ function backendRsProxy(): Plugin {
   return {
     name: "backend-rs-proxy",
     configureServer(server) {
+      const routes = backendRsRoutes()
       server.middlewares.use(async (req, res, next) => {
         const path = req.url?.split("?")[0] ?? ""
         if (
-          !backendRsRoutes.some(
-            (route) =>
-              route.method === req.method &&
-              (typeof route.path === "string"
-                ? route.path === path
-                : route.path.test(path)),
+          !routes.some(
+            (route) => route.method === req.method && route.path.test(path),
           )
         ) {
           next()
