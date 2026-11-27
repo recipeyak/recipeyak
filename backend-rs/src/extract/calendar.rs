@@ -2,7 +2,8 @@
 
 use axum::extract::FromRequestParts;
 use axum::http::request::Parts;
-use cornucopia::queries::calendar::calendar_exists;
+use cornucopia::client::Params as _;
+use cornucopia::queries::calendar::{CalendarExistsParams, calendar_exists};
 
 use crate::AppState;
 use crate::error::ApiError;
@@ -43,7 +44,10 @@ async fn pinned_calendar(parts: &mut Parts, state: &AppState) -> Result<Calendar
         .pinned_calendar_id
         .ok_or_else(|| ApiError::internal("should always have a pinned calendar selected"))?;
     let client = state.pool.get().await?;
-    let exists = calendar_exists().bind(&client, &id, &team_id).one().await?;
+    let exists = calendar_exists()
+        .params(&client, &CalendarExistsParams { id, team_id })
+        .one()
+        .await?;
     if !exists {
         return Err(ApiError::internal(
             "Calendar matching query does not exist.",

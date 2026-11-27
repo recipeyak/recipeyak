@@ -3,7 +3,8 @@
 //! POST /api/v1/upload/{upload_id}/complete
 
 use axum::extract::State;
-use cornucopia::queries::upload::complete_upload;
+use cornucopia::client::Params as _;
+use cornucopia::queries::upload::{CompleteUploadParams, complete_upload};
 use serde::Serialize;
 use utoipa::ToSchema;
 
@@ -36,7 +37,13 @@ pub async fn complete_view(
     Path(upload_id): Path<i32>,
 ) -> Result<Json<UploadCompleteResponse>, ApiError> {
     let upload = complete_upload()
-        .bind(&db, &upload_id, &user.id)
+        .params(
+            &db,
+            &CompleteUploadParams {
+                id: upload_id,
+                user_id: user.id,
+            },
+        )
         .opt()
         .await?
         .or_not_found()?;

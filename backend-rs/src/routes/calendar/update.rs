@@ -4,7 +4,10 @@
 
 use axum::extract::State;
 use chrono::NaiveDate;
-use cornucopia::queries::scheduled_recipe::{reschedule_recipe, scheduled_recipe};
+use cornucopia::client::Params as _;
+use cornucopia::queries::scheduled_recipe::{
+    RescheduleRecipeParams, ScheduledRecipeParams, reschedule_recipe, scheduled_recipe,
+};
 use serde::Deserialize;
 use utoipa::ToSchema;
 
@@ -40,20 +43,28 @@ pub async fn update_view(
     Json(CalendarUpdateParams { on }): Json<CalendarUpdateParams>,
 ) -> Result<Json<ScheduledRecipe>, ApiError> {
     let id = reschedule_recipe()
-        .bind(
+        .params(
             &db,
-            &scheduled_recipe_id,
-            &calendar.team_id,
-            &calendar.id,
-            &on,
-            &user.id,
+            &RescheduleRecipeParams {
+                id: scheduled_recipe_id,
+                team_id: calendar.team_id,
+                calendar_id: calendar.id,
+                on,
+                actor_id: user.id,
+            },
         )
         .opt()
         .await?
         // Django 500s with ScheduledRecipe.DoesNotExist.
         .or_not_found()?;
     let row = scheduled_recipe()
-        .bind(&db, &id, &calendar.team_id)
+        .params(
+            &db,
+            &ScheduledRecipeParams {
+                id,
+                team_id: calendar.team_id,
+            },
+        )
         .one()
         .await?;
     let res = ScheduledRecipe::from_row(row, &state.config.storage_url, user.id, calendar.team_id);

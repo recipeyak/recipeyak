@@ -4,7 +4,8 @@
 
 use axum::extract::State;
 use axum::http::StatusCode;
-use cornucopia::queries::scheduled_recipe::delete_scheduled_recipe;
+use cornucopia::client::Params as _;
+use cornucopia::queries::scheduled_recipe::{DeleteScheduledRecipeParams, delete_scheduled_recipe};
 
 use crate::AppState;
 use crate::db::Db;
@@ -27,7 +28,14 @@ pub async fn event_delete_view(
     Path(scheduled_recipe_id): Path<i32>,
 ) -> Result<StatusCode, ApiError> {
     delete_scheduled_recipe()
-        .bind(&db, &scheduled_recipe_id, &calendar.team_id, &calendar.id)
+        .params(
+            &db,
+            &DeleteScheduledRecipeParams {
+                id: scheduled_recipe_id,
+                team_id: calendar.team_id,
+                calendar_id: calendar.id,
+            },
+        )
         .await?;
 
     // Published even if nothing was deleted, like Django.

@@ -4,7 +4,8 @@
 
 use axum::extract::State;
 use chrono::NaiveDate;
-use cornucopia::queries::scheduled_recipe::scheduled_recipes;
+use cornucopia::client::Params as _;
+use cornucopia::queries::scheduled_recipe::{ScheduledRecipesParams, scheduled_recipes};
 use serde::{Deserialize, Serialize};
 use utoipa::{IntoParams, ToSchema};
 
@@ -45,7 +46,15 @@ pub async fn list_view(
     db: Db,
 ) -> Result<Json<CalendarListResponse>, ApiError> {
     let rows = scheduled_recipes()
-        .bind(&db, &calendar.team_id, &calendar.id, &start, &end)
+        .params(
+            &db,
+            &ScheduledRecipesParams {
+                team_id: calendar.team_id,
+                calendar_id: calendar.id,
+                start,
+                end,
+            },
+        )
         .all()
         .await?;
 

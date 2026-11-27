@@ -7,8 +7,11 @@
 
 use axum::http::HeaderMap;
 use axum::http::header::HOST;
+use cornucopia::client::Params as _;
 use cornucopia::queries::membership::{
-    CalendarSettings, calendar_settings, update_calendar_secret_key, update_calendar_sync_enabled,
+    CalendarSettings, CalendarSettingsParams, UpdateCalendarSecretKeyParams,
+    UpdateCalendarSyncEnabledParams, calendar_settings, update_calendar_secret_key,
+    update_calendar_sync_enabled,
 };
 use rand::RngExt;
 use rand::distr::Alphanumeric;
@@ -69,7 +72,13 @@ pub async fn settings_retrieve_view(
     db: Db,
 ) -> Result<Json<CalendarSettingsResponse>, ApiError> {
     let membership = calendar_settings()
-        .bind(&db, &team.id, &user.id)
+        .params(
+            &db,
+            &CalendarSettingsParams {
+                team_id: team.id,
+                user_id: user.id,
+            },
+        )
         .opt()
         .await?
         .or_not_found()?;
@@ -91,7 +100,14 @@ pub async fn update_settings_view(
     Json(CalendarUpdateSettingsParams { sync_enabled }): Json<CalendarUpdateSettingsParams>,
 ) -> Result<Json<CalendarSettingsResponse>, ApiError> {
     let membership = update_calendar_sync_enabled()
-        .bind(&db, &sync_enabled, &team.id, &user.id)
+        .params(
+            &db,
+            &UpdateCalendarSyncEnabledParams {
+                sync_enabled,
+                team_id: team.id,
+                user_id: user.id,
+            },
+        )
         .opt()
         .await?
         .or_not_found()?;
@@ -117,7 +133,14 @@ pub async fn generate_link_view(
         .map(char::from)
         .collect();
     let membership = update_calendar_secret_key()
-        .bind(&db, &secret_key, &team.id, &user.id)
+        .params(
+            &db,
+            &UpdateCalendarSecretKeyParams {
+                secret_key: &secret_key,
+                team_id: team.id,
+                user_id: user.id,
+            },
+        )
         .opt()
         .await?
         .or_not_found()?;
