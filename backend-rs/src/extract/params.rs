@@ -18,7 +18,7 @@ where
     async fn from_request_parts(parts: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
         let Query(params) = Query::from_request_parts(parts, state)
             .await
-            .map_err(|err| ApiError::Validation(err.body_text()))?;
+            .map_err(|err| ApiError::validation(err.body_text()))?;
         Ok(Params(params))
     }
 }

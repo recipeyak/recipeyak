@@ -17,7 +17,7 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 use crate::AppState;
-use crate::error::ApiError;
+use crate::error::{ApiError, OrNotFound};
 use crate::extract::Json;
 use crate::extract::team::Team;
 use crate::extract::user::User;
@@ -46,7 +46,7 @@ impl CalendarSettingsResponse {
         let host = headers
             .get(HOST)
             .and_then(|h| h.to_str().ok())
-            .ok_or_else(|| ApiError::Validation("missing Host header".into()))?;
+            .ok_or_else(|| ApiError::validation("missing Host header"))?;
         Ok(Json(Self {
             sync_enabled: membership.calendar_sync_enabled,
             calendar_link: format!(
@@ -74,7 +74,7 @@ pub async fn settings_retrieve_view(
         .bind(&client, &team.id, &user.id)
         .opt()
         .await?
-        .ok_or(ApiError::NotFound)?;
+        .or_not_found()?;
     CalendarSettingsResponse::from_membership(&headers, team.id, membership)
 }
 
@@ -97,7 +97,7 @@ pub async fn update_settings_view(
         .bind(&client, &sync_enabled, &team.id, &user.id)
         .opt()
         .await?
-        .ok_or(ApiError::NotFound)?;
+        .or_not_found()?;
     CalendarSettingsResponse::from_membership(&headers, team.id, membership)
 }
 
@@ -124,6 +124,6 @@ pub async fn generate_link_view(
         .bind(&client, &secret_key, &team.id, &user.id)
         .opt()
         .await?
-        .ok_or(ApiError::NotFound)?;
+        .or_not_found()?;
     CalendarSettingsResponse::from_membership(&headers, team.id, membership)
 }

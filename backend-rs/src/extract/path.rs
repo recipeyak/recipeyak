@@ -22,7 +22,7 @@ where
             Ok(axum::extract::Path(value)) => Ok(Path(value)),
             Err(PathRejection::FailedToDeserializePathParams(_)) => Err(ApiError::NotFound),
             // The route and the extractor disagree, which is a bug here.
-            Err(err) => Err(ApiError::Internal(err.body_text())),
+            Err(err) => Err(ApiError::internal(err.body_text())),
         }
     }
 }

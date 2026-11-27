@@ -26,14 +26,14 @@ impl FromRequestParts<AppState> for Calendar {
         let team_id = Team::from_request_parts(parts, state).await?.id;
 
         // get_pinned_calendar
-        let id = user.pinned_calendar_id.ok_or_else(|| {
-            ApiError::Internal("should always have a pinned calendar selected".into())
-        })?;
+        let id = user
+            .pinned_calendar_id
+            .ok_or_else(|| ApiError::internal("should always have a pinned calendar selected"))?;
         let client = state.pool.get().await?;
         let exists = calendar_exists().bind(&client, &id, &team_id).one().await?;
         if !exists {
-            return Err(ApiError::Internal(
-                "Calendar matching query does not exist.".into(),
+            return Err(ApiError::internal(
+                "Calendar matching query does not exist.",
             ));
         }
 

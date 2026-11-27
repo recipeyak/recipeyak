@@ -5,7 +5,6 @@
 use std::collections::BTreeMap;
 
 use axum::extract::State;
-use axum::http::StatusCode;
 use cornucopia::queries::recipe::recipe_exists;
 use cornucopia::queries::upload::insert_upload;
 use serde::{Deserialize, Serialize};
@@ -61,13 +60,13 @@ pub async fn start_view(
 ) -> Result<Json<UploadStartResponse>, ApiError> {
     let (recipe_id, profile_id) = match (params.purpose, params.recipe_id) {
         (UploadPurpose::Recipe, None) => {
-            return Err(ApiError::Validation(
-                "recipe_id is required when purpose is recipe".into(),
+            return Err(ApiError::validation(
+                "recipe_id is required when purpose is recipe",
             ));
         }
         (UploadPurpose::Profile, Some(_)) => {
-            return Err(ApiError::Validation(
-                "recipe_id is not allowed when purpose is profile".into(),
+            return Err(ApiError::validation(
+                "recipe_id is not allowed when purpose is profile",
             ));
         }
         (UploadPurpose::Recipe, Some(recipe_id)) => (Some(recipe_id), None),
@@ -81,11 +80,10 @@ pub async fn start_view(
             .one()
             .await?;
         if !exists {
-            return Err(ApiError::Api {
-                code: "recipe_not_found",
-                message: "Could not find recipe with provided ID.",
-                status: StatusCode::BAD_REQUEST,
-            });
+            return Err(ApiError::bad_request(
+                "recipe_not_found",
+                "Could not find recipe with provided ID.",
+            ));
         }
     }
 
@@ -113,8 +111,7 @@ pub async fn start_view(
     let db_id = id.to_string();
     let upload_url = s3
         .presign_put_object(&key, params.content_length, &params.content_type, &db_id)
-        .await
-        .map_err(ApiError::Internal)?;
+        .await?;
 
     Ok(Json(UploadStartResponse {
         id,

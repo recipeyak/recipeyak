@@ -7,7 +7,7 @@ use axum::http::StatusCode;
 use cornucopia::queries::calendar::pin_calendar;
 
 use crate::AppState;
-use crate::error::ApiError;
+use crate::error::{ApiError, OrNotFound};
 use crate::extract::Path;
 use crate::extract::team::Team;
 use crate::extract::user::User;
@@ -31,7 +31,7 @@ pub async fn pin_create_view(
         .opt()
         .await?
         // Django 500s with Calendar.DoesNotExist.
-        .ok_or(ApiError::NotFound)?;
+        .or_not_found()?;
 
     Ok(StatusCode::NO_CONTENT)
 }

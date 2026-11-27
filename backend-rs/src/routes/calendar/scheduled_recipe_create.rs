@@ -9,7 +9,7 @@ use serde::Deserialize;
 use utoipa::ToSchema;
 
 use crate::AppState;
-use crate::error::ApiError;
+use crate::error::{ApiError, OrNotFound};
 use crate::extract::Json;
 use crate::extract::calendar::Calendar;
 use crate::extract::user::User;
@@ -48,7 +48,7 @@ pub async fn scheduled_recipe_create_view(
         )
         .opt()
         .await?
-        .ok_or(ApiError::NotFound)?;
+        .or_not_found()?;
     let row = scheduled_recipe()
         .bind(&client, &id, &calendar.team_id)
         .one()
