@@ -1,7 +1,13 @@
-//! Handlers are re-exported so routes read as `upload::start_view`.
-
 mod complete;
 mod start;
 
-pub use complete::*;
-pub use start::*;
+use utoipa_axum::router::OpenApiRouter;
+use utoipa_axum::routes;
+
+use crate::AppState;
+
+pub fn router() -> OpenApiRouter<AppState> {
+    OpenApiRouter::new()
+        .routes(routes!(start::start_view))
+        .routes(routes!(complete::complete_view))
+}
