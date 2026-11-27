@@ -18,7 +18,7 @@ const INSERT_TEAM: &str =
 #[tokio::test]
 async fn transaction_commits() {
     let db = TestDb::new().await;
-    let mut conn = DbPool::new(db.clone()).get().await.unwrap();
+    let mut conn = DbPool::new((*db).clone()).get().await.unwrap();
 
     let tx = conn.transaction().await.unwrap();
     tx.execute(INSERT_TEAM, &[]).await.unwrap();
@@ -31,7 +31,7 @@ async fn transaction_commits() {
 async fn transaction_rolls_back_when_dropped() {
     let db = TestDb::new().await;
     create_team(&db, "Existing").await;
-    let mut conn = DbPool::new(db.clone()).get().await.unwrap();
+    let mut conn = DbPool::new((*db).clone()).get().await.unwrap();
 
     {
         let tx = conn.transaction().await.unwrap();

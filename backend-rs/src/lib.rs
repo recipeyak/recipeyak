@@ -5,6 +5,7 @@ mod extract;
 mod middleware;
 mod realtime;
 mod routes;
+mod serializers;
 pub mod storage;
 mod urls;
 

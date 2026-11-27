@@ -15,7 +15,7 @@ use crate::error::ApiError;
 use crate::extract::calendar::Calendar;
 use crate::extract::user::User;
 use crate::extract::{Json, Params};
-use crate::routes::calendar::scheduled_recipe::ScheduledRecipe;
+use crate::serializers::ScheduledRecipe;
 
 #[derive(Deserialize, IntoParams)]
 #[serde(deny_unknown_fields)]

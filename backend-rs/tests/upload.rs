@@ -3,21 +3,17 @@
 mod common;
 
 use axum::http::StatusCode;
-use common::{TestApp, TestDb, create_account, create_recipe, login, query_one};
+use common::{Setup, TestApp, create_account, create_recipe, login, query_one, setup};
 use serde_json::json;
 
 #[tokio::test]
 async fn start_recipe_upload() {
-    let db = TestDb::new().await;
-    let account = create_account(&db, "alice@example.com").await;
+    let Setup { db, account, app } = setup().await;
     let recipe_id = create_recipe(&db, account.team_id, "Bread").await;
-    let session_key = login(&db, account.user_id).await;
-    let app = TestApp::new(&db);
 
     let response = app
         .post(
             "/api/v1/upload/",
-            Some(&session_key),
             json!({
                 "file_name": "IMG 1.jpg",
                 "content_type": "image/jpeg",
@@ -74,15 +70,11 @@ async fn start_recipe_upload() {
 
 #[tokio::test]
 async fn start_profile_upload() {
-    let db = TestDb::new().await;
-    let account = create_account(&db, "alice@example.com").await;
-    let session_key = login(&db, account.user_id).await;
-    let app = TestApp::new(&db);
+    let Setup { db, account, app } = setup().await;
 
     let response = app
         .post(
             "/api/v1/upload/",
-            Some(&session_key),
             json!({
                 "file_name": "me.png",
                 "content_type": "image/png",
@@ -109,11 +101,8 @@ async fn start_profile_upload() {
 
 #[tokio::test]
 async fn start_validates_purpose_and_recipe_id() {
-    let db = TestDb::new().await;
-    let account = create_account(&db, "alice@example.com").await;
+    let Setup { db, account, app } = setup().await;
     let recipe_id = create_recipe(&db, account.team_id, "Bread").await;
-    let session_key = login(&db, account.user_id).await;
-    let app = TestApp::new(&db);
 
     for (body, message) in [
         (
@@ -131,7 +120,7 @@ async fn start_validates_purpose_and_recipe_id() {
             "recipe_id is not allowed when purpose is profile",
         ),
     ] {
-        let response = app.post("/api/v1/upload/", Some(&session_key), body).await;
+        let response = app.post("/api/v1/upload/", body).await;
         assert_eq!(response.status, StatusCode::BAD_REQUEST);
         assert_eq!(response.json()["error"]["message"], message);
     }
@@ -139,17 +128,13 @@ async fn start_validates_purpose_and_recipe_id() {
 
 #[tokio::test]
 async fn start_other_teams_recipe_is_not_found() {
-    let db = TestDb::new().await;
-    let account = create_account(&db, "alice@example.com").await;
+    let Setup { db, app, .. } = setup().await;
     let other = create_account(&db, "bob@example.com").await;
     let recipe_id = create_recipe(&db, other.team_id, "Bread").await;
-    let session_key = login(&db, account.user_id).await;
-    let app = TestApp::new(&db);
 
     let response = app
         .post(
             "/api/v1/upload/",
-            Some(&session_key),
             json!({
                 "file_name": "a.jpg",
                 "content_type": "image/jpeg",
@@ -167,22 +152,18 @@ async fn start_other_teams_recipe_is_not_found() {
     assert_eq!(count, 0);
 }
 
-async fn start_upload(app: &TestApp, session_key: &str, body: serde_json::Value) -> i32 {
-    let response = app.post("/api/v1/upload/", Some(session_key), body).await;
+async fn start_upload(app: &TestApp, body: serde_json::Value) -> i32 {
+    let response = app.post("/api/v1/upload/", body).await;
     assert_eq!(response.status, StatusCode::OK);
     response.json()["id"].as_i64().unwrap() as i32
 }
 
 #[tokio::test]
 async fn complete_recipe_upload() {
-    let db = TestDb::new().await;
-    let account = create_account(&db, "alice@example.com").await;
+    let Setup { db, account, app } = setup().await;
     let recipe_id = create_recipe(&db, account.team_id, "Bread").await;
-    let session_key = login(&db, account.user_id).await;
-    let app = TestApp::new(&db);
     let id = start_upload(
         &app,
-        &session_key,
         json!({
             "file_name": "IMG 1.jpg",
             "content_type": "image/jpeg",
@@ -193,11 +174,7 @@ async fn complete_recipe_upload() {
     .await;
 
     let response = app
-        .post(
-            &format!("/api/v1/upload/{id}/complete"),
-            Some(&session_key),
-            json!({}),
-        )
+        .post(&format!("/api/v1/upload/{id}/complete"), json!({}))
         .await;
 
     assert_eq!(response.status, StatusCode::OK);
@@ -229,13 +206,9 @@ async fn complete_recipe_upload() {
 
 #[tokio::test]
 async fn complete_profile_upload_sets_avatar() {
-    let db = TestDb::new().await;
-    let account = create_account(&db, "alice@example.com").await;
-    let session_key = login(&db, account.user_id).await;
-    let app = TestApp::new(&db);
+    let Setup { db, account, app } = setup().await;
     let id = start_upload(
         &app,
-        &session_key,
         json!({
             "file_name": "me.png",
             "content_type": "image/png",
@@ -246,11 +219,7 @@ async fn complete_profile_upload_sets_avatar() {
     .await;
 
     let response = app
-        .post(
-            &format!("/api/v1/upload/{id}/complete"),
-            Some(&session_key),
-            json!({}),
-        )
+        .post(&format!("/api/v1/upload/{id}/complete"), json!({}))
         .await;
 
     assert_eq!(response.status, StatusCode::OK);
@@ -266,15 +235,11 @@ async fn complete_profile_upload_sets_avatar() {
 
 #[tokio::test]
 async fn complete_other_users_upload_is_not_found() {
-    let db = TestDb::new().await;
-    let account = create_account(&db, "alice@example.com").await;
+    let Setup { db, app, .. } = setup().await;
     let other = create_account(&db, "bob@example.com").await;
     let other_session_key = login(&db, other.user_id).await;
-    let session_key = login(&db, account.user_id).await;
-    let app = TestApp::new(&db);
     let id = start_upload(
-        &app,
-        &other_session_key,
+        &app.with_session(&other_session_key),
         json!({
             "file_name": "me.png",
             "content_type": "image/png",
@@ -285,11 +250,7 @@ async fn complete_other_users_upload_is_not_found() {
     .await;
 
     let response = app
-        .post(
-            &format!("/api/v1/upload/{id}/complete"),
-            Some(&session_key),
-            json!({}),
-        )
+        .post(&format!("/api/v1/upload/{id}/complete"), json!({}))
         .await;
 
     assert_eq!(response.status, StatusCode::NOT_FOUND);
