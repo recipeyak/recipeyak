@@ -26,10 +26,10 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v3
         with:
           persist-credentials: false
-      - uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610 # v3
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: "frontend/package.json"
           cache-dependency-path: "frontend/package-lock.json"
@@ -41,7 +41,7 @@ jobs:
         working-directory: "frontend"
         run: ./s/test --no-watch --reporter junit --outputFile ~/test-results/frontend_tests.xml
       - name: Archive code coverage results
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: test-results
           path: ~/test-results
@@ -51,10 +51,10 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v3
         with:
           persist-credentials: false
-      - uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610 # v3
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: "frontend/package.json"
           cache-dependency-path: "frontend/package-lock.json"
@@ -71,10 +71,10 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v3
         with:
           persist-credentials: false
-      - uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610 # v3
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: "frontend/package.json"
           cache-dependency-path: "frontend/package-lock.json"
@@ -91,10 +91,10 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v3
         with:
           persist-credentials: false
-      - uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610 # v3
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: "frontend/package.json"
           cache-dependency-path: "frontend/package-lock.json"
@@ -111,10 +111,10 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v3
         with:
           persist-credentials: false
-      - uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610 # v3
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: "frontend/package.json"
           cache-dependency-path: "frontend/package-lock.json"
@@ -133,10 +133,10 @@ jobs:
     permissions:
       pull-requests: write
     steps:
-      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v3
         with:
           persist-credentials: false
-      - uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610 # v3
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: "frontend/package.json"
           cache-dependency-path: "frontend/package-lock.json"
