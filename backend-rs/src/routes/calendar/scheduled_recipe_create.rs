@@ -9,6 +9,7 @@ use serde::Deserialize;
 use utoipa::ToSchema;
 
 use crate::AppState;
+use crate::db::Db;
 use crate::error::{ApiError, OrNotFound};
 use crate::extract::Json;
 use crate::extract::calendar::Calendar;
@@ -34,23 +35,16 @@ pub async fn scheduled_recipe_create_view(
     State(state): State<AppState>,
     user: User,
     calendar: Calendar,
+    db: Db,
     Json(ScheduledRecipeCreateParams { recipe, on }): Json<ScheduledRecipeCreateParams>,
 ) -> Result<Json<ScheduledRecipe>, ApiError> {
-    let client = state.pool.get().await?;
     let id = insert_scheduled_recipe()
-        .bind(
-            &client,
-            &on,
-            &calendar.team_id,
-            &calendar.id,
-            &user.id,
-            &recipe,
-        )
+        .bind(&db, &on, &calendar.team_id, &calendar.id, &user.id, &recipe)
         .opt()
         .await?
         .or_not_found()?;
     let row = scheduled_recipe()
-        .bind(&client, &id, &calendar.team_id)
+        .bind(&db, &id, &calendar.team_id)
         .one()
         .await?;
     let res = ScheduledRecipe::from_row(row, &state.config.storage_url, user.id, calendar.team_id);

@@ -9,6 +9,7 @@ use serde::Deserialize;
 use utoipa::ToSchema;
 
 use crate::AppState;
+use crate::db::Db;
 use crate::error::{ApiError, OrNotFound};
 use crate::extract::calendar::Calendar;
 use crate::extract::user::User;
@@ -34,13 +35,13 @@ pub async fn update_view(
     State(state): State<AppState>,
     user: User,
     calendar: Calendar,
+    db: Db,
     Path(scheduled_recipe_id): Path<i32>,
     Json(CalendarUpdateParams { on }): Json<CalendarUpdateParams>,
 ) -> Result<Json<ScheduledRecipe>, ApiError> {
-    let client = state.pool.get().await?;
     let id = reschedule_recipe()
         .bind(
-            &client,
+            &db,
             &scheduled_recipe_id,
             &calendar.team_id,
             &calendar.id,
@@ -52,7 +53,7 @@ pub async fn update_view(
         // Django 500s with ScheduledRecipe.DoesNotExist.
         .or_not_found()?;
     let row = scheduled_recipe()
-        .bind(&client, &id, &calendar.team_id)
+        .bind(&db, &id, &calendar.team_id)
         .one()
         .await?;
     let res = ScheduledRecipe::from_row(row, &state.config.storage_url, user.id, calendar.team_id);

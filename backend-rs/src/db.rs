@@ -1,11 +1,11 @@
-//! A pooled client that reports each query to Sentry as a `db.prepare` span
-//! followed by a `db` span for its execution.
+//! Pooled connections and transactions that report each query to Sentry as a
+//! `db.prepare` span followed by a `db` span for its execution.
 
 use std::future::Future;
 use std::sync::Mutex;
 
 use cornucopia::client::GenericClient;
-use deadpool_postgres::{Client, ClientWrapper, Object, Pool, PoolError};
+use deadpool_postgres::{Client, Object, Pool, PoolError, StatementCache, Transaction};
 use sentry::protocol::SpanStatus;
 use tokio_postgres::types::{BorrowToSql, ToSql};
 use tokio_postgres::{Client as PgClient, Error, Row, RowStream, Statement, ToStatement};
@@ -44,21 +44,59 @@ impl DbPool {
             }
             span.finish();
         }
-        Ok(Db {
-            client: result?,
-            sql: Mutex::new(None),
-        })
+        Ok(Traced::new(result?))
     }
 }
 
-pub struct Db {
-    client: Client,
+/// A pooled connection. Extract one in a handler with `db: Db`.
+pub type Db = Traced<Client>;
+
+/// A transaction on a [`Db`], rolled back if dropped without
+/// [`Tx::commit`]. Generated queries take it like a `Db`.
+pub type Tx<'a> = Traced<Transaction<'a>>;
+
+/// Wraps a connection or transaction to add a Sentry span per query.
+pub struct Traced<C> {
+    client: C,
     /// `Statement` doesn't expose its SQL, so `prepare`, which the generated
     /// queries call right before executing, keeps it for the `db` span.
     sql: Mutex<Option<String>>,
 }
 
-impl Db {
+/// What [`Traced`] needs from a connection or transaction. Queries go
+/// straight to the connection either way, since a transaction is just
+/// statements on it between `BEGIN` and `COMMIT`.
+pub trait Connection: Send + Sync {
+    fn pg(&self) -> &PgClient;
+    fn statement_cache(&self) -> &StatementCache;
+}
+
+impl Connection for Client {
+    fn pg(&self) -> &PgClient {
+        self
+    }
+    fn statement_cache(&self) -> &StatementCache {
+        &self.statement_cache
+    }
+}
+
+impl Connection for Transaction<'_> {
+    fn pg(&self) -> &PgClient {
+        self.client()
+    }
+    fn statement_cache(&self) -> &StatementCache {
+        &self.statement_cache
+    }
+}
+
+impl<C> Traced<C> {
+    fn new(client: C) -> Self {
+        Self {
+            client,
+            sql: Mutex::new(None),
+        }
+    }
+
     fn start_span(op: &str, sql: &str) -> Option<sentry::Span> {
         let parent = sentry::configure_scope(|scope| scope.get_span())?;
         let span = parent.start_child(op, sql);
@@ -83,17 +121,41 @@ impl Db {
         Self::finish_span(span, &result);
         result
     }
+
+    /// Spans a statement that isn't a generated query, like `BEGIN`.
+    async fn spanned<T>(
+        sql: &str,
+        statement: impl Future<Output = Result<T, Error>>,
+    ) -> Result<T, Error> {
+        let span = Self::start_span("db", sql);
+        let result = statement.await;
+        Self::finish_span(span, &result);
+        result
+    }
 }
 
-impl GenericClient for Db {
+impl Db {
+    pub async fn transaction(&mut self) -> Result<Tx<'_>, Error> {
+        let transaction = Self::spanned("BEGIN", self.client.transaction()).await?;
+        Ok(Traced::new(transaction))
+    }
+}
+
+impl Tx<'_> {
+    pub async fn commit(self) -> Result<(), Error> {
+        Self::spanned("COMMIT", self.client.commit()).await
+    }
+}
+
+impl<C: Connection> GenericClient for Traced<C> {
     fn stmt_cache() -> bool {
         true
     }
     async fn prepare(&self, query: &str) -> Result<Statement, Error> {
         let span = Self::start_span("db.prepare", query);
-        let cache = &self.client.statement_cache;
+        let cache = self.client.statement_cache();
         let cache_size = cache.size();
-        let result = ClientWrapper::prepare_cached(&self.client, query).await;
+        let result = cache.prepare(self.client.pg(), query).await;
         if let Some(span) = &span {
             // A miss adds the statement, which takes a round trip to Postgres.
             span.set_data("db.prepare.cached", (cache.size() == cache_size).into());
@@ -108,8 +170,7 @@ impl GenericClient for Db {
     where
         T: ?Sized + ToStatement + Sync + Send,
     {
-        self.traced(PgClient::execute(&self.client, query, params))
-            .await
+        self.traced(self.client.pg().execute(query, params)).await
     }
     async fn query_one<T>(
         &self,
@@ -119,7 +180,7 @@ impl GenericClient for Db {
     where
         T: ?Sized + ToStatement + Sync + Send,
     {
-        self.traced(PgClient::query_one(&self.client, statement, params))
+        self.traced(self.client.pg().query_one(statement, params))
             .await
     }
     async fn query_opt<T>(
@@ -130,15 +191,14 @@ impl GenericClient for Db {
     where
         T: ?Sized + ToStatement + Sync + Send,
     {
-        self.traced(PgClient::query_opt(&self.client, statement, params))
+        self.traced(self.client.pg().query_opt(statement, params))
             .await
     }
     async fn query<T>(&self, query: &T, params: &[&(dyn ToSql + Sync)]) -> Result<Vec<Row>, Error>
     where
         T: ?Sized + ToStatement + Sync + Send,
     {
-        self.traced(PgClient::query(&self.client, query, params))
-            .await
+        self.traced(self.client.pg().query(query, params)).await
     }
     /// The span ends once the first response arrives, not when the stream is
     /// drained, so it undercounts for large result sets.
@@ -149,7 +209,7 @@ impl GenericClient for Db {
         I::IntoIter: ExactSizeIterator,
         I::Item: BorrowToSql,
     {
-        self.traced(PgClient::query_raw(&self.client, statement, params))
+        self.traced(self.client.pg().query_raw(statement, params))
             .await
     }
 }

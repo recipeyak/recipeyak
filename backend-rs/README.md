@@ -19,7 +19,9 @@ unset).
 
 1. Write its SQL in `queries/` and run `./s/generate-queries`.
 2. Add a handler in `src/routes/<area>/<name>.rs` with a `#[utoipa::path]`
-   that matches the Django view's path and `operation_id`.
+   that matches the Django view's path and `operation_id`. Take `Json`,
+   `Path` and `Params` from `crate::extract`, and `db: Db` after any `User`,
+   `Team` or `Calendar`. Use `db.transaction()` for multi-statement writes.
 3. Register it in `router()` in `src/routes/<area>/mod.rs`. Handlers that
    share a path go in the same `routes!(...)`. A new area also needs a
    `.merge(<area>::router())` in `src/routes/mod.rs`.

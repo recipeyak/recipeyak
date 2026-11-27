@@ -5,7 +5,6 @@
 //! PATCH /api/v1/calendar/settings/
 //! POST /api/v1/calendar/generate_link/
 
-use axum::extract::State;
 use axum::http::HeaderMap;
 use axum::http::header::HOST;
 use cornucopia::queries::membership::{
@@ -16,7 +15,7 @@ use rand::distr::Alphanumeric;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
-use crate::AppState;
+use crate::db::Db;
 use crate::error::{ApiError, OrNotFound};
 use crate::extract::Json;
 use crate::extract::team::Team;
@@ -64,14 +63,13 @@ impl CalendarSettingsResponse {
     responses((status = 200, description = "Successful response.", body = CalendarSettingsResponse)),
 )]
 pub async fn settings_retrieve_view(
-    State(state): State<AppState>,
     headers: HeaderMap,
     user: User,
     team: Team,
+    db: Db,
 ) -> Result<Json<CalendarSettingsResponse>, ApiError> {
-    let client = state.pool.get().await?;
     let membership = calendar_settings()
-        .bind(&client, &team.id, &user.id)
+        .bind(&db, &team.id, &user.id)
         .opt()
         .await?
         .or_not_found()?;
@@ -86,15 +84,14 @@ pub async fn settings_retrieve_view(
     responses((status = 200, description = "Successful response.", body = CalendarSettingsResponse)),
 )]
 pub async fn update_settings_view(
-    State(state): State<AppState>,
     headers: HeaderMap,
     user: User,
     team: Team,
+    db: Db,
     Json(CalendarUpdateSettingsParams { sync_enabled }): Json<CalendarUpdateSettingsParams>,
 ) -> Result<Json<CalendarSettingsResponse>, ApiError> {
-    let client = state.pool.get().await?;
     let membership = update_calendar_sync_enabled()
-        .bind(&client, &sync_enabled, &team.id, &user.id)
+        .bind(&db, &sync_enabled, &team.id, &user.id)
         .opt()
         .await?
         .or_not_found()?;
@@ -108,10 +105,10 @@ pub async fn update_settings_view(
     responses((status = 200, description = "Successful response.", body = CalendarSettingsResponse)),
 )]
 pub async fn generate_link_view(
-    State(state): State<AppState>,
     headers: HeaderMap,
     user: User,
     team: Team,
+    db: Db,
 ) -> Result<Json<CalendarSettingsResponse>, ApiError> {
     // get_random_ical_id
     let secret_key: String = rand::rng()
@@ -119,9 +116,8 @@ pub async fn generate_link_view(
         .take(48)
         .map(char::from)
         .collect();
-    let client = state.pool.get().await?;
     let membership = update_calendar_secret_key()
-        .bind(&client, &secret_key, &team.id, &user.id)
+        .bind(&db, &secret_key, &team.id, &user.id)
         .opt()
         .await?
         .or_not_found()?;
