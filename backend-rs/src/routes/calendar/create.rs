@@ -2,12 +2,11 @@
 //!
 //! POST /api/v1/calendars/
 
-use axum::extract::State;
 use cornucopia::queries::calendar::insert_calendar;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
-use crate::AppState;
+use crate::db::Db;
 use crate::error::ApiError;
 use crate::extract::Json;
 use crate::extract::team::Team;
@@ -32,15 +31,11 @@ pub struct CalendarCreateResponse {
     responses((status = 200, description = "Successful response.", body = CalendarCreateResponse)),
 )]
 pub async fn create_view(
-    State(state): State<AppState>,
     team: Team,
+    db: Db,
     Json(CalendarCreateParams { name }): Json<CalendarCreateParams>,
 ) -> Result<Json<CalendarCreateResponse>, ApiError> {
-    let client = state.pool.get().await?;
-    let id = insert_calendar()
-        .bind(&client, &name, &team.id)
-        .one()
-        .await?;
+    let id = insert_calendar().bind(&db, &name, &team.id).one().await?;
 
     Ok(Json(CalendarCreateResponse { id, name }))
 }

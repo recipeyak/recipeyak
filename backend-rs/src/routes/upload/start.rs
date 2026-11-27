@@ -11,6 +11,7 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 use crate::AppState;
+use crate::db::Db;
 use crate::error::ApiError;
 use crate::extract::Json;
 use crate::extract::team::Team;
@@ -56,6 +57,7 @@ pub async fn start_view(
     State(state): State<AppState>,
     user: User,
     team: Team,
+    db: Db,
     Json(params): Json<UploadStartParams>,
 ) -> Result<Json<UploadStartResponse>, ApiError> {
     let (recipe_id, profile_id) = match (params.purpose, params.recipe_id) {
@@ -73,10 +75,9 @@ pub async fn start_view(
         (UploadPurpose::Profile, None) => (None, Some(user.id)),
     };
 
-    let client = state.pool.get().await?;
     if let Some(recipe_id) = recipe_id {
         let exists = recipe_exists()
-            .bind(&client, &recipe_id, &team.id)
+            .bind(&db, &recipe_id, &team.id)
             .one()
             .await?;
         if !exists {
@@ -97,7 +98,7 @@ pub async fn start_view(
     let s3 = &state.config.s3;
     let id = insert_upload()
         .bind(
-            &client,
+            &db,
             &user.id,
             &s3.bucket,
             &key,

@@ -2,11 +2,10 @@
 //!
 //! POST /api/v1/calendars/{calendar_id}/pin/
 
-use axum::extract::State;
 use axum::http::StatusCode;
 use cornucopia::queries::calendar::pin_calendar;
 
-use crate::AppState;
+use crate::db::Db;
 use crate::error::{ApiError, OrNotFound};
 use crate::extract::Path;
 use crate::extract::team::Team;
@@ -20,14 +19,13 @@ use crate::extract::user::User;
     responses((status = 204, description = "No content")),
 )]
 pub async fn pin_create_view(
-    State(state): State<AppState>,
     user: User,
     team: Team,
+    db: Db,
     Path(calendar_id): Path<i32>,
 ) -> Result<StatusCode, ApiError> {
-    let client = state.pool.get().await?;
     pin_calendar()
-        .bind(&client, &user.id, &calendar_id, &team.id)
+        .bind(&db, &user.id, &calendar_id, &team.id)
         .opt()
         .await?
         // Django 500s with Calendar.DoesNotExist.

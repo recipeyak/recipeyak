@@ -8,6 +8,7 @@ use serde::Serialize;
 use utoipa::ToSchema;
 
 use crate::AppState;
+use crate::db::Db;
 use crate::error::{ApiError, OrNotFound};
 use crate::extract::user::User;
 use crate::extract::{Json, Path};
@@ -31,11 +32,11 @@ pub struct UploadCompleteResponse {
 pub async fn complete_view(
     State(state): State<AppState>,
     user: User,
+    db: Db,
     Path(upload_id): Path<i32>,
 ) -> Result<Json<UploadCompleteResponse>, ApiError> {
-    let client = state.pool.get().await?;
     let upload = complete_upload()
-        .bind(&client, &upload_id, &user.id)
+        .bind(&db, &upload_id, &user.id)
         .opt()
         .await?
         .or_not_found()?;

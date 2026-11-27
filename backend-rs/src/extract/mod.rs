@@ -2,6 +2,7 @@
 //! instead of axum's so bad requests get Django's error responses.
 
 pub mod calendar;
+mod db;
 mod json;
 mod params;
 mod path;
