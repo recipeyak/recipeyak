@@ -2,7 +2,8 @@
 //!
 //! POST /api/v1/calendars/
 
-use cornucopia::queries::calendar::insert_calendar;
+use cornucopia::client::Params as _;
+use cornucopia::queries::calendar::{InsertCalendarParams, insert_calendar};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
@@ -35,7 +36,16 @@ pub async fn create_view(
     db: Db,
     Json(CalendarCreateParams { name }): Json<CalendarCreateParams>,
 ) -> Result<Json<CalendarCreateResponse>, ApiError> {
-    let id = insert_calendar().bind(&db, &name, &team.id).one().await?;
+    let id = insert_calendar()
+        .params(
+            &db,
+            &InsertCalendarParams {
+                name: &name,
+                team_id: team.id,
+            },
+        )
+        .one()
+        .await?;
 
     Ok(Json(CalendarCreateResponse { id, name }))
 }

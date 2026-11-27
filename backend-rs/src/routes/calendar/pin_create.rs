@@ -3,7 +3,8 @@
 //! POST /api/v1/calendars/{calendar_id}/pin/
 
 use axum::http::StatusCode;
-use cornucopia::queries::calendar::pin_calendar;
+use cornucopia::client::Params as _;
+use cornucopia::queries::calendar::{PinCalendarParams, pin_calendar};
 
 use crate::db::Db;
 use crate::error::{ApiError, OrNotFound};
@@ -25,7 +26,14 @@ pub async fn pin_create_view(
     Path(calendar_id): Path<i32>,
 ) -> Result<StatusCode, ApiError> {
     pin_calendar()
-        .bind(&db, &user.id, &calendar_id, &team.id)
+        .params(
+            &db,
+            &PinCalendarParams {
+                user_id: user.id,
+                calendar_id,
+                team_id: team.id,
+            },
+        )
         .opt()
         .await?
         // Django 500s with Calendar.DoesNotExist.

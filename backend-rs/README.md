@@ -37,6 +37,9 @@ unset).
 SQL lives in `queries/`. [Cornucopia](https://github.com/cornucopia-rs/cornucopia)
 type-checks it against `tests/schema/` and generates the `cornucopia/` crate.
 Nullable result columns must be marked with `?` in the `--!` annotation.
+Call queries that take more than one parameter with
+`.params(&db, &FooParams { ... })` (import `cornucopia::client::Params as _`)
+rather than `.bind(...)`, so arguments of the same type can't be swapped.
 After changing a query or the schema, regenerate it:
 
 ```sh

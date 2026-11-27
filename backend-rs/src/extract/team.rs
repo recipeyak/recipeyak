@@ -2,7 +2,8 @@
 
 use axum::extract::FromRequestParts;
 use axum::http::request::Parts;
-use cornucopia::queries::team::is_active_member;
+use cornucopia::client::Params as _;
+use cornucopia::queries::team::{IsActiveMemberParams, is_active_member};
 
 use crate::AppState;
 use crate::error::ApiError;
@@ -40,7 +41,13 @@ async fn selected_team(parts: &mut Parts, state: &AppState) -> Result<Team, ApiE
         .ok_or_else(|| ApiError::internal("should always have a team selected"))?;
     let client = state.pool.get().await?;
     let is_member = is_active_member()
-        .bind(&client, &id, &user.id)
+        .params(
+            &client,
+            &IsActiveMemberParams {
+                team_id: id,
+                user_id: user.id,
+            },
+        )
         .one()
         .await?;
     if !is_member {

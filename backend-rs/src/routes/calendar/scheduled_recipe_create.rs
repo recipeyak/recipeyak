@@ -4,7 +4,10 @@
 
 use axum::extract::State;
 use chrono::NaiveDate;
-use cornucopia::queries::scheduled_recipe::{insert_scheduled_recipe, scheduled_recipe};
+use cornucopia::client::Params as _;
+use cornucopia::queries::scheduled_recipe::{
+    InsertScheduledRecipeParams, ScheduledRecipeParams, insert_scheduled_recipe, scheduled_recipe,
+};
 use serde::Deserialize;
 use utoipa::ToSchema;
 
@@ -39,12 +42,27 @@ pub async fn scheduled_recipe_create_view(
     Json(ScheduledRecipeCreateParams { recipe, on }): Json<ScheduledRecipeCreateParams>,
 ) -> Result<Json<ScheduledRecipe>, ApiError> {
     let id = insert_scheduled_recipe()
-        .bind(&db, &on, &calendar.team_id, &calendar.id, &user.id, &recipe)
+        .params(
+            &db,
+            &InsertScheduledRecipeParams {
+                on,
+                team_id: calendar.team_id,
+                calendar_id: calendar.id,
+                user_id: user.id,
+                recipe_id: recipe,
+            },
+        )
         .opt()
         .await?
         .or_not_found()?;
     let row = scheduled_recipe()
-        .bind(&db, &id, &calendar.team_id)
+        .params(
+            &db,
+            &ScheduledRecipeParams {
+                id,
+                team_id: calendar.team_id,
+            },
+        )
         .one()
         .await?;
     let res = ScheduledRecipe::from_row(row, &state.config.storage_url, user.id, calendar.team_id);

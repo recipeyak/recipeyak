@@ -5,8 +5,9 @@
 use std::collections::BTreeMap;
 
 use axum::extract::State;
-use cornucopia::queries::recipe::recipe_exists;
-use cornucopia::queries::upload::insert_upload;
+use cornucopia::client::Params as _;
+use cornucopia::queries::recipe::{RecipeExistsParams, recipe_exists};
+use cornucopia::queries::upload::{InsertUploadParams, insert_upload};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
@@ -77,7 +78,13 @@ pub async fn start_view(
 
     if let Some(recipe_id) = recipe_id {
         let exists = recipe_exists()
-            .bind(&db, &recipe_id, &team.id)
+            .params(
+                &db,
+                &RecipeExistsParams {
+                    id: recipe_id,
+                    team_id: team.id,
+                },
+            )
             .one()
             .await?;
         if !exists {
@@ -97,14 +104,16 @@ pub async fn start_view(
     );
     let s3 = &state.config.s3;
     let id = insert_upload()
-        .bind(
+        .params(
             &db,
-            &user.id,
-            &s3.bucket,
-            &key,
-            &recipe_id,
-            &profile_id,
-            &params.content_type,
+            &InsertUploadParams {
+                created_by_id: user.id,
+                bucket: &s3.bucket,
+                key: &key,
+                recipe_id,
+                profile_id,
+                content_type: &params.content_type,
+            },
         )
         .one()
         .await?;
