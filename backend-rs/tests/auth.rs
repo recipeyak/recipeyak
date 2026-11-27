@@ -13,7 +13,7 @@ async fn request_without_session_cookie_is_not_authenticated() {
     let db = TestDb::new().await;
     let app = TestApp::new(&db);
 
-    let response = app.get(URI, None).await;
+    let response = app.get(URI).await;
 
     assert_eq!(response.status, StatusCode::FORBIDDEN);
     assert_eq!(response.json()["error"]["code"], "not_authenticated");
@@ -22,9 +22,9 @@ async fn request_without_session_cookie_is_not_authenticated() {
 #[tokio::test]
 async fn request_with_unknown_session_key_is_not_authenticated() {
     let db = TestDb::new().await;
-    let app = TestApp::new(&db);
+    let app = TestApp::new(&db).with_session("doesnotexist12345");
 
-    let response = app.get(URI, Some("doesnotexist12345")).await;
+    let response = app.get(URI).await;
 
     assert_eq!(response.status, StatusCode::FORBIDDEN);
 }
@@ -34,9 +34,9 @@ async fn request_with_valid_session_is_authenticated() {
     let db = TestDb::new().await;
     let account = create_account(&db, "alice@example.com").await;
     let session_key = login(&db, account.user_id).await;
-    let app = TestApp::new(&db);
+    let app = TestApp::new(&db).with_session(&session_key);
 
-    let response = app.get(URI, Some(&session_key)).await;
+    let response = app.get(URI).await;
 
     assert_eq!(response.status, StatusCode::OK);
 }
@@ -52,9 +52,9 @@ async fn request_with_expired_session_is_not_authenticated() {
         &[],
     )
     .await;
-    let app = TestApp::new(&db);
+    let app = TestApp::new(&db).with_session(&session_key);
 
-    let response = app.get(URI, Some(&session_key)).await;
+    let response = app.get(URI).await;
 
     assert_eq!(response.status, StatusCode::FORBIDDEN);
 }
@@ -70,9 +70,9 @@ async fn request_with_anonymous_session_is_not_authenticated() {
         &[&session_key],
     )
     .await;
-    let app = TestApp::new(&db);
+    let app = TestApp::new(&db).with_session(session_key);
 
-    let response = app.get(URI, Some(session_key)).await;
+    let response = app.get(URI).await;
 
     assert_eq!(response.status, StatusCode::FORBIDDEN);
 }

@@ -30,7 +30,12 @@ unset).
 5. Run `./s/generate-schema`, then `../backend/s/generate-client` to update
    the UI's API client. `tests/api_schema.rs` fails until you do. The Vite dev
    server routes to backend-rs based on this schema.
-6. Add integration tests in `tests/<name>.rs`.
+6. Add integration tests in `tests/<name>.rs`. Most start with
+   `let Setup { db, account, app } = setup().await;`, which logs `app` in as
+   `account`.
+
+Response types shared between routes, or with realtime messages, go in
+`src/serializers/`.
 
 ## Queries
 

@@ -4,21 +4,17 @@ mod common;
 
 use axum::http::StatusCode;
 use chrono::NaiveDate;
-use common::{TestApp, TestDb, create_account, create_recipe, login, query_one};
+use common::{Setup, create_account, create_recipe, query_one, setup};
 use serde_json::json;
 
 #[tokio::test]
 async fn schedules_recipe_on_pinned_calendar() {
-    let db = TestDb::new().await;
-    let account = create_account(&db, "alice@example.com").await;
+    let Setup { db, account, app } = setup().await;
     let recipe_id = create_recipe(&db, account.team_id, "Pancakes").await;
-    let session_key = login(&db, account.user_id).await;
-    let app = TestApp::new(&db);
 
     let response = app
         .post(
             "/api/v1/calendar/",
-            Some(&session_key),
             json!({"recipe": recipe_id, "on": "2026-10-05"}),
         )
         .await;
@@ -49,16 +45,12 @@ async fn schedules_recipe_on_pinned_calendar() {
 
 #[tokio::test]
 async fn publishes_scheduled_recipe_to_calendar_channel() {
-    let db = TestDb::new().await;
-    let account = create_account(&db, "alice@example.com").await;
+    let Setup { db, account, app } = setup().await;
     let recipe_id = create_recipe(&db, account.team_id, "Pancakes").await;
-    let session_key = login(&db, account.user_id).await;
-    let app = TestApp::new(&db);
 
     let response = app
         .post(
             "/api/v1/calendar/",
-            Some(&session_key),
             json!({"recipe": recipe_id, "on": "2026-10-05"}),
         )
         .await;
@@ -78,17 +70,13 @@ async fn publishes_scheduled_recipe_to_calendar_channel() {
 
 #[tokio::test]
 async fn other_teams_recipe_is_not_found() {
-    let db = TestDb::new().await;
-    let account = create_account(&db, "alice@example.com").await;
+    let Setup { db, app, .. } = setup().await;
     let other_team = create_account(&db, "bob@example.com").await;
     let recipe_id = create_recipe(&db, other_team.team_id, "Pancakes").await;
-    let session_key = login(&db, account.user_id).await;
-    let app = TestApp::new(&db);
 
     let response = app
         .post(
             "/api/v1/calendar/",
-            Some(&session_key),
             json!({"recipe": recipe_id, "on": "2026-10-05"}),
         )
         .await;

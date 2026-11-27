@@ -4,10 +4,7 @@ mod common;
 
 use axum::http::StatusCode;
 use chrono::NaiveDate;
-use common::{
-    Account, TestApp, TestDb, create_account, create_calendar, create_recipe, login, query_one,
-    schedule_recipe,
-};
+use common::{Account, Setup, create_calendar, create_recipe, query_one, schedule_recipe, setup};
 use serde_json::json;
 
 fn date(s: &str) -> NaiveDate {
@@ -16,17 +13,13 @@ fn date(s: &str) -> NaiveDate {
 
 #[tokio::test]
 async fn moves_scheduled_recipe() {
-    let db = TestDb::new().await;
-    let account = create_account(&db, "alice@example.com").await;
+    let Setup { db, account, app } = setup().await;
     let recipe_id = create_recipe(&db, account.team_id, "Pancakes").await;
     let scheduled_id = schedule_recipe(&db, &account, recipe_id, date("2026-10-05")).await;
-    let session_key = login(&db, account.user_id).await;
-    let app = TestApp::new(&db);
 
     let response = app
         .patch(
             &format!("/api/v1/calendar/{scheduled_id}/"),
-            Some(&session_key),
             json!({"on": "2026-10-09"}),
         )
         .await;
@@ -44,16 +37,12 @@ async fn moves_scheduled_recipe() {
 
 #[tokio::test]
 async fn records_schedule_event_with_previous_date() {
-    let db = TestDb::new().await;
-    let account = create_account(&db, "alice@example.com").await;
+    let Setup { db, account, app } = setup().await;
     let recipe_id = create_recipe(&db, account.team_id, "Pancakes").await;
     let scheduled_id = schedule_recipe(&db, &account, recipe_id, date("2026-10-05")).await;
-    let session_key = login(&db, account.user_id).await;
-    let app = TestApp::new(&db);
 
     app.patch(
         &format!("/api/v1/calendar/{scheduled_id}/"),
-        Some(&session_key),
         json!({"on": "2026-10-09"}),
     )
     .await;
@@ -76,17 +65,13 @@ async fn records_schedule_event_with_previous_date() {
 
 #[tokio::test]
 async fn publishes_moved_scheduled_recipe() {
-    let db = TestDb::new().await;
-    let account = create_account(&db, "alice@example.com").await;
+    let Setup { db, account, app } = setup().await;
     let recipe_id = create_recipe(&db, account.team_id, "Pancakes").await;
     let scheduled_id = schedule_recipe(&db, &account, recipe_id, date("2026-10-05")).await;
-    let session_key = login(&db, account.user_id).await;
-    let app = TestApp::new(&db);
 
     let response = app
         .patch(
             &format!("/api/v1/calendar/{scheduled_id}/"),
-            Some(&session_key),
             json!({"on": "2026-10-09"}),
         )
         .await;
@@ -99,21 +84,17 @@ async fn publishes_moved_scheduled_recipe() {
 
 #[tokio::test]
 async fn scheduled_recipe_on_another_calendar_is_not_found() {
-    let db = TestDb::new().await;
-    let account = create_account(&db, "alice@example.com").await;
+    let Setup { db, account, app } = setup().await;
     let other_calendar = Account {
         calendar_id: create_calendar(&db, account.team_id, "Lunches").await,
         ..account
     };
     let recipe_id = create_recipe(&db, account.team_id, "Pancakes").await;
     let scheduled_id = schedule_recipe(&db, &other_calendar, recipe_id, date("2026-10-05")).await;
-    let session_key = login(&db, account.user_id).await;
-    let app = TestApp::new(&db);
 
     let response = app
         .patch(
             &format!("/api/v1/calendar/{scheduled_id}/"),
-            Some(&session_key),
             json!({"on": "2026-10-09"}),
         )
         .await;

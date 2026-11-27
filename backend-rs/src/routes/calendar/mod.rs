@@ -8,8 +8,6 @@ mod scheduled_recipe_create;
 mod settings;
 mod update;
 
-pub mod scheduled_recipe;
-
 use utoipa_axum::router::OpenApiRouter;
 use utoipa_axum::routes;
 

@@ -5,21 +5,16 @@ mod common;
 
 use axum::http::StatusCode;
 use common::{
-    TestApp, TestDb, add_member, create_account, create_user, execute, login, query_one,
-    select_calendar,
+    Setup, TestApp, TestDb, add_member, create_account, create_user, execute, login, query_one,
+    select_calendar, setup,
 };
 use serde_json::json;
 
 #[tokio::test]
 async fn returns_sync_setting_and_calendar_link() {
-    let db = TestDb::new().await;
-    let account = create_account(&db, "alice@example.com").await;
-    let session_key = login(&db, account.user_id).await;
-    let app = TestApp::new(&db);
+    let Setup { account, app, .. } = setup().await;
 
-    let response = app
-        .get("/api/v1/calendar/settings/", Some(&session_key))
-        .await;
+    let response = app.get("/api/v1/calendar/settings/").await;
 
     assert_eq!(response.status, StatusCode::OK);
     assert_eq!(
@@ -36,17 +31,10 @@ async fn returns_sync_setting_and_calendar_link() {
 
 #[tokio::test]
 async fn updates_sync_enabled() {
-    let db = TestDb::new().await;
-    let account = create_account(&db, "alice@example.com").await;
-    let session_key = login(&db, account.user_id).await;
-    let app = TestApp::new(&db);
+    let Setup { db, account, app } = setup().await;
 
     let response = app
-        .patch(
-            "/api/v1/calendar/settings/",
-            Some(&session_key),
-            json!({"syncEnabled": true}),
-        )
+        .patch("/api/v1/calendar/settings/", json!({"syncEnabled": true}))
         .await;
 
     assert_eq!(response.status, StatusCode::OK);
@@ -63,18 +51,9 @@ async fn updates_sync_enabled() {
 
 #[tokio::test]
 async fn generate_link_replaces_secret_key() {
-    let db = TestDb::new().await;
-    let account = create_account(&db, "alice@example.com").await;
-    let session_key = login(&db, account.user_id).await;
-    let app = TestApp::new(&db);
+    let Setup { db, account, app } = setup().await;
 
-    let response = app
-        .post(
-            "/api/v1/calendar/generate_link/",
-            Some(&session_key),
-            json!({}),
-        )
-        .await;
+    let response = app.post("/api/v1/calendar/generate_link/", json!({})).await;
 
     assert_eq!(response.status, StatusCode::OK);
     let secret_key: String = query_one(
@@ -108,11 +87,9 @@ async fn returns_link_for_own_membership_on_shared_team() {
     add_member(&db, alice.team_id, bob).await;
     select_calendar(&db, bob, alice.team_id, alice.calendar_id).await;
     let session_key = login(&db, bob).await;
-    let app = TestApp::new(&db);
+    let app = TestApp::new(&db).with_session(&session_key);
 
-    let response = app
-        .get("/api/v1/calendar/settings/", Some(&session_key))
-        .await;
+    let response = app.get("/api/v1/calendar/settings/").await;
 
     assert_eq!(
         response.json()["calendarLink"],

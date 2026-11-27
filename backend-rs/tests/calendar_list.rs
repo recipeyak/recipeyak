@@ -5,8 +5,8 @@ mod common;
 use axum::http::StatusCode;
 use chrono::NaiveDate;
 use common::{
-    Account, TestApp, TestDb, create_account, create_calendar, create_recipe, execute, login,
-    schedule_recipe, set_primary_image,
+    Account, Setup, create_calendar, create_recipe, execute, schedule_recipe, set_primary_image,
+    setup,
 };
 use serde_json::json;
 
@@ -16,19 +16,13 @@ fn date(s: &str) -> NaiveDate {
 
 #[tokio::test]
 async fn returns_scheduled_recipe_with_recipe_and_creator() {
-    let db = TestDb::new().await;
-    let account = create_account(&db, "alice@example.com").await;
+    let Setup { db, account, app } = setup().await;
     let recipe_id = create_recipe(&db, account.team_id, "Pancakes").await;
     let image_id = set_primary_image(&db, recipe_id, "recipes/pancakes.jpg").await;
     let scheduled_id = schedule_recipe(&db, &account, recipe_id, date("2026-10-05")).await;
-    let session_key = login(&db, account.user_id).await;
-    let app = TestApp::new(&db);
 
     let response = app
-        .get(
-            "/api/v1/calendar/?start=2026-10-01&end=2026-10-07",
-            Some(&session_key),
-        )
+        .get("/api/v1/calendar/?start=2026-10-01&end=2026-10-07")
         .await;
 
     assert_eq!(response.status, StatusCode::OK);
@@ -64,8 +58,7 @@ async fn returns_scheduled_recipe_with_recipe_and_creator() {
 
 #[tokio::test]
 async fn returns_only_pinned_calendar_within_dates_newest_first() {
-    let db = TestDb::new().await;
-    let account = create_account(&db, "alice@example.com").await;
+    let Setup { db, account, app } = setup().await;
     let other_calendar = Account {
         calendar_id: create_calendar(&db, account.team_id, "Lunches").await,
         ..account
@@ -76,14 +69,9 @@ async fn returns_only_pinned_calendar_within_dates_newest_first() {
     let on_end = schedule_recipe(&db, &account, recipe_id, date("2026-10-07")).await;
     schedule_recipe(&db, &account, recipe_id, date("2026-10-08")).await;
     schedule_recipe(&db, &other_calendar, recipe_id, date("2026-10-05")).await;
-    let session_key = login(&db, account.user_id).await;
-    let app = TestApp::new(&db);
 
     let response = app
-        .get(
-            "/api/v1/calendar/?start=2026-10-03&end=2026-10-07",
-            Some(&session_key),
-        )
+        .get("/api/v1/calendar/?start=2026-10-03&end=2026-10-07")
         .await;
 
     assert_eq!(response.status, StatusCode::OK);
@@ -98,22 +86,16 @@ async fn returns_only_pinned_calendar_within_dates_newest_first() {
 
 #[tokio::test]
 async fn user_no_longer_on_selected_team_gets_not_found() {
-    let db = TestDb::new().await;
-    let account = create_account(&db, "alice@example.com").await;
+    let Setup { db, account, app } = setup().await;
     execute(
         &db,
         "UPDATE core_membership SET is_active = false WHERE user_id = $1",
         &[&account.user_id],
     )
     .await;
-    let session_key = login(&db, account.user_id).await;
-    let app = TestApp::new(&db);
 
     let response = app
-        .get(
-            "/api/v1/calendar/?start=2026-10-01&end=2026-10-07",
-            Some(&session_key),
-        )
+        .get("/api/v1/calendar/?start=2026-10-01&end=2026-10-07")
         .await;
 
     assert_eq!(response.status, StatusCode::NOT_FOUND);
@@ -121,12 +103,9 @@ async fn user_no_longer_on_selected_team_gets_not_found() {
 
 #[tokio::test]
 async fn missing_dates_is_validation_error() {
-    let db = TestDb::new().await;
-    let account = create_account(&db, "alice@example.com").await;
-    let session_key = login(&db, account.user_id).await;
-    let app = TestApp::new(&db);
+    let Setup { app, .. } = setup().await;
 
-    let response = app.get("/api/v1/calendar/", Some(&session_key)).await;
+    let response = app.get("/api/v1/calendar/").await;
 
     assert_eq!(response.status, StatusCode::BAD_REQUEST);
     assert_eq!(response.json()["error"]["code"], "validation_error");

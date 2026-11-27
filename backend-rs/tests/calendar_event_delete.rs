@@ -5,7 +5,7 @@ mod common;
 use axum::http::StatusCode;
 use chrono::NaiveDate;
 use common::{
-    TestApp, TestDb, create_account, create_recipe, execute, login, query_one, schedule_recipe,
+    Setup, TestDb, create_account, create_recipe, execute, query_one, schedule_recipe, setup,
 };
 use serde_json::json;
 
@@ -25,8 +25,7 @@ async fn scheduled_recipe_exists(db: &TestDb, id: i32) -> bool {
 
 #[tokio::test]
 async fn deletes_scheduled_recipe_with_schedule_events() {
-    let db = TestDb::new().await;
-    let account = create_account(&db, "alice@example.com").await;
+    let Setup { db, account, app } = setup().await;
     let recipe_id = create_recipe(&db, account.team_id, "Pancakes").await;
     let scheduled_id = schedule_recipe(&db, &account, recipe_id, date("2026-10-05")).await;
     // the foreign key doesn't cascade, so this would block the delete
@@ -37,14 +36,9 @@ async fn deletes_scheduled_recipe_with_schedule_events() {
         &[&scheduled_id, &account.user_id],
     )
     .await;
-    let session_key = login(&db, account.user_id).await;
-    let app = TestApp::new(&db);
 
     let response = app
-        .delete(
-            &format!("/api/v1/calendar/{scheduled_id}/"),
-            Some(&session_key),
-        )
+        .delete(&format!("/api/v1/calendar/{scheduled_id}/"))
         .await;
 
     assert_eq!(response.status, StatusCode::NO_CONTENT);
@@ -53,18 +47,12 @@ async fn deletes_scheduled_recipe_with_schedule_events() {
 
 #[tokio::test]
 async fn publishes_deletion_to_calendar_channel() {
-    let db = TestDb::new().await;
-    let account = create_account(&db, "alice@example.com").await;
+    let Setup { db, account, app } = setup().await;
     let recipe_id = create_recipe(&db, account.team_id, "Pancakes").await;
     let scheduled_id = schedule_recipe(&db, &account, recipe_id, date("2026-10-05")).await;
-    let session_key = login(&db, account.user_id).await;
-    let app = TestApp::new(&db);
 
-    app.delete(
-        &format!("/api/v1/calendar/{scheduled_id}/"),
-        Some(&session_key),
-    )
-    .await;
+    app.delete(&format!("/api/v1/calendar/{scheduled_id}/"))
+        .await;
 
     let published = app.ably.published();
     assert_eq!(published.len(), 1);
@@ -81,19 +69,13 @@ async fn publishes_deletion_to_calendar_channel() {
 
 #[tokio::test]
 async fn other_teams_scheduled_recipe_is_kept() {
-    let db = TestDb::new().await;
-    let account = create_account(&db, "alice@example.com").await;
+    let Setup { db, app, .. } = setup().await;
     let other_team = create_account(&db, "bob@example.com").await;
     let recipe_id = create_recipe(&db, other_team.team_id, "Pancakes").await;
     let scheduled_id = schedule_recipe(&db, &other_team, recipe_id, date("2026-10-05")).await;
-    let session_key = login(&db, account.user_id).await;
-    let app = TestApp::new(&db);
 
     let response = app
-        .delete(
-            &format!("/api/v1/calendar/{scheduled_id}/"),
-            Some(&session_key),
-        )
+        .delete(&format!("/api/v1/calendar/{scheduled_id}/"))
         .await;
 
     assert_eq!(response.status, StatusCode::NO_CONTENT);

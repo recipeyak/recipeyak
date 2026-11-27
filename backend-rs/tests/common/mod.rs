@@ -103,8 +103,12 @@ async fn create_template() -> String {
     name
 }
 
-/// A database for a single test, dropped when the test ends.
-pub struct TestDb {
+/// A database for a single test, dropped once the test's `TestDb` and every
+/// `TestApp` using it are gone.
+#[derive(Clone)]
+pub struct TestDb(Arc<Database>);
+
+struct Database {
     name: String,
     pool: Pool,
 }
@@ -126,7 +130,7 @@ impl TestDb {
         let mut config: tokio_postgres::Config = database_url().parse().unwrap();
         config.dbname(&name);
         let pool = Pool::builder(Manager::new(config, NoTls)).build().unwrap();
-        Self { name, pool }
+        Self(Arc::new(Database { name, pool }))
     }
 }
 
@@ -134,11 +138,11 @@ impl Deref for TestDb {
     type Target = Pool;
 
     fn deref(&self) -> &Pool {
-        &self.pool
+        &self.0.pool
     }
 }
 
-impl Drop for TestDb {
+impl Drop for Database {
     fn drop(&mut self) {
         let sql = format!("DROP DATABASE IF EXISTS {} WITH (FORCE)", self.name);
         // Drop can't be async, so run the query on a runtime of its own.
@@ -176,9 +180,15 @@ pub const HOST: &str = "recipeyak.test";
 
 const ABLY_API_KEY: &str = "app.key:secret";
 
+/// Sends requests to the app, as the user whose session it was given with
+/// [`TestApp::with_session`] or anonymously.
+#[derive(Clone)]
 pub struct TestApp {
     router: Router,
+    session_key: Option<String>,
     pub ably: FakeAbly,
+    /// Keeps the database around while the app is.
+    _db: TestDb,
 }
 
 pub struct TestResponse {
@@ -198,7 +208,7 @@ impl TestResponse {
 }
 
 impl TestApp {
-    pub fn new(pool: &Pool) -> Self {
+    pub fn new(db: &TestDb) -> Self {
         let ably = FakeAbly::start();
         let config = Config {
             database_url: String::new(),
@@ -209,74 +219,65 @@ impl TestApp {
             ably_url: ably.url.parse().unwrap(),
         };
         let state = AppState {
-            pool: DbPool::new(pool.clone()),
+            pool: DbPool::new((**db).clone()),
             config: Arc::new(config),
             http: reqwest::Client::new(),
         };
         Self {
             router: recipeyak::app(state),
+            session_key: None,
             ably,
+            _db: db.clone(),
         }
     }
 
-    pub async fn get(&self, uri: &str, session_key: Option<&str>) -> TestResponse {
-        self.request(Method::GET, uri, session_key, None).await
+    /// The same app, sending requests with this session cookie.
+    pub fn with_session(&self, session_key: &str) -> Self {
+        Self {
+            session_key: Some(session_key.into()),
+            ..self.clone()
+        }
     }
 
-    pub async fn post(&self, uri: &str, session_key: Option<&str>, body: Value) -> TestResponse {
-        self.request(Method::POST, uri, session_key, Some(body))
-            .await
+    pub async fn get(&self, uri: &str) -> TestResponse {
+        self.request(Method::GET, uri, None).await
     }
 
-    pub async fn patch(&self, uri: &str, session_key: Option<&str>, body: Value) -> TestResponse {
-        self.request(Method::PATCH, uri, session_key, Some(body))
-            .await
+    pub async fn post(&self, uri: &str, body: Value) -> TestResponse {
+        self.request(Method::POST, uri, Some(body)).await
     }
 
-    pub async fn delete(&self, uri: &str, session_key: Option<&str>) -> TestResponse {
-        self.request(Method::DELETE, uri, session_key, None).await
+    pub async fn patch(&self, uri: &str, body: Value) -> TestResponse {
+        self.request(Method::PATCH, uri, Some(body)).await
+    }
+
+    pub async fn delete(&self, uri: &str) -> TestResponse {
+        self.request(Method::DELETE, uri, None).await
     }
 
     /// A POST with a body that isn't necessarily JSON.
     pub async fn post_raw(
         &self,
         uri: &str,
-        session_key: Option<&str>,
         content_type: Option<&str>,
         body: &str,
     ) -> TestResponse {
-        self.send(
-            Method::POST,
-            uri,
-            session_key,
-            content_type,
-            body.to_owned().into(),
-        )
-        .await
+        self.send(Method::POST, uri, content_type, body.to_owned().into())
+            .await
     }
 
-    async fn request(
-        &self,
-        method: Method,
-        uri: &str,
-        session_key: Option<&str>,
-        body: Option<Value>,
-    ) -> TestResponse {
+    async fn request(&self, method: Method, uri: &str, body: Option<Value>) -> TestResponse {
         match body {
             Some(body) => {
                 self.send(
                     method,
                     uri,
-                    session_key,
                     Some("application/json"),
                     body.to_string().into(),
                 )
                 .await
             }
-            None => {
-                self.send(method, uri, session_key, None, Body::empty())
-                    .await
-            }
+            None => self.send(method, uri, None, Body::empty()).await,
         }
     }
 
@@ -284,7 +285,6 @@ impl TestApp {
         &self,
         method: Method,
         uri: &str,
-        session_key: Option<&str>,
         content_type: Option<&str>,
         body: Body,
     ) -> TestResponse {
@@ -292,7 +292,7 @@ impl TestApp {
             .method(method)
             .uri(uri)
             .header(header::HOST, HOST);
-        if let Some(key) = session_key {
+        if let Some(key) = &self.session_key {
             request = request.header(header::COOKIE, format!("sessionid={key}"));
         }
         if let Some(content_type) = content_type {
@@ -324,6 +324,7 @@ pub struct Published {
 
 /// Records what the app publishes to Ably, rejecting requests that aren't
 /// authenticated with `ABLY_API_KEY` like Ably does.
+#[derive(Clone)]
 pub struct FakeAbly {
     url: String,
     published: Arc<Mutex<Vec<Published>>>,
@@ -487,4 +488,19 @@ pub async fn set_primary_image(pool: &Pool, recipe_id: i32, key: &str) -> i32 {
     )
     .await;
     upload_id
+}
+
+/// The usual starting point: Alice's account, and the app logged in as her.
+pub struct Setup {
+    pub db: TestDb,
+    pub account: Account,
+    pub app: TestApp,
+}
+
+pub async fn setup() -> Setup {
+    let db = TestDb::new().await;
+    let account = create_account(&db, "alice@example.com").await;
+    let session_key = login(&db, account.user_id).await;
+    let app = TestApp::new(&db).with_session(&session_key);
+    Setup { db, account, app }
 }

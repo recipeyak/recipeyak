@@ -18,7 +18,7 @@ use crate::extract::Json;
 use crate::extract::calendar::Calendar;
 use crate::extract::user::User;
 use crate::realtime::publish_calendar_event;
-use crate::routes::calendar::scheduled_recipe::ScheduledRecipe;
+use crate::serializers::ScheduledRecipe;
 
 #[derive(Deserialize, ToSchema)]
 #[serde(deny_unknown_fields)]
