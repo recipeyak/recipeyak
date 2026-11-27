@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Regenerate api-schema.json from the registered routes. Run
+# ../backend/s/generate-client afterwards to update the UI's API client.
+set -euo pipefail
+
+main() {
+  cd "$(dirname "$0")/.."
+  UPDATE_SCHEMA=1 cargo test -q --test api_schema
+}
+
+main "$@"

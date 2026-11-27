@@ -2476,6 +2476,7 @@ dependencies = [
  "deadpool-postgres",
  "md-5 0.10.6",
  "rand",
+ "regex",
  "reqwest",
  "sentry",
  "serde",

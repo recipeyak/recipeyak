@@ -15,6 +15,20 @@ Env vars, all prefixed with `RECIPEYAK_RS_`: `DATABASE_URL`, `STORAGE_HOSTNAME`,
 `SENTRY_RELEASE`, `SENTRY_ENVIRONMENT` (Sentry is disabled when `SENTRY_DSN` is
 unset).
 
+## Porting an endpoint
+
+1. Write its SQL in `queries/` and run `./s/generate-queries`.
+2. Add a handler in `src/routes/<area>/<name>.rs` with a `#[utoipa::path]`
+   that matches the Django view's path and `operation_id`.
+3. Register it in `src/routes/mod.rs`. Handlers that share a path go
+   in the same `routes!(...)`.
+4. Add it to the `$api_upstream` map in `infra/nginx/recipeyak.conf`.
+   `tests/routing.rs` fails until you do.
+5. Run `./s/generate-schema`, then `../backend/s/generate-client` to update
+   the UI's API client. `tests/api_schema.rs` fails until you do. The Vite dev
+   server routes to backend-rs based on this schema.
+6. Add integration tests in `tests/<name>.rs`.
+
 ## Queries
 
 SQL lives in `queries/`. [Cornucopia](https://github.com/cornucopia-rs/cornucopia)
