@@ -8,7 +8,7 @@ use serde::Serialize;
 use utoipa::ToSchema;
 
 use crate::AppState;
-use crate::error::ApiError;
+use crate::error::{ApiError, OrNotFound};
 use crate::extract::user::User;
 use crate::extract::{Json, Path};
 use crate::urls::public_url;
@@ -38,7 +38,7 @@ pub async fn complete_view(
         .bind(&client, &upload_id, &user.id)
         .opt()
         .await?
-        .ok_or(ApiError::NotFound)?;
+        .or_not_found()?;
 
     Ok(Json(UploadCompleteResponse {
         id: upload.id.to_string(),

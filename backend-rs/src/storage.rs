@@ -45,8 +45,8 @@ impl S3 {
         content_length: i64,
         content_type: &str,
         db_id: &str,
-    ) -> Result<String, String> {
-        let presigning = PresigningConfig::expires_in(EXPIRES_IN).map_err(|err| err.to_string())?;
+    ) -> anyhow::Result<String> {
+        let presigning = PresigningConfig::expires_in(EXPIRES_IN)?;
         let request = self
             .client
             .put_object()
@@ -56,8 +56,7 @@ impl S3 {
             .content_type(content_type)
             .metadata("db_id", db_id)
             .presigned(presigning)
-            .await
-            .map_err(|err| err.to_string())?;
+            .await?;
         Ok(request.uri().to_string())
     }
 }

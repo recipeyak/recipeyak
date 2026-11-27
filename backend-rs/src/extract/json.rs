@@ -24,10 +24,10 @@ where
     async fn from_request(request: Request, state: &S) -> Result<Self, Self::Rejection> {
         let body = Bytes::from_request(request, state)
             .await
-            .map_err(|err| ApiError::Validation(err.body_text()))?;
+            .map_err(|err| ApiError::validation(err.body_text()))?;
         serde_json::from_slice(&body)
             .map(Json)
-            .map_err(|err| ApiError::Validation(err.to_string()))
+            .map_err(|err| ApiError::validation(err.to_string()))
     }
 }
 

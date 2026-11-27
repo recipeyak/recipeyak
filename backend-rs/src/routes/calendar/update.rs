@@ -9,7 +9,7 @@ use serde::Deserialize;
 use utoipa::ToSchema;
 
 use crate::AppState;
-use crate::error::ApiError;
+use crate::error::{ApiError, OrNotFound};
 use crate::extract::calendar::Calendar;
 use crate::extract::user::User;
 use crate::extract::{Json, Path};
@@ -50,7 +50,7 @@ pub async fn update_view(
         .opt()
         .await?
         // Django 500s with ScheduledRecipe.DoesNotExist.
-        .ok_or(ApiError::NotFound)?;
+        .or_not_found()?;
     let row = scheduled_recipe()
         .bind(&client, &id, &calendar.team_id)
         .one()

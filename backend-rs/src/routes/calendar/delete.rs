@@ -27,7 +27,5 @@ pub async fn delete_view(
     _user: User,
     Path(_calendar_id): Path<i32>,
 ) -> Result<Json<CalendarDeleteResponse>, ApiError> {
-    Err(ApiError::Internal(
-        "deleting calendars is not implemented".into(),
-    ))
+    Err(ApiError::internal("deleting calendars is not implemented"))
 }
