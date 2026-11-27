@@ -3,13 +3,12 @@
 //!
 //! DELETE /api/v1/calendars/{calendar_id}/
 
-use axum::Json;
-use axum::extract::Path;
 use serde::Serialize;
 use utoipa::ToSchema;
 
 use crate::error::ApiError;
 use crate::extract::user::User;
+use crate::extract::{Json, Path};
 
 #[derive(Serialize, ToSchema)]
 pub struct CalendarDeleteResponse {

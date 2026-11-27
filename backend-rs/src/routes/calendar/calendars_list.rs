@@ -2,7 +2,6 @@
 //!
 //! GET /api/v1/calendars/
 
-use axum::Json;
 use axum::extract::State;
 use cornucopia::queries::calendar::team_calendars;
 use serde::Serialize;
@@ -10,6 +9,7 @@ use utoipa::ToSchema;
 
 use crate::AppState;
 use crate::error::ApiError;
+use crate::extract::Json;
 use crate::extract::team::Team;
 use crate::extract::user::User;
 

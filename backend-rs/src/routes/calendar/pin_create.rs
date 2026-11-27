@@ -2,12 +2,13 @@
 //!
 //! POST /api/v1/calendars/{calendar_id}/pin/
 
-use axum::extract::{Path, State};
+use axum::extract::State;
 use axum::http::StatusCode;
 use cornucopia::queries::calendar::pin_calendar;
 
 use crate::AppState;
 use crate::error::ApiError;
+use crate::extract::Path;
 use crate::extract::team::Team;
 use crate::extract::user::User;
 

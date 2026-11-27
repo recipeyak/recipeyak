@@ -4,7 +4,6 @@
 
 use std::collections::BTreeMap;
 
-use axum::Json;
 use axum::extract::State;
 use axum::http::StatusCode;
 use cornucopia::queries::recipe::recipe_exists;
@@ -14,6 +13,7 @@ use utoipa::ToSchema;
 
 use crate::AppState;
 use crate::error::ApiError;
+use crate::extract::Json;
 use crate::extract::team::Team;
 use crate::extract::user::User;
 

@@ -2,7 +2,6 @@
 //!
 //! POST /api/v1/calendars/
 
-use axum::Json;
 use axum::extract::State;
 use cornucopia::queries::calendar::insert_calendar;
 use serde::{Deserialize, Serialize};
@@ -10,6 +9,7 @@ use utoipa::ToSchema;
 
 use crate::AppState;
 use crate::error::ApiError;
+use crate::extract::Json;
 use crate::extract::team::Team;
 
 #[derive(Deserialize, ToSchema)]

@@ -237,12 +237,56 @@ impl TestApp {
         self.request(Method::DELETE, uri, session_key, None).await
     }
 
+    /// A POST with a body that isn't necessarily JSON.
+    pub async fn post_raw(
+        &self,
+        uri: &str,
+        session_key: Option<&str>,
+        content_type: Option<&str>,
+        body: &str,
+    ) -> TestResponse {
+        self.send(
+            Method::POST,
+            uri,
+            session_key,
+            content_type,
+            body.to_owned().into(),
+        )
+        .await
+    }
+
     async fn request(
         &self,
         method: Method,
         uri: &str,
         session_key: Option<&str>,
         body: Option<Value>,
+    ) -> TestResponse {
+        match body {
+            Some(body) => {
+                self.send(
+                    method,
+                    uri,
+                    session_key,
+                    Some("application/json"),
+                    body.to_string().into(),
+                )
+                .await
+            }
+            None => {
+                self.send(method, uri, session_key, None, Body::empty())
+                    .await
+            }
+        }
+    }
+
+    async fn send(
+        &self,
+        method: Method,
+        uri: &str,
+        session_key: Option<&str>,
+        content_type: Option<&str>,
+        body: Body,
     ) -> TestResponse {
         let mut request = Request::builder()
             .method(method)
@@ -251,13 +295,9 @@ impl TestApp {
         if let Some(key) = session_key {
             request = request.header(header::COOKIE, format!("sessionid={key}"));
         }
-        let body = match body {
-            Some(body) => {
-                request = request.header(header::CONTENT_TYPE, "application/json");
-                Body::from(body.to_string())
-            }
-            None => Body::empty(),
-        };
+        if let Some(content_type) = content_type {
+            request = request.header(header::CONTENT_TYPE, content_type);
+        }
         let response = self
             .router
             .clone()
